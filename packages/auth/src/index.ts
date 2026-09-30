@@ -11,6 +11,7 @@ export * from "./guards.js";
 export * from "./authorization.js";
 export * from "./errors.js";
 export * from "./profile.js";
+export * from "./demo.js";
 export * from "./login-panel.js";
 export * from "./access-denied.js";
 export * from "./permission-route.js";

@@ -14,7 +14,7 @@ import {
   MENU_CATEGORY_LABEL,
   type MenuCategory,
 } from "../../../data/menu.js";
-import { MenuImage } from "@tepisawah/ui";
+import { MenuPhoto } from "@tepisawah/ui";
 
 const CATEGORY_ICON: Record<MenuCategory, IconName> = {
   SEMUA: "sparkles",
@@ -96,7 +96,7 @@ export function FeaturedMenu(): ReactNode {
           {items.map((item) => (
             <article key={item.id} className="web-dish">
               <div className="web-dish-photo">
-                <MenuImage id={item.id} className="web-dish-art" />
+                <MenuPhoto id={item.id} className="web-dish-art" />
                 <div className="web-dish-veil" />
                 <span className="web-dish-cat">
                   {MENU_CATEGORY_LABEL[item.category]}

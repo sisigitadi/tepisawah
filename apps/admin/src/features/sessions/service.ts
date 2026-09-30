@@ -32,6 +32,8 @@ import {
 
 import { logger } from "../../lib/logger.js";
 import { getSupabaseClient } from "../../lib/supabase.js";
+import { isDemoMode } from "../../lib/demo-mode.js";
+import { demoSessions, demoTables, demoTimestamp } from "../../lib/demo-data.js";
 
 export interface TableSessionRow {
   table: RestaurantTable;
@@ -53,6 +55,20 @@ export type ServiceResult<T> = {
 
 /** Load the admin view: tables paired with their active session and history. */
 export async function loadSessions(): Promise<SessionsSnapshot> {
+  if (isDemoMode()) {
+    return {
+      rows: demoTables.map((table) => ({
+        table,
+        session:
+          demoSessions.find((s) => s.tableId === table.id && s.status === "OPEN") ?? null,
+        history: demoSessions
+          .filter((s) => s.tableId === table.id)
+          .sort((a, b) => (a.openedAt < b.openedAt ? 1 : -1)),
+      })),
+      error: null,
+    };
+  }
+
   const client = getSupabaseClient();
 
   const tablesResult = await fetchTables(client);
@@ -87,6 +103,39 @@ export async function openSession(
   tableId: string,
   tableCode: string,
 ): Promise<ServiceResult<{ session: TableSession; audit: SessionsAuditEvent | null }>> {
+  if (isDemoMode()) {
+    const existing = demoSessions.find((s) => s.tableId === tableId && s.status === "OPEN");
+    if (existing) {
+      return { data: { session: existing, audit: null }, error: null };
+    }
+    const session: TableSession = {
+      id: `ses-${Date.now()}`,
+      tableId,
+      status: "OPEN",
+      openedAt: demoTimestamp(),
+      closedAt: null,
+      openedBy: "Admin Demo",
+      closedBy: null,
+      orderCount: 0,
+      createdAt: demoTimestamp(),
+      updatedAt: demoTimestamp(),
+    };
+    demoSessions.push(session);
+    return {
+      data: {
+        session,
+        audit: {
+          entity: "table_session",
+          action: "open",
+          entityId: session.id,
+          label: tableCode,
+          changedFields: ["status"],
+        },
+      },
+      error: null,
+    };
+  }
+
   const client = getSupabaseClient();
   const result = await openTableSession(client, tableId, tableCode);
   if (result.error || !result.data) {
@@ -105,6 +154,30 @@ export async function closeSession(
   sessionId: string,
   tableCode: string,
 ): Promise<ServiceResult<{ session: TableSession; audit: SessionsAuditEvent | null }>> {
+  if (isDemoMode()) {
+    const session = demoSessions.find((s) => s.id === sessionId);
+    if (!session) {
+      return { data: null, error: "Sesi tidak ditemukan." };
+    }
+    session.status = "CLOSED";
+    session.closedAt = demoTimestamp();
+    session.closedBy = "Admin Demo";
+    session.updatedAt = demoTimestamp();
+    return {
+      data: {
+        session,
+        audit: {
+          entity: "table_session",
+          action: "close",
+          entityId: session.id,
+          label: tableCode,
+          changedFields: ["status", "closedAt"],
+        },
+      },
+      error: null,
+    };
+  }
+
   const client = getSupabaseClient();
   const result = await closeTableSession(client, sessionId, tableCode);
   if (result.error || !result.data) {

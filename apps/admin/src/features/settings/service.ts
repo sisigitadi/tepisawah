@@ -27,6 +27,8 @@ import {
 
 import { logger } from "../../lib/logger.js";
 import { getSupabaseClient } from "../../lib/supabase.js";
+import { isDemoMode } from "../../lib/demo-mode.js";
+import { demoHours, demoSettings, demoTimestamp } from "../../lib/demo-data.js";
 
 export interface SettingsSnapshot {
   /** Null until the restaurant is configured (server-side seeded). */
@@ -46,6 +48,10 @@ export interface HoursSaveResult {
 
 /** Load the admin view: the configuration row plus the full week schedule. */
 export async function loadSettings(): Promise<SettingsSnapshot & { error: string | null }> {
+  if (isDemoMode()) {
+    return { settings: demoSettings, hours: demoHours, error: null };
+  }
+
   const client = getSupabaseClient();
   const [settingsResult, hoursResult] = await Promise.all([
     fetchRestaurantSettings(client),
@@ -70,6 +76,14 @@ export async function saveSettings(
   id: string,
   input: RestaurantSettingsInput,
 ): Promise<{ data: SettingsSaveResult | null; error: string | null; fieldErrors: Record<string, string> | null }> {
+  if (isDemoMode()) {
+    const before = { ...demoSettings };
+    Object.assign(demoSettings, input, { updatedAt: demoTimestamp() });
+    const audit = describeSettingsChange(before, demoSettings);
+    if (audit.changedFields.length > 0) logger.info("SETTINGS_UPDATED", audit);
+    return { data: { settings: demoSettings, audit }, error: null, fieldErrors: null };
+  }
+
   const client = getSupabaseClient();
   const before = await fetchRestaurantSettings(client);
   if (before.error) return { data: null, error: before.error.message, fieldErrors: null };
@@ -97,6 +111,31 @@ export async function saveHours(
   inputs: readonly OperatingHoursInput[],
   current: readonly OperatingHours[],
 ): Promise<{ data: HoursSaveResult | null; error: string | null; fieldErrors: Record<string, string> | null }> {
+  if (isDemoMode()) {
+    const audit: SettingsAuditEvent[] = [];
+    for (const input of inputs) {
+      const existing = demoHours.find((row) => row.dayOfWeek === input.dayOfWeek);
+      if (!existing) continue;
+      const before = { ...existing };
+      Object.assign(existing, input, { updatedAt: demoTimestamp() });
+      const changedFields = Object.keys(input).filter(
+        (field) =>
+          input[field as keyof OperatingHoursInput] !== before[field as keyof OperatingHours],
+      );
+      if (changedFields.length > 0) {
+        audit.push({
+          action: "SETTINGS_UPDATED",
+          entityType: "operating_hours",
+          entityId: existing.id,
+          changedFields,
+          metadata: {},
+        });
+      }
+    }
+    for (const event of audit) logger.info("SETTINGS_UPDATED", event);
+    return { data: { hours: demoHours, audit }, error: null, fieldErrors: null };
+  }
+
   const client = getSupabaseClient();
   const result = await saveOperatingHours(client, inputs, current);
   if (result.error) {

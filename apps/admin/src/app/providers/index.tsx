@@ -7,9 +7,19 @@
 import type { ReactNode } from "react";
 
 import { AuthProvider } from "@tepisawah/auth";
+import { ROLES } from "@tepisawah/permissions";
 
 import { getSupabaseClient } from "../../lib/supabase.js";
+import { isDemoMode } from "../../lib/demo-mode.js";
 
 export function AppProviders({ children }: { children: ReactNode }): ReactNode {
-  return <AuthProvider supabase={getSupabaseClient()}>{children}</AuthProvider>;
+  // Preview builds run against an unreachable backend; resolve a synthetic
+  // admin identity locally so the guarded pages render. A real deployment
+  // leaves demoRole unset and identity comes from the database.
+  const demoRole = isDemoMode() ? ROLES.admin : undefined;
+  return (
+    <AuthProvider supabase={getSupabaseClient()} demoRole={demoRole}>
+      {children}
+    </AuthProvider>
+  );
 }

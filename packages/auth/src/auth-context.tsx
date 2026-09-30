@@ -39,6 +39,7 @@ import {
 import type { Permission, Role } from "@tepisawah/permissions";
 
 import { getCurrentSession, onAuthState, signInWithEmail, signOutCurrent } from "./session.js";
+import { demoAuthorization, demoProfile, demoUser } from "./demo.js";
 import { classifyProfile, isProfileActive } from "./profile.js";
 import { AUTH_MESSAGES, toAuthMessage } from "./errors.js";
 import { resolveAuthorization, type Authorization } from "./authorization.js";
@@ -95,9 +96,16 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({
   children,
   supabase,
+  demoRole,
 }: {
   children: ReactNode;
   supabase: SupabaseClient<Database>;
+  /**
+   * Resolve a synthetic staff identity locally instead of calling /me. Used by
+   * preview builds whose backend is unreachable; a real deployment leaves this
+   * unset so identity always comes from the database (AUTH_RBAC_RLS.md §15).
+   */
+  demoRole?: Role;
 }): ReactNode {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -108,6 +116,15 @@ export function AuthProvider({
   /** Resolve the /me identity for a user and apply the authorization gates. */
   const resolveIdentity = useCallback(
     async (next: AuthUser | null) => {
+      // Demo builds skip the network: the identity is synthesized locally.
+      if (demoRole) {
+        const profile = demoProfile();
+        const resolved = demoAuthorization(demoRole);
+        setProfile(profile);
+        setAuthorization(resolved);
+        return resolved;
+      }
+
       if (!next) {
         setProfile(null);
         setAuthorization(NO_GRANTS);
@@ -151,13 +168,20 @@ export function AuthProvider({
       }
       return resolved;
     },
-    [supabase],
+    [supabase, demoRole],
   );
 
   useEffect(() => {
     let active = true;
 
     async function bootstrap() {
+      if (demoRole) {
+        setUser(demoUser(demoRole));
+        await resolveIdentity(demoUser(demoRole));
+        setIsLoading(false);
+        return;
+      }
+
       const result = await getCurrentSession();
       if (!active) return;
       if (result.error) setError(result.error.message);
@@ -200,6 +224,9 @@ export function AuthProvider({
   );
 
   const signOut = useCallback(async () => {
+    // A demo build has no login screen to return to: keep the demo identity.
+    if (demoRole) return;
+
     const result = await signOutCurrent();
     if (result.error) {
       setError(result.error);

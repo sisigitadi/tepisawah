@@ -17,7 +17,7 @@ import {
   MENU_CATEGORY_LABEL,
   formatPrice,
   type MenuCategory,
-  MenuImage,
+  MenuPhoto,
 } from "@tepisawah/ui";
 
 const formatIDR = formatPrice;
@@ -119,7 +119,7 @@ export function HomePage(): ReactNode {
           return (
             <div key={item.id} className="menu-dish-card">
               <div className="dish-img">
-                <MenuImage id={item.id} className="dish-img-art" />
+                <MenuPhoto id={item.id} className="dish-img-art" />
                 {item.badge ? (
                   <span className="dish-tag">{item.badge}</span>
                 ) : null}

@@ -4,8 +4,12 @@
  * One flat-style illustration per canonical menu item, drawn with the brand
  * palette so every app (web, order, POS, kitchen, waiter) shows identical
  * artwork. Rendered as inline SVG so there are no broken image paths.
+ *
+ * `MenuPhoto` layers a real food/drink photograph on top: it renders the
+ * canonical `<img>` first and falls back to this illustration only when the
+ * photograph cannot load, so a catalog is never left blank.
  */
-import type { ReactNode, SVGProps } from "react";
+import { useState, type ImgHTMLAttributes, type ReactNode, type SVGProps } from "react";
 import { getMenuItem } from "./menu-data.js";
 
 export interface MenuImageProps extends SVGProps<SVGSVGElement> {
@@ -245,5 +249,40 @@ export function MenuImage({ id, ...rest }: MenuImageProps): ReactNode {
     >
       {draw(item.hue)}
     </svg>
+  );
+}
+
+export interface MenuPhotoProps extends ImgHTMLAttributes<HTMLImageElement> {
+  id: string;
+  /** Optional element rendered before the image (e.g. a badge). */
+}
+
+/**
+ * Real photograph of a canonical menu item.
+ *
+ * Renders the catalog's `<img>` (a real food/drink photograph) and falls back
+ * to the brand SVG illustration when the photo cannot load — offline previews
+ * and CDN blocks still show artwork instead of a blank box. The wrapper keeps
+ * the brand gradient as its loading background.
+ */
+export function MenuPhoto({ id, ...rest }: MenuPhotoProps): ReactNode {
+  const item = getMenuItem(id);
+  const [failed, setFailed] = useState(false);
+
+  if (!item) return null;
+
+  if (failed) {
+    return <MenuImage id={id} {...(rest as SVGProps<SVGSVGElement>)} />;
+  }
+
+  return (
+    <img
+      src={item.photo}
+      alt={`Foto ${item.name}`}
+      loading="lazy"
+      decoding="async"
+      onError={() => setFailed(true)}
+      {...rest}
+    />
   );
 }

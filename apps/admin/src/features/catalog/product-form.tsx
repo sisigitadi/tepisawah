@@ -83,6 +83,14 @@ export function ProductForm(props: ProductFormProps): ReactNode {
           hint="Disimpan sebagai referensi; Storage bucket diatur terpisah."
           onChange={(event) => onChange({ imageUrl: event.target.value })}
         />
+        {form.imageUrl ? (
+          <img
+            className="catalog-thumb"
+            src={form.imageUrl}
+            alt="Pratinjau gambar produk"
+            decoding="async"
+          />
+        ) : null}
         <Input
           label="Harga (rupiah)"
           name="price"

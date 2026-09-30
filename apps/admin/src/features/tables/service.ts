@@ -28,6 +28,8 @@ import {
 
 import { logger } from "../../lib/logger.js";
 import { getSupabaseClient } from "../../lib/supabase.js";
+import { isDemoMode } from "../../lib/demo-mode.js";
+import { demoQrs, demoTables, demoTimestamp } from "../../lib/demo-data.js";
 
 export interface TablesSnapshot {
   tables: RestaurantTable[];
@@ -52,6 +54,10 @@ export type ServiceResult<T> = {
 
 /** Load the admin view: tables and their printed QRs in one round trip. */
 export async function loadTables(): Promise<TablesSnapshot & { error: string | null }> {
+  if (isDemoMode()) {
+    return { tables: demoTables, qrs: demoQrs, error: null };
+  }
+
   const client = getSupabaseClient();
   const [tablesResult, qrsResult] = await Promise.all([
     fetchTables(client),
@@ -101,6 +107,48 @@ export async function saveTable(
   input: TableInput,
   current: RestaurantTable | null,
 ): Promise<ServiceResult<TablesSaveResult>> {
+  if (isDemoMode()) {
+    if (id === null) {
+      const record: RestaurantTable = {
+        id: `tbl-${Date.now()}`,
+        ...input,
+        createdAt: demoTimestamp(),
+        updatedAt: demoTimestamp(),
+      };
+      demoTables.push(record);
+      const audit: TablesAuditEvent = {
+        entity: "table",
+        action: "create",
+        entityId: record.id,
+        label: record.tableCode,
+        changedFields: ["tableCode", "name", "capacity", "status", "isActive"],
+      };
+      return { data: { record, audit }, error: null, fieldErrors: null };
+    }
+    const existing = demoTables.find((table) => table.id === id);
+    if (!existing) {
+      return { data: null, error: "Meja tidak ditemukan.", fieldErrors: null };
+    }
+    const changedFields = Object.keys(input).filter(
+      (field) => input[field as keyof TableInput] !== existing[field as keyof RestaurantTable],
+    );
+    Object.assign(existing, input, { updatedAt: demoTimestamp() });
+    return {
+      data: {
+        record: existing,
+        audit: {
+          entity: "table",
+          action: "update",
+          entityId: existing.id,
+          label: existing.tableCode,
+          changedFields,
+        },
+      },
+      error: null,
+      fieldErrors: null,
+    };
+  }
+
   const client = getSupabaseClient();
 
   if (id === null) {
@@ -139,6 +187,29 @@ export async function regenerateQr(
   tableId: string,
   table: RestaurantTable,
 ): Promise<ServiceResult<QrMintResult>> {
+  if (isDemoMode()) {
+    for (const qr of demoQrs) {
+      if (qr.tableId === tableId && qr.isActive) qr.isActive = false;
+    }
+    const qr: TableQr = {
+      id: `qr-${Date.now()}`,
+      tableId,
+      token: `demo-token-${Math.random().toString(36).slice(2, 10)}`,
+      isActive: true,
+      createdAt: demoTimestamp(),
+      expiresAt: null,
+    };
+    demoQrs.push(qr);
+    const audit: TablesAuditEvent = {
+      entity: "table_qr",
+      action: "qr_mint",
+      entityId: tableId,
+      label: table.tableCode,
+      changedFields: ["token"],
+    };
+    return { data: { qr, audit }, error: null, fieldErrors: null };
+  }
+
   const client = getSupabaseClient();
   const result = await mintTableQr(client, tableId, table);
   if (result.error || !result.data) {
@@ -154,6 +225,30 @@ export async function deactivateQr(
   table: RestaurantTable,
   current: TableQr | null,
 ): Promise<ServiceResult<{ retired: boolean; audit: TablesAuditEvent | null }>> {
+  if (isDemoMode()) {
+    let retired = false;
+    for (const qr of demoQrs) {
+      if (qr.tableId === tableId && qr.isActive) {
+        qr.isActive = false;
+        retired = true;
+      }
+    }
+    return {
+      data: {
+        retired,
+        audit: {
+          entity: "table_qr",
+          action: "qr_retire",
+          entityId: tableId,
+          label: table.tableCode,
+          changedFields: current ? ["isActive"] : [],
+        },
+      },
+      error: null,
+      fieldErrors: null,
+    };
+  }
+
   const client = getSupabaseClient();
   const result = await retireTableQr(client, tableId, table, current);
   if (result.error || !result.data) {

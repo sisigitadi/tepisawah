@@ -39,6 +39,14 @@ import {
 
 import { logger } from "../../lib/logger.js";
 import { getSupabaseClient } from "../../lib/supabase.js";
+import { isDemoMode } from "../../lib/demo-mode.js";
+import {
+  demoCategories,
+  demoModifiers,
+  demoProductModifiers,
+  demoProducts,
+  demoTimestamp,
+} from "../../lib/demo-data.js";
 
 export interface CatalogSnapshot {
   categories: Category[];
@@ -64,6 +72,15 @@ export type ServiceResult<T> = {
 
 /** Load the admin view: categories, products and modifiers in one round trip. */
 export async function loadCatalog(): Promise<CatalogSnapshot & { error: string | null }> {
+  if (isDemoMode()) {
+    return {
+      categories: demoCategories,
+      products: demoProducts,
+      modifiers: demoModifiers,
+      error: null,
+    };
+  }
+
   const client = getSupabaseClient();
   const [categoriesResult, productsResult, modifiersResult] = await Promise.all([
     fetchCategories(client),
@@ -89,6 +106,14 @@ export async function loadCatalog(): Promise<CatalogSnapshot & { error: string |
 export async function loadProductEditor(
   productId: string,
 ): Promise<{ product: Product | null; links: ProductModifier[]; error: string | null }> {
+  if (isDemoMode()) {
+    return {
+      product: demoProducts.find((product) => product.id === productId) ?? null,
+      links: demoProductModifiers.filter((link) => link.productId === productId),
+      error: null,
+    };
+  }
+
   const client = getSupabaseClient();
   const [productResult, linksResult] = await Promise.all([
     fetchProduct(client, productId),
@@ -115,6 +140,10 @@ export async function saveCategory(
   input: CategoryInput,
   current: Category | null,
 ): Promise<ServiceResult<CatalogSaveResult<Category>>> {
+  if (isDemoMode()) {
+    return demoSaveCategory(id, input);
+  }
+
   const client = getSupabaseClient();
 
   if (id === null) {
@@ -149,6 +178,10 @@ export async function saveProduct(
   input: ProductInput,
   current: Product | null,
 ): Promise<ServiceResult<CatalogSaveResult<Product>>> {
+  if (isDemoMode()) {
+    return demoSaveProduct(id, input);
+  }
+
   const client = getSupabaseClient();
 
   if (id === null) {
@@ -183,6 +216,10 @@ export async function saveModifier(
   input: ModifierInput,
   current: Modifier | null,
 ): Promise<ServiceResult<CatalogSaveResult<Modifier>>> {
+  if (isDemoMode()) {
+    return demoSaveModifier(id, input);
+  }
+
   const client = getSupabaseClient();
 
   if (id === null) {
@@ -222,6 +259,10 @@ export async function saveProductLinks(
   current: readonly ProductModifier[],
   modifierNames: ReadonlyMap<string, string>,
 ): Promise<ServiceResult<LinksSaveResult>> {
+  if (isDemoMode()) {
+    return demoSaveProductLinks(productId, inputs);
+  }
+
   const client = getSupabaseClient();
   const result = await saveProductModifiers(
     client,
@@ -237,6 +278,197 @@ export async function saveProductLinks(
     logger.info("CATALOG_UPDATED", event);
   }
   return { data: result.data, error: null, fieldErrors: null };
+}
+
+function demoSaveCategory(
+  id: string | null,
+  input: CategoryInput,
+): ServiceResult<CatalogSaveResult<Category>> {
+  if (id === null) {
+    const record: Category = {
+      id: `cat-${Date.now()}`,
+      ...input,
+      createdAt: demoTimestamp(),
+      updatedAt: demoTimestamp(),
+    };
+    demoCategories.push(record);
+    return {
+      data: {
+        record,
+        audit: {
+          entity: "category",
+          action: "create",
+          entityId: record.id,
+          label: record.name,
+          changedFields: ["name", "description", "sortOrder", "isActive"],
+        },
+      },
+      error: null,
+      fieldErrors: null,
+    };
+  }
+  const existing = demoCategories.find((category) => category.id === id);
+  if (!existing) {
+    return { data: null, error: "Kategori tidak ditemukan.", fieldErrors: null };
+  }
+  const changedFields = Object.keys(input).filter(
+    (field) => input[field as keyof CategoryInput] !== existing[field as keyof Category],
+  );
+  Object.assign(existing, input, { updatedAt: demoTimestamp() });
+  return {
+    data: {
+      record: existing,
+      audit: {
+        entity: "category",
+        action: "update",
+        entityId: existing.id,
+        label: existing.name,
+        changedFields,
+      },
+    },
+    error: null,
+    fieldErrors: null,
+  };
+}
+
+function demoSaveProduct(
+  id: string | null,
+  input: ProductInput,
+): ServiceResult<CatalogSaveResult<Product>> {
+  if (id === null) {
+    const record: Product = {
+      id: `prod-${Date.now()}`,
+      ...input,
+      createdAt: demoTimestamp(),
+      updatedAt: demoTimestamp(),
+    };
+    demoProducts.push(record);
+    return {
+      data: {
+        record,
+        audit: {
+          entity: "product",
+          action: "create",
+          entityId: record.id,
+          label: record.name,
+          changedFields: ["name", "price", "categoryId"],
+        },
+      },
+      error: null,
+      fieldErrors: null,
+    };
+  }
+  const existing = demoProducts.find((product) => product.id === id);
+  if (!existing) {
+    return { data: null, error: "Produk tidak ditemukan.", fieldErrors: null };
+  }
+  const changedFields = Object.keys(input).filter(
+    (field) => input[field as keyof ProductInput] !== existing[field as keyof Product],
+  );
+  Object.assign(existing, input, { updatedAt: demoTimestamp() });
+  return {
+    data: {
+      record: existing,
+      audit: {
+        entity: "product",
+        action: "update",
+        entityId: existing.id,
+        label: existing.name,
+        changedFields,
+      },
+    },
+    error: null,
+    fieldErrors: null,
+  };
+}
+
+function demoSaveModifier(
+  id: string | null,
+  input: ModifierInput,
+): ServiceResult<CatalogSaveResult<Modifier>> {
+  if (id === null) {
+    const record: Modifier = {
+      id: `mod-${Date.now()}`,
+      ...input,
+      createdAt: demoTimestamp(),
+      updatedAt: demoTimestamp(),
+    };
+    demoModifiers.push(record);
+    return {
+      data: {
+        record,
+        audit: {
+          entity: "modifier",
+          action: "create",
+          entityId: record.id,
+          label: record.name,
+          changedFields: ["name", "priceDelta", "isActive"],
+        },
+      },
+      error: null,
+      fieldErrors: null,
+    };
+  }
+  const existing = demoModifiers.find((modifier) => modifier.id === id);
+  if (!existing) {
+    return { data: null, error: "Modifikasi tidak ditemukan.", fieldErrors: null };
+  }
+  const changedFields = Object.keys(input).filter(
+    (field) => input[field as keyof ModifierInput] !== existing[field as keyof Modifier],
+  );
+  Object.assign(existing, input, { updatedAt: demoTimestamp() });
+  return {
+    data: {
+      record: existing,
+      audit: {
+        entity: "modifier",
+        action: "update",
+        entityId: existing.id,
+        label: existing.name,
+        changedFields,
+      },
+    },
+    error: null,
+    fieldErrors: null,
+  };
+}
+
+function demoSaveProductLinks(
+  productId: string,
+  inputs: readonly ProductModifierInput[],
+): ServiceResult<LinksSaveResult> {
+  for (let index = demoProductModifiers.length - 1; index >= 0; index -= 1) {
+    const link = demoProductModifiers[index];
+    if (link && link.productId === productId) {
+      demoProductModifiers.splice(index, 1);
+    }
+  }
+  const links: ProductModifier[] = inputs.map((input, index) => ({
+    productId: input.productId,
+    modifierId: input.modifierId,
+    isRequired: input.isRequired,
+    minSelect: input.minSelect,
+    maxSelect: input.maxSelect,
+    sortOrder: input.sortOrder,
+    createdAt: demoTimestamp(),
+  }));
+  demoProductModifiers.push(...links);
+  return {
+    data: {
+      links,
+      audit: [
+        {
+          entity: "product_modifier",
+          action: "update",
+          entityId: productId,
+          label: productId,
+          changedFields: ["modifierIds"],
+        },
+      ],
+    },
+    error: null,
+    fieldErrors: null,
+  };
 }
 
 function toError(

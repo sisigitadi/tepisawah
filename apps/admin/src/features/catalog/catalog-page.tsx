@@ -495,6 +495,15 @@ function ProductsSection(props: ProductsSectionProps): ReactNode {
                 </>
               }
             >
+              {row.imageUrl ? (
+                <img
+                  className="catalog-thumb"
+                  src={row.imageUrl}
+                  alt={row.name}
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : null}
               <p>
                 {categoryName(row.categoryId)} · Rp{row.price.toLocaleString("id-ID")}
               </p>

@@ -114,7 +114,8 @@ export function PromoSection(): ReactNode {
           </h3>
           <p className="web-promo-banner-desc">
             Informasi promo harian, paket musiman, dan ketersediaan porsi selalu
-            diperbarui secara real-time pada sistem pemesanan online kami.
+            diperbarui secara real-time di etalase menu kami — cek kapan saja
+            sebelum berkunjung.
           </p>
         </div>
         <button
