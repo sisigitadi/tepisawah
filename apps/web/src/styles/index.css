@@ -1,4 +1,10 @@
 /* Global styles for @tepisawah/web - Brand & Editorial Identity */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 :root {
   color-scheme: light;
   font-family: Inter, system-ui, -apple-system, sans-serif;
@@ -10,12 +16,14 @@
 body {
   margin: 0;
   padding: 0;
+  overflow-x: clip;
 }
 
 .web-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-width: 0;
 }
 
 /* Navbar */
@@ -95,11 +103,13 @@ body {
 }
 
 .hero-content {
+  width: 100%;
   max-width: 48rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.25rem;
+  min-width: 0;
 }
 
 .hero-badge {
@@ -170,11 +180,13 @@ body {
 /* Features */
 .web-features {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
   gap: 2rem;
   padding: 4rem 2rem;
+  width: 100%;
   max-width: 72rem;
   margin: 0 auto;
+  min-width: 0;
 }
 
 .feature-item {
@@ -184,6 +196,7 @@ body {
   border: 1px solid #e7e5e4;
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
   text-align: center;
+  min-width: 0;
 }
 
 .feature-icon {
@@ -231,10 +244,12 @@ body {
 
 .menu-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
   gap: 1.5rem;
+  width: 100%;
   max-width: 72rem;
   margin: 0 auto;
+  min-width: 0;
 }
 
 .menu-card {
@@ -246,6 +261,7 @@ body {
   flex-direction: column;
   gap: 0.5rem;
   position: relative;
+  min-width: 0;
 }
 
 .menu-tag {
@@ -291,8 +307,10 @@ body {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 2rem;
+  width: 100%;
   max-width: 72rem;
   margin: 0 auto 2rem;
+  min-width: 0;
 }
 
 .footer-col h3 {
@@ -331,5 +349,22 @@ body {
   .web-nav-links {
     flex-wrap: wrap;
     justify-content: center;
+  }
+  .web-hero {
+    padding: 3.5rem 1.25rem;
+  }
+  .hero-description {
+    font-size: 1rem;
+  }
+  .web-features,
+  .web-menu-section {
+    padding: 3rem 1.25rem;
+  }
+  .web-footer {
+    padding: 2.5rem 1.25rem 1.25rem;
+  }
+  .feature-item,
+  .menu-card {
+    padding: 1.5rem;
   }
 }
