@@ -16,14 +16,13 @@ import react from "@vitejs/plugin-react";
  */
 export default defineConfig({
   plugins: [react()],
+  base: "./",
   server: { port: 5177, strictPort: false },
   build: {
     outDir: "dist",
     emptyOutDir: true,
     sourcemap: true,
-    rollupOptions: {
-      external: ["react", "react-dom", "react/jsx-runtime", /^@tepisawah\//],
-    },
+    rollupOptions: {},
   },
   test: {
     environment: "jsdom",

@@ -1,21 +1,246 @@
-/* @tepisawah/kitchen global styles. Design tokens live in @tepisawah/ui. */
+/* @tepisawah/kitchen global styles.
+ * KDS optimized for high legibility, distance viewing, and contrast.
+ */
 :root {
-  color-scheme: light;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  line-height: 1.5;
+  --color-forest: #2E6B34;
+  --color-deepmoss: #183A1D;
+  --color-golden: #DDA15E;
+  --color-amberwarm: #F3C644;
+  --color-dark-bg: #0F172A;
+  --color-card-bg: #1E293B;
+  --color-card-border: #334155;
+  --color-text-bright: #F8FAFC;
+  --color-text-dim: #94A3B8;
+  --color-alert-red: #EF4444;
+  --color-alert-amber: #F59E0B;
+  --color-alert-green: #10B981;
 }
 
 body {
   margin: 0;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  background-color: var(--color-dark-bg);
+  color: var(--color-text-bright);
 }
 
-.app-shell {
-  min-height: 100vh;
+.kds-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Header */
+.kds-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #020617;
+  padding: 0.85rem 1.5rem;
+  border-bottom: 2px solid #1E293B;
+}
+
+.kds-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+}
+
+.kds-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #38BDF8;
+}
+
+.kds-station {
+  font-size: 0.875rem;
+  color: var(--color-text-dim);
+}
+
+.kds-stats {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.kds-stat-btn {
+  background: #1E293B;
+  border: 1px solid #334155;
+  color: var(--color-text-dim);
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.kds-stat-btn.active {
+  background: #2563EB;
+  color: white;
+  border-color: #3B82F6;
+}
+
+/* Main Area */
+.kds-main {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.kds-tickets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 1.25rem;
+}
+
+/* Ticket Card */
+.kds-ticket-card {
+  background-color: var(--color-card-bg);
+  border: 2px solid var(--color-card-border);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+.kds-ticket-card.overdue {
+  border-color: var(--color-alert-red);
+}
+
+.ticket-header {
+  padding: 1rem;
+  background: #0F172A;
+  border-bottom: 1px solid #334155;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.ticket-order-ref {
   display: flex;
   flex-direction: column;
 }
 
-.app-main {
-  flex: 1;
+.ticket-order-num {
+  font-size: 0.85rem;
+  color: #94A3B8;
+  font-family: monospace;
+}
+
+.ticket-table-name {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.ticket-area-sub {
+  font-size: 0.8rem;
+  color: #64748B;
+}
+
+.ticket-timer {
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  background: #1E293B;
+  color: #CBD5E1;
+}
+
+.ticket-timer.timer-alert {
+  background: #7F1D1D;
+  color: #FCA5A5;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.75; }
+}
+
+/* Items List */
+.ticket-items-list {
   padding: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.ticket-item-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.item-qty-badge {
+  background: #0284C7;
+  color: white;
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  min-width: 24px;
+  text-align: center;
+}
+
+.item-detail {
+  flex: 1;
+}
+
+.item-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #F8FAFC;
+  line-height: 1.3;
+}
+
+.item-instruction {
+  font-size: 0.85rem;
+  color: #FDE047;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+/* Footer / Action */
+.ticket-footer {
+  padding: 0.85rem 1rem;
+  background: #0F172A;
+  border-top: 1px solid #334155;
+}
+
+.kds-btn-action {
+  width: 100%;
+  padding: 0.85rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.kds-btn-action:hover {
+  opacity: 0.9;
+}
+
+.btn-start {
+  background: #2563EB;
+  color: white;
+}
+
+.btn-ready {
+  background: #16A34A;
+  color: white;
+}
+
+.ticket-ready-notice {
+  text-align: center;
+  padding: 0.5rem;
+  color: #4ADE80;
+  font-weight: 700;
+  font-size: 0.95rem;
+  background: rgba(34, 197, 94, 0.1);
+  border-radius: 4px;
 }

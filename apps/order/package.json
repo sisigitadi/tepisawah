@@ -5,6 +5,7 @@
   "description": "QR-table customer ordering experience: catalog, cart, checkout, order status.",
   "type": "module",
   "scripts": {
+    "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",
