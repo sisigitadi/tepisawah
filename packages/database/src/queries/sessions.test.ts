@@ -80,7 +80,7 @@ function fakeClient(config: FakeConfig): SupabaseClient<Database> {
     }
 
     if (fn === "open_table_session") {
-      const tableId = args.pTableId as string;
+      const tableId = args.p_table_id as string;
       const existing = sessions().find(
         (row) => row.table_id === tableId && row.status === "OPEN",
       );
@@ -103,7 +103,7 @@ function fakeClient(config: FakeConfig): SupabaseClient<Database> {
     if (fn === "get_active_table_session") {
       const row = sessions().find(
         (candidate) =>
-          candidate.table_id === (args.pTableId as string) &&
+          candidate.table_id === (args.p_table_id as string) &&
           candidate.status === "OPEN",
       );
       return Promise.resolve({ data: row ?? null, error: null });
@@ -143,7 +143,7 @@ function fakeClient(config: FakeConfig): SupabaseClient<Database> {
     }
 
     // close_table_session
-    const row = sessions().find((candidate) => candidate.id === (args.pSessionId as string));
+    const row = sessions().find((candidate) => candidate.id === (args.p_session_id as string));
     if (!row) {
       return Promise.resolve({
         data: null,
@@ -241,7 +241,7 @@ describe("table session admin queries", () => {
       expect(result.error).toBeNull();
       expect(result.data?.session.status).toBe("OPEN");
       expect(config.rpcCalls).toEqual([
-        { fn: "open_table_session", args: { pTableId: "tbl-1" } },
+        { fn: "open_table_session", args: { p_table_id: "tbl-1" } },
       ]);
     });
 

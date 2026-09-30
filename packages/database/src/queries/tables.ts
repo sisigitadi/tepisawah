@@ -130,9 +130,12 @@ export async function fetchTables(
 export async function fetchTableQrs(
   client: SupabaseClient<Database>,
 ): Promise<TablesQueryResult<TableQr[]>> {
-  const { data, error } = await untypedTable(client, "table_qr")
-    .select("*")
-    .order("created_at", { ascending: false });
+  // `table_qr` grants nothing to any client role (migration 006 part 2): the
+  // token is the revocable credential printed on every sticker, so reads ride
+  // the `list_table_qrs()` SECURITY DEFINER function (migration 011), which
+  // re-checks `tables.qr_manage` server-side. A direct select fails with
+  // "permission denied for table table_qr" by design.
+  const { data, error } = await untypedRpc(client, "list_table_qrs", {});
 
   if (error) return { data: null, error: failure(error) };
   return { data: ((data ?? []) as unknown as TableQrRow[]).map(toTableQr), error: null };
@@ -198,7 +201,7 @@ export async function mintTableQr(
   if (!tableId) return { data: null, error: { message: "Id meja wajib diisi." } };
 
   const { data, error } = await untypedRpc(client, "regenerate_table_qr", {
-    pTableId: tableId,
+    p_table_id: tableId,
   });
 
   if (error) return { data: null, error: failure(error) };
@@ -230,7 +233,7 @@ export async function retireTableQr(
   if (!tableId) return { data: null, error: { message: "Id meja wajib diisi." } };
 
   const { data, error } = await untypedRpc(client, "deactivate_table_qr", {
-    pTableId: tableId,
+    p_table_id: tableId,
   });
 
   if (error) return { data: null, error: failure(error) };

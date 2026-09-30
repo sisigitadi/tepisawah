@@ -90,8 +90,8 @@ export async function resolveTableQr(
 
   const { data, error } = await rpcClient(client)
     .rpc("resolve_table_qr", {
-      pTableCode: tableCode.trim(),
-      pToken: token.trim(),
+      p_table_code: tableCode.trim(),
+      p_token: token.trim(),
     })
     .maybeSingle<ResolveTableQrRow>();
 

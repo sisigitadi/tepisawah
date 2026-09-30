@@ -100,7 +100,7 @@ function fakeClient(config: FakeConfig): SupabaseClient<Database> {
     if (fn === "regenerate_table_qr") {
       const fresh: TableQrRow = {
         id: "qr-2",
-        table_id: args.pTableId as string,
+        table_id: args.p_table_id as string,
         token: "token-fresh",
         is_active: true,
         created_at: "2026-01-02T00:00:00Z",
@@ -111,6 +111,9 @@ function fakeClient(config: FakeConfig): SupabaseClient<Database> {
         ...(config.qrRows ?? []).map((row) => ({ ...row, is_active: false })),
       ];
       return Promise.resolve({ data: fresh, error: null });
+    }
+    if (fn === "list_table_qrs") {
+      return Promise.resolve({ data: config.qrRows ?? [], error: null });
     }
     // deactivate_table_qr
     const hadActive = (config.qrRows ?? []).some((row) => row.is_active === true);
@@ -223,7 +226,9 @@ describe("tables admin queries", () => {
     });
 
     it("fails closed when the session cannot manage QRs", async () => {
-      const client = fakeClient({ writes: [], deny: "table_qr" });
+      // The server function raises 42501 (insufficient_privilege) when the
+      // caller lacks tables.qr_manage — modelled here as an RPC denial.
+      const client = fakeClient({ writes: [], deny: "list_table_qrs" });
       const result = await fetchTableQrs(client);
       expect(result.data).toBeNull();
       expect(result.error).not.toBeNull();
@@ -342,7 +347,7 @@ describe("tables admin queries", () => {
       expect(result.data?.qr.token).toBe("token-fresh");
       expect(result.data?.audit.action).toBe("qr_mint");
       expect(config.rpcCalls).toEqual([
-        { fn: "regenerate_table_qr", args: { pTableId: "tbl-1" } },
+        { fn: "regenerate_table_qr", args: { p_table_id: "tbl-1" } },
       ]);
     });
 

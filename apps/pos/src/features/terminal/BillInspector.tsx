@@ -46,7 +46,7 @@ export function BillInspector({ order, onPrint }: BillInspectorProps): ReactNode
         </div>
         <div className="pos-inspector__aside">
           <span className="pos-inspector__aside-label">Waktu Pesanan</span>
-          <span className="pos-inspector__aside-time">{order.time} (18m lalu)</span>
+          <span className="pos-inspector__aside-time">{order.time}</span>
           <div className="pos-inspector__pills">
             <span className="pos-inspector__pill">Pax: {order.pax}</span>
             <span className="pos-inspector__pill pos-inspector__pill--ghost">Pajak PB1: Aktif</span>
@@ -92,18 +92,24 @@ export function BillInspector({ order, onPrint }: BillInspectorProps): ReactNode
             <span className="pos-ledger__value">{formatIDR(taxBaseOf(order))}</span>
           </div>
           <div className="pos-ledger__row">
-            <span>Resto Tax / Pajak PB1 (10%)</span>
+            {/* A live bill carries the server's own tax (0 until the real PB1
+                rule lands); the fixture ledger still shows the 10% sample. */}
+            <span>{order.bill ? "Pajak Resto (sesuai sistem)" : "Resto Tax / Pajak PB1 (10%)"}</span>
             <span className="pos-ledger__value">{formatIDR(taxOf(order))}</span>
           </div>
-          <div className="pos-ledger__row">
-            <span>Service Charge Hospitality (5%)</span>
-            <span className="pos-ledger__value">{formatIDR(serviceOf(order))}</span>
-          </div>
+          {order.bill && serviceOf(order) === 0 ? null : (
+            <div className="pos-ledger__row">
+              <span>Service Charge Hospitality (5%)</span>
+              <span className="pos-ledger__value">{formatIDR(serviceOf(order))}</span>
+            </div>
+          )}
 
           <div className="pos-ledger__grand">
             <div>
               <span className="pos-ledger__grand-label">Total Tagihan Final</span>
-              <p className="pos-ledger__grand-note">Sudah termasuk PB1 &amp; Service Charge</p>
+              <p className="pos-ledger__grand-note">
+                {order.bill ? "Sesuai catatan sistem" : "Sudah termasuk PB1 & Service Charge"}
+              </p>
             </div>
             <span className="pos-ledger__grand-value" id="inspectorTotalValue">
               {formatIDR(grandTotalOf(order))}

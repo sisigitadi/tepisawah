@@ -1182,6 +1182,12 @@ h4 {
   object-fit: cover;
 }
 
+/* Placeholder for a DB product without an image_url: brand gradient. The live
+   catalog photo is the only visual source — no second illustration set. */
+.web-dish-art--fallback {
+  background: linear-gradient(135deg, #2d5a3d 0%, #4a7c59 55%, #86a873 100%);
+}
+
 .web-dish-veil {
   position: absolute;
   inset: 0;

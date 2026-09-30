@@ -1,0 +1,13 @@
+-- =============================================================================
+-- Tepi Sawah — Migration 000: Extensions.
+--
+-- `pgcrypto` provides gen_random_bytes(), used by regenerate_table_qr() to
+-- mint 24-byte printable QR tokens (006_tables/003_tables_functions.sql).
+-- gen_random_uuid() is core Postgres since 13, but gen_random_bytes() still
+-- requires this extension, and a fresh Supabase project does not ship it
+-- enabled — the function fails at runtime with "function gen_random_bytes
+-- (integer) does not exist" until it is created.
+--
+-- Runs first (000_*) so every later migration can rely on it.
+-- =============================================================================
+create extension if not exists pgcrypto;

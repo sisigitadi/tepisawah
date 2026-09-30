@@ -42,6 +42,12 @@
 -- Returns at most one row. Stable + SECURITY DEFINER: it only reads, so it is
 -- safe to run as the function owner and callable by anonymous customers.
 -- -----------------------------------------------------------------------------
+-- Idempotent re-run guard: migration 007 part 4 redefines this function with
+-- an additional OUT column (the active session), and CREATE OR REPLACE
+-- FUNCTION cannot change the return type of an existing function. Drop first
+-- so the whole migration set stays re-runnable in dependency order.
+drop function if exists public.resolve_table_qr(text, text);
+
 create or replace function public.resolve_table_qr(
   p_table_code text,
   p_token text
@@ -109,8 +115,10 @@ returns table (
   expires_at timestamptz
 )
 language plpgsql
-security definer set search_path = public
+security definer set search_path = public, extensions
 as $$
+declare
+  v_qr public.table_qr%rowtype;
 begin
   if public.auth_user_id() is null
      or not public.current_user_is_active()
@@ -119,15 +127,24 @@ begin
       using detail = 'QR management requires the tables.qr_manage permission.';
   end if;
 
+  -- Column references are qualified with the table name: the `returns table`
+  -- clause turns every output column (table_id, is_active, …) into a PL/pgSQL
+  -- variable, and unqualified references inside the body raise 42702
+  -- "column reference is ambiguous" at runtime.
   update public.table_qr
      set is_active = false
-   where table_id = p_table_id
-     and is_active;
+   where table_qr.table_id = p_table_id
+     and table_qr.is_active;
 
+  -- RETURNING without INTO has no destination in PL/pgSQL (42601); capture the
+  -- fresh row and hand it back through RETURN QUERY.
   insert into public.table_qr (table_id, token)
   values (p_table_id, encode(gen_random_bytes(24), 'hex'))
-  returning
-    id, table_id, token, is_active, created_at, expires_at;
+  returning * into v_qr;
+
+  return query
+  select v_qr.id, v_qr.table_id, v_qr.token,
+         v_qr.is_active, v_qr.created_at, v_qr.expires_at;
 end;
 $$;
 
@@ -174,6 +191,9 @@ comment on function public.deactivate_table_qr(uuid) is
 -- Grants. The resolver is the public read path: anonymous customers and
 -- signed-in staff may call it. The two management functions are staff-only;
 -- the permission check inside each is the real gate, not this grant.
+-- (regenerate_table_qr's search_path includes `extensions` so gen_random_bytes
+-- from pgcrypto resolves when the extension lives in that schema — the
+-- Supabase default.)
 -- -----------------------------------------------------------------------------
 grant execute on function public.resolve_table_qr(text, text) to authenticated, anon;
 grant execute on function public.regenerate_table_qr(uuid) to authenticated;

@@ -51,6 +51,10 @@ import {
   type OrderItemRow,
   type OrderRow,
   type OrdersAuditEvent,
+  type OrderSource,
+  type OrderStatus,
+  type StaffOrder,
+  type StaffOrderItem,
   type SubmitOrderInput,
   type TransitionOrderInput,
 } from "../models/index.js";
@@ -121,6 +125,13 @@ function untypedTable(client: SupabaseClient<Database>, table: string): UntypedT
 
 function rowsOf<T>(data: unknown[] | null): T[] {
   return Array.isArray(data) ? (data as T[]) : [];
+}
+
+/** Postgres numerics arrive as strings over the wire; money must be a number. */
+function toNumber(value: string | number | null): number {
+  if (value === null) return 0;
+  const parsed = typeof value === "number" ? value : Number.parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : 0;
 }
 
 /**
@@ -259,6 +270,118 @@ export async function fetchOrder(
   }
 
   return { data: toDraftOrder(row, items, modifierRows), error: null };
+}
+
+/**
+ * List staff orders by status for the operational boards (kitchen KDS, cashier
+ * POS queue) with their snapshot lines and resolved table labels.
+ *
+ * RLS-gated like `fetchOrder`: `orders_staff_read` decides visibility, and the
+ * item tables inherit from their parent (AUTH_RBAC_RLS.md §28) — an anonymous
+ * caller gets zero rows, never a partial board. The table lookup is a
+ * best-effort enrichment: a session without `tables` read still gets its
+ * orders, with a placeholder label instead of a hard failure, because a
+ * kitchen board must not go blind over a display-name it cannot resolve.
+ *
+ * Results never throw: an error degrades to an explicit failure so callers
+ * fail closed (TESTING_STRATEGY).
+ */
+export async function fetchOrdersByStatuses(
+  client: SupabaseClient<Database>,
+  statuses: readonly OrderStatus[],
+): Promise<OrdersQueryResult<StaffOrder[]>> {
+  if (statuses.length === 0) return { data: [], error: null };
+
+  const result = await untypedTable(client, "orders")
+    .select(
+      "id, order_number, table_id, table_session_id, source, status, notes, " +
+        "subtotal, discount, tax, total, version, created_at, updated_at",
+    )
+    .in("status", [...statuses])
+    .order("created_at", { ascending: true });
+
+  if (result.error) return { data: null, error: failure(result.error) };
+
+  const rows = rowsOf<OrderRow>(result.data).filter(
+    (row): row is OrderRow & { id: string } => row.id !== null,
+  );
+
+  type StaffItemWithOrder = StaffOrderItem & { orderId: string };
+  let items: StaffItemWithOrder[] = [];
+  if (rows.length > 0) {
+    const itemsResult = await untypedTable(client, "order_items")
+      .select(
+        "id, order_id, product_id, product_name_snapshot, unit_price_snapshot, quantity, notes, line_total",
+      )
+      .in("order_id", rows.map((row) => row.id))
+      .order("created_at", { ascending: true });
+    if (itemsResult.error) return { data: null, error: failure(itemsResult.error) };
+    items = rowsOf<OrderItemRow>(itemsResult.data)
+      .filter((item) => item.order_id !== null && item.id !== null)
+      .map((item) => ({
+        orderId: item.order_id as string,
+        id: item.id as string,
+        productId: item.product_id,
+        name: item.product_name_snapshot ?? "Item",
+        quantity: toNumber(item.quantity),
+        unitPrice: toNumber(item.unit_price_snapshot),
+        notes: item.notes,
+        lineTotal: toNumber(item.line_total),
+      }));
+  }
+
+  // Display labels are enrichment, not payload: a denied or empty tables read
+  // degrades to a code/-id placeholder rather than failing the board.
+  const tableIds = [
+    ...new Set(rows.map((row) => row.table_id).filter((id): id is string => id !== null)),
+  ];
+  const tableLabels = new Map<string, { name: string; code: string }>();
+  if (tableIds.length > 0) {
+    const tablesResult = await untypedTable(client, "tables")
+      .select("id, table_code, name")
+      .in("id", tableIds)
+      .order("name", { ascending: true });
+    if (!tablesResult.error) {
+      for (const table of rowsOf<{ id: string | null; table_code: string | null; name: string | null }>(
+        tablesResult.data,
+      )) {
+        if (table.id !== null) {
+          tableLabels.set(table.id, {
+            name: table.name ?? "",
+            code: table.table_code ?? "",
+          });
+        }
+      }
+    }
+  }
+
+  const orders: StaffOrder[] = rows.map((row) => {
+    const label = row.table_id !== null ? tableLabels.get(row.table_id) : undefined;
+    const code = label?.code ?? "";
+    return {
+      id: row.id,
+      orderNumber: row.order_number ?? "",
+      tableId: row.table_id ?? "",
+      tableSessionId: row.table_session_id ?? "",
+      tableName: label?.name || (code ? `Meja ${code}` : `Meja ${(row.table_id ?? "").slice(0, 4)}`),
+      tableCode: code,
+      source: (row.source ?? "CUSTOMER_QR") as OrderSource,
+      status: (row.status ?? "DRAFT") as OrderStatus,
+      notes: row.notes,
+      subtotal: toNumber(row.subtotal),
+      discount: toNumber(row.discount),
+      tax: toNumber(row.tax),
+      total: toNumber(row.total),
+      version: toNumber(row.version),
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+      items: items
+        .filter((item) => item.orderId === row.id)
+        .map(({ orderId: _orderId, ...item }) => item),
+    };
+  });
+
+  return { data: orders, error: null };
 }
 
 /**

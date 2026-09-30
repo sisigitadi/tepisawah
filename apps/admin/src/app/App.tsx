@@ -7,6 +7,7 @@
 import type { ReactNode } from "react";
 import { AppProviders } from "./providers/index.js";
 import { AppRouter } from "./router/index.js";
+import { ProtectedRoute } from "../routes/ProtectedRoute.js";
 import { bootstrap } from "./bootstrap/index.js";
 
 /**
@@ -18,7 +19,13 @@ void bootstrap();
 export function App(): ReactNode {
   return (
     <AppProviders>
-      <AppRouter />
+      {/* With a real backend the panel requires a staff session: unauthenticated
+          users get the login panel, inactive/roleless accounts get access-denied
+          (AUTH_RBAC_RLS.md §14-§15). Demo builds resolve the identity locally and
+          pass straight through. */}
+      <ProtectedRoute>
+        <AppRouter />
+      </ProtectedRoute>
     </AppProviders>
   );
 }

@@ -6,29 +6,46 @@
  * enterprise terminal — payment queue, bill inspector, and settlement
  * execution with cash tender / QRIS workspaces and a thermal 80mm slip dock.
  *
+ * The queue is LIVE: it lists every SERVED order from the database through the
+ * `orders_staff_read` RLS policy (migration 008 part 1) — food is with the
+ * guest, money is not — and settles each through the guarded
+ * `transition_order()` command (`payments.create`, optimistic version,
+ * API_CONTRACT.md §13, §26). The bill panel shows the server's own frozen
+ * totals, never a browser re-derivation.
+ *
  * Workflow: pilih order dari antrean → periksa rincian tagihan → pilih metode
  * bayar → tender uang / scan QRIS → bayar & cetak struk.
  */
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useAuth } from "@tepisawah/auth";
+import { PERMISSIONS } from "@tepisawah/permissions";
 import { TerminalChrome } from "../features/terminal/TerminalChrome.js";
 import { OrderQueue, type QueueFilter } from "../features/terminal/OrderQueue.js";
 import { BillInspector } from "../features/terminal/BillInspector.js";
 import { PaymentExecution } from "../features/terminal/PaymentExecution.js";
 import {
-  QUEUE_ORDERS,
   grandTotalOf,
   type PaymentMethod,
   type QueueOrder,
 } from "../data/terminal.js";
+import { loadPayQueue, settleOrder } from "../lib/orders.js";
 import {
   LockResetIcon,
   ReceiptIcon,
   WalletIcon,
 } from "@tepisawah/ui";
 
+const POLL_INTERVAL_MS = 15_000;
+
 export function HomePage(): ReactNode {
-  const [selectedId, setSelectedId] = useState<string>(QUEUE_ORDERS[0]!.id);
+  const { can } = useAuth();
+  const [orders, setOrders] = useState<QueueOrder[]>([]);
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [settleError, setSettleError] = useState<string | null>(null);
+  const [settling, setSettling] = useState<boolean>(false);
+  const [selectedId, setSelectedId] = useState<string>("");
   const [query, setQuery] = useState<string>("");
   const [filter, setFilter] = useState<QueueFilter>("waiting");
   const [method, setMethod] = useState<PaymentMethod["id"]>("cash");
@@ -53,14 +70,42 @@ export function HomePage(): ReactNode {
     return () => window.clearInterval(interval);
   }, []);
 
-  const selectedOrder: QueueOrder = useMemo(
-    () => QUEUE_ORDERS.find((order) => order.id === selectedId) ?? QUEUE_ORDERS[0]!,
-    [selectedId],
+  const refresh = useCallback(async () => {
+    const result = await loadPayQueue();
+    setLoaded(true);
+    if (result.error !== null) {
+      setError(result.error);
+      return;
+    }
+    setError(null);
+    setOrders(result.orders);
+  }, []);
+
+  useEffect(() => {
+    void refresh();
+    const poll = window.setInterval(() => void refresh(), POLL_INTERVAL_MS);
+    return () => window.clearInterval(poll);
+  }, [refresh]);
+
+  // Keep a valid selection as the live queue changes underneath.
+  useEffect(() => {
+    if (orders.length === 0) {
+      if (selectedId !== "") setSelectedId("");
+      return;
+    }
+    if (!orders.some((order) => order.id === selectedId)) {
+      setSelectedId(orders[0]!.id);
+    }
+  }, [orders, selectedId]);
+
+  const selectedOrder: QueueOrder | undefined = useMemo(
+    () => orders.find((order) => order.id === selectedId),
+    [orders, selectedId],
   );
 
   const filteredOrders = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    return QUEUE_ORDERS.filter((order) => {
+    return orders.filter((order) => {
       if (filter === "waiting" && order.status !== "waiting") return false;
       if (filter === "process" && order.status !== "process") return false;
       if (!needle) return true;
@@ -71,12 +116,37 @@ export function HomePage(): ReactNode {
         order.area.toLowerCase().includes(needle)
       );
     });
-  }, [filter, query]);
+  }, [filter, orders, query]);
 
   const unpaidTotal = useMemo(
-    () => QUEUE_ORDERS.reduce((sum, order) => sum + grandTotalOf(order), 0),
-    [],
+    () => orders.reduce((sum, order) => sum + grandTotalOf(order), 0),
+    [orders],
   );
+
+  /**
+   * One guarded server-side hop: SERVED -> PAID. The command re-checks
+   * `payments.create` and the version the terminal rendered (§26); the queue
+   * refetches afterwards so the board reflects the database, not a guess.
+   */
+  const handleSettle = useCallback((): void => {
+    const order = selectedOrder;
+    if (order === undefined || settling) return;
+    if (!can(PERMISSIONS.PAYMENTS_CREATE)) {
+      setSettleError("Sesi Anda tidak memiliki izin pembayaran (payments.create).");
+      return;
+    }
+    setSettling(true);
+    setSettleError(null);
+    void settleOrder(order).then((result) => {
+      setSettling(false);
+      if (result.error || result.data === null) {
+        setSettleError(result.error?.message ?? "Pembayaran gagal diproses.");
+        void refresh();
+        return;
+      }
+      void refresh();
+    });
+  }, [can, refresh, selectedOrder, settling]);
 
   // Enterprise POS shortcuts: F1 search, F3 settle, ESC cancel tender.
   useEffect(() => {
@@ -127,7 +197,9 @@ export function HomePage(): ReactNode {
               <ReceiptIcon aria-hidden="true" />
               <div className="pos-metric__text">
                 <span className="pos-metric__label">Selesai Hari Ini</span>
-                <span className="pos-metric__value pos-metric__value--go">48 Transaksi</span>
+                <span className="pos-metric__value pos-metric__value--go">
+                  {loaded ? `${orders.length} Tagihan Tertunda` : "Memuat…"}
+                </span>
               </div>
             </div>
             <button type="button" className="pos-drawer">
@@ -135,6 +207,20 @@ export function HomePage(): ReactNode {
             </button>
           </div>
         </div>
+
+        {error !== null ? (
+          <p className="pos-alert" role="alert">
+            Antrean tidak dapat dimuat: {error}
+            <button type="button" className="pos-alert__retry" onClick={() => void refresh()}>
+              Coba lagi
+            </button>
+          </p>
+        ) : null}
+        {settleError !== null ? (
+          <p className="pos-alert" role="alert">
+            {settleError}
+          </p>
+        ) : null}
 
         <div className="pos-grid">
           <OrderQueue
@@ -148,16 +234,28 @@ export function HomePage(): ReactNode {
             onFilterChange={setFilter}
           />
 
-          <BillInspector order={selectedOrder} onPrint={() => undefined} />
+          {selectedOrder === undefined ? (
+            <div className="pos-empty-bill">
+              <p>
+                {loaded && orders.length === 0
+                  ? "Tidak ada tagihan menunggu pembayaran. Order yang sudah disajikan muncul di sini."
+                  : "Pilih satu order dari antrean untuk memeriksa tagihan."}
+              </p>
+            </div>
+          ) : (
+            <>
+              <BillInspector order={selectedOrder} onPrint={() => undefined} />
 
-          <PaymentExecution
-            order={selectedOrder}
-            method={method}
-            tendered={tendered}
-            onMethodChange={setMethod}
-            onTenderedChange={setTendered}
-            onSettle={() => undefined}
-          />
+              <PaymentExecution
+                order={selectedOrder}
+                method={method}
+                tendered={tendered}
+                onMethodChange={setMethod}
+                onTenderedChange={setTendered}
+                onSettle={handleSettle}
+              />
+            </>
+          )}
         </div>
       </div>
     </TerminalChrome>

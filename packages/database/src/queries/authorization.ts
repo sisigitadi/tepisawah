@@ -63,5 +63,15 @@ export async function fetchCurrentUserPermissions(
 
   if (error) return { permissions: [], error: { message: error.message } };
 
-  return { permissions: toPermissionCodes(data as PermissionCodeRow[] | null), error: null };
+  // `current_user_permissions()` returns `setof text` — a JSON array of code
+  // strings (e.g. ["audit.read", …]) — not an array of row objects. Normalize
+  // both shapes so the normalizer below always receives row objects; a plain
+  // string would otherwise map to {code: undefined} and drop every grant,
+  // locking an otherwise-valid staff account out of the panel.
+  const raw: unknown = data ?? [];
+  const rows: PermissionCodeRow[] = (Array.isArray(raw) ? raw : []).map((item) =>
+    typeof item === "string" ? { code: item } : ((item ?? {}) as PermissionCodeRow),
+  );
+
+  return { permissions: toPermissionCodes(rows), error: null };
 }

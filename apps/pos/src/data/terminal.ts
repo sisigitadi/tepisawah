@@ -1,9 +1,14 @@
 /**
- * @tepisawah/pos — terminal sample data.
+ * @tepisawah/pos — terminal data contracts & money helpers.
  *
- * Payment queue, bill registry and settlement catalog. Shape mirrors the
- * Stitch POS reference so the terminal can render while the Supabase
- * order/payment pipelines are wired in later phases.
+ * The queue shape mirrors the Stitch POS reference. Live orders (SERVED, from
+ * the database) carry `orderId` — the transition handle — and `bill`: the
+ * server's own frozen totals from the `orders` row. When `bill` is present the
+ * money helpers below return those values verbatim, because the receipt of
+ * record is the server's snapshot, never a browser re-derivation
+ * (API_CONTRACT.md §27; DB CHECK `total = subtotal - discount + tax`).
+ * Fixture-shaped orders (no `bill`) keep the reference ledger's 10% PB1 + 5%
+ * service derivation for the design sample.
  */
 
 export type OrderChannel = "qr" | "waiter";
@@ -30,6 +35,12 @@ export interface QueueOrder {
   pax: number;
   items: BillItem[];
   promo?: { code: string; label: string; rate: number; approver: string };
+  /** The database order id; present on live orders, absent on fixtures. */
+  orderId?: string;
+  /** The server's frozen totals; present on live orders, absent on fixtures. */
+  bill?: { subtotal: number; discount: number; tax: number; total: number };
+  /** Optimistic-concurrency handle for the settle transition (§26). */
+  version?: number;
 }
 
 export const QUEUE_ORDERS: QueueOrder[] = [
@@ -166,13 +177,15 @@ export function formatNumber(value: number): string {
   return new Intl.NumberFormat("id-ID").format(Math.round(value));
 }
 
-/** Subtotal of all bill items. */
+/** Subtotal of all bill items (the server's own value on a live order). */
 export function subtotalOf(order: QueueOrder): number {
+  if (order.bill) return order.bill.subtotal;
   return order.items.reduce((sum, item) => sum + item.qty * item.price, 0);
 }
 
 /** Promo discount applied to the subtotal when present. */
 export function discountOf(order: QueueOrder): number {
+  if (order.bill) return order.bill.discount;
   return order.promo ? subtotalOf(order) * order.promo.rate : 0;
 }
 
@@ -181,17 +194,20 @@ export function taxBaseOf(order: QueueOrder): number {
   return subtotalOf(order) - discountOf(order);
 }
 
-/** PB1 resto tax. */
+/** PB1 resto tax (the server's own value on a live order). */
 export function taxOf(order: QueueOrder): number {
+  if (order.bill) return order.bill.tax;
   return taxBaseOf(order) * TAX_RATE;
 }
 
-/** Hospitality service charge. */
+/** Hospitality service charge (not yet modelled server-side → 0 on live). */
 export function serviceOf(order: QueueOrder): number {
+  if (order.bill) return 0;
   return taxBaseOf(order) * SERVICE_RATE;
 }
 
-/** Grand total to settle. */
+/** Grand total to settle (the server's own value on a live order). */
 export function grandTotalOf(order: QueueOrder): number {
+  if (order.bill) return order.bill.total;
   return taxBaseOf(order) + taxOf(order) + serviceOf(order);
 }

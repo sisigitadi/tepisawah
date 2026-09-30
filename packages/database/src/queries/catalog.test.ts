@@ -138,7 +138,7 @@ function fakeClient(config: FakeConfig): SupabaseClient<Database> {
     if (config.deny === "product_modifiers") {
       return Promise.resolve({ data: null, error: RPC_DENY_ERROR });
     }
-    const committed = ((args.pLinks ?? []) as Record<string, unknown>[]).map((row) => ({
+    const committed = ((args.p_links ?? []) as Record<string, unknown>[]).map((row) => ({
       ...row,
       created_at: "2026-01-01T00:00:00Z",
     }));
@@ -637,7 +637,7 @@ describe("catalog admin queries", () => {
       expect(result.error).toBeNull();
       expect(config.rpcCalls).toHaveLength(1);
       expect(config.rpcCalls?.[0]?.fn).toBe("replace_product_modifiers");
-      expect((config.rpcCalls?.[0]?.args as { pLinks: unknown[] }).pLinks)
+      expect((config.rpcCalls?.[0]?.args as { p_links: unknown[] }).p_links)
         .toEqual([]);
       expect(result.data?.audit[0]?.action).toBe("unlink");
     });
@@ -703,7 +703,7 @@ describe("catalog admin queries", () => {
       );
       expect(result.error).toBeNull();
       expect(
-        (config.rpcCalls?.[0]?.args as { pLinks: unknown[] }).pLinks,
+        (config.rpcCalls?.[0]?.args as { p_links: unknown[] }).p_links,
       ).toHaveLength(1);
     });
 

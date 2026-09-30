@@ -24,6 +24,16 @@ const server = http.createServer((req, res) => {
     }
   }
 
+  // Apps are built with the relative base './', so their asset URLs resolve
+  // against the request directory. A bare '/admin' would resolve ./assets/...
+  // against the origin root; redirect to the trailing-slash form so relative
+  // asset paths stay inside the app's own prefix.
+  if (matchedApp !== '/' && urlPath === matchedApp) {
+    res.writeHead(301, { Location: urlPath + '/' });
+    res.end();
+    return;
+  }
+
   const root = apps[matchedApp];
   let filePath = path.join(root, subPath === '/' ? 'index.html' : subPath);
 

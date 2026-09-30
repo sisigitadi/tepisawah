@@ -39,13 +39,16 @@ export interface CheckoutResult {
 
 /**
  * The cart line the checkout page builds. References and intent only — note the
- * absence of any money field, which is the whole point of this phase.
+ * absence of any money field, which is the whole point of this phase. `name` is
+ * display-only (the line's catalog label, so the review list is readable); the
+ * RPC arg builder whitelists fields, so it never reaches the wire.
  */
 export interface CartLine {
   productId: string;
   quantity: number;
   modifierIds?: string[];
   notes?: string | null;
+  name?: string;
 }
 
 export interface SubmitDraftOrderInput {

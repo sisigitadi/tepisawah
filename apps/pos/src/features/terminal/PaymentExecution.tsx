@@ -332,8 +332,16 @@ function ThermalSlip({ order, method, tenderedNumber, change }: ThermalSlipProps
               <span>Disc {order.promo.code}:</span><span>-{formatNumber(discountOf(order))}</span>
             </div>
           )}
-          <div className="pos-thermal__total-row"><span>PB1 (10%):</span><span>{formatNumber(taxOf(order))}</span></div>
-          <div className="pos-thermal__total-row"><span>Service (5%):</span><span>{formatNumber(serviceOf(order))}</span></div>
+          <div className="pos-thermal__total-row">
+            <span>{order.bill ? "Pajak:" : "PB1 (10%):"}</span>
+            <span>{formatNumber(taxOf(order))}</span>
+          </div>
+          {order.bill && serviceOf(order) === 0 ? null : (
+            <div className="pos-thermal__total-row">
+              <span>Service (5%):</span>
+              <span>{formatNumber(serviceOf(order))}</span>
+            </div>
+          )}
           <div className="pos-thermal__grand">
             <span>TOTAL AKHIR:</span>
             <span>{formatIDR(grandTotalOf(order))}</span>

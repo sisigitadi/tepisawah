@@ -116,7 +116,7 @@ export async function fetchActiveTableSession(
   if (!tableId) return { data: null, error: { message: "Id meja wajib diisi." } };
 
   const { data, error } = await untypedRpc(client, "get_active_table_session", {
-    pTableId: tableId,
+    p_table_id: tableId,
   });
 
   if (error) return { data: null, error: failure(error) };
@@ -212,7 +212,7 @@ export async function openTableSession(
   if (!tableId) return { data: null, error: { message: "Id meja wajib diisi." } };
 
   const { data, error } = await untypedRpc(client, "open_table_session", {
-    pTableId: tableId,
+    p_table_id: tableId,
   });
 
   if (error) return { data: null, error: failure(error) };
@@ -293,7 +293,7 @@ export async function closeTableSession(
   if (!sessionId) return { data: null, error: { message: "Id sesi wajib diisi." } };
 
   const { data, error } = await untypedRpc(client, "close_table_session", {
-    pSessionId: sessionId,
+    p_session_id: sessionId,
   });
 
   if (error) return { data: null, error: failure(error) };

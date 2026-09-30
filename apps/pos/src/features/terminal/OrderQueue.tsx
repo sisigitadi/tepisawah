@@ -139,7 +139,7 @@ function QueueCard({ order, selected, onSelect }: QueueCardProps): ReactNode {
 
       <div className="pos-queue-card__head">
         <div className="pos-queue-card__id">
-          <span className="pos-queue-card__ticket">#{order.id}</span>
+          <span className="pos-queue-card__ticket">{order.ticket}</span>
           <span className={`pos-chip ${order.channel === "qr" ? "pos-chip--qr" : "pos-chip--waiter"}`}>
             {order.channel === "qr" ? "QR MEJA" : "WAITER POS"}
           </span>

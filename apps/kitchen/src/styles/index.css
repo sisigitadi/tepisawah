@@ -97,6 +97,13 @@ body {
   gap: 1.25rem;
 }
 
+/* Empty board / inline notice */
+.kds-empty-note {
+  color: #a7c4a9;
+  font-size: 1rem;
+  padding: 1rem 0;
+}
+
 /* Ticket Card */
 .kds-ticket-card {
   background-color: var(--color-card-bg);

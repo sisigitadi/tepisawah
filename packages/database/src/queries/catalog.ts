@@ -432,9 +432,13 @@ export async function saveProductModifiers(
     .filter((link) => !seen.has(link.modifierId))
     .map((link) => link.modifierId);
 
+  // Parameter names must match the SQL signature exactly:
+  // replace_product_modifiers(p_product_id uuid, p_links jsonb) — PostgREST
+  // resolves named arguments literally, so a camelCase key here fails with
+  // "Could not find the function … in the schema cache".
   const { data, error } = await untypedRpc(client, "replace_product_modifiers", {
-    pProductId: productId,
-    pLinks: rows,
+    p_product_id: productId,
+    p_links: rows,
   });
 
   if (error) return { data: null, error: failure(error) };

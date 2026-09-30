@@ -242,6 +242,56 @@ export interface OrdersAuditEvent {
 }
 
 // -----------------------------------------------------------------------------
+// Staff order-board read (kitchen KDS, cashier POS queue).
+//
+// Staff surfaces read `orders` directly through the `orders_staff_read` RLS
+// policy (migration 008 part 1): authenticated + active + `orders.read`. Unlike
+// the customer projection above, this is the full operational row — version,
+// timestamps and snapshot lines — because a staff screen drives the state
+// machine from it (transition_order's optimistic `expectedVersion`).
+// -----------------------------------------------------------------------------
+
+/** One snapshot line of a staff-read order (DATABASE_SCHEMA.md §21). */
+export interface StaffOrderItem {
+  id: string;
+  productId: string | null;
+  /** The frozen catalog name the order recorded at creation time. */
+  name: string;
+  quantity: number;
+  unitPrice: number;
+  notes: string | null;
+  lineTotal: number;
+}
+
+/**
+ * One order as a staff board (kitchen / cashier) renders it. Money and status
+ * are the server's own values; `version` is the optimistic-concurrency handle
+ * a subsequent `transitionOrder` call sends back (API_CONTRACT.md §26).
+ */
+export interface StaffOrder {
+  id: string;
+  orderNumber: string;
+  tableId: string;
+  tableSessionId: string;
+  /** Resolved display label from `tables`, e.g. "Meja A1"; never empty. */
+  tableName: string;
+  /** The QR code of the table, e.g. "A1"; empty when the table is unreadable. */
+  tableCode: string;
+  source: OrderSource;
+  status: OrderStatus;
+  notes: string | null;
+  subtotal: number;
+  discount: number;
+  tax: number;
+  total: number;
+  version: number;
+  createdAt: string | null;
+  /** Last status change — a board measures queue age from this. */
+  updatedAt: string | null;
+  items: StaffOrderItem[];
+}
+
+// -----------------------------------------------------------------------------
 // Customer order status read (Phase 8B — API_CONTRACT.md §10.3).
 //
 // `GET /public/orders/:id`: a customer may read ONLY the order tied to a valid

@@ -1,34 +1,23 @@
 /**
  * @tepisawah/web — featured menu + category preview cards.
  *
- * Renders from the shared menu source of truth (`data/menu.ts`); the category
- * filter is pure UI state. Reference photos are CDN-blocked, so each card uses
- * an illustrated gradient thumbnail with the category icon.
+ * The dish grid renders the LIVE customer catalog: the anonymous
+ * `public_catalog()` projection (migration 005 part 5) through
+ * `@tepisawah/database`, so a menu change saved in the admin console appears
+ * here on the next visit — archived items and out-of-stock dishes never
+ * surface. The read fails closed with a retry; the marketing category cards
+ * below stay static copy.
  */
-import { useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { Icon, type IconName } from "../../../components/icons.js";
+import { formatPrice } from "../../../data/menu.js";
 import {
-  formatPrice,
-  filterMenuItems,
-  MENU_CATEGORIES,
-  MENU_CATEGORY_LABEL,
-  type MenuCategory,
-} from "../../../data/menu.js";
-import { MenuPhoto } from "@tepisawah/ui";
+  fetchPublicCatalog,
+  groupCatalogByCategory,
+  type PublicCatalogProduct,
+} from "@tepisawah/database";
 
-const CATEGORY_ICON: Record<MenuCategory, IconName> = {
-  SEMUA: "sparkles",
-  MAKANAN: "utensils",
-  SAYUR: "leaf",
-  MINUMAN: "coffee",
-};
-
-const CATEGORIES: ReadonlyArray<{ label: string; value: MenuCategory }> = [
-  { label: "Semua", value: "SEMUA" },
-  { label: "Makanan Utama", value: "MAKANAN" },
-  { label: "Sayur & Sup", value: "SAYUR" },
-  { label: "Minuman & Kopi", value: "MINUMAN" },
-];
+import { getSupabaseClient } from "../../../lib/supabase.js";
 
 const CATEGORY_CARDS: ReadonlyArray<{
   icon: IconName;
@@ -62,9 +51,41 @@ const CATEGORY_CARDS: ReadonlyArray<{
   },
 ];
 
+interface CategoryPill {
+  id: string;
+  name: string;
+}
+
 export function FeaturedMenu(): ReactNode {
-  const [active, setActive] = useState<MenuCategory>("SEMUA");
-  const items = filterMenuItems(active);
+  const [products, setProducts] = useState<PublicCatalogProduct[] | null>(null);
+  const [categories, setCategories] = useState<CategoryPill[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [active, setActive] = useState<string>("SEMUA");
+
+  const load = useCallback(async () => {
+    setError(null);
+    const result = await fetchPublicCatalog(getSupabaseClient());
+    if (result.error) {
+      setProducts(null);
+      setError(result.error.message);
+      return;
+    }
+    const rows = result.data ?? [];
+    const grouped = groupCatalogByCategory(rows);
+    setProducts(rows);
+    setCategories(grouped.map((group) => ({ id: group.id, name: group.name })));
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const items =
+    products === null
+      ? []
+      : active === "SEMUA"
+        ? products
+        : products.filter((item) => item.categoryId === active);
 
   return (
     <>
@@ -77,53 +98,96 @@ export function FeaturedMenu(): ReactNode {
               Hidangan favorit untuk menemani waktu Anda di Tepi Sawah.
             </p>
           </div>
-          <div className="web-filter" role="group" aria-label="Filter menu">
-            {CATEGORIES.map((category) => (
+          {products !== null && categories.length > 0 ? (
+            <div className="web-filter" role="group" aria-label="Filter menu">
               <button
-                key={category.value}
                 type="button"
                 className="web-filter-btn"
-                data-active={active === category.value}
-                onClick={() => setActive(category.value)}
+                data-active={active === "SEMUA"}
+                onClick={() => setActive("SEMUA")}
               >
-                {category.label}
+                Semua
               </button>
-            ))}
-          </div>
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  type="button"
+                  className="web-filter-btn"
+                  data-active={active === category.id}
+                  onClick={() => setActive(category.id)}
+                >
+                  {category.name}
+                </button>
+              ))}
+            </div>
+          ) : null}
         </div>
 
-        <div className="web-menu-grid">
-          {items.map((item) => (
-            <article key={item.id} className="web-dish">
-              <div className="web-dish-photo">
-                <MenuPhoto id={item.id} className="web-dish-art" />
-                <div className="web-dish-veil" />
-                <span className="web-dish-cat">
-                  {MENU_CATEGORY_LABEL[item.category]}
-                </span>
-                <span className="web-dish-badge">{item.badge}</span>
-              </div>
+        {error !== null ? (
+          <div className="web-menu-grid" role="alert">
+            <article className="web-dish">
               <div className="web-dish-body">
-                <div className="web-dish-top">
-                  <h3 className="web-dish-name">{item.name}</h3>
-                  <span className="web-dish-price">
-                    {formatPrice(item.price)}
-                  </span>
+                <h3 className="web-dish-name">Tidak dapat memuat menu</h3>
+                <p className="web-dish-desc">{error}</p>
+                <div className="web-dish-foot">
+                  <button
+                    type="button"
+                    className="web-filter-btn"
+                    onClick={() => void load()}
+                  >
+                    Coba lagi
+                  </button>
                 </div>
-                <p className="web-dish-desc">{item.desc}</p>
-              </div>
-              <div className="web-dish-foot">
-                <span className="web-dish-avail">
-                  <Icon name="check" size={14} /> Tersedia Hari Ini
-                </span>
-                <span className="web-dish-order">
-                  <Icon name="info" size={14} />
-                  Pesan di tempat (QR / kasir)
-                </span>
               </div>
             </article>
-          ))}
-        </div>
+          </div>
+        ) : products === null ? (
+          <p aria-live="polite">Memuat menu…</p>
+        ) : (
+          <div className="web-menu-grid">
+            {items.map((item) => (
+              <article key={item.productId} className="web-dish">
+                <div className="web-dish-photo">
+                  {item.imageUrl ? (
+                    <img
+                      className="web-dish-art"
+                      src={item.imageUrl}
+                      alt={`Foto ${item.name}`}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div className="web-dish-art web-dish-art--fallback" aria-hidden="true" />
+                  )}
+                  <div className="web-dish-veil" />
+                  <span className="web-dish-cat">{item.categoryName}</span>
+                  {item.isAvailable ? null : (
+                    <span className="web-dish-badge">Habis</span>
+                  )}
+                </div>
+                <div className="web-dish-body">
+                  <div className="web-dish-top">
+                    <h3 className="web-dish-name">{item.name}</h3>
+                    <span className="web-dish-price">
+                      {formatPrice(item.price)}
+                    </span>
+                  </div>
+                  <p className="web-dish-desc">{item.description}</p>
+                </div>
+                <div className="web-dish-foot">
+                  <span className="web-dish-avail">
+                    <Icon name="check" size={14} />
+                    {item.isAvailable ? "Tersedia Hari Ini" : "Habis hari ini"}
+                  </span>
+                  <span className="web-dish-order">
+                    <Icon name="info" size={14} />
+                    Pesan di tempat (QR / kasir)
+                  </span>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
 
         <div className="web-menu-cta web-menu-notice">
           <span className="web-menu-notice-ico">

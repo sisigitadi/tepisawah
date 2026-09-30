@@ -43,8 +43,8 @@ function fakeClient(config: RpcConfig): SupabaseClient<Database> {
   const client = {
     rpc: (_name: string, args?: Record<string, unknown>) => {
       config.calls?.push({
-        tableCode: String(args?.pTableCode ?? ""),
-        token: String(args?.pToken ?? ""),
+        tableCode: String(args?.p_table_code ?? ""),
+        token: String(args?.p_token ?? ""),
       });
       return chain;
     },

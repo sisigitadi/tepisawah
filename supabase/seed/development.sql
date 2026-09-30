@@ -354,12 +354,12 @@ on conflict (id) do update set
 
 insert into public.products (id, category_id, name, description, image_url, price, is_active, is_available, sort_order)
 values
-  ('00000000-0000-4000-8000-200000000001', '00000000-0000-4000-8000-100000000001', 'Nasi Liwet Sawah', 'Nasi liwet dengan lauk khas sawah', null, 45000, true, true,  10),
-  ('00000000-0000-4000-8000-200000000002', '00000000-0000-4000-8000-100000000001', 'Ayam Bakar Tepi',  'Ayam bakar bumbu rumahan',          null, 38000, true, true,  20),
-  ('00000000-0000-4000-8000-200000000003', '00000000-0000-4000-8000-100000000001', 'Pepes Ikan',       'Pepes ikan air tawar',              null, 32000, true, false, 30),
-  ('00000000-0000-4000-8000-200000000004', '00000000-0000-4000-8000-100000000002', 'Es Kelapa Muda',   'Kelapa muda segar',                 null, 15000, true, true,  10),
-  ('00000000-0000-4000-8000-200000000005', '00000000-0000-4000-8000-100000000002', 'Teh Talas',        'Teh daun talas khas',               null, 12000, true, true,  20),
-  ('00000000-0000-4000-8000-200000000006', '00000000-0000-4000-8000-100000000003', 'Kerupuk Sawah',    'Kerupuk renyah',                    null,  8000, true, true,  10)
+  ('00000000-0000-4000-8000-200000000001', '00000000-0000-4000-8000-100000000001', 'Nasi Liwet Sawah', 'Nasi liwet dengan lauk khas sawah', 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=800&q=80', 45000, true, true,  10),
+  ('00000000-0000-4000-8000-200000000002', '00000000-0000-4000-8000-100000000001', 'Ayam Bakar Tepi',  'Ayam bakar bumbu rumahan',          'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80', 38000, true, true,  20),
+  ('00000000-0000-4000-8000-200000000003', '00000000-0000-4000-8000-100000000001', 'Pepes Ikan',       'Pepes ikan air tawar',              'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=800&q=80', 32000, true, false, 30),
+  ('00000000-0000-4000-8000-200000000004', '00000000-0000-4000-8000-100000000002', 'Es Kelapa Muda',   'Kelapa muda segar',                 'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=800&q=80', 15000, true, true,  10),
+  ('00000000-0000-4000-8000-200000000005', '00000000-0000-4000-8000-100000000002', 'Teh Talas',        'Teh daun talas khas',               'https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=800&q=80', 12000, true, true,  20),
+  ('00000000-0000-4000-8000-200000000006', '00000000-0000-4000-8000-100000000003', 'Kerupuk Sawah',    'Kerupuk renyah',                    'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80',  8000, true, true,  10)
 on conflict (id) do update set
   category_id   = excluded.category_id,
   name          = excluded.name,
@@ -549,7 +549,15 @@ values
   ('00000000-0000-4000-8000-f00000000002', '00000000-0000-4000-8000-c00000000001', 'DRAFT',         'SUBMITTED', null, null, null),
   ('00000000-0000-4000-8000-f00000000003', '00000000-0000-4000-8000-c00000000001', 'SUBMITTED',     'COMPLETED', null, 'cashier', null),
   ('00000000-0000-4000-8000-f00000000004', '00000000-0000-4000-8000-c00000000002', null,            'DRAFT',     null, null, null),
-  ('00000000-0000-4000-8000-f00000000005', '00000000-0000-4000-8000-c00000000002', 'DRAFT',         'COMPLETED', null, 'cashier', null),
+  ('00000000-0000-4000-8000-f00000000005', '00000000-0000-4000-8000-c00000000002', 'DRAFT',         'COMPLETED', null, 'cashier', null)
+on conflict (id) do update set
+  order_id    = excluded.order_id,
+  from_status = excluded.from_status,
+  to_status   = excluded.to_status,
+  actor_id    = excluded.actor_id,
+  actor_role  = excluded.actor_role,
+  reason      = excluded.reason;
+
 -- =============================================================================
 -- Submitted order (Phase 8B).
 --

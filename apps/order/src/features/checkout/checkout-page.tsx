@@ -141,7 +141,7 @@ export function CheckoutPage(props: CheckoutPageProps): ReactNode {
           {items.map((item) => (
             <li key={item.productId} className="checkout__item">
               <span className="checkout__qty">{item.quantity}×</span>
-              <span className="checkout__name">{item.productId}</span>
+              <span className="checkout__name">{item.name ?? item.productId}</span>
               {item.notes ? (
                 <span className="checkout__note">{item.notes}</span>
               ) : null}

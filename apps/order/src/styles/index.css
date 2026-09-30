@@ -159,6 +159,12 @@ body {
   object-fit: cover;
 }
 
+/* Placeholder for a DB product without an image_url: brand gradient, no
+   second illustration source — the catalog photo IS the visual. */
+.dish-img-art--fallback {
+  background: linear-gradient(135deg, #2d5a3d 0%, #4a7c59 55%, #86a873 100%);
+}
+
 .dish-tag {
   position: absolute;
   top: 6px;
@@ -190,6 +196,29 @@ body {
   font-size: 0.8rem;
   color: var(--color-text-muted);
   line-height: 1.35;
+}
+
+/* Required modifier choices (the server refuses a draft without them). */
+.dish-modifiers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0 0 0.6rem;
+}
+
+.dish-modifier {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  color: var(--color-deepmoss);
+  cursor: pointer;
+}
+
+.dish-modifier input[type="checkbox"] {
+  width: 0.95rem;
+  height: 0.95rem;
+  accent-color: var(--color-forest);
 }
 
 .dish-bottom {

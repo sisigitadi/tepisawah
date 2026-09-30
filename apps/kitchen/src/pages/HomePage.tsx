@@ -6,105 +6,113 @@
  * - Order ID, Table, Elapsed Time, Items, Quantity, Notes, Direct Action
  * - Transition flow: CONFIRMED -> PREPARING -> READY
  * - Zero financial details displayed
+ *
+ * The board is LIVE: tickets come from the `orders` / `order_items` tables
+ * through the RLS-gated `orders_staff_read` policy (migration 008 part 1), so
+ * an order the customer or waiter just placed appears here on the next poll —
+ * no fixture, no second source of truth. Status moves go through the guarded
+ * `transition_order()` command, which re-checks `kitchen.start` /
+ * `kitchen.ready` and the optimistic version server-side (API_CONTRACT.md
+ * §13, §26); the buttons are disabled without those permissions, because the
+ * guard is UX-only — the backend is the authority.
  */
-import { useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useAuth } from "@tepisawah/auth";
+import { PERMISSIONS } from "@tepisawah/permissions";
 
-interface KitchenItem {
-  name: string;
-  qty: number;
-  notes?: string;
-  isCustom?: boolean;
+import {
+  loadBoard,
+  markReady,
+  startCooking,
+  type StaffOrder,
+} from "../lib/board.js";
+
+/** Minutes elapsed since `iso`, floored for the ⏱ badge. */
+function elapsedMinutesSince(iso: string | null, now: number): number {
+  if (iso === null) return 0;
+  const then = Date.parse(iso);
+  if (!Number.isFinite(then)) return 0;
+  return Math.max(0, Math.floor((now - then) / 60_000));
 }
 
-interface KitchenTicket {
-  id: string;
-  orderNumber: string;
-  table: string;
-  area: string;
-  elapsedMinutes: number;
-  status: "CONFIRMED" | "PREPARING" | "READY";
-  items: KitchenItem[];
-  urgent?: boolean;
-}
-
-const INITIAL_TICKETS: KitchenTicket[] = [
-  {
-    id: "k-1",
-    orderNumber: "#ORD-001",
-    table: "Meja 01",
-    area: "Saung A",
-    elapsedMinutes: 18,
-    status: "PREPARING",
-    urgent: true,
-    items: [
-      { name: "Gurame Bakar Madu", qty: 1, notes: "Pedas sedang, lalap leunca ekstra" },
-      { name: "Nasi Liwet Sawah Komplit", qty: 2, notes: "Hangat" },
-      { name: "Karedok Leunca Segar", qty: 1, notes: "Tanpa terasi" },
-    ],
-  },
-  {
-    id: "k-2",
-    orderNumber: "#ORD-002",
-    table: "Meja 04",
-    area: "Gazebo B",
-    elapsedMinutes: 8,
-    status: "CONFIRMED",
-    items: [
-      { name: "Ayam Goreng Lengkuas", qty: 2, notes: "Serundeng melimpah" },
-      { name: "Sayur Asem Klaten", qty: 2 },
-      { name: "Tahu & Tempe Mendoan", qty: 1, notes: "Goreng garing" },
-      { name: "Sambal Terasi Dadak", qty: 2, notes: "Pedas level 3" },
-    ],
-  },
-  {
-    id: "k-3",
-    orderNumber: "#ORD-003",
-    table: "Meja 07",
-    area: "Lesehan C",
-    elapsedMinutes: 3,
-    status: "CONFIRMED",
-    items: [
-      { name: "Sop Buntut Garang Asam", qty: 1, notes: "Kuah pisah" },
-      { name: "Nasi Bakar Teri Wangi", qty: 1 },
-      { name: "Es Kelapa Jeruk Segar", qty: 2 },
-    ],
-  },
-  {
-    id: "k-4",
-    orderNumber: "#ORD-004",
-    table: "Meja 02",
-    area: "Saung A",
-    elapsedMinutes: 24,
-    status: "READY",
-    items: [
-      { name: "Pepes Ikan Mas Duri Lunak", qty: 1, notes: "Kemangi banyak" },
-      { name: "Bakwan Jagung Renyah", qty: 1 },
-    ],
-  },
-];
+const POLL_INTERVAL_MS = 15_000;
+const CLOCK_TICK_MS = 30_000;
+const OVERDUE_MINUTES = 15;
 
 export function HomePage(): ReactNode {
-  const [tickets, setTickets] = useState<KitchenTicket[]>(INITIAL_TICKETS);
+  const { can } = useAuth();
+  const [orders, setOrders] = useState<StaffOrder[]>([]);
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("ALL");
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [now, setNow] = useState<number>(() => Date.now());
 
-  const handleAdvanceStatus = (ticketId: string) => {
-    setTickets((prev) =>
-      prev.map((t) => {
-        if (t.id !== ticketId) return t;
-        if (t.status === "CONFIRMED") return { ...t, status: "PREPARING" };
-        if (t.status === "PREPARING") return { ...t, status: "READY" };
-        return t;
-      })
-    );
-  };
+  const refresh = useCallback(async () => {
+    const result = await loadBoard();
+    if (result.error) {
+      setError(result.error.message);
+      return;
+    }
+    setError(null);
+    setLoaded(true);
+    setOrders(result.data ?? []);
+  }, []);
 
-  const filteredTickets = filter === "ALL"
-    ? tickets
-    : tickets.filter((t) => t.status === filter);
+  useEffect(() => {
+    void refresh();
+    const poll = window.setInterval(() => void refresh(), POLL_INTERVAL_MS);
+    return () => window.clearInterval(poll);
+  }, [refresh]);
 
-  const preparingCount = tickets.filter(t => t.status === "PREPARING").length;
-  const confirmedCount = tickets.filter(t => t.status === "CONFIRMED").length;
-  const readyCount = tickets.filter(t => t.status === "READY").length;
+  // Keep the ⏱ badges honest without refetching.
+  useEffect(() => {
+    const clock = window.setInterval(() => setNow(Date.now()), CLOCK_TICK_MS);
+    return () => window.clearInterval(clock);
+  }, []);
+
+  /**
+   * One guarded server-side hop. The command re-validates the permission and
+   * the version the board rendered (API_CONTRACT.md §26); on success only
+   * status/version are merged into the local copy so the card does not
+   * flicker, and the next poll reconciles everything else. On failure the
+   * board shows the refusal and reconciles immediately.
+   */
+  const advance = useCallback(
+    async (order: StaffOrder) => {
+      if (busyId !== null) return;
+      setBusyId(order.id);
+      setActionError(null);
+      const result =
+        order.status === "CONFIRMED"
+          ? await startCooking(order)
+          : await markReady(order);
+      setBusyId(null);
+      if (result.error || result.data === null) {
+        setActionError(result.error?.message ?? "Status tidak dapat diubah.");
+        void refresh();
+        return;
+      }
+      const fresh = result.data.order;
+      setOrders((prev) =>
+        prev.map((current) =>
+          current.id === fresh.id
+            ? { ...current, status: fresh.status, version: fresh.version }
+            : current,
+        ),
+      );
+    },
+    [busyId, refresh],
+  );
+
+  const visible = filter === "ALL"
+    ? orders
+    : orders.filter((order) => order.status === filter);
+
+  const preparingCount = orders.filter(o => o.status === "PREPARING").length;
+  const confirmedCount = orders.filter(o => o.status === "CONFIRMED").length;
+  const readyCount = orders.filter(o => o.status === "READY").length;
 
   return (
     <div className="kds-screen">
@@ -120,7 +128,7 @@ export function HomePage(): ReactNode {
             className={`kds-stat-btn ${filter === "ALL" ? "active" : ""}`}
             onClick={() => setFilter("ALL")}
           >
-            Semua ({tickets.length})
+            Semua ({orders.length})
           </button>
           <button
             type="button"
@@ -146,74 +154,123 @@ export function HomePage(): ReactNode {
         </div>
       </header>
 
-      {/* Tickets Queue Grid */}
-      <main className="kds-main">
-        <div className="kds-tickets-grid">
-          {filteredTickets.map((ticket) => {
-            const isOverdue = ticket.elapsedMinutes >= 15;
-            return (
-              <div
-                key={ticket.id}
-                className={`kds-ticket-card status-${ticket.status.toLowerCase()} ${isOverdue ? "overdue" : ""}`}
-              >
-                {/* Ticket Card Top */}
-                <div className="ticket-header">
-                  <div className="ticket-order-ref">
-                    <span className="ticket-order-num">{ticket.orderNumber}</span>
-                    <span className="ticket-table-name">{ticket.table}</span>
-                    <span className="ticket-area-sub">{ticket.area}</span>
-                  </div>
-                  <div className={`ticket-timer ${isOverdue ? "timer-alert" : ""}`}>
-                    ⏱ {ticket.elapsedMinutes}m
-                  </div>
+      {/* Board states */}
+      {error !== null ? (
+        <main className="kds-main">
+          <div className="kds-tickets-grid">
+            <div className="kds-ticket-card" role="alert">
+              <div className="ticket-header">
+                <div className="ticket-order-ref">
+                  <span className="ticket-order-num">Papan tidak dapat dimuat</span>
                 </div>
-
-                {/* Items List */}
-                <div className="ticket-items-list">
-                  {ticket.items.map((item, idx) => (
-                    <div key={idx} className="ticket-item-row">
-                      <div className="item-qty-badge">{item.qty}x</div>
-                      <div className="item-detail">
-                        <div className="item-title">{item.name}</div>
-                        {item.notes ? (
-                          <div className="item-instruction">Catatan: {item.notes}</div>
-                        ) : null}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Bottom Status Button */}
-                <div className="ticket-footer">
-                  {ticket.status === "CONFIRMED" && (
-                    <button
-                      type="button"
-                      className="kds-btn-action btn-start"
-                      onClick={() => handleAdvanceStatus(ticket.id)}
-                    >
-                      ▶ Mulai Memasak
-                    </button>
-                  )}
-                  {ticket.status === "PREPARING" && (
-                    <button
-                      type="button"
-                      className="kds-btn-action btn-ready"
-                      onClick={() => handleAdvanceStatus(ticket.id)}
-                    >
-                      ✓ Selesai / Siap Diantar
-                    </button>
-                  )}
-                  {ticket.status === "READY" && (
-                    <div className="ticket-ready-notice">
-                      ✓ Menunggu Waiter Ambil
-                    </div>
-                  )}
+                <div className="ticket-timer">⟳</div>
+              </div>
+              <div className="ticket-items-list">
+                <div className="ticket-item-row">
+                  <div className="item-detail">
+                    <div className="item-title">{error}</div>
+                  </div>
                 </div>
               </div>
-            );
-          })}
-        </div>
-      </main>
+              <div className="ticket-footer">
+                <button
+                  type="button"
+                  className="kds-btn-action btn-start"
+                  onClick={() => void refresh()}
+                >
+                  ⟳ Coba lagi
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
+      ) : (
+        <main className="kds-main">
+          {actionError !== null ? (
+            <p className="kds-empty-note" role="alert">
+              {actionError}
+            </p>
+          ) : null}
+          {loaded && orders.length === 0 ? (
+            <p aria-live="polite" className="kds-empty-note">
+              Belum ada pesanan di dapur. Pesanan baru muncul otomatis.
+            </p>
+          ) : null}
+          <div className="kds-tickets-grid">
+            {visible.map((order) => {
+              const elapsed = elapsedMinutesSince(
+                order.updatedAt ?? order.createdAt,
+                now,
+              );
+              const isOverdue = elapsed >= OVERDUE_MINUTES;
+              return (
+                <div
+                  key={order.id}
+                  className={`kds-ticket-card status-${order.status.toLowerCase()} ${isOverdue ? "overdue" : ""}`}
+                >
+                  {/* Ticket Card Top */}
+                  <div className="ticket-header">
+                    <div className="ticket-order-ref">
+                      <span className="ticket-order-num">#{order.orderNumber}</span>
+                      <span className="ticket-table-name">{order.tableName}</span>
+                      {order.tableCode ? (
+                        <span className="ticket-area-sub">{order.tableCode}</span>
+                      ) : null}
+                    </div>
+                    <div className={`ticket-timer ${isOverdue ? "timer-alert" : ""}`}>
+                      ⏱ {elapsed}m
+                    </div>
+                  </div>
+
+                  {/* Items List */}
+                  <div className="ticket-items-list">
+                    {order.items.map((item) => (
+                      <div key={item.id} className="ticket-item-row">
+                        <div className="item-qty-badge">{item.quantity}x</div>
+                        <div className="item-detail">
+                          <div className="item-title">{item.name}</div>
+                          {item.notes ? (
+                            <div className="item-instruction">Catatan: {item.notes}</div>
+                          ) : null}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Bottom Status Button */}
+                  <div className="ticket-footer">
+                    {order.status === "CONFIRMED" && (
+                      <button
+                        type="button"
+                        className="kds-btn-action btn-start"
+                        disabled={busyId !== null || !can(PERMISSIONS.KITCHEN_START)}
+                        onClick={() => void advance(order)}
+                      >
+                        {busyId === order.id ? "Memproses…" : "▶ Mulai Memasak"}
+                      </button>
+                    )}
+                    {order.status === "PREPARING" && (
+                      <button
+                        type="button"
+                        className="kds-btn-action btn-ready"
+                        disabled={busyId !== null || !can(PERMISSIONS.KITCHEN_READY)}
+                        onClick={() => void advance(order)}
+                      >
+                        {busyId === order.id ? "Memproses…" : "✓ Selesai / Siap Diantar"}
+                      </button>
+                    )}
+                    {order.status === "READY" && (
+                      <div className="ticket-ready-notice">
+                        ✓ Menunggu Waiter Ambil
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </main>
+      )}
     </div>
   );
 }
