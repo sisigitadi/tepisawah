@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"surface-container":"#f2efd5","outline-variant":"#c0c9bc","on-tertiary-fixed":"#341100","on-surface":"#1d1c0d","on-error":"#ffffff","inverse-surface":"#323120","rice-paper":"#F8F4DB","secondary":"#835418","secondary-fixed":"#ffdcbb","surface-variant":"#e7e3ca","on-secondary-container":"#784a0d","surface-container-lowest":"#ffffff","surface-bright":"#fefae0","on-primary-fixed-variant":"#12521e","surface-dim":"#dedbc2","surface":"#fefae0","primary-fixed":"#b0f3ad","on-tertiary-container":"#ffcfb8","leaf-tint":"rgba(46, 107, 52, 0.08)","primary-container":"#2e6b34","tertiary":"#6a3b20","tertiary-container":"#865235","on-primary":"#ffffff","inverse-on-surface":"#f5f1d8","on-error-container":"#93000a","on-secondary-fixed":"#2b1700","secondary-container":"#fdbd77","amber-warm":"#F3C644","outline":"#71796e","primary-fixed-dim":"#95d693","tertiary-fixed-dim":"#fcb794","on-tertiary":"#ffffff","on-primary-container":"#a7e9a5","golden-sheen":"rgba(221, 161, 94, 0.25)","error":"#ba1a1a","error-container":"#ffdad6","on-primary-fixed":"#002106","surface-container-highest":"#e7e3ca","secondary-fixed-dim":"#faba75","on-secondary":"#ffffff","inverse-primary":"#95d693","on-background":"#1d1c0d","primary":"#12521e","roasted-earth":"#3D1F10","surface-tint":"#2e6b34","background":"#fefae0","surface-container-high":"#ede9cf","surface-container-low":"#f8f4db","deep-moss":"#183A1D","on-surface-variant":"#41493f","on-secondary-fixed-variant":"#673d00","on-tertiary-fixed-variant":"#6a3b20","tertiary-fixed":"#ffdbca"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-sm":"0.5rem","space-xs":"0.25rem","space-xxl":"4rem","gutter-sm":"1rem","gutter-lg":"2rem","margin-desktop":"3rem","space-md":"1rem","margin-mobile":"1rem","space-lg":"1.5rem","space-xl":"2.5rem","margin":"1.5rem","gutter":"1.5rem"},fontFamily:{"display-hero":["Playfair Display"],"body-md":["Inter"],"monospace-data":["monospace"],"eyebrow-accent":["Inter"],"headline-lg-mobile":["Playfair Display"],"label-sm":["Inter"],"display-hero-mobile":["Playfair Display"],"headline-sm":["Playfair Display"],"body-sm":["Inter"],"headline-lg":["Playfair Display"],"title-editorial":["Playfair Display"],"label-md":["Inter"],"body-lg":["Inter"],"headline-md":["Playfair Display"]},fontSize:{"display-hero":["56px",{"lineHeight":"64px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-md":["15px",{"lineHeight":"24px","fontWeight":"400"}],"monospace-data":["13px",{"lineHeight":"18px","fontWeight":"500"}],"eyebrow-accent":["11px",{"lineHeight":"14px","letterSpacing":"0.18em","fontWeight":"700"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","fontWeight":"700"}],"label-sm":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"display-hero-mobile":["32px",{"lineHeight":"40px","letterSpacing":"-0.01em","fontWeight":"700"}],"headline-sm":["20px",{"lineHeight":"28px","fontWeight":"600"}],"body-sm":["13px",{"lineHeight":"20px","fontWeight":"400"}],"headline-lg":["36px",{"lineHeight":"44px","letterSpacing":"-0.01em","fontWeight":"700"}],"title-editorial":["18px",{"lineHeight":"26px","fontWeight":"500"}],"label-md":["14px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"600"}],"body-lg":["18px",{"lineHeight":"28px","fontWeight":"400"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"600"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 h-16 z-50 bg-deep-moss text-surface-bright shadow-[0_4px_20px_rgba(24,58,29,0.35)]"><div class="h-16 w-full px-gutter-lg flex items-center justify-between"><div class="flex items-center gap-space-md"><img alt="Logo Tepi Sawah.png" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XL00OI-aDgeuVUPV20dG8RbF1gZHLtGNbKicnH2nppz88Y-KaKrL9znZV6lJsCWPVUSEozdWTBSXXwevTgdpwpfCim030P4cg1o8r07zkGpNBCeaCS2CD6buJyaXNPNg9BN9lPfP35AirtMiyJ0NWIVFu6ciV_oU8f7jhFpQf0i-bzRwqxvEvPUXZAiOSnsR0bbO3CVcQ8DdGlAQSkrb9GoRzPzHg0QvIycTS0Vww4jjCICdttbBRklo0NOYpKvmvXXfNV4wTcyg"/><div class="flex flex-col"><span class="font-title-editorial text-title-editorial leading-none tracking-tight text-surface-bright">Tepi Sawah</span><span class="font-eyebrow-accent text-eyebrow-accent tracking-widest text-amber-warm uppercase">Cashier POS</span></div></div><div class="flex items-center gap-space-lg"><div class="hidden xl:flex items-center gap-space-sm bg-primary/40 px-space-md py-space-xs rounded-full"><span class="material-symbols-outlined text-amber-warm text-[18px]">schedule</span><span class="font-monospace-data text-monospace-data text-surface-bright font-medium">27 Sep 2026, 11:32 WIB</span></div><div class="flex items-center gap-space-sm bg-primary-container px-space-md py-space-xs rounded-full text-on-primary"><span class="w-2 h-2 rounded-full bg-amber-warm animate-pulse"></span><span class="font-label-sm text-label-sm font-semibold">Kasir: Sigit</span><span class="text-on-primary-container text-label-sm">•</span><span class="font-label-sm text-label-sm text-on-primary-container">Shift 1 Pagi - Active</span></div><div class="hidden lg:flex items-center gap-space-sm"><div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-primary/30 text-surface-bright"><span class="w-2 h-2 rounded-full bg-primary-fixed"></span><span class="font-label-sm text-label-sm">Kitchen: Live</span></div><div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-primary/30 text-surface-bright"><span class="w-2 h-2 rounded-full bg-primary-fixed"></span><span class="font-label-sm text-label-sm">Tables: Sync</span></div></div><div class="flex items-center gap-space-md"><button class="relative p-space-xs text-surface-bright hover:text-amber-warm transition-colors"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-0 right-0 w-4 h-4 bg-error text-on-error rounded-full text-[10px] flex items-center justify-center font-bold">3</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><aside class="fixed left-0 top-16 bottom-0 w-64 bg-surface-container-low z-40 flex flex-col justify-between shadow-[2px_0_12px_rgba(24,58,29,0.06)]"><div class="flex flex-col py-space-md"><nav class="flex flex-col gap-1 px-space-sm" data-active-classes="bg-primary-container text-on-primary font-semibold shadow-sm"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="pos-terminal" href="#"><span class="material-symbols-outlined text-[20px]">point_of_sale</span><span class="font-label-md text-label-md">Payment Terminal</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="order-pipeline" href="#"><span class="material-symbols-outlined text-[20px]">receipt_long</span><span class="font-label-md text-label-md">Orders Pipeline</span></a><a aria-current="page" class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg transition-all bg-primary-container text-on-primary font-semibold shadow-sm" data-path="table-layout" href="#"><span class="material-symbols-outlined text-[20px]">table_restaurant</span><span class="font-label-md text-label-md">Table Layout</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="operational-dashboard" href="#"><span class="material-symbols-outlined text-[20px]">analytics</span><span class="font-label-md text-label-md">Dashboard</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="transaction-history" href="#"><span class="material-symbols-outlined text-[20px]">history</span><span class="font-label-md text-label-md">Transaction History</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="daily-reports" href="#"><span class="material-symbols-outlined text-[20px]">summarize</span><span class="font-label-md text-label-md">Daily Reports</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="shift-management" href="#"><span class="material-symbols-outlined text-[20px]">badge</span><span class="font-label-md text-label-md">Shift &amp; Cash</span></a></nav></div><div class="bg-surface-container p-space-sm mx-space-sm mb-space-sm rounded-lg flex flex-col gap-1"><div class="font-eyebrow-accent text-eyebrow-accent text-tertiary uppercase tracking-wider mb-1">Quick Hotkeys</div><div class="grid grid-cols-2 gap-1 text-[11px] font-monospace-data text-on-surface-variant"><span><strong class="text-primary">F1</strong> Cari</span><span><strong class="text-primary">F2</strong> Baru</span><span><strong class="text-primary">F3</strong> Bayar</span><span><strong class="text-primary">F4</strong> Refresh</span><span class="col-span-2"><strong class="text-error">ESC</strong> Batal</span></div></div></aside><div class="pl-64"><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- Interactive State Engine Script (Vanilla JS) -->
+<script>
+    window.tepiSawahLayout = {
+      activeFilter: 'all',
+      selectedId: 'A02',
+      tables: {
+        'A01': { code: 'A01', name: 'Sawah Depan A01', area: 'sawah', areaLabel: 'Hamparan Sawah (Baris Depan)', cap: '4 Pax', status: 'available', statusLabel: 'Tersedia / Kosong', orderId: '-', bill: 'Rp 0', guests: '-', waiter: 'Standby / Belum Ditugaskan', time: '-', duration: '0 mnt', notes: 'Meja bersih, siap terima tamu walk-in atau reservasi baru.', items: [] },
+        'A02': { code: 'A02', name: 'Kabin Lesehan Sawah A02', area: 'sawah', areaLabel: 'Hamparan Sawah Depan (View Utama)', cap: '4 Pax', status: 'occupied', statusLabel: 'Terisi — Sedang Makan', orderId: '#TS-001', bill: 'Rp 259.785', guests: '4 Tamu (Keluarga Santoso)', waiter: 'Dimas Saputra', time: '11:00 WIB', duration: '42 mnt', notes: '1 Ayam Bakar Madu Sawah, 1 Nasi Timbel Komplit, 2 Es Kelapa Muda Batok.', items: [{n:'Ayam Bakar Madu Sawah', q:1, p:'Rp 78.000'}, {n:'Nasi Timbel Parahyangan', q:2, p:'Rp 96.000'}, {n:'Es Kelapa Muda Cengkir', q:2, p:'Rp 42.000'}, {n:'Sambal Dadak Terasi Ciperna', q:1, p:'Rp 15.000'}] },
+        'A03': { code: 'A03', name: 'Bale Tepi Padi A03', area: 'sawah', areaLabel: 'Hamparan Sawah Samping', cap: '4 Pax', status: 'payment', statusLabel: 'Menunggu Kasir (Bill Siap)', orderId: '#TS-003', bill: 'Rp 185.000', guests: '2 Tamu (Ibu Retno)', waiter: 'Siti Rahma', time: '10:45 WIB', duration: '57 mnt', notes: 'Tamu minta pisah bill QRIS & Tunai jika memungkinkan.', items: [{n:'Gurame Goreng Terbang', q:1, p:'Rp 125.000'}, {n:'Karedok Sayur Segar', q:1, p:'Rp 28.000'}, {n:'Teh Poci Gula Batu', q:2, p:'Rp 32.000'}] },
+        'A04': { code: 'A04', name: 'Pavilion Gazebo A04', area: 'sawah', areaLabel: 'Hamparan Sawah', cap: '4 Pax', status: 'available', statusLabel: 'Tersedia', orderId: '-', bill: 'Rp 0', guests: '-', waiter: 'Standby', time: '-', duration: '0 mnt', notes: 'Set cutlery dan daun pisang pelapis siap.', items: [] },
+        'A05': { code: 'A05', name: 'Bale Bambu A05', area: 'sawah', areaLabel: 'Hamparan Sawah', cap: '6 Pax', status: 'kitchen', statusLabel: 'Dapur Sedang Menyiapkan', orderId: '#TS-008', bill: 'Rp 310.000', guests: '5 Tamu', waiter: 'Rian Firdaus', time: '11:18 WIB', duration: '14 mnt', notes: 'Pesanan masuk kitchen printer ticket #44.', items: [{n:'Bebek Goreng Sambal Ijo', q:2, p:'Rp 170.000'}, {n:'Sayur Asem Khas Pasundan', q:2, p:'Rp 40.000'}] },
+        'A06': { code: 'A06', name: 'Anjungan Sawah A06', area: 'sawah', areaLabel: 'Hamparan Sawah', cap: '4 Pax', status: 'occupied', statusLabel: 'Terisi — Sedang Makan', orderId: '#TS-004', bill: 'Rp 212.000', guests: '3 Tamu', waiter: 'Dimas Saputra', time: '11:05 WIB', duration: '37 mnt', notes: 'Tambah es teh manis 2x sudah diantar.', items: [] },
+        'A07': { code: 'A07', name: 'Teras Pematang A07', area: 'sawah', areaLabel: 'Hamparan Sawah', cap: '4 Pax', status: 'available', statusLabel: 'Tersedia', orderId: '-', bill: 'Rp 0', guests: '-', waiter: 'Standby', time: '-', duration: '0 mnt', notes: 'Spot teduh bawah pohon asam jawa.', items: [] },
+        'A08': { code: 'A08', name: 'Bale Pojok A08', area: 'sawah', areaLabel: 'Hamparan Sawah', cap: '6 Pax', status: 'reserved', statusLabel: 'Dipesan Reservasi', orderId: '-', bill: 'DP Rp 200.000', guests: '6 Pax (Ibu Shinta)', waiter: 'Dimas Saputra', time: 'Tiba 13:00 WIB', duration: 'Upcoming', notes: 'Permintaan baby chair 1 dan dekor bunga melati meja.', items: [] },
+        'S01': { code: 'S01', name: 'Saung Lesehan Utama S01', area: 'saung', areaLabel: 'Area Saung Lesehan (Keluarga Besar)', cap: '8 Pax', status: 'occupied', statusLabel: 'Terisi — Rombongan Aktif', orderId: '#TS-005', bill: 'Rp 650.000', guests: '8 Tamu (Keluarga Pak Hendra)', waiter: 'Asep Sunandar', time: '10:48 WIB', duration: '54 mnt', notes: 'Paket Liwet Komplit Kastrol Bambu Jumbo + Gurame Bakar Cobek.', items: [{n:'Nasi Liwet Kastrol Komplit (8 Pax)', q:1, p:'Rp 380.000'}, {n:'Gurame Bakar Cobek Cianjur', q:2, p:'Rp 190.000'}, {n:'Karedok Leunca & Bakwan Jagung', q:2, p:'Rp 50.000'}, {n:'Es Jeruk Kelapa Gelas Besar', q:4, p:'Rp 60.000'}] },
+        'S02': { code: 'S02', name: 'Saung Citarum S02', area: 'saung', areaLabel: 'Area Saung Lesehan', cap: '8 Pax', status: 'kitchen', statusLabel: 'Dapur Sedang Masak', orderId: '#TS-006', bill: 'Rp 415.000', guests: '6 Tamu (Pak Darmawan)', waiter: 'Asep Sunandar', time: '11:15 WIB', duration: '17 mnt lalu', notes: 'Order dikirim ke grill station & wok station.', items: [{n:'Sop Buntut Gurih Rempah', q:2, p:'Rp 190.000'}, {n:'Pepes Ikan Mas Duri Lunak', q:2, p:'Rp 130.000'}, {n:'Tahu Tempe Mendoan Hangat', q:3, p:'Rp 45.000'}] },
+        'S03': { code: 'S03', name: 'Saung Parahyangan S03', area: 'saung', areaLabel: 'Area Saung Lesehan', cap: '6 Pax', status: 'available', statusLabel: 'Tersedia', orderId: '-', bill: 'Rp 0', guests: '-', waiter: 'Standby', time: '-', duration: '0 mnt', notes: 'Tikar pandan baru dibersihkan.', items: [] },
+        'S04': { code: 'S04', name: 'Saung Sangkuriang S04', area: 'saung', areaLabel: 'Area Saung Lesehan', cap: '6 Pax', status: 'payment', statusLabel: 'Menunggu Kasir (Minta Bill)', orderId: '#TS-009', bill: 'Rp 340.000', guests: '5 Tamu', waiter: 'Budi Hartono', time: '10:50 WIB', duration: '52 mnt', notes: 'Customer siap di meja kasir terminal.', items: [] },
+        'S05': { code: 'S05', name: 'Saung Galuh S05', area: 'saung', areaLabel: 'Area Saung Lesehan', cap: '8 Pax', status: 'available', statusLabel: 'Tersedia', orderId: '-', bill: 'Rp 0', guests: '-', waiter: 'Standby', time: '-', duration: '0 mnt', notes: 'Cocok untuk gathering arisan.', items: [] },
+        'S06': { code: 'S06', name: 'Saung Pajajaran S06', area: 'saung', areaLabel: 'Area Saung Lesehan', cap: '10 Pax', status: 'occupied', statusLabel: 'Terisi — Rombongan Kantor', orderId: '#TS-011', bill: 'Rp 890.000', guests: '9 Tamu (Bank Mandiri KCP)', waiter: 'Asep Sunandar', time: '11:10 WIB', duration: '32 mnt', notes: 'Request bon kantor bernomor NPWP.', items: [] },
+        'S07': { code: 'S07', name: 'Saung Ciung Wanara S07', area: 'saung', areaLabel: 'Area Saung Lesehan', cap: '6 Pax', status: 'available', statusLabel: 'Tersedia', orderId: '-', bill: 'Rp 0', guests: '-', waiter: 'Standby', time: '-', duration: '0 mnt', notes: 'Bersih & siap.', items: [] },
+        'S08': { code: 'S08', name: 'Saung Baros S08', area: 'saung', areaLabel: 'Area Saung Lesehan', cap: '8 Pax', status: 'available', statusLabel: 'Tersedia', orderId: '-', bill: 'Rp 0', guests: '-', waiter: 'Standby', time: '-', duration: '0 mnt', notes: 'Dekat dengan musholla & kolam koi.', items: [] },
+        'R01': { code: 'R01', name: 'Rooftop Dek Senja R01', area: 'rooftop', areaLabel: 'Rooftop Dek Senja (360° Sunset View)', cap: '6 Pax', status: 'reserved', statusLabel: 'Dipesan Reservasi', orderId: '-', bill: 'DP Rp 300.000', guests: '6 Pax (Bpk. Denny)', waiter: 'Wulan Anggraini', time: 'Tiba 12:30 WIB', duration: 'Tiba dlm 58 mnt', notes: 'Request sofa sudut view Gunung Ciremai & sawah terbuka.', items: [] },
+        'R02': { code: 'R02', name: 'Rooftop Dek Senja R02', area: 'rooftop', areaLabel: 'Rooftop Dek Senja', cap: '4 Pax', status: 'available', statusLabel: 'Tersedia', orderId: '-', bill: 'Rp 0', guests: '-', waiter: 'Standby', time: '-', duration: '0 mnt', notes: 'Payung kanopi telah dibuka.', items: [] },
+        'R03': { code: 'R03', name: 'Rooftop Dek Senja R03', area: 'rooftop', areaLabel: 'Rooftop Dek Senja', cap: '4 Pax', status: 'occupied', statusLabel: 'Terisi — Kopi & Camilan', orderId: '#TS-014', bill: 'Rp 145.000', guests: '3 Tamu', waiter: 'Wulan Anggraini', time: '11:08 WIB', duration: '34 mnt', notes: '2 Manual Brew V60 Robusta Ciperna, 1 Pisang Goreng Wijen Aren.', items: [] },
+        'R04': { code: 'R04', name: 'Rooftop Dek Senja R04', area: 'rooftop', areaLabel: 'Rooftop Dek Senja', cap: '4 Pax', status: 'available', statusLabel: 'Tersedia', orderId: '-', bill: 'Rp 0', guests: '-', waiter: 'Standby', time: '-', duration: '0 mnt', notes: 'Siap.', items: [] },
+        'R05': { code: 'R05', name: 'Rooftop Dek Senja R05', area: 'rooftop', areaLabel: 'Rooftop Dek Senja', cap: '4 Pax', status: 'kitchen', statusLabel: 'Dapur Menyiapkan Kopi', orderId: '#TS-016', bill: 'Rp 118.000', guests: '2 Tamu', waiter: 'Wulan Anggraini', time: '11:24 WIB', duration: '8 mnt lalu', notes: 'Barista sedang extraction espresso & latte art.', items: [] },
+        'R06': { code: 'R06', name: 'Rooftop Dek Senja R06', area: 'rooftop', areaLabel: 'Rooftop Dek Senja', cap: '4 Pax', status: 'payment', statusLabel: 'Menunggu Kasir', orderId: '#TS-012', bill: 'Rp 160.000', guests: '2 Tamu', waiter: 'Budi Hartono', time: '10:55 WIB', duration: '47 mnt', notes: 'Sudah minta print out bill.', items: [] },
+        'R07': { code: 'R07', name: 'Rooftop Dek Senja R07', area: 'rooftop', areaLabel: 'Rooftop Dek Senja', cap: '4 Pax', status: 'available', statusLabel: 'Tersedia', orderId: '-', bill: 'Rp 0', guests: '-', waiter: 'Standby', time: '-', duration: '0 mnt', notes: 'Breeze sejuk angin sawah.', items: [] },
+        'R08': { code: 'R08', name: 'Rooftop Sunset Lounge R08', area: 'rooftop', areaLabel: 'Rooftop Dek Senja', cap: '6 Pax', status: 'available', statusLabel: 'Tersedia', orderId: '-', bill: 'Rp 0', guests: '-', waiter: 'Standby', time: '-', duration: '0 mnt', notes: 'Paling diminati saat senja (16:30 - 18:00).', items: [] }
+      },
+
+      filterArea(area, btnEl) {
+        this.activeFilter = area;
+        document.querySelectorAll('.filter-pill-btn').forEach(b => {
+          b.className = 'filter-pill-btn px-space-md py-space-xs rounded-full font-label-sm text-label-sm transition-all bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest cursor-pointer';
+        });
+        btnEl.className = 'filter-pill-btn px-space-md py-space-xs rounded-full font-label-sm text-label-sm transition-all bg-primary-container text-on-primary font-bold shadow-sm cursor-pointer';
+        
+        document.querySelectorAll('[data-table-node]').forEach(node => {
+          const nodeArea = node.getAttribute('data-area');
+          if (area === 'all' || nodeArea === area) {
+            node.classList.remove('opacity-25', 'grayscale-[40%]');
+            node.style.pointerEvents = 'auto';
+          } else {
+            node.classList.add('opacity-25', 'grayscale-[40%]');
+            node.style.pointerEvents = 'auto';
+          }
+        });
+      },
+
+      selectTable(id) {
+        this.selectedId = id;
+        const d = this.tables[id];
+        if (!d) return;
+
+        // highlight nodes
+        document.querySelectorAll('[data-table-node]').forEach(el => {
+          if (el.getAttribute('data-table-id') === id) {
+            el.classList.add('shadow-xl', 'scale-[1.03]');
+          } else {
+            el.classList.remove('shadow-xl', 'scale-[1.03]');
+          }
+        });
+
+        // update side inspector
+        document.getElementById('side-table-code').innerText = d.code;
+        document.getElementById('side-table-name').innerText = d.name;
+        document.getElementById('side-table-area').innerText = d.areaLabel;
+        document.getElementById('side-table-cap').innerText = d.cap;
+        document.getElementById('side-table-time').innerText = d.time;
+        document.getElementById('side-table-duration').innerText = d.duration;
+        document.getElementById('side-table-waiter').innerText = d.waiter;
+        document.getElementById('side-table-orderid').innerText = d.orderId;
+        document.getElementById('side-table-bill').innerText = d.bill;
+        document.getElementById('side-table-guests').innerText = d.guests;
+        document.getElementById('side-table-notes').innerText = d.notes;
+
+        const badgeEl = document.getElementById('side-table-status-badge');
+        const dotEl = document.getElementById('side-table-status-dot');
+        const textEl = document.getElementById('side-table-status-text');
+
+        // Color mapper
+        const map = {
+          'available': { bg: 'bg-primary/10', text: 'text-primary', dot: 'bg-primary', label: '🟢 Tersedia' },
+          'occupied': { bg: 'bg-error/10', text: 'text-error', dot: 'bg-error animate-pulse', label: '🔴 Terisi (Makan)' },
+          'kitchen': { bg: 'bg-secondary/15', text: 'text-secondary', dot: 'bg-secondary animate-pulse', label: '🔵 Dapur Menyiapkan' },
+          'payment': { bg: 'bg-secondary-container', text: 'text-on-secondary-container', dot: 'bg-amber-warm animate-ping', label: '🟠 Menunggu Pembayaran' },
+          'reserved': { bg: 'bg-surface-variant', text: 'text-on-surface-variant', dot: 'bg-outline', label: '⚪ Dipesan Reservasi' }
+        };
+
+        const theme = map[d.status] || map['available'];
+        badgeEl.className = `px-space-md py-space-xs rounded-full flex items-center gap-space-xs ${theme.bg} ${theme.text}`;
+        dotEl.className = `w-2 h-2 rounded-full ${theme.dot}`;
+        textEl.innerText = d.statusLabel;
+
+        // Render item list
+        const itemsContainer = document.getElementById('side-table-items');
+        if (d.items && d.items.length > 0) {
+          itemsContainer.innerHTML = d.items.map(i => `
+            <div class="flex items-center justify-between py-1 font-body-sm text-body-sm">
+              <span class="text-on-surface"><span class="font-bold text-primary mr-1">${i.q}x</span>${i.n}</span>
+              <span class="font-monospace-data text-monospace-data text-roasted-earth font-semibold">${i.p}</span>
+            </div>
+          `).join('');
+          document.getElementById('side-table-items-section').classList.remove('hidden');
+        } else {
+          document.getElementById('side-table-items-section').classList.add('hidden');
+        }
+      },
+
+      quickNotify(msg) {
+        const notif = document.getElementById('toast-feedback');
+        notif.querySelector('span:last-child').innerText = msg;
+        notif.classList.remove('translate-y-24', 'opacity-0');
+        setTimeout(() => {
+          notif.classList.add('translate-y-24', 'opacity-0');
+        }, 2800);
+      }
+    };
+  </script>
+<!-- Notification Toast -->
+<div class="fixed bottom-6 right-80 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-deep-moss text-surface-bright px-space-lg py-space-md rounded-xl shadow-2xl flex items-center gap-space-md pointer-events-none" id="toast-feedback">
+<span class="material-symbols-outlined text-amber-warm text-[22px]">check_circle</span>
+<span class="font-label-md text-label-md">Instruksi kasir berhasil dijalankan.</span>
+</div>
+<!-- Main Content Canvas -->
+<div class="p-gutter-lg flex flex-col gap-space-lg max-w-7xl mx-auto">
+<!-- Top Control Bar & Live Status Strip -->
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<!-- Upper Section: Filter Selector & Quick Stats -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="font-eyebrow-accent text-eyebrow-accent text-primary uppercase">Manajemen Denah Restoran</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-monospace-data text-monospace-data text-on-surface-variant">24 Meja &amp; Saung Terdaftar</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-deep-moss">Peta Meja &amp; Kapasitas Real-Time</h2>
+</div>
+<!-- Quick Switcher Pills -->
+<div class="flex items-center flex-wrap gap-space-xs p-1 bg-surface-container rounded-full">
+<button class="filter-pill-btn px-space-md py-space-xs rounded-full font-label-sm text-label-sm transition-all bg-primary-container text-on-primary font-bold shadow-sm cursor-pointer" onclick="tepiSawahLayout.filterArea('all', this)">
+            Seluruh Area (24)
+          </button>
+<button class="filter-pill-btn px-space-md py-space-xs rounded-full font-label-sm text-label-sm transition-all bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest cursor-pointer" onclick="tepiSawahLayout.filterArea('sawah', this)">
+            🌾 Hamparan Sawah (A01 - A08)
+          </button>
+<button class="filter-pill-btn px-space-md py-space-xs rounded-full font-label-sm text-label-sm transition-all bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest cursor-pointer" onclick="tepiSawahLayout.filterArea('saung', this)">
+            🛖 Saung Lesehan (S01 - S08)
+          </button>
+<button class="filter-pill-btn px-space-md py-space-xs rounded-full font-label-sm text-label-sm transition-all bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest cursor-pointer" onclick="tepiSawahLayout.filterArea('rooftop', this)">
+            🌅 Rooftop Dek Senja (R01 - R08)
+          </button>
+</div>
+</div>
+<!-- Live Legend Strip -->
+<div class="pt-space-md flex flex-wrap items-center justify-between gap-space-md bg-surface-container/60 p-space-md rounded-lg">
+<div class="flex items-center flex-wrap gap-space-lg">
+<div class="flex items-center gap-space-xs">
+<span class="w-3.5 h-3.5 rounded-full bg-primary flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-bright"></span>
+</span>
+<span class="font-label-sm text-label-sm text-on-surface">Kosong / Tersedia</span>
+<span class="font-monospace-data text-monospace-data font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">11</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="w-3.5 h-3.5 rounded-full bg-error flex items-center justify-center animate-pulse">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-bright"></span>
+</span>
+<span class="font-label-sm text-label-sm text-on-surface">Terisi / Makan</span>
+<span class="font-monospace-data text-monospace-data font-bold text-error bg-error/10 px-1.5 py-0.5 rounded-full">7</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="w-3.5 h-3.5 rounded-full bg-secondary flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-bright"></span>
+</span>
+<span class="font-label-sm text-label-sm text-on-surface">Dapur Menyiapkan</span>
+<span class="font-monospace-data text-monospace-data font-bold text-secondary bg-secondary/15 px-1.5 py-0.5 rounded-full">3</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="w-3.5 h-3.5 rounded-full bg-amber-warm flex items-center justify-center shadow-[0_0_8px_rgba(243,198,68,0.8)]">
+<span class="w-1.5 h-1.5 rounded-full bg-deep-moss"></span>
+</span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold text-roasted-earth">Menunggu Pembayaran</span>
+<span class="font-monospace-data text-monospace-data font-bold text-tertiary bg-secondary-container px-1.5 py-0.5 rounded-full">3</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="w-3.5 h-3.5 rounded-full bg-outline flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-bright"></span>
+</span>
+<span class="font-label-sm text-label-sm text-on-surface">Reservasi Mendatang</span>
+<span class="font-monospace-data text-monospace-data font-bold text-on-surface-variant bg-surface-variant px-1.5 py-0.5 rounded-full">2</span>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">groups</span>
+<span>Total Okupansi: <strong class="text-deep-moss">68%</strong></span>
+</div>
+<button class="flex items-center gap-space-xs px-space-sm py-space-xs bg-surface-container-high rounded text-on-surface hover:bg-surface-variant text-label-sm transition-colors cursor-pointer" onclick="tepiSawahLayout.quickNotify('Memperbarui sinkronisasi status meja dari pelayan &amp; kitchen...')">
+<span class="material-symbols-outlined text-[16px]">sync</span>
+<span>Sync</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Main Workspace: Interactive Spatial Map + Side Inspector -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-lg items-start">
+<!-- Interactive Floor Layout Grid Canvas (Col 8) -->
+<div class="xl:col-span-8 flex flex-col gap-space-lg">
+<!-- Architectural Floor Map Canvas -->
+<div class="bg-rice-paper rounded-xl p-space-lg shadow-md relative overflow-hidden flex flex-col gap-space-lg">
+<!-- Subtle Environmental Watermark Pattern -->
+<div class="absolute inset-0 pointer-events-none opacity-40 bg-[radial-gradient(#183A1D_1px,transparent_1px)] [background-size:24px_24px]"></div>
+<!-- Section 1: HAMBURAN SAWAH (Area A01 - A08) -->
+<div class="relative z-10 flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="p-space-xs bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined text-[20px]">potted_plant</span>
+</span>
+<div>
+<h3 class="font-title-editorial text-title-editorial text-deep-moss font-bold">Area Hamparan Sawah (A01 - A08)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Panorama terbuka view sawah Ciperna • Angin alami • Meja kayu jati &amp; bale rendah</p>
+</div>
+</div>
+<span class="font-monospace-data text-monospace-data bg-primary/15 text-primary px-space-sm py-0.5 rounded-full font-semibold">8 Meja</span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-md">
+<!-- Meja A01 (Available) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="sawah" data-table-id="A01" data-table-node="" onclick="tepiSawahLayout.selectTable('A01')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">A01</span>
+<span class="w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-primary font-bold mb-space-xs">🟢 Kosong</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Kapasitas:</span>
+<span class="font-bold">4 Pax</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-outline">Siap Tamu</span>
+<span class="material-symbols-outlined text-[16px] text-primary group-hover:translate-x-0.5 transition-transform">add_circle</span>
+</div>
+</div>
+<!-- Meja A02 (Occupied - Selected Default) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-xl scale-[1.03] relative overflow-hidden group" data-area="sawah" data-table-id="A02" data-table-node="" onclick="tepiSawahLayout.selectTable('A02')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">A02</span>
+<span class="w-3 h-3 rounded-full bg-error animate-pulse ring-4 ring-error/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-error font-bold mb-space-xs">🔴 Terisi (4 Tamu)</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span class="font-monospace-data text-monospace-data text-roasted-earth">Order #TS-001</span>
+<span class="font-monospace-data text-monospace-data text-error font-bold">42 mnt</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-deep-moss font-bold">Rp 259.785</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">restaurant</span>
+</div>
+</div>
+<!-- Meja A03 (Payment Pending) -->
+<div class="cursor-pointer transition-all duration-200 bg-secondary-container/30 rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="sawah" data-table-id="A03" data-table-node="" onclick="tepiSawahLayout.selectTable('A03')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-roasted-earth">A03</span>
+<span class="w-3 h-3 rounded-full bg-amber-warm animate-ping ring-4 ring-amber-warm/40"></span>
+</div>
+<div class="font-label-sm text-label-sm text-on-secondary-container font-bold mb-space-xs">🟠 Siap Kasir</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span class="font-monospace-data text-monospace-data text-roasted-earth">Order #TS-003</span>
+<span class="font-monospace-data text-monospace-data text-on-secondary-container font-bold">57 mnt</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-roasted-earth font-bold">Rp 185.000</span>
+<span class="material-symbols-outlined text-[16px] text-tertiary">payments</span>
+</div>
+</div>
+<!-- Meja A04 (Available) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="sawah" data-table-id="A04" data-table-node="" onclick="tepiSawahLayout.selectTable('A04')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">A04</span>
+<span class="w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-primary font-bold mb-space-xs">🟢 Kosong</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Kapasitas:</span>
+<span class="font-bold">4 Pax</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-outline">Siap Tamu</span>
+<span class="material-symbols-outlined text-[16px] text-primary">add_circle</span>
+</div>
+</div>
+<!-- Meja A05 (Kitchen Preparing) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="sawah" data-table-id="A05" data-table-node="" onclick="tepiSawahLayout.selectTable('A05')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">A05</span>
+<span class="w-3 h-3 rounded-full bg-secondary ring-4 ring-secondary/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-secondary font-bold mb-space-xs">🔵 Masak Dapur</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span class="font-monospace-data text-monospace-data text-roasted-earth">Order #TS-008</span>
+<span class="font-monospace-data text-monospace-data text-secondary font-bold">14 mnt</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-deep-moss font-bold">Rp 310.000</span>
+<span class="material-symbols-outlined text-[16px] text-secondary animate-spin">skillet</span>
+</div>
+</div>
+<!-- Meja A06 (Occupied) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="sawah" data-table-id="A06" data-table-node="" onclick="tepiSawahLayout.selectTable('A06')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">A06</span>
+<span class="w-3 h-3 rounded-full bg-error ring-4 ring-error/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-error font-bold mb-space-xs">🔴 Terisi (3 Tamu)</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span class="font-monospace-data text-monospace-data text-roasted-earth">Order #TS-004</span>
+<span class="font-monospace-data text-monospace-data text-error font-bold">37 mnt</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-deep-moss font-bold">Rp 212.000</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">restaurant</span>
+</div>
+</div>
+<!-- Meja A07 (Available) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="sawah" data-table-id="A07" data-table-node="" onclick="tepiSawahLayout.selectTable('A07')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">A07</span>
+<span class="w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-primary font-bold mb-space-xs">🟢 Kosong</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Kapasitas:</span>
+<span class="font-bold">4 Pax</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-outline">Siap Tamu</span>
+<span class="material-symbols-outlined text-[16px] text-primary">add_circle</span>
+</div>
+</div>
+<!-- Meja A08 (Reserved) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="sawah" data-table-id="A08" data-table-node="" onclick="tepiSawahLayout.selectTable('A08')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">A08</span>
+<span class="w-3 h-3 rounded-full bg-outline ring-4 ring-outline/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant font-bold mb-space-xs">⚪ Booked 13:00</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Ibu Shinta</span>
+<span class="font-bold">6 Pax</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-secondary font-semibold">DP Paid</span>
+<span class="material-symbols-outlined text-[16px] text-outline">event_seat</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Central Courtyard / Botanical Walkway Divider -->
+<div class="relative py-space-sm px-space-lg bg-surface-container rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-space-sm text-secondary">
+<span class="material-symbols-outlined text-[18px]">water</span>
+<span class="font-label-sm text-label-sm font-semibold tracking-wide uppercase text-roasted-earth">Kolam Koi &amp; Taman Anggrek Tengah Resto</span>
+</div>
+<div class="flex items-center gap-space-md text-on-surface-variant font-body-sm text-body-sm">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-primary"></span> Jalur Pramusaji Utama</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-warm"></span> Akses Barista &amp; Musholla</span>
+</div>
+</div>
+<!-- Section 2: SAUNG LESEHAN KELUARGA (Area S01 - S08) -->
+<div class="relative z-10 flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="p-space-xs bg-secondary/15 rounded-lg text-secondary">
+<span class="material-symbols-outlined text-[20px]">cottage</span>
+</span>
+<div>
+<h3 class="font-title-editorial text-title-editorial text-deep-moss font-bold">Area Saung Lesehan (S01 - S08)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Saung bambu terpisah • Lesehan empuk • Format favorit keluarga &amp; rombongan arisan</p>
+</div>
+</div>
+<span class="font-monospace-data text-monospace-data bg-secondary/15 text-roasted-earth px-space-sm py-0.5 rounded-full font-semibold">8 Saung (Kapasitas Besar)</span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-md">
+<!-- Meja S01 (Occupied Large Family) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="saung" data-table-id="S01" data-table-node="" onclick="tepiSawahLayout.selectTable('S01')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">S01</span>
+<span class="w-3 h-3 rounded-full bg-error animate-pulse ring-4 ring-error/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-error font-bold mb-space-xs">🔴 Terisi (8 Tamu)</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span class="truncate">Pak Hendra</span>
+<span class="font-monospace-data text-monospace-data text-error font-bold">54 mnt</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-deep-moss font-bold">Rp 650.000</span>
+<span class="material-symbols-outlined text-[16px] text-tertiary">dinner_dining</span>
+</div>
+</div>
+<!-- Meja S02 (Kitchen Cooking) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="saung" data-table-id="S02" data-table-node="" onclick="tepiSawahLayout.selectTable('S02')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">S02</span>
+<span class="w-3 h-3 rounded-full bg-secondary ring-4 ring-secondary/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-secondary font-bold mb-space-xs">🔵 Masak Dapur</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span class="truncate">Pak Darmawan (6)</span>
+<span class="font-monospace-data text-monospace-data text-secondary font-bold">17 mnt</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-deep-moss font-bold">Rp 415.000</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">outdoor_grill</span>
+</div>
+</div>
+<!-- Meja S03 (Available) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="saung" data-table-id="S03" data-table-node="" onclick="tepiSawahLayout.selectTable('S03')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">S03</span>
+<span class="w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-primary font-bold mb-space-xs">🟢 Kosong</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Kapasitas:</span>
+<span class="font-bold">6 Pax</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-outline">Siap Tamu</span>
+<span class="material-symbols-outlined text-[16px] text-primary">add_circle</span>
+</div>
+</div>
+<!-- Meja S04 (Payment Pending) -->
+<div class="cursor-pointer transition-all duration-200 bg-secondary-container/30 rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="saung" data-table-id="S04" data-table-node="" onclick="tepiSawahLayout.selectTable('S04')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-roasted-earth">S04</span>
+<span class="w-3 h-3 rounded-full bg-amber-warm animate-ping ring-4 ring-amber-warm/40"></span>
+</div>
+<div class="font-label-sm text-label-sm text-on-secondary-container font-bold mb-space-xs">🟠 Siap Kasir</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span class="truncate">5 Tamu</span>
+<span class="font-monospace-data text-monospace-data text-on-secondary-container font-bold">52 mnt</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-roasted-earth font-bold">Rp 340.000</span>
+<span class="material-symbols-outlined text-[16px] text-tertiary">receipt_long</span>
+</div>
+</div>
+<!-- Meja S05 (Available) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="saung" data-table-id="S05" data-table-node="" onclick="tepiSawahLayout.selectTable('S05')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">S05</span>
+<span class="w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-primary font-bold mb-space-xs">🟢 Kosong</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Kapasitas:</span>
+<span class="font-bold">8 Pax</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-outline">Siap Tamu</span>
+<span class="material-symbols-outlined text-[16px] text-primary">add_circle</span>
+</div>
+</div>
+<!-- Meja S06 (Occupied Office Gathering) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="saung" data-table-id="S06" data-table-node="" onclick="tepiSawahLayout.selectTable('S06')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">S06</span>
+<span class="w-3 h-3 rounded-full bg-error ring-4 ring-error/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-error font-bold mb-space-xs">🔴 Terisi (9 Tamu)</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span class="truncate">Mandiri KCP</span>
+<span class="font-monospace-data text-monospace-data text-error font-bold">32 mnt</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-deep-moss font-bold">Rp 890.000</span>
+<span class="material-symbols-outlined text-[16px] text-tertiary">groups</span>
+</div>
+</div>
+<!-- Meja S07 (Available) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="saung" data-table-id="S07" data-table-node="" onclick="tepiSawahLayout.selectTable('S07')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">S07</span>
+<span class="w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-primary font-bold mb-space-xs">🟢 Kosong</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Kapasitas:</span>
+<span class="font-bold">6 Pax</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-outline">Siap Tamu</span>
+<span class="material-symbols-outlined text-[16px] text-primary">add_circle</span>
+</div>
+</div>
+<!-- Meja S08 (Available) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="saung" data-table-id="S08" data-table-node="" onclick="tepiSawahLayout.selectTable('S08')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">S08</span>
+<span class="w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-primary font-bold mb-space-xs">🟢 Kosong</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Kapasitas:</span>
+<span class="font-bold">8 Pax</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-outline">Siap Tamu</span>
+<span class="material-symbols-outlined text-[16px] text-primary">add_circle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 3: ROOFTOP DEK SENJA (Area R01 - R08) -->
+<div class="relative z-10 flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="p-space-xs bg-amber-warm/20 rounded-lg text-tertiary">
+<span class="material-symbols-outlined text-[20px]">wb_twilight</span>
+</span>
+<div>
+<h3 class="font-title-editorial text-title-editorial text-deep-moss font-bold">Area Rooftop Dek Senja (R01 - R08)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Lantai 2 view 360° sawah &amp; siluet Gunung Ciremai • Suasana coffee bar chillout</p>
+</div>
+</div>
+<span class="font-monospace-data text-monospace-data bg-amber-warm/25 text-roasted-earth px-space-sm py-0.5 rounded-full font-semibold">8 Meja Rooftop</span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-md">
+<!-- Meja R01 (Reserved - Denny 12:30) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="rooftop" data-table-id="R01" data-table-node="" onclick="tepiSawahLayout.selectTable('R01')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">R01</span>
+<span class="w-3 h-3 rounded-full bg-outline ring-4 ring-outline/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-tertiary font-bold mb-space-xs">⚪ Booked 12:30</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span class="truncate">Bpk. Denny</span>
+<span class="font-bold">6 Pax</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-primary font-semibold">Tiba 58 mnt</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">stars</span>
+</div>
+</div>
+<!-- Meja R02 (Available) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="rooftop" data-table-id="R02" data-table-node="" onclick="tepiSawahLayout.selectTable('R02')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">R02</span>
+<span class="w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-primary font-bold mb-space-xs">🟢 Kosong</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Kapasitas:</span>
+<span class="font-bold">4 Pax</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-outline">Siap Tamu</span>
+<span class="material-symbols-outlined text-[16px] text-primary">add_circle</span>
+</div>
+</div>
+<!-- Meja R03 (Occupied Coffee) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="rooftop" data-table-id="R03" data-table-node="" onclick="tepiSawahLayout.selectTable('R03')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">R03</span>
+<span class="w-3 h-3 rounded-full bg-error ring-4 ring-error/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-error font-bold mb-space-xs">🔴 Terisi (3 Tamu)</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span class="truncate">Kopi &amp; Snack</span>
+<span class="font-monospace-data text-monospace-data text-error font-bold">34 mnt</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-deep-moss font-bold">Rp 145.000</span>
+<span class="material-symbols-outlined text-[16px] text-tertiary">local_cafe</span>
+</div>
+</div>
+<!-- Meja R04 (Available) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="rooftop" data-table-id="R04" data-table-node="" onclick="tepiSawahLayout.selectTable('R04')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">R04</span>
+<span class="w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-primary font-bold mb-space-xs">🟢 Kosong</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Kapasitas:</span>
+<span class="font-bold">4 Pax</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-outline">Siap Tamu</span>
+<span class="material-symbols-outlined text-[16px] text-primary">add_circle</span>
+</div>
+</div>
+<!-- Meja R05 (Barista Preparing) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="rooftop" data-table-id="R05" data-table-node="" onclick="tepiSawahLayout.selectTable('R05')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">R05</span>
+<span class="w-3 h-3 rounded-full bg-secondary ring-4 ring-secondary/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-secondary font-bold mb-space-xs">🔵 Barista Seduh</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span class="truncate">Order #TS-016</span>
+<span class="font-monospace-data text-monospace-data text-secondary font-bold">8 mnt</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-deep-moss font-bold">Rp 118.000</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">coffee_maker</span>
+</div>
+</div>
+<!-- Meja R06 (Payment Pending) -->
+<div class="cursor-pointer transition-all duration-200 bg-secondary-container/30 rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="rooftop" data-table-id="R06" data-table-node="" onclick="tepiSawahLayout.selectTable('R06')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-roasted-earth">R06</span>
+<span class="w-3 h-3 rounded-full bg-amber-warm animate-ping ring-4 ring-amber-warm/40"></span>
+</div>
+<div class="font-label-sm text-label-sm text-on-secondary-container font-bold mb-space-xs">🟠 Siap Kasir</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span class="truncate">2 Tamu</span>
+<span class="font-monospace-data text-monospace-data text-on-secondary-container font-bold">47 mnt</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-roasted-earth font-bold">Rp 160.000</span>
+<span class="material-symbols-outlined text-[16px] text-tertiary">receipt</span>
+</div>
+</div>
+<!-- Meja R07 (Available) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="rooftop" data-table-id="R07" data-table-node="" onclick="tepiSawahLayout.selectTable('R07')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">R07</span>
+<span class="w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-primary font-bold mb-space-xs">🟢 Kosong</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Kapasitas:</span>
+<span class="font-bold">4 Pax</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-outline">Siap Tamu</span>
+<span class="material-symbols-outlined text-[16px] text-primary">add_circle</span>
+</div>
+</div>
+<!-- Meja R08 (Available Sunset Spot) -->
+<div class="cursor-pointer transition-all duration-200 bg-surface rounded-xl p-space-md shadow-sm hover:shadow-md relative overflow-hidden group" data-area="rooftop" data-table-id="R08" data-table-node="" onclick="tepiSawahLayout.selectTable('R08')">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-headline-sm text-deep-moss">R08</span>
+<span class="w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20"></span>
+</div>
+<div class="font-label-sm text-label-sm text-primary font-bold mb-space-xs">🟢 Kosong</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Kapasitas:</span>
+<span class="font-bold">6 Pax</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between">
+<span class="font-monospace-data text-monospace-data text-amber-warm font-bold">Best Sunset</span>
+<span class="material-symbols-outlined text-[16px] text-primary">add_circle</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Floor Micro Quick-Analytics Bar -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<div class="bg-surface-container-low p-space-md rounded-xl flex items-center gap-space-md shadow-sm">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[26px]">hourglass_bottom</span>
+</div>
+<div>
+<span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase">Rata-Rata Makan Tamu</span>
+<div class="font-headline-sm text-headline-sm text-deep-moss">38.4 Menit</div>
+<span class="font-body-sm text-body-sm text-primary font-semibold">Normal (Standar Sawah: 45 m)</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-space-md rounded-xl flex items-center gap-space-md shadow-sm">
+<div class="w-12 h-12 rounded-xl bg-secondary/15 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[26px]">room_service</span>
+</div>
+<div>
+<span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase">Pesanan Dalam Masak</span>
+<div class="font-headline-sm text-headline-sm text-roasted-earth">3 Tiket Dapur</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Est. Selesai &lt; 12 Menit</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-space-md rounded-xl flex items-center gap-space-md shadow-sm">
+<div class="w-12 h-12 rounded-xl bg-amber-warm/25 flex items-center justify-center text-roasted-earth">
+<span class="material-symbols-outlined text-[26px]">payments</span>
+</div>
+<div>
+<span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase">Pending Payment Total</span>
+<div class="font-headline-sm text-headline-sm text-tertiary">Rp 685.000</div>
+<span class="font-body-sm text-body-sm text-roasted-earth font-semibold">3 Meja Siap Cetak Bill</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Selected Table Side Inspector (Col 4) -->
+<div class="xl:col-span-4 flex flex-col gap-space-md sticky top-20">
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-lg flex flex-col gap-space-md">
+<!-- Inspector Header -->
+<div class="flex items-start justify-between pb-space-sm">
+<div class="flex flex-col">
+<span class="font-eyebrow-accent text-eyebrow-accent text-secondary uppercase tracking-wider">Detail Meja Terpilih</span>
+<div class="flex items-center gap-space-sm mt-0.5">
+<span class="font-display-hero text-headline-lg text-deep-moss" id="side-table-code">A02</span>
+<div class="flex flex-col">
+<h4 class="font-title-editorial text-title-editorial font-bold text-on-surface leading-tight" id="side-table-name">Kabin Lesehan Sawah A02</h4>
+<span class="font-body-sm text-body-sm text-on-surface-variant" id="side-table-area">Hamparan Sawah Depan (View Utama)</span>
+</div>
+</div>
+</div>
+<!-- Dynamic Status Badge -->
+<div class="px-space-md py-space-xs rounded-full flex items-center gap-space-xs bg-error/10 text-error" id="side-table-status-badge">
+<span class="w-2 h-2 rounded-full bg-error animate-pulse" id="side-table-status-dot"></span>
+<span class="font-label-sm text-label-sm font-bold" id="side-table-status-text">Terisi — Makan</span>
+</div>
+</div>
+<!-- Metadata Spec Grid -->
+<div class="grid grid-cols-2 gap-space-sm bg-surface p-space-md rounded-lg shadow-sm">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Waktu Mulai Duduk</span>
+<span class="font-monospace-data text-monospace-data text-on-surface font-semibold" id="side-table-time">11:00 WIB</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Durasi Meja</span>
+<span class="font-monospace-data text-monospace-data text-error font-bold" id="side-table-duration">42 mnt</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Kapasitas Tempat</span>
+<span class="font-body-sm text-body-sm text-on-surface font-semibold" id="side-table-cap">4 Pax</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Pramusaji Meja</span>
+<span class="font-body-sm text-body-sm text-primary font-semibold" id="side-table-waiter">Dimas Saputra</span>
+</div>
+</div>
+<!-- Order Summary Card -->
+<div class="bg-surface-container rounded-lg p-space-md flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase">Ringkasan Bill Kasir</span>
+<span class="font-monospace-data text-monospace-data font-bold text-roasted-earth bg-secondary-container px-space-xs py-0.5 rounded" id="side-table-orderid">#TS-001</span>
+</div>
+<div class="flex items-baseline justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Total Tagihan Sementara</span>
+<span class="font-headline-sm text-headline-sm font-bold text-deep-moss" id="side-table-bill">Rp 259.785</span>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary">person</span>
+<span id="side-table-guests">4 Tamu (Keluarga Santoso)</span>
+</div>
+<!-- Itemized details if occupied -->
+<div class="pt-space-xs" id="side-table-items-section">
+<div class="font-eyebrow-accent text-eyebrow-accent text-outline uppercase mb-1">Daftar Menu Dipesan</div>
+<div class="flex flex-col gap-1 max-h-36 overflow-y-auto pr-1" id="side-table-items">
+<div class="flex items-center justify-between py-1 font-body-sm text-body-sm">
+<span class="text-on-surface"><span class="font-bold text-primary mr-1">1x</span>Ayam Bakar Madu Sawah</span>
+<span class="font-monospace-data text-monospace-data text-roasted-earth font-semibold">Rp 78.000</span>
+</div>
+<div class="flex items-center justify-between py-1 font-body-sm text-body-sm">
+<span class="text-on-surface"><span class="font-bold text-primary mr-1">2x</span>Nasi Timbel Parahyangan</span>
+<span class="font-monospace-data text-monospace-data text-roasted-earth font-semibold">Rp 96.000</span>
+</div>
+<div class="flex items-center justify-between py-1 font-body-sm text-body-sm">
+<span class="text-on-surface"><span class="font-bold text-primary mr-1">2x</span>Es Kelapa Muda Cengkir</span>
+<span class="font-monospace-data text-monospace-data text-roasted-earth font-semibold">Rp 42.000</span>
+</div>
+<div class="flex items-center justify-between py-1 font-body-sm text-body-sm">
+<span class="text-on-surface"><span class="font-bold text-primary mr-1">1x</span>Sambal Dadak Terasi Ciperna</span>
+<span class="font-monospace-data text-monospace-data text-roasted-earth font-semibold">Rp 15.000</span>
+</div>
+</div>
+</div>
+<!-- Notes field -->
+<div class="p-space-sm bg-surface-container-high rounded text-on-surface-variant font-body-sm text-body-sm italic">
+              "<span id="side-table-notes">Pesanan siap, tamu menikmati suasana hamparan sawah utama.</span>"
+            </div>
+</div>
+<!-- Quick Action Buttons for Cashier -->
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<button class="w-full bg-primary-container hover:bg-deep-moss text-on-primary py-space-sm px-space-md rounded-xl font-label-md text-label-md font-bold flex items-center justify-center gap-space-sm transition-all duration-200 shadow-md hover:-translate-y-0.5 cursor-pointer" onclick="tepiSawahLayout.quickNotify('Membuka Pembayaran Kasir POS untuk Meja ' + tepiSawahLayout.selectedId)">
+<span class="material-symbols-outlined text-[20px]">point_of_sale</span>
+<span>Buka Pembayaran / Kasir POS (F3)</span>
+</button>
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="bg-surface hover:bg-surface-container text-on-surface py-space-sm px-space-sm rounded-lg font-label-sm text-label-sm font-semibold flex items-center justify-center gap-1 shadow-sm transition-colors cursor-pointer" onclick="tepiSawahLayout.quickNotify('Buka Dialog Pindah Meja (Transfer)')">
+<span class="material-symbols-outlined text-[18px] text-secondary">move_up</span>
+<span>Pindah Meja</span>
+</button>
+<button class="bg-surface hover:bg-surface-container text-on-surface py-space-sm px-space-sm rounded-lg font-label-sm text-label-sm font-semibold flex items-center justify-center gap-1 shadow-sm transition-colors cursor-pointer" onclick="tepiSawahLayout.quickNotify('Buka Dialog Penggabungan Bill Meja')">
+<span class="material-symbols-outlined text-[18px] text-tertiary">call_merge</span>
+<span>Gabung Bill</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="bg-surface hover:bg-surface-container text-on-surface py-space-sm px-space-sm rounded-lg font-label-sm text-label-sm font-semibold flex items-center justify-center gap-1 shadow-sm transition-colors cursor-pointer" onclick="tepiSawahLayout.quickNotify('Membuka Tambah Pesanan Manual ke Kitchen')">
+<span class="material-symbols-outlined text-[18px] text-primary">add_shopping_cart</span>
+<span>Tambah Menu</span>
+</button>
+<button class="bg-secondary hover:bg-roasted-earth text-on-secondary py-space-sm px-space-sm rounded-lg font-label-sm text-label-sm font-semibold flex items-center justify-center gap-1 shadow-sm transition-colors cursor-pointer" onclick="tepiSawahLayout.quickNotify('Mencetak Bill Sementara ke Thermal Printer Kasir')">
+<span class="material-symbols-outlined text-[18px]">print</span>
+<span>Cetak Bill Cek</span>
+</button>
+</div>
+</div>
+<!-- Thermal Receipt Visual Preview Box -->
+<div class="bg-surface-container-lowest rounded-lg p-space-md shadow-inner flex flex-col gap-space-xs">
+<div class="flex items-center justify-between text-on-surface-variant font-monospace-data text-[11px]">
+<span>TICKET PRINTER: KASIR-01</span>
+<span>AUTO-CUT ON</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface font-bold">
+<span>Status Printer Kasir:</span>
+<span class="text-primary flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> Siap Cetak</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></main></div></body></html>

@@ -1,7 +1,8 @@
 /**
- * @tepisawah/web — component barrel.
+ * @tepisawah/web — shared component barrel.
  *
- * Phase 0 scaffold: structure and tooling only.
+ * Cross-app primitives belong in `@tepisawah/ui`; app-local chrome and the
+ * homepage icon set live here.
  */
-
-export { AppHeader } from "./AppHeader.js";
+export { Icon } from "./icons.js";
+export type { IconName } from "./icons.js";

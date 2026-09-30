@@ -11,3 +11,6 @@ export * from "./menu.js";
 export * from "./plus.js";
 export * from "./chevron-down.js";
 export * from "./search.js";
+export * from "./operational.js";
+export * from "./commerce.js";
+export * from "./actions.js";

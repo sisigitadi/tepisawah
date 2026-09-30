@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"surface-container":"#f2efd5","outline-variant":"#c0c9bc","on-tertiary-fixed":"#341100","on-surface":"#1d1c0d","on-error":"#ffffff","inverse-surface":"#323120","rice-paper":"#F8F4DB","secondary":"#835418","secondary-fixed":"#ffdcbb","surface-variant":"#e7e3ca","on-secondary-container":"#784a0d","surface-container-lowest":"#ffffff","surface-bright":"#fefae0","on-primary-fixed-variant":"#12521e","surface-dim":"#dedbc2","surface":"#fefae0","primary-fixed":"#b0f3ad","on-tertiary-container":"#ffcfb8","leaf-tint":"rgba(46, 107, 52, 0.08)","primary-container":"#2e6b34","tertiary":"#6a3b20","tertiary-container":"#865235","on-primary":"#ffffff","inverse-on-surface":"#f5f1d8","on-error-container":"#93000a","on-secondary-fixed":"#2b1700","secondary-container":"#fdbd77","amber-warm":"#F3C644","outline":"#71796e","primary-fixed-dim":"#95d693","tertiary-fixed-dim":"#fcb794","on-tertiary":"#ffffff","on-primary-container":"#a7e9a5","golden-sheen":"rgba(221, 161, 94, 0.25)","error":"#ba1a1a","error-container":"#ffdad6","on-primary-fixed":"#002106","surface-container-highest":"#e7e3ca","secondary-fixed-dim":"#faba75","on-secondary":"#ffffff","inverse-primary":"#95d693","on-background":"#1d1c0d","primary":"#12521e","roasted-earth":"#3D1F10","surface-tint":"#2e6b34","background":"#fefae0","surface-container-high":"#ede9cf","surface-container-low":"#f8f4db","deep-moss":"#183A1D","on-surface-variant":"#41493f","on-secondary-fixed-variant":"#673d00","on-tertiary-fixed-variant":"#6a3b20","tertiary-fixed":"#ffdbca"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-sm":"0.5rem","space-xs":"0.25rem","space-xxl":"4rem","gutter-sm":"1rem","gutter-lg":"2rem","margin-desktop":"3rem","space-md":"1rem","margin-mobile":"1rem","space-lg":"1.5rem","space-xl":"2.5rem","margin":"1.5rem","gutter":"1.5rem"},fontFamily:{"display-hero":["Playfair Display"],"body-md":["Inter"],"monospace-data":["monospace"],"eyebrow-accent":["Inter"],"headline-lg-mobile":["Playfair Display"],"label-sm":["Inter"],"display-hero-mobile":["Playfair Display"],"headline-sm":["Playfair Display"],"body-sm":["Inter"],"headline-lg":["Playfair Display"],"title-editorial":["Playfair Display"],"label-md":["Inter"],"body-lg":["Inter"],"headline-md":["Playfair Display"]},fontSize:{"display-hero":["56px",{"lineHeight":"64px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-md":["15px",{"lineHeight":"24px","fontWeight":"400"}],"monospace-data":["13px",{"lineHeight":"18px","fontWeight":"500"}],"eyebrow-accent":["11px",{"lineHeight":"14px","letterSpacing":"0.18em","fontWeight":"700"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","fontWeight":"700"}],"label-sm":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"display-hero-mobile":["32px",{"lineHeight":"40px","letterSpacing":"-0.01em","fontWeight":"700"}],"headline-sm":["20px",{"lineHeight":"28px","fontWeight":"600"}],"body-sm":["13px",{"lineHeight":"20px","fontWeight":"400"}],"headline-lg":["36px",{"lineHeight":"44px","letterSpacing":"-0.01em","fontWeight":"700"}],"title-editorial":["18px",{"lineHeight":"26px","fontWeight":"500"}],"label-md":["14px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"600"}],"body-lg":["18px",{"lineHeight":"28px","fontWeight":"400"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"600"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 h-16 z-50 bg-deep-moss text-surface-bright shadow-[0_4px_20px_rgba(24,58,29,0.35)]"><div class="h-16 w-full px-gutter-lg flex items-center justify-between"><div class="flex items-center gap-space-md"><img alt="Logo Tepi Sawah.png" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XL00OI-aDgeuVUPV20dG8RbF1gZHLtGNbKicnH2nppz88Y-KaKrL9znZV6lJsCWPVUSEozdWTBSXXwevTgdpwpfCim030P4cg1o8r07zkGpNBCeaCS2CD6buJyaXNPNg9BN9lPfP35AirtMiyJ0NWIVFu6ciV_oU8f7jhFpQf0i-bzRwqxvEvPUXZAiOSnsR0bbO3CVcQ8DdGlAQSkrb9GoRzPzHg0QvIycTS0Vww4jjCICdttbBRklo0NOYpKvmvXXfNV4wTcyg"/><div class="flex flex-col"><span class="font-title-editorial text-title-editorial leading-none tracking-tight text-surface-bright">Tepi Sawah</span><span class="font-eyebrow-accent text-eyebrow-accent tracking-widest text-amber-warm uppercase">Cashier POS</span></div></div><div class="flex items-center gap-space-lg"><div class="hidden xl:flex items-center gap-space-sm bg-primary/40 px-space-md py-space-xs rounded-full"><span class="material-symbols-outlined text-amber-warm text-[18px]">schedule</span><span class="font-monospace-data text-monospace-data text-surface-bright font-medium">27 Sep 2026, 11:32 WIB</span></div><div class="flex items-center gap-space-sm bg-primary-container px-space-md py-space-xs rounded-full text-on-primary"><span class="w-2 h-2 rounded-full bg-amber-warm animate-pulse"></span><span class="font-label-sm text-label-sm font-semibold">Kasir: Sigit</span><span class="text-on-primary-container text-label-sm">•</span><span class="font-label-sm text-label-sm text-on-primary-container">Shift 1 Pagi - Active</span></div><div class="hidden lg:flex items-center gap-space-sm"><div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-primary/30 text-surface-bright"><span class="w-2 h-2 rounded-full bg-primary-fixed"></span><span class="font-label-sm text-label-sm">Kitchen: Live</span></div><div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-primary/30 text-surface-bright"><span class="w-2 h-2 rounded-full bg-primary-fixed"></span><span class="font-label-sm text-label-sm">Tables: Sync</span></div></div><div class="flex items-center gap-space-md"><button class="relative p-space-xs text-surface-bright hover:text-amber-warm transition-colors"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-0 right-0 w-4 h-4 bg-error text-on-error rounded-full text-[10px] flex items-center justify-center font-bold">3</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><aside class="fixed left-0 top-16 bottom-0 w-64 bg-surface-container-low z-40 flex flex-col justify-between shadow-[2px_0_12px_rgba(24,58,29,0.06)]"><div class="flex flex-col py-space-md"><nav class="flex flex-col gap-1 px-space-sm" data-active-classes="bg-primary-container text-on-primary font-semibold shadow-sm"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="pos-terminal" href="#"><span class="material-symbols-outlined text-[20px]">point_of_sale</span><span class="font-label-md text-label-md">Payment Terminal</span></a><a aria-current="page" class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg transition-all bg-primary-container text-on-primary font-semibold shadow-sm" data-path="order-pipeline" href="#"><span class="material-symbols-outlined text-[20px]">receipt_long</span><span class="font-label-md text-label-md">Orders Pipeline</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="table-layout" href="#"><span class="material-symbols-outlined text-[20px]">table_restaurant</span><span class="font-label-md text-label-md">Table Layout</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="operational-dashboard" href="#"><span class="material-symbols-outlined text-[20px]">analytics</span><span class="font-label-md text-label-md">Dashboard</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="transaction-history" href="#"><span class="material-symbols-outlined text-[20px]">history</span><span class="font-label-md text-label-md">Transaction History</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="daily-reports" href="#"><span class="material-symbols-outlined text-[20px]">summarize</span><span class="font-label-md text-label-md">Daily Reports</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="shift-management" href="#"><span class="material-symbols-outlined text-[20px]">badge</span><span class="font-label-md text-label-md">Shift &amp; Cash</span></a></nav></div><div class="bg-surface-container p-space-sm mx-space-sm mb-space-sm rounded-lg flex flex-col gap-1"><div class="font-eyebrow-accent text-eyebrow-accent text-tertiary uppercase tracking-wider mb-1">Quick Hotkeys</div><div class="grid grid-cols-2 gap-1 text-[11px] font-monospace-data text-on-surface-variant"><span><strong class="text-primary">F1</strong> Cari</span><span><strong class="text-primary">F2</strong> Baru</span><span><strong class="text-primary">F3</strong> Bayar</span><span><strong class="text-primary">F4</strong> Refresh</span><span class="col-span-2"><strong class="text-error">ESC</strong> Batal</span></div></div></aside><div class="pl-64"><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<div class="px-gutter-lg py-space-md bg-surface-container-low shadow-sm flex flex-col gap-space-md">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="relative flex-1 max-w-2xl">
+<span class="material-symbols-outlined absolute left-space-md top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+<input class="w-full pl-11 pr-16 py-space-sm bg-surface-bright rounded-xl font-body-md text-on-surface placeholder:text-outline-variant shadow-sm focus:outline-none focus:ring-2 focus:ring-primary text-body-md transition-all" id="orderSearchInput" placeholder="Cari nomor order #TS, nama meja, atau pelayan (F1)..." type="text"/>
+<span class="absolute right-space-md top-1/2 -translate-y-1/2 font-monospace-data text-[11px] bg-surface-container px-space-xs py-0.5 rounded text-on-surface-variant font-semibold">F1</span>
+</div>
+<div class="flex items-center gap-space-sm overflow-x-auto pb-1 lg:pb-0">
+<div class="flex items-center gap-space-xs bg-surface-bright px-space-md py-space-sm rounded-xl shadow-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-on-surface">Auto-Refresh: <strong class="font-bold text-primary font-monospace-data">15s</strong></span>
+</div>
+<button class="flex items-center gap-space-xs px-space-md py-space-sm rounded-xl bg-surface-container-high hover:bg-surface-variant text-on-surface font-label-md text-label-md transition-colors shadow-sm" id="manualRefreshBtn">
+<span class="material-symbols-outlined text-[18px]">sync</span>
+<span>Perbarui (F4)</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-space-sm rounded-xl bg-primary text-on-primary hover:bg-deep-moss font-label-md text-label-md shadow-sm transition-all">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+<span>Pesanan Walk-In (F2)</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-space-xs overflow-x-auto no-scrollbar pt-space-xs border-t-0">
+<button class="pipeline-tab active flex items-center gap-space-sm px-space-md py-space-sm rounded-full bg-deep-moss text-surface-bright font-label-sm text-label-sm whitespace-nowrap shadow-sm transition-all" data-status="all">
+<span>Semua Pesanan</span>
+<span class="bg-primary px-2 py-0.5 rounded-full text-[11px] font-monospace-data text-on-primary">14</span>
+</button>
+<button class="pipeline-tab flex items-center gap-space-sm px-space-md py-space-sm rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-container-high font-label-sm text-label-sm whitespace-nowrap transition-all" data-status="new-qr">
+<span class="w-2 h-2 rounded-full bg-amber-warm animate-ping"></span>
+<span class="font-semibold text-on-surface">Order Baru QR</span>
+<span class="bg-amber-warm text-roasted-earth px-2 py-0.5 rounded-full text-[11px] font-monospace-data font-bold">3 Butuh Verifikasi</span>
+</button>
+<button class="pipeline-tab flex items-center gap-space-sm px-space-md py-space-sm rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-container-high font-label-sm text-label-sm whitespace-nowrap transition-all" data-status="confirmed">
+<span>Dikonfirmasi Kasir</span>
+<span class="bg-surface-container-highest px-2 py-0.5 rounded-full text-[11px] font-monospace-data text-on-surface">4</span>
+</button>
+<button class="pipeline-tab flex items-center gap-space-sm px-space-md py-space-sm rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-container-high font-label-sm text-label-sm whitespace-nowrap transition-all" data-status="kitchen">
+<span>Dapur Memasak (KDS)</span>
+<span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full text-[11px] font-monospace-data font-semibold">4</span>
+</button>
+<button class="pipeline-tab flex items-center gap-space-sm px-space-md py-space-sm rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-container-high font-label-sm text-label-sm whitespace-nowrap transition-all" data-status="ready">
+<span>Hidangan Siap Saji</span>
+<span class="bg-primary-fixed text-on-primary-fixed-variant px-2 py-0.5 rounded-full text-[11px] font-monospace-data font-bold">2</span>
+</button>
+<button class="pipeline-tab flex items-center gap-space-sm px-space-md py-space-sm rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-container-high font-label-sm text-label-sm whitespace-nowrap transition-all" data-status="unpaid">
+<span>Menunggu Pembayaran</span>
+<span class="bg-surface-container-highest px-2 py-0.5 rounded-full text-[11px] font-monospace-data text-on-surface">3</span>
+</button>
+<button class="pipeline-tab flex items-center gap-space-sm px-space-md py-space-sm rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-container-high font-label-sm text-label-sm whitespace-nowrap transition-all" data-status="completed">
+<span>Selesai / Lunas</span>
+<span class="bg-surface-container-highest px-2 py-0.5 rounded-full text-[11px] font-monospace-data text-on-surface">28</span>
+</button>
+</div>
+</div>
+<div class="px-gutter-lg py-space-lg flex flex-col gap-space-lg max-w-7xl mx-auto w-full">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-space-md">
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-eyebrow-accent text-eyebrow-accent text-outline uppercase tracking-wider">Antrian Aktif</span>
+<span class="font-headline-md text-headline-md text-deep-moss mt-0.5">14 Pesanan</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Kapasitas Dapur: 72%</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-leaf-tint flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]">speed</span>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-eyebrow-accent text-eyebrow-accent text-outline uppercase tracking-wider">Verifikasi Mandiri QR</span>
+<div class="flex items-center gap-space-xs mt-0.5">
+<span class="font-headline-md text-headline-md text-roasted-earth">3</span>
+<span class="font-label-sm text-label-sm text-secondary bg-secondary-fixed px-1.5 py-0.5 rounded-md">Urgent</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Rata-rata respon: 1.4 m</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-golden-sheen flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[28px]">qr_code_scanner</span>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-eyebrow-accent text-eyebrow-accent text-outline uppercase tracking-wider">Rata-rata Waktu Saji</span>
+<span class="font-headline-md text-headline-md text-deep-moss mt-0.5">18.5 Min</span>
+<span class="font-body-sm text-body-sm text-primary flex items-center gap-0.5 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">arrow_downward</span> 2.1 m lebih cepat
+          </span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-leaf-tint flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]">timer</span>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-eyebrow-accent text-eyebrow-accent text-outline uppercase tracking-wider">Nilai Pending Sesi Ini</span>
+<span class="font-headline-md text-headline-md text-deep-moss mt-0.5">Rp 1.420.000</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">9 Meja Terisi</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-[28px]">payments</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">Daftar Antrean &amp; Verifikasi Pesanan</h2>
+<span class="font-label-sm text-label-sm bg-surface-container-high px-space-sm py-0.5 rounded-full text-on-surface-variant">Live Sync Kitchen</span>
+</div>
+<div class="flex items-center gap-space-sm text-on-surface-variant font-label-sm text-label-sm">
+<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-warm"></span> Perlu Aksi Kasir</span>
+<span class="flex items-center gap-1 ml-space-sm"><span class="w-2.5 h-2.5 rounded-full bg-secondary"></span> Dapur Memasak</span>
+<span class="flex items-center gap-1 ml-space-sm"><span class="w-2.5 h-2.5 rounded-full bg-primary"></span> Siap Saji</span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-space-lg items-start">
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-md flex flex-col justify-between transition-all hover:shadow-xl relative overflow-hidden" id="orderCard009">
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-amber-warm"></div>
+<div>
+<div class="flex items-start justify-between gap-space-sm pb-space-sm">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-title-editorial text-title-editorial font-bold text-on-surface">#TS-009</span>
+<span class="bg-amber-warm/30 text-roasted-earth font-eyebrow-accent text-eyebrow-accent px-2 py-0.5 rounded-full uppercase">Order Baru QR</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[16px] text-tertiary">table_restaurant</span>
+<span class="font-label-md text-label-md font-semibold text-deep-moss">Meja A04</span>
+<span class="text-xs text-outline">• Area Sawah Depan</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-monospace-data text-monospace-data font-semibold text-deep-moss">11:34 WIB</span>
+<span class="font-label-sm text-[11px] text-secondary font-medium">2 menit yang lalu</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs my-space-xs py-space-xs px-space-sm bg-surface-container rounded-lg">
+<span class="material-symbols-outlined text-[16px] text-primary">smartphone</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Sumber: <strong class="text-on-surface">QR Customer (Bpk. Denny)</strong></span>
+</div>
+<div class="py-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between font-body-md text-body-md">
+<div class="flex gap-space-xs text-on-surface">
+<span class="font-monospace-data font-bold text-deep-moss">1x</span>
+<span>Gurame Bakar Madu Sawah</span>
+</div>
+<span class="font-monospace-data text-on-surface-variant">Rp 95.000</span>
+</div>
+<div class="flex items-start justify-between font-body-md text-body-md">
+<div class="flex gap-space-xs text-on-surface">
+<span class="font-monospace-data font-bold text-deep-moss">2x</span>
+<span>Nasi Liwet Kastrol Sawah</span>
+</div>
+<span class="font-monospace-data text-on-surface-variant">Rp 48.000</span>
+</div>
+<div class="flex items-start justify-between font-body-md text-body-md">
+<div class="flex gap-space-xs text-on-surface">
+<span class="font-monospace-data font-bold text-deep-moss">1x</span>
+<span>Sayur Asem Klaten Rempah</span>
+</div>
+<span class="font-monospace-data text-on-surface-variant">Rp 22.000</span>
+</div>
+<div class="flex items-start justify-between font-body-md text-body-md">
+<div class="flex gap-space-xs text-on-surface">
+<span class="font-monospace-data font-bold text-deep-moss">2x</span>
+<span>Kopi Senja Sawah (Gula Aren)</span>
+</div>
+<span class="font-monospace-data text-on-surface-variant">Rp 46.000</span>
+</div>
+</div>
+<div class="my-space-sm p-space-sm bg-amber-warm/15 rounded-lg flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-roasted-earth text-[18px] shrink-0 mt-0.5">rate_review</span>
+<div class="flex flex-col">
+<span class="font-eyebrow-accent text-[10px] text-roasted-earth uppercase tracking-wider">Catatan Meja Pelanggan</span>
+<p class="font-body-sm text-body-sm text-roasted-earth font-medium italic mt-0.5">
+                  “Tolong dibuat tidak terlalu pedas untuk anak-anak.”
+                </p>
+</div>
+</div>
+<div class="pt-space-sm flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface-variant">Total Pesanan</span>
+<span class="font-headline-sm text-headline-sm font-bold text-deep-moss font-monospace-data">Rp 211.000</span>
+</div>
+</div>
+<div class="pt-space-md flex flex-col gap-space-xs mt-space-sm">
+<button class="w-full flex items-center justify-center gap-space-xs py-space-sm px-space-md rounded-xl bg-primary text-on-primary hover:bg-deep-moss font-label-md text-label-md font-semibold transition-all shadow-md hover:shadow-lg" onclick="approveOrder('TS-009')">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span>Konfirmasi &amp; Teruskan ke Dapur</span>
+</button>
+<button class="w-full flex items-center justify-center gap-space-xs py-space-xs px-space-md rounded-xl bg-surface-container text-error hover:bg-error-container hover:text-on-error-container font-label-md text-label-md transition-colors" onclick="openRejectModal('TS-009', 'Meja A04')">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+<span>Tolak Pesanan</span>
+</button>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-md flex flex-col justify-between transition-all hover:shadow-xl relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-secondary"></div>
+<div>
+<div class="flex items-start justify-between gap-space-sm pb-space-sm">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-title-editorial text-title-editorial font-bold text-on-surface">#TS-008</span>
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant font-eyebrow-accent text-eyebrow-accent px-2 py-0.5 rounded-full uppercase">KDS Dapur</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[16px] text-tertiary">bungalow</span>
+<span class="font-label-md text-label-md font-semibold text-deep-moss">Saung Utama 01</span>
+<span class="text-xs text-outline">• Gazebo Kolam</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-monospace-data text-monospace-data font-semibold text-deep-moss">11:25 WIB</span>
+<span class="font-label-sm text-[11px] text-on-surface-variant">9 menit proses</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs my-space-xs py-space-xs px-space-sm bg-surface-container rounded-lg">
+<span class="material-symbols-outlined text-[16px] text-tertiary">person</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Pelayan: <strong class="text-on-surface">Bambang S. (POS Mobile)</strong></span>
+</div>
+<div class="py-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between font-body-md text-body-md">
+<div class="flex gap-space-xs text-on-surface">
+<span class="font-monospace-data font-bold text-deep-moss">2x</span>
+<span>Chicken Roaster Rempah Ciperna</span>
+</div>
+<span class="font-monospace-data text-on-surface-variant">Rp 120.000</span>
+</div>
+<div class="flex items-start justify-between font-body-md text-body-md">
+<div class="flex gap-space-xs text-on-surface">
+<span class="font-monospace-data font-bold text-deep-moss">2x</span>
+<span>Es Kelapa Muda Jeruk Nipis</span>
+</div>
+<span class="font-monospace-data text-on-surface-variant">Rp 44.000</span>
+</div>
+</div>
+<div class="my-space-sm p-space-sm bg-secondary-fixed/50 rounded-lg flex flex-col gap-1">
+<div class="flex items-center justify-between text-on-secondary-fixed">
+<span class="font-eyebrow-accent text-[11px] font-bold uppercase flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-secondary">skillet</span>
+                  Status Dapur
+                </span>
+<span class="font-monospace-data text-monospace-data font-bold text-secondary">Est. 8 menit lagi</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-secondary-fixed-variant">
+                Chef Komar sedang memanggang ayam di grill pit kayu asam.
+              </p>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden mt-1">
+<div class="bg-secondary h-full rounded-full" style="width: 55%"></div>
+</div>
+</div>
+<div class="pt-space-sm flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface-variant">Total Sementara</span>
+<span class="font-headline-sm text-headline-sm font-bold text-deep-moss font-monospace-data">Rp 164.000</span>
+</div>
+</div>
+<div class="pt-space-md grid grid-cols-2 gap-space-xs mt-space-sm">
+<button class="flex items-center justify-center gap-1 py-space-sm px-space-sm rounded-xl bg-surface-container text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-colors" onclick="viewKDS('TS-008')">
+<span class="material-symbols-outlined text-[18px]">cooking</span>
+<span>KDS Monitor</span>
+</button>
+<button class="flex items-center justify-center gap-1 py-space-sm px-space-sm rounded-xl bg-primary/10 text-primary hover:bg-primary/20 font-label-md text-label-md font-semibold transition-colors" onclick="appendOrder('TS-008')">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>Tambah Item</span>
+</button>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-md flex flex-col justify-between transition-all hover:shadow-xl relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-primary"></div>
+<div>
+<div class="flex items-start justify-between gap-space-sm pb-space-sm">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-title-editorial text-title-editorial font-bold text-on-surface">#TS-007</span>
+<span class="bg-primary-fixed text-on-primary-fixed-variant font-eyebrow-accent text-eyebrow-accent px-2 py-0.5 rounded-full uppercase">Siap Saji</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[16px] text-tertiary">deck</span>
+<span class="font-label-md text-label-md font-semibold text-deep-moss">Meja R02</span>
+<span class="text-xs text-outline">• Rooftop Senja</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-monospace-data text-monospace-data font-semibold text-deep-moss">11:18 WIB</span>
+<span class="font-label-sm text-[11px] text-primary font-medium">Lengkap 100%</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs my-space-xs py-space-xs px-space-sm bg-surface-container rounded-lg">
+<span class="material-symbols-outlined text-[16px] text-primary">smartphone</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Sumber: <strong class="text-on-surface">QR Meja Customer</strong></span>
+</div>
+<div class="py-space-sm flex flex-col gap-space-xs">
+<div class="flex items-start justify-between font-body-md text-body-md">
+<div class="flex gap-space-xs text-on-surface">
+<span class="font-monospace-data font-bold text-deep-moss">2x</span>
+<span>Kopi Senja Sawah Arabica</span>
+</div>
+<span class="font-monospace-data text-on-surface-variant">Rp 46.000</span>
+</div>
+<div class="flex items-start justify-between font-body-md text-body-md">
+<div class="flex gap-space-xs text-on-surface">
+<span class="font-monospace-data font-bold text-deep-moss">1x</span>
+<span>Pisang Goreng Wijen Madu</span>
+</div>
+<span class="font-monospace-data text-on-surface-variant">Rp 28.000</span>
+</div>
+</div>
+<div class="my-space-sm p-space-sm bg-primary-fixed/40 rounded-lg flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary shrink-0">
+<span class="material-symbols-outlined text-[18px]">room_service</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-bold text-deep-moss">Siap diantar Pramusaji</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Nampan #4 di counter pickup Barista</span>
+</div>
+</div>
+<div class="pt-space-sm flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface-variant">Total Tagihan</span>
+<span class="font-headline-sm text-headline-sm font-bold text-deep-moss font-monospace-data">Rp 74.000</span>
+</div>
+</div>
+<div class="pt-space-md flex flex-col gap-space-xs mt-space-sm">
+<button class="w-full flex items-center justify-center gap-space-xs py-space-sm px-space-md rounded-xl bg-deep-moss text-surface-bright hover:bg-primary font-label-md text-label-md font-semibold transition-all shadow-md" onclick="markAsServed('TS-007')">
+<span class="material-symbols-outlined text-[18px]">done_all</span>
+<span>Tandai Sudah Disajikan (Served)</span>
+</button>
+<button class="w-full flex items-center justify-center gap-space-xs py-space-xs px-space-md rounded-xl bg-surface-container text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-colors" onclick="directCheckout('TS-007')">
+<span class="material-symbols-outlined text-[18px]">payments</span>
+<span>Langsung Pembayaran Kasir</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-space-md bg-surface-container-low rounded-xl p-space-lg shadow-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm mb-space-md pb-space-sm">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[22px]">history_edu</span>
+<span class="font-title-editorial text-title-editorial font-bold text-on-surface">Aktivitas &amp; Log Alur Terkini</span>
+</div>
+<span class="font-monospace-data text-[12px] text-outline font-medium">Kasir: Sigit | Shift 1 Pagi</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<div class="p-space-sm rounded-lg bg-surface-bright flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">done</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Pesanan #TS-006 Disajikan</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Saung 02 • Pramusaji Asep • 11:28 WIB</span>
+</div>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-bright flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-[20px] mt-0.5">soup_kitchen</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Dapur Memproses #TS-008</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Saung 01 • Diteruskan oleh Sigit • 11:26 WIB</span>
+</div>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-bright flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-amber-warm text-[20px] mt-0.5">login</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">QR Order Baru Masuk #TS-009</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Meja A04 • Sistem Auto-Alert • 11:34 WIB</span>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm flex items-center justify-between text-on-surface-variant text-body-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">verified_user</span>
+<span class="text-[12px] italic">Audit Trail Footnote: Setiap perubahan status dan penolakan terekam otomatis dengan ID Kasir Sigit &amp; timestamp server.</span>
+</div>
+<a class="text-primary hover:underline font-label-sm text-[12px] font-semibold" href="#">Buka Full Audit Logs →</a>
+</div>
+</div>
+</div>
+<div class="fixed inset-0 z-50 bg-deep-moss/70 backdrop-blur-sm hidden items-center justify-center p-space-md transition-opacity" id="rejectModalBackdrop">
+<div class="bg-surface-bright rounded-2xl max-w-lg w-full p-space-xl shadow-2xl relative flex flex-col gap-space-md scale-95 transition-transform duration-200" id="rejectModalBox">
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-error-container text-error flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">warning</span>
+</div>
+<div>
+<h3 class="font-title-editorial text-headline-sm font-bold text-on-surface" id="rejectModalTitle">Tolak Pesanan #TS-009</h3>
+<span class="font-body-sm text-body-sm text-outline" id="rejectModalSubtitle">Meja A04 (Area Sawah Depan)</span>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface-variant" onclick="closeRejectModal()">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<div class="bg-error-container/40 p-space-sm rounded-xl">
+<p class="font-body-sm text-body-sm text-on-error-container">
+          Penolakan akan membatalkan tiket dapur, melepaskan hold reservasi meja, dan mengirim notifikasi pembatalan ke perangkat pemesan.
+        </p>
+</div>
+<div class="flex flex-col gap-space-sm">
+<label class="font-label-md text-label-md text-on-surface font-semibold">Pilih Alasan Penolakan Resmi:</label>
+<div class="flex flex-col gap-2">
+<label class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container hover:bg-surface-container-high cursor-pointer transition-colors">
+<input checked="" class="accent-primary w-4 h-4" name="rejectReason" type="radio" value="Menu Bahan Baku Habis"/>
+<span class="font-body-md text-body-md text-on-surface">Menu Bahan Baku Habis (Gurame/Lainnya)</span>
+</label>
+<label class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container hover:bg-surface-container-high cursor-pointer transition-colors">
+<input class="accent-primary w-4 h-4" name="rejectReason" type="radio" value="Dapur Sedang Overload (&gt;45 menit)"/>
+<span class="font-body-md text-body-md text-on-surface">Dapur Sedang Overload (&gt;45 menit)</span>
+</label>
+<label class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container hover:bg-surface-container-high cursor-pointer transition-colors">
+<input class="accent-primary w-4 h-4" name="rejectReason" type="radio" value="Pelanggan Membatalkan di Tempat"/>
+<span class="font-body-md text-body-md text-on-surface">Pelanggan Membatalkan di Tempat</span>
+</label>
+<label class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container hover:bg-surface-container-high cursor-pointer transition-colors">
+<input class="accent-primary w-4 h-4" name="rejectReason" type="radio" value="Permintaan Khusus Tidak Memungkinkan"/>
+<span class="font-body-md text-body-md text-on-surface">Permintaan Khusus Tidak Memungkinkan</span>
+</label>
+<label class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container hover:bg-surface-container-high cursor-pointer transition-colors">
+<input class="accent-primary w-4 h-4" name="rejectReason" type="radio" value="Lainnya"/>
+<span class="font-body-md text-body-md text-on-surface">Lainnya (Tulis Catatan Kasir)</span>
+</label>
+</div>
+<div class="mt-space-xs">
+<textarea class="w-full p-space-sm bg-surface rounded-xl font-body-sm text-body-sm text-on-surface placeholder:text-outline-variant shadow-inner focus:outline-none focus:ring-2 focus:ring-primary transition-all" id="rejectCustomNotes" placeholder="Catatan internal kasir (opsional untuk audit shift)..." rows="2"></textarea>
+</div>
+</div>
+<div class="flex items-center justify-end gap-space-sm pt-space-sm">
+<button class="px-space-md py-space-sm rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold transition-colors" onclick="closeRejectModal()">
+          Batal Kembali
+        </button>
+<button class="px-space-lg py-space-sm rounded-xl bg-error text-on-error hover:bg-red-700 font-label-md text-label-md font-semibold transition-all shadow-md" onclick="confirmRejectOrder()">
+          Konfirmasi Tolak dengan Audit Log
+        </button>
+</div>
+</div>
+</div>
+<div class="fixed bottom-6 right-6 z-50 bg-deep-moss text-surface-bright px-space-lg py-space-md rounded-xl shadow-xl flex items-center gap-space-sm translate-y-24 opacity-0 pointer-events-none transition-all duration-300" id="toastNotification">
+<span class="material-symbols-outlined text-amber-warm text-[24px]" id="toastIcon">check_circle</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-bold" id="toastTitle">Berhasil Disimpan</span>
+<span class="font-body-sm text-body-sm text-rice-paper" id="toastMessage">Pesanan telah diperbarui.</span>
+</div>
+</div>
+<script>
+    let activeRejectTarget = { orderId: '', table: '' };
+
+    function showToast(title, message, icon = 'check_circle') {
+      const toast = document.getElementById('toastNotification');
+      const toastTitle = document.getElementById('toastTitle');
+      const toastMessage = document.getElementById('toastMessage');
+      const toastIcon = document.getElementById('toastIcon');
+
+      toastTitle.textContent = title;
+      toastMessage.textContent = message;
+      toastIcon.textContent = icon;
+
+      toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+      }, 3500);
+    }
+
+    function approveOrder(orderId) {
+      showToast('Pesanan Terverifikasi!', 'Order #' + orderId + ' berhasil diteruskan ke display kitchen (KDS).', 'send_and_archive');
+      const card = document.getElementById('orderCard009');
+      if (card) {
+        card.style.opacity = '0.4';
+        setTimeout(() => {
+          card.style.display = 'none';
+        }, 500);
+      }
+    }
+
+    function openRejectModal(orderId, table) {
+      activeRejectTarget = { orderId, table };
+      document.getElementById('rejectModalTitle').textContent = 'Tolak Pesanan #' + orderId;
+      document.getElementById('rejectModalSubtitle').textContent = table + ' (Verifikasi Kasir)';
+      
+      const modal = document.getElementById('rejectModalBackdrop');
+      const box = document.getElementById('rejectModalBox');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      setTimeout(() => {
+        box.classList.remove('scale-95');
+        box.classList.add('scale-100');
+      }, 10);
+    }
+
+    function closeRejectModal() {
+      const modal = document.getElementById('rejectModalBackdrop');
+      const box = document.getElementById('rejectModalBox');
+      box.classList.remove('scale-100');
+      box.classList.add('scale-95');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }, 150);
+    }
+
+    function confirmRejectOrder() {
+      const selectedReason = document.querySelector('input[name="rejectReason"]:checked').value;
+      const note = document.getElementById('rejectCustomNotes').value;
+      closeRejectModal();
+
+      showToast('Pesanan Ditolak', 'Order #' + activeRejectTarget.orderId + ' telah dibatalkan. Alasan: ' + selectedReason, 'cancel');
+      
+      const card = document.getElementById('orderCard009');
+      if (card) {
+        card.style.opacity = '0.3';
+        setTimeout(() => {
+          card.style.display = 'none';
+        }, 400);
+      }
+    }
+
+    function markAsServed(orderId) {
+      showToast('Telah Disajikan', 'Pesanan #' + orderId + ' telah selesai diantar ke meja pelanggan.', 'task_alt');
+    }
+
+    function directCheckout(orderId) {
+      showToast('Navigasi Pembayaran', 'Membuka terminal kasir untuk checkout #' + orderId, 'point_of_sale');
+    }
+
+    function viewKDS(orderId) {
+      showToast('KDS Monitor', 'Menampilkan status live persiapan masak #' + orderId, 'soup_kitchen');
+    }
+
+    function appendOrder(orderId) {
+      showToast('Tambah Item', 'Buka modal katalog menu untuk Meja ' + orderId, 'post_add');
+    }
+
+    document.querySelectorAll('.pipeline-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.pipeline-tab').forEach(t => {
+          t.classList.remove('bg-deep-moss', 'text-surface-bright', 'active');
+          t.classList.add('bg-surface-container', 'text-on-surface-variant');
+        });
+        this.classList.add('bg-deep-moss', 'text-surface-bright', 'active');
+        this.classList.remove('bg-surface-container', 'text-on-surface-variant');
+      });
+    });
+
+    document.getElementById('manualRefreshBtn').addEventListener('click', function() {
+      this.classList.add('rotate-180');
+      showToast('Sinkronisasi Selesai', 'Data pipeline pesanan dan status meja telah disegarkan.', 'sync');
+      setTimeout(() => this.classList.remove('rotate-180'), 400);
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'F1') {
+        e.preventDefault();
+        document.getElementById('orderSearchInput').focus();
+      } else if (e.key === 'Escape') {
+        closeRejectModal();
+      } else if (e.key === 'F4') {
+        e.preventDefault();
+        document.getElementById('manualRefreshBtn').click();
+      }
+    });
+  </script>
+</div></main></div></body></html>

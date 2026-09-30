@@ -5,13 +5,13 @@
  * table is composed as feature phases land.
  */
 import type { ReactNode } from "react";
-import { RootLayout } from "../../layouts/RootLayout.js";
 import { HomePage } from "../../pages/HomePage.js";
 
+/**
+ * Single public route for now: the marketing homepage. Its own header/footer
+ * chrome replaces the generic app shell. Route composition lands with the
+ * feature phases.
+ */
 export function AppRouter(): ReactNode {
-  return (
-    <RootLayout>
-      <HomePage />
-    </RootLayout>
-  );
+  return <HomePage />;
 }

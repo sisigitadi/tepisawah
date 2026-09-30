@@ -43,7 +43,7 @@ const SAMPLE_READY_ORDERS: ReadyOrder[] = [
     orderNumber: "ORD-001",
     table: "Meja 01",
     readySince: "3 mnt lalu",
-    items: ["1x Gurame Bakar Madu", "2x Nasi Liwet Kastrol", "1x Karedok Leunca"],
+    items: ["1x Gurame Bakar Madu", "2x Nasi Liwet Sawah Komplit", "1x Karedok Leunca Segar"],
   },
   {
     id: "ro-2",

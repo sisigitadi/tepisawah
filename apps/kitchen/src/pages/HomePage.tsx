@@ -37,9 +37,9 @@ const INITIAL_TICKETS: KitchenTicket[] = [
     status: "PREPARING",
     urgent: true,
     items: [
-      { name: "Gurame Bakar Madu Pasundan", qty: 1, notes: "Pedas sedang, lalap leunca ekstra" },
-      { name: "Nasi Liwet Kastrol", qty: 2, notes: "Hangat" },
-      { name: "Karedok Leunca", qty: 1, notes: "Tanpa terasi" },
+      { name: "Gurame Bakar Madu", qty: 1, notes: "Pedas sedang, lalap leunca ekstra" },
+      { name: "Nasi Liwet Sawah Komplit", qty: 2, notes: "Hangat" },
+      { name: "Karedok Leunca Segar", qty: 1, notes: "Tanpa terasi" },
     ],
   },
   {
@@ -51,7 +51,7 @@ const INITIAL_TICKETS: KitchenTicket[] = [
     status: "CONFIRMED",
     items: [
       { name: "Ayam Goreng Lengkuas", qty: 2, notes: "Serundeng melimpah" },
-      { name: "Sayur Asem Khas Sunda", qty: 2 },
+      { name: "Sayur Asem Klaten", qty: 2 },
       { name: "Tahu & Tempe Mendoan", qty: 1, notes: "Goreng garing" },
       { name: "Sambal Terasi Dadak", qty: 2, notes: "Pedas level 3" },
     ],
@@ -66,7 +66,7 @@ const INITIAL_TICKETS: KitchenTicket[] = [
     items: [
       { name: "Sop Buntut Garang Asam", qty: 1, notes: "Kuah pisah" },
       { name: "Nasi Bakar Teri Wangi", qty: 1 },
-      { name: "Es Kelapa Jeruk Murni", qty: 2 },
+      { name: "Es Kelapa Jeruk Segar", qty: 2 },
     ],
   },
   {

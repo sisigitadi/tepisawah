@@ -1,16 +1,19 @@
 /**
  * @tepisawah/web — `content` feature.
  *
- * Phase 0 scaffold: structure and tooling only.
- * Public API surface of the feature; deep internal imports are not allowed (§43).
+ * Public API surface of the feature; deep internal imports are not allowed
+ * (§43). Sections are composed by `pages/HomePage`.
  */
-
-/**
- * Feature contents land in later phases:
- *
- * - `components/` — feature UI
- * - `hooks/` — feature state
- * - `services/` — feature backend calls (via command contracts)
- * - `schemas/` — validation schemas
- * - `types/` — feature types
- */
+export { ReservationProvider, useReservation } from "./reservation.js";
+export {
+  SiteHeader,
+  Hero,
+  About,
+  FeaturedMenu,
+  PromoSection,
+  QrOrder,
+  Reservation,
+  Gallery,
+  LocationSection,
+  SiteFooter,
+} from "./components/index.js";

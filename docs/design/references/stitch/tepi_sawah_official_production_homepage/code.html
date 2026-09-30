@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TEPI SAWAH — Restaurant & Coffee | Ciperna, Cirebon</title>
+  
+  <!-- Google Fonts: Playfair Display + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            forest: '#2E6B34',
+            deepmoss: '#183A1D',
+            golden: '#DDA15E',
+            amberwarm: '#F3C644',
+            warmcream: '#FEFAE0',
+            ricepaper: '#F8F4DB',
+            roastedearth: '#3D1F10',
+            coffeebrown: '#6F3F24',
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Inter"', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            soft: '0 4px 24px -6px rgba(24,58,29,0.18)',
+            glow: '0 0 28px rgba(221, 161, 94, 0.45)',
+            deep: '0 12px 36px -8px rgba(24,58,29,0.3)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #FEFAE0;
+      color: #3D1F10;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    .font-heading {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: #FEFAE0; }
+    ::-webkit-scrollbar-thumb { background: #DDA15E; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #2E6B34; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-golden selection:text-white antialiased">
+
+  <!-- ================= TOP NOTICE BAR (REALTIME RESTAURANT STATUS) ================= -->
+  <div class="bg-forest text-warmcream px-4 py-2 text-xs border-b border-golden/30">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <!-- Live Dynamic Status Widget -->
+      <div class="flex items-center gap-2 font-medium">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold shadow-sm" id="topStatusBadge">
+          <span class="w-2 h-2 rounded-full animate-pulse" id="topStatusDot"></span>
+          <span id="topStatusText">MEMERIKSA JAM BUKA...</span>
+        </span>
+        <span class="hidden sm:inline text-warmcream/80">|</span>
+        <span class="text-warmcream/90 flex items-center gap-1">
+          <i data-lucide="clock" class="w-3.5 h-3.5 text-amberwarm inline"></i>
+          Buka Setiap Hari: <strong>09:00 – 22:00 WIB</strong>
+        </span>
+      </div>
+
+      <!-- Quick Location Badge & Direct Maps link -->
+      <div class="flex items-center gap-4 text-[11px] text-warmcream/90">
+        <span class="hidden md:flex items-center gap-1">
+          <i data-lucide="map-pin" class="w-3.5 h-3.5 text-amberwarm"></i>
+          Jl. Raya Ciperna (Dekat Tol Ciperna), Cirebon
+        </span>
+        <a href="https://www.google.com/maps/place/6%C2%B046'16.3%22S+108%C2%B030'45.4%22E/@-6.7711837,108.5119553,19z" target="_blank" rel="noopener noreferrer" class="hover:text-amberwarm underline font-semibold flex items-center gap-1">
+          Google Maps <i data-lucide="external-link" class="w-3 h-3"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= GLOBAL NAVIGATION BAR ================= -->
+  <header class="sticky top-0 z-50 bg-deepmoss/95 backdrop-blur-md text-white border-b border-golden/30 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="h-20 flex items-center justify-between">
+        
+        <!-- Brand Logo & Identity -->
+        <a href="#home" class="flex items-center gap-3.5 group focus:outline-none">
+          <div class="h-12 w-12 sm:h-14 sm:w-14 rounded-2xl bg-warmcream/95 p-1.5 border border-golden/60 shadow flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfAGgaJyLC78AWUz4TH61P3p__6dtf-mk4waneIVK_k2nuZ6FJoSckfeuTArPUZYmVepl0p3lq4ccFHGbS2r05t5xuYuB3x76R8rf929C6qLzScXKDcKb2EMhUCjyz_jPaILN79RjDvRj3PqNiwMW0x2ZCyMVYVBOQiS1vgKj0tvQXwPCzRCr1FvbggXaCRZlbAuYC1fpF3_NkvEsba_264-FPMPlq9UzRZoo97czEH3wk1Py64WRsEftxXwGFnDR2kQ" alt="Logo Tepi Sawah Restaurant & Coffee" class="h-full w-full object-contain" />
+          </div>
+          <div class="flex flex-col">
+            <span class="font-heading font-bold text-lg sm:text-xl tracking-wide text-warmcream group-hover:text-amberwarm transition-colors">TEPI SAWAH</span>
+            <span class="text-[10px] tracking-widest text-golden uppercase font-medium">Restaurant & Coffee • Ciperna</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden lg:flex items-center gap-7 text-xs sm:text-sm font-medium text-warmcream/90">
+          <a href="#home" class="hover:text-amberwarm transition py-1 border-b-2 border-transparent hover:border-amberwarm">Beranda</a>
+          <a href="#menu-pilihan" class="hover:text-amberwarm transition py-1 border-b-2 border-transparent hover:border-amberwarm">Menu</a>
+          <a href="#promo-paket" class="hover:text-amberwarm transition py-1 border-b-2 border-transparent hover:border-amberwarm">Promo & Paket</a>
+          <a href="#tentang-kami" class="hover:text-amberwarm transition py-1 border-b-2 border-transparent hover:border-amberwarm">Tentang Kami</a>
+          <a href="#qr-order" class="hover:text-amberwarm transition py-1 border-b-2 border-transparent hover:border-amberwarm">Pesan di Meja</a>
+          <a href="#galeri" class="hover:text-amberwarm transition py-1 border-b-2 border-transparent hover:border-amberwarm">Galeri Suasana</a>
+          <a href="#reservasi" class="hover:text-amberwarm transition py-1 border-b-2 border-transparent hover:border-amberwarm">Reservasi</a>
+          <a href="#lokasi" class="hover:text-amberwarm transition py-1 border-b-2 border-transparent hover:border-amberwarm">Lokasi</a>
+        </nav>
+
+        <!-- Desktop Action Button: Primary CTA -->
+        <div class="hidden lg:flex items-center gap-3">
+          <a href="https://order.tepisawah.id" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 bg-gradient-to-r from-amberwarm to-golden hover:from-golden hover:to-amberwarm text-roastedearth font-bold text-xs rounded-full shadow-lg hover:shadow-glow transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+            <span>Pesan Sekarang</span>
+          </a>
+        </div>
+
+        <!-- Mobile Header Controls -->
+        <div class="flex items-center gap-2 lg:hidden">
+          <a href="https://order.tepisawah.id" target="_blank" rel="noopener noreferrer" class="px-3.5 py-1.5 bg-gradient-to-r from-amberwarm to-golden text-roastedearth rounded-full text-xs font-bold shadow flex items-center gap-1">
+            <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i>
+            <span>Pesan</span>
+          </a>
+          <button id="mobileMenuToggle" aria-label="Buka Menu Navigasi" onclick="toggleMobileMenu()" class="p-2 text-warmcream hover:text-amberwarm rounded-xl hover:bg-forest/50 transition">
+            <i data-lucide="menu" id="menuOpenIcon" class="w-6 h-6"></i>
+            <i data-lucide="x" id="menuCloseIcon" class="w-6 h-6 hidden"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Drawer Menu -->
+    <div id="mobileMenuDrawer" class="hidden lg:hidden bg-deepmoss border-t border-golden/30 px-5 py-6 space-y-4 shadow-2xl">
+      <nav class="flex flex-col space-y-3 text-sm font-medium text-warmcream">
+        <a href="#home" onclick="closeMobileMenu()" class="px-3 py-2 rounded-xl hover:bg-forest/50 hover:text-amberwarm transition">Beranda</a>
+        <a href="#menu-pilihan" onclick="closeMobileMenu()" class="px-3 py-2 rounded-xl hover:bg-forest/50 hover:text-amberwarm transition">Menu Pilihan</a>
+        <a href="#promo-paket" onclick="closeMobileMenu()" class="px-3 py-2 rounded-xl hover:bg-forest/50 hover:text-amberwarm transition">Promo & Paket</a>
+        <a href="#tentang-kami" onclick="closeMobileMenu()" class="px-3 py-2 rounded-xl hover:bg-forest/50 hover:text-amberwarm transition">Tentang Kami</a>
+        <a href="#qr-order" onclick="closeMobileMenu()" class="px-3 py-2 rounded-xl hover:bg-forest/50 hover:text-amberwarm transition">Pesan di Meja (QR)</a>
+        <a href="#galeri" onclick="closeMobileMenu()" class="px-3 py-2 rounded-xl hover:bg-forest/50 hover:text-amberwarm transition">Galeri Suasana</a>
+        <a href="#reservasi" onclick="closeMobileMenu()" class="px-3 py-2 rounded-xl hover:bg-forest/50 hover:text-amberwarm transition">Reservasi Meja Rombongan</a>
+        <a href="#lokasi" onclick="closeMobileMenu()" class="px-3 py-2 rounded-xl hover:bg-forest/50 hover:text-amberwarm transition">Petunjuk Lokasi & Peta</a>
+      </nav>
+      <div class="pt-4 border-t border-golden/20 flex flex-col gap-2.5">
+        <a href="https://order.tepisawah.id" target="_blank" rel="noopener noreferrer" class="w-full py-3 bg-gradient-to-r from-amberwarm to-golden text-roastedearth font-bold text-center rounded-xl shadow text-sm flex items-center justify-center gap-2">
+          <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+          <span>Pesan Sekarang (order.tepisawah.id)</span>
+        </a>
+        <button onclick="closeMobileMenu(); openReservationModal();" class="w-full py-3 bg-forest text-warmcream border border-golden/40 font-semibold text-center rounded-xl text-xs flex items-center justify-center gap-2">
+          <i data-lucide="calendar" class="w-4 h-4 text-amberwarm"></i>
+          <span>Reservasi Meja / Rombongan</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= NOTIFICATION TOAST ================= -->
+  <div id="toastNotification" class="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 pointer-events-none max-w-sm w-full">
+    <div class="bg-deepmoss text-warmcream border border-golden/60 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3">
+      <div class="p-2 bg-forest text-amberwarm rounded-xl shrink-0">
+        <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+      </div>
+      <div>
+        <p class="font-bold text-sm text-warmcream" id="toastTitle">Berhasil</p>
+        <p class="text-xs text-warmcream/85 leading-snug" id="toastDesc">Reservasi Anda telah diterima.</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="flex-grow space-y-16 sm:space-y-24 pb-20">
+
+    <!-- ================= 1. HERO SECTION (SUDAH BUKA & REAL RUNNING RESTAURANT) ================= -->
+    <section id="home" class="relative min-h-[640px] lg:min-h-[720px] flex items-center bg-deepmoss text-warmcream overflow-hidden">
+      <!-- Background Aerial Panorama of Tepi Sawah -->
+      <div class="absolute inset-0 z-0">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7VlBCe7TGYcCFVSpplUb-PeenbVFe6kcHgv_lLH2wIKjJoIhFo4_OmJtKK5-JMa8aX8bnRJo0Fh8z-uNGhpDGStFS23kHxSrMdcSJhfeMGO2xOKFve2HUm3fnGJ-halsasYftSYEmqgRvUsHQwWYvt0CCUpc0y55Y7GDiUgsUKulWqOid6s-7-BA3M4ue2iFcVFhOWBb8A2hB1XmBPz35aEaOhCceJx7wt2TbVSiyC0seJdkiS1F4_Dw3b9s0Kld2tg" alt="Panorama Hamparan Sawah Tepi Sawah Ciperna Cirebon" class="w-full h-full object-cover object-center scale-100 transition-transform duration-1000" />
+        <div class="absolute inset-0 bg-gradient-to-t from-deepmoss via-deepmoss/80 to-deepmoss/40"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-deepmoss/95 via-deepmoss/80 to-transparent"></div>
+      </div>
+
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 w-full">
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-14">
+          
+          <!-- Left Hero Narrative Content -->
+          <div class="w-full lg:w-7/12 space-y-6">
+            
+            <!-- Operational Live Pill & Sub-location -->
+            <div class="flex flex-wrap items-center gap-2.5">
+              <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-forest/90 text-amberwarm border border-golden/45 shadow backdrop-blur-sm">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>SUDAH BUKA & SIAP MELAYANI</span>
+              </span>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-deepmoss/80 text-warmcream border border-white/20 backdrop-blur-sm">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-amberwarm"></i> Ciperna, Cirebon
+              </span>
+            </div>
+
+            <!-- Main Heading -->
+            <div class="space-y-1">
+              <span class="text-xs uppercase tracking-[0.28em] font-semibold text-golden block">Authentic Rural Dining Destination</span>
+              <h1 class="font-heading text-3xl sm:text-5xl lg:text-6xl font-bold leading-tight text-warmcream">
+                TEPI SAWAH <br />
+                <span class="text-amberwarm italic font-normal text-2xl sm:text-4xl lg:text-5xl">Restaurant & Coffee</span>
+              </h1>
+            </div>
+
+            <!-- Descriptive Paragraph -->
+            <p class="text-sm sm:text-base text-warmcream/95 max-w-xl font-normal leading-relaxed drop-shadow bg-deepmoss/75 backdrop-blur-md p-4 sm:p-5 rounded-2xl border border-white/15">
+              Nikmati kuliner Nusantara otentik, racikan kopi segar, dan hembusan semilir angin pedesaan di tengah hamparan sawah hijau Ciperna, Cirebon. Hadir dengan saung lesehan asri, dek rooftop 360°, serta suasana hangat ramah keluarga.
+            </p>
+
+            <!-- Operational Schedule Mini Card -->
+            <div class="inline-flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-black/40 border border-golden/30 backdrop-blur-md text-xs">
+              <div class="p-1.5 bg-forest rounded-xl text-amberwarm">
+                <i data-lucide="clock" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <span class="text-warmcream/75 block text-[10px] uppercase tracking-wider font-semibold">Jadwal Kunjungan</span>
+                <span class="font-bold text-warmcream">Buka Setiap Hari: 09:00 – 22:00 WIB</span>
+              </div>
+            </div>
+
+            <!-- Conversion Action Buttons -->
+            <div class="flex flex-wrap items-center gap-3 pt-2">
+              <a href="https://order.tepisawah.id" target="_blank" rel="noopener noreferrer" class="px-6 py-3.5 bg-gradient-to-r from-amberwarm to-golden hover:from-golden hover:to-amberwarm text-roastedearth font-bold text-xs sm:text-sm rounded-2xl shadow-xl hover:shadow-glow transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+                <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                <span>Pesan Sekarang</span>
+              </a>
+              <a href="#menu-pilihan" class="px-6 py-3.5 bg-forest hover:bg-deepmoss text-warmcream border border-golden/60 font-semibold text-xs sm:text-sm rounded-2xl shadow-lg backdrop-blur-sm transition-all flex items-center gap-2">
+                <i data-lucide="utensils" class="w-4 h-4 text-amberwarm"></i>
+                <span>Lihat Menu</span>
+              </a>
+              <button onclick="openReservationModal()" class="px-5 py-3.5 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-medium text-xs sm:text-sm rounded-2xl transition flex items-center gap-2">
+                <i data-lucide="calendar" class="w-4 h-4 text-amberwarm"></i>
+                <span>Reservasi Meja</span>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Right: Authentic Experience Snapshot Card -->
+          <div class="w-full lg:w-5/12 max-w-md lg:max-w-none">
+            <div class="bg-deepmoss/90 backdrop-blur-lg border border-golden/45 p-5 sm:p-7 rounded-3xl shadow-2xl space-y-5">
+              
+              <!-- Location Visual Preview Card -->
+              <div class="relative rounded-2xl overflow-hidden border border-golden/30 shadow-inner group">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2cFMHYMHn4el7dymMRRESpELZFv3f9OqzL4f_uHEbHnitIU4zCrq-4O7MdIQ82OmrdOmn0DOkC93Nc0QvdGH3HztqJk4OuX9wkbHGGoPuzC0xUYSfB1iTTgXIkVfGJeUZ6kaDtCPBTxnsMhbCagm3FMj1B4cMd2VwVSkHL8pN8PrI71H7NkO4Kq-ky3_KHJ8nvE70QUrzAYuq9yfn3YwswSbAYvosvuOi3SbTIatz7qJ7ovPwVln4utmKFAgTuktpog" alt="Tampak Atas Area Saung dan Rooftop Tepi Sawah" class="w-full h-48 sm:h-52 object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs">
+                  <div>
+                    <span class="text-amberwarm font-bold block text-sm">Saung Lesehan & Rooftop Deck</span>
+                    <span class="text-white/80 text-[11px]">Pemandangan 360° Sawah Hijau</span>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-lg bg-forest/90 text-amberwarm text-[10px] font-bold border border-golden/40">
+                    Buka Sekarang
+                  </span>
+                </div>
+              </div>
+
+              <!-- Quick Info Badges Grid -->
+              <div class="grid grid-cols-2 gap-2.5 text-xs text-warmcream">
+                <div class="p-3 bg-black/35 rounded-2xl border border-golden/20 flex items-center gap-2.5">
+                  <span class="p-2 rounded-xl bg-forest/80 text-amberwarm shrink-0">
+                    <i data-lucide="utensils" class="w-4 h-4"></i>
+                  </span>
+                  <div>
+                    <strong class="block text-amberwarm text-[11px]">Kuliner Nusantara</strong>
+                    <span class="text-[10px] text-warmcream/75">Rempah Tradisional</span>
+                  </div>
+                </div>
+                <div class="p-3 bg-black/35 rounded-2xl border border-golden/20 flex items-center gap-2.5">
+                  <span class="p-2 rounded-xl bg-forest/80 text-amberwarm shrink-0">
+                    <i data-lucide="coffee" class="w-4 h-4"></i>
+                  </span>
+                  <div>
+                    <strong class="block text-amberwarm text-[11px]">Coffee & Beverage</strong>
+                    <span class="text-[10px] text-warmcream/75">Kopi Senja Sawah</span>
+                  </div>
+                </div>
+                <div class="p-3 bg-black/35 rounded-2xl border border-golden/20 flex items-center gap-2.5">
+                  <span class="p-2 rounded-xl bg-forest/80 text-amberwarm shrink-0">
+                    <i data-lucide="sun" class="w-4 h-4"></i>
+                  </span>
+                  <div>
+                    <strong class="block text-amberwarm text-[11px]">Saung & Rooftop</strong>
+                    <span class="text-[10px] text-warmcream/75">Sunset Panorama</span>
+                  </div>
+                </div>
+                <div class="p-3 bg-black/35 rounded-2xl border border-golden/20 flex items-center gap-2.5">
+                  <span class="p-2 rounded-xl bg-forest/80 text-amberwarm shrink-0">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                  </span>
+                  <div>
+                    <strong class="block text-amberwarm text-[11px]">Family Friendly</strong>
+                    <span class="text-[10px] text-warmcream/75">Parkir Bus & Mobil</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Location Snippet with Direct Maps Button -->
+              <div class="pt-3 border-t border-golden/20 flex flex-col gap-2.5 text-xs text-warmcream/85">
+                <div class="flex items-start gap-2">
+                  <i data-lucide="navigation" class="w-4 h-4 text-amberwarm shrink-0 mt-0.5"></i>
+                  <span>Jl. Raya Ciperna (Hanya 3 Menit dari Gerbang Tol Ciperna), Kec. Talun, Kab. Cirebon</span>
+                </div>
+                <a href="https://www.google.com/maps/place/6%C2%B046'16.3%22S+108%C2%B030'45.4%22E/@-6.7711837,108.5119553,19z" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 bg-forest hover:bg-forest/80 text-warmcream border border-golden/40 font-bold rounded-xl text-center text-xs flex items-center justify-center gap-2 transition shadow">
+                  <i data-lucide="map" class="w-4 h-4 text-amberwarm"></i>
+                  <span>Buka Petunjuk Arah Google Maps</span>
+                </a>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 2. QUICK ACTION SECTION (4 ACTION UTAMA) ================= -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 sm:-mt-12 relative z-20">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Action 1: Pesan Sekarang -->
+        <a href="https://order.tepisawah.id" target="_blank" rel="noopener noreferrer" class="bg-gradient-to-br from-forest to-deepmoss text-warmcream border-2 border-golden/50 p-5 rounded-3xl shadow-soft hover:shadow-glow hover:-translate-y-1 transition duration-300 flex items-start gap-4 group">
+          <div class="p-3 bg-amberwarm text-roastedearth rounded-2xl shrink-0 group-hover:scale-110 transition-transform">
+            <i data-lucide="qr-code" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <h3 class="font-heading font-bold text-base text-warmcream">Pesan Sekarang</h3>
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-amberwarm"></i>
+            </div>
+            <p class="text-xs text-warmcream/80 mt-1 leading-relaxed">
+              Pesan langsung dari meja Anda menggunakan sistem QR ordering cepat tanpa antre.
+            </p>
+          </div>
+        </a>
+
+        <!-- Action 2: Lihat Menu -->
+        <a href="#menu-pilihan" class="bg-ricepaper border border-coffeebrown/20 p-5 rounded-3xl shadow-soft hover:shadow-lg hover:-translate-y-1 transition duration-300 flex items-start gap-4 group">
+          <div class="p-3 bg-forest text-warmcream rounded-2xl shrink-0 group-hover:scale-110 transition-transform">
+            <i data-lucide="book-open" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-base text-deepmoss">Lihat Menu</h3>
+            <p class="text-xs text-roastedearth/75 mt-1 leading-relaxed">
+              Jelajahi ayam roaster, gurame bakar madu, sayur asem, serta racikan kopi senja.
+            </p>
+          </div>
+        </a>
+
+        <!-- Action 3: Reservasi -->
+        <button onclick="openReservationModal()" class="bg-ricepaper border border-coffeebrown/20 p-5 rounded-3xl shadow-soft hover:shadow-lg hover:-translate-y-1 transition duration-300 flex items-start gap-4 text-left group">
+          <div class="p-3 bg-golden text-roastedearth rounded-2xl shrink-0 group-hover:scale-110 transition-transform">
+            <i data-lucide="calendar-check" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-base text-deepmoss">Reservasi Meja</h3>
+            <p class="text-xs text-roastedearth/75 mt-1 leading-relaxed">
+              Booking tempat untuk rombongan keluarga, gathering, reuni, maupun acara spesial.
+            </p>
+          </div>
+        </button>
+
+        <!-- Action 4: Petunjuk Lokasi -->
+        <a href="#lokasi" class="bg-ricepaper border border-coffeebrown/20 p-5 rounded-3xl shadow-soft hover:shadow-lg hover:-translate-y-1 transition duration-300 flex items-start gap-4 group">
+          <div class="p-3 bg-coffeebrown text-warmcream rounded-2xl shrink-0 group-hover:scale-110 transition-transform">
+            <i data-lucide="map-pin" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-base text-deepmoss">Lokasi & Rute</h3>
+            <p class="text-xs text-roastedearth/75 mt-1 leading-relaxed">
+              Petunjuk arah Google Maps akurat hanya 3 menit dari Pintu Tol Ciperna Cirebon.
+            </p>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ================= 3. ABOUT & EXPERIENCE (LEBIH DARI SEKADAR MAKAN) ================= -->
+    <section id="tentang-kami" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-ricepaper/80 border border-coffeebrown/15 rounded-3xl p-6 sm:p-12 shadow-soft">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          
+          <!-- Left Editorial Visual Layout -->
+          <div class="lg:col-span-6 space-y-4">
+            <div class="relative rounded-3xl overflow-hidden border border-coffeebrown/20 shadow-md">
+              <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKlHhv9aFiFh_bKN-24ru2hWD_SR4_CCNlRXnG2YnyjSSnVWOijmonmU4khevDiGtmbrqd4f0wQJ84izsslObtlI-X_D4uH-oYOtk-0pjE_NYUGxaEkz92cXDKaNQzttBbNMoIFT-ZhLd6Fl7Tpsr1nnl_W2oqFiqmLdxqoMNW-BOrFPsU2TAyJE_KJ_C3JFX-BRCJL2CSgQnTNGHC-vajPRDRNOqB_3yujyzGB-kmJLv4_4263xmbBjlFkB_eG-1x5w" alt="Pemandangan Asri Tepi Sawah Ciperna" class="w-full h-72 sm:h-80 object-cover object-center" />
+              <div class="absolute bottom-4 left-4 right-4 bg-deepmoss/90 backdrop-blur-md p-4 rounded-2xl border border-golden/40 text-warmcream">
+                <span class="text-amberwarm font-mono font-bold text-xs uppercase tracking-wider block">Nuansa Pedesaan Modern</span>
+                <p class="text-xs text-warmcream/90 mt-0.5">Ruang terbuka hijau dengan hembusan angin sawah yang menenangkan pikiran.</p>
+              </div>
+            </div>
+            <!-- Two Small Highlights -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="p-4 bg-white rounded-2xl border border-coffeebrown/10">
+                <span class="font-heading font-bold text-deepmoss text-sm block">Saung Lesehan</span>
+                <p class="text-[11px] text-roastedearth/70 mt-1">Santap lesehan privat beratap rumbia alami tepat di sisi pematang.</p>
+              </div>
+              <div class="p-4 bg-white rounded-2xl border border-coffeebrown/10">
+                <span class="font-heading font-bold text-deepmoss text-sm block">Dek Rooftop 360°</span>
+                <p class="text-[11px] text-roastedearth/70 mt-1">Spot senja terbaik menikmati siluet matahari terbenam dengan secangkir kopi.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Narrative Content -->
+          <div class="lg:col-span-6 space-y-6">
+            <div>
+              <span class="text-xs uppercase tracking-[0.25em] font-bold text-forest">Pengalaman Bersantap</span>
+              <h2 class="font-heading text-2xl sm:text-4xl font-bold text-deepmoss mt-1 leading-tight">
+                Lebih dari Sekadar Makan — <br />
+                <span class="text-forest italic font-normal">Sebuah Ruang Kebersamaan</span>
+              </h2>
+            </div>
+            
+            <p class="text-xs sm:text-sm text-roastedearth/85 leading-relaxed">
+              Tepi Sawah menghadirkan pengalaman bersantap dengan suasana pedesaan yang nyaman di Ciperna, Cirebon. Nikmati hidangan Nusantara beraroma rempah segar, kopi nikmat, udara terbuka, dan waktu berkualitas bersama keluarga, rekan, atau teman tersayang.
+            </p>
+
+            <div class="space-y-3.5 pt-2">
+              <div class="flex items-start gap-3">
+                <div class="p-1.5 bg-forest/15 rounded-lg text-forest mt-0.5">
+                  <i data-lucide="check" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-xs sm:text-sm text-deepmoss">Cita Rasa Otentik Rempah Nusantara</h4>
+                  <p class="text-xs text-roastedearth/70">Olahan ayam panggang oven berempah, gurame bakar madu, dan aneka sambal tradisional.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="p-1.5 bg-forest/15 rounded-lg text-forest mt-0.5">
+                  <i data-lucide="check" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-xs sm:text-sm text-deepmoss">Destinasi Ramah Keluarga & Rombongan</h4>
+                  <p class="text-xs text-roastedearth/70">Fasilitas saung lesehan luas, area parkir memadai untuk bus pariwisata & mobil pribadi.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="p-1.5 bg-forest/15 rounded-lg text-forest mt-0.5">
+                  <i data-lucide="check" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-xs sm:text-sm text-deepmoss">Dekat Akses Keluar Tol Ciperna</h4>
+                  <p class="text-xs text-roastedearth/70">Lokasi persinggahan strategis bagi pemudik, wisatawan, dan warga Cirebon sekitarnya.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-2 flex flex-wrap items-center gap-3">
+              <a href="https://order.tepisawah.id" target="_blank" rel="noopener noreferrer" class="px-5 py-3 bg-forest hover:bg-deepmoss text-warmcream font-bold text-xs sm:text-sm rounded-xl shadow transition flex items-center gap-2">
+                <i data-lucide="shopping-bag" class="w-4 h-4 text-amberwarm"></i>
+                <span>Pesan Sekarang</span>
+              </a>
+              <button onclick="openReservationModal()" class="px-5 py-3 border border-coffeebrown/30 hover:bg-coffeebrown/10 text-roastedearth font-semibold text-xs sm:text-sm rounded-xl transition flex items-center gap-2">
+                <i data-lucide="calendar" class="w-4 h-4 text-forest"></i>
+                <span>Reservasi Acara & Rombongan</span>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 4. FEATURED MENU (MENU PILIHAN NUSANTARA) ================= -->
+    <section id="menu-pilihan" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+        <div>
+          <span class="text-xs uppercase tracking-[0.25em] font-semibold text-forest">Katalog Kuliner Otentik</span>
+          <h2 class="font-heading text-2xl sm:text-4xl font-bold text-roastedearth">Menu Pilihan</h2>
+          <p class="text-xs sm:text-sm text-roastedearth/75 mt-1">Hidangan favorit untuk menemani waktu Anda di Tepi Sawah.</p>
+        </div>
+        
+        <!-- Category Filter Buttons -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <button onclick="filterMenu('SEMUA', this)" class="menu-cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-forest text-warmcream shadow">Semua</button>
+          <button onclick="filterMenu('MAKANAN', this)" class="menu-cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-ricepaper text-roastedearth border border-coffeebrown/20 hover:bg-forest/10">Makanan Utama</button>
+          <button onclick="filterMenu('SAYUR', this)" class="menu-cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-ricepaper text-roastedearth border border-coffeebrown/20 hover:bg-forest/10">Sayur & Sup</button>
+          <button onclick="filterMenu('MINUMAN', this)" class="menu-cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-ricepaper text-roastedearth border border-coffeebrown/20 hover:bg-forest/10">Minuman & Kopi</button>
+        </div>
+      </div>
+
+      <!-- Menu Grid (Data Source of Truth) -->
+      <div id="featuredMenuGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Injected via JavaScript from Source of Truth -->
+      </div>
+
+      <!-- Action Footer for Menu -->
+      <div class="mt-10 text-center">
+        <a href="https://order.tepisawah.id" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-8 py-4 bg-forest hover:bg-deepmoss text-warmcream font-bold text-xs sm:text-sm rounded-2xl shadow-lg transition">
+          <i data-lucide="book-open" class="w-4 h-4 text-amberwarm"></i>
+          <span>Lihat Semua Menu & Pesan di order.tepisawah.id</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ================= 5. MENU CATEGORY PREVIEW CARDS ================= -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto space-y-2 mb-8">
+        <span class="text-xs uppercase tracking-[0.25em] font-bold text-forest">Kategori Menu Lengkap</span>
+        <h3 class="font-heading text-xl sm:text-3xl font-bold text-deepmoss">Pilihan Sajian Nusantara & Racikan Kopi</h3>
+        <p class="text-xs text-roastedearth/75">Tersedia ragam pilihan hidangan hangat, olahan bakar, dan minuman pelepas dahaga.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- Cat 1 -->
+        <div class="bg-ricepaper/90 border border-coffeebrown/15 p-5 rounded-2xl shadow-sm hover:border-golden/60 transition flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-forest/15 text-forest flex items-center justify-center font-bold mb-3">
+              <i data-lucide="utensils" class="w-5 h-5"></i>
+            </div>
+            <h4 class="font-heading font-bold text-deepmoss text-base">Makanan Utama</h4>
+            <p class="text-xs text-roastedearth/75 mt-1 leading-relaxed">
+              Kuliner Nusantara, olahan ayam roaster rempah, nasi liwet hangat, dan aneka hidangan bakar istimewa.
+            </p>
+          </div>
+          <span class="text-[11px] font-semibold text-forest mt-4 flex items-center gap-1">
+            Tersedia Setiap Hari <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+          </span>
+        </div>
+
+        <!-- Cat 2 -->
+        <div class="bg-ricepaper/90 border border-coffeebrown/15 p-5 rounded-2xl shadow-sm hover:border-golden/60 transition flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-forest/15 text-forest flex items-center justify-center font-bold mb-3">
+              <i data-lucide="users" class="w-5 h-5"></i>
+            </div>
+            <h4 class="font-heading font-bold text-deepmoss text-base">Paket Santap Keluarga</h4>
+            <p class="text-xs text-roastedearth/75 mt-1 leading-relaxed">
+              Pilihan paket santap lengkap untuk 4 hingga 10 orang dengan porsi sharing hemat dan memuaskan.
+            </p>
+          </div>
+          <span class="text-[11px] font-semibold text-forest mt-4 flex items-center gap-1">
+            Porsi Hemat Sharing <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+          </span>
+        </div>
+
+        <!-- Cat 3 -->
+        <div class="bg-ricepaper/90 border border-coffeebrown/15 p-5 rounded-2xl shadow-sm hover:border-golden/60 transition flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-forest/15 text-forest flex items-center justify-center font-bold mb-3">
+              <i data-lucide="coffee" class="w-5 h-5"></i>
+            </div>
+            <h4 class="font-heading font-bold text-deepmoss text-base">Kopi & Minuman Segar</h4>
+            <p class="text-xs text-roastedearth/75 mt-1 leading-relaxed">
+              Espresso aren Kopi Senja Sawah, kelapa jeruk muda berbulir, teh poci tradisional, dan racikan non-coffee.
+            </p>
+          </div>
+          <span class="text-[11px] font-semibold text-forest mt-4 flex items-center gap-1">
+            Signature Coffee & Tea <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+          </span>
+        </div>
+
+        <!-- Cat 4 -->
+        <div class="bg-ricepaper/90 border border-coffeebrown/15 p-5 rounded-2xl shadow-sm hover:border-golden/60 transition flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-forest/15 text-forest flex items-center justify-center font-bold mb-3">
+              <i data-lucide="sparkles" class="w-5 h-5"></i>
+            </div>
+            <h4 class="font-heading font-bold text-deepmoss text-base">Camilan Tradisional</h4>
+            <p class="text-xs text-roastedearth/75 mt-1 leading-relaxed">
+              Teman santai ngopi di saung dengan aneka gorengan hangat, pisang goreng, dan kudapan khas pedesaan.
+            </p>
+          </div>
+          <span class="text-[11px] font-semibold text-forest mt-4 flex items-center gap-1">
+            Teman Santai Senja <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 6. PROMO & PAKET AKTIF ================= -->
+    <section id="promo-paket" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto space-y-2 mb-10">
+        <span class="text-xs uppercase tracking-[0.25em] font-bold text-forest">Penawaran Spesial</span>
+        <h2 class="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-roastedearth">Promo & Paket</h2>
+        <p class="text-xs sm:text-sm text-roastedearth/75">Temukan promo dan paket yang sedang tersedia di Tepi Sawah Ciperna.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Promo Card 1 -->
+        <div class="bg-gradient-to-b from-ricepaper to-ricepaper/60 border-2 border-golden/40 rounded-3xl p-6 shadow-soft hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative overflow-hidden group">
+          <div class="absolute -right-8 -top-8 w-24 h-24 bg-amberwarm/20 rounded-full blur-xl"></div>
+          <div>
+            <span class="px-3 py-1 rounded-full bg-forest text-warmcream text-[10px] font-bold uppercase tracking-wider">
+              Paket Santap
+            </span>
+            <div class="mt-4 mb-2">
+              <h3 class="font-heading font-bold text-deepmoss text-xl">Paket Nasi Liwet Komplit</h3>
+              <p class="text-sm font-semibold text-forest mt-0.5">Porsi Keluarga (4 Orang)</p>
+            </div>
+            <p class="text-xs text-roastedearth/80 leading-relaxed">
+              Kombinasi nasi liwet kastrol harum, ayam goreng bumbu kuning, sambal terasi daun pisang, tahu, tempe, lalapan segar sawah, dan teh manis hangat.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-coffeebrown/15 flex items-center justify-between">
+            <span class="text-xs font-mono font-bold text-deepmoss">Paket Hemat Meja</span>
+            <a href="https://order.tepisawah.id" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-forest hover:bg-deepmoss text-warmcream rounded-xl text-xs font-bold transition shadow">
+              Pesan Menu Ini
+            </a>
+          </div>
+        </div>
+
+        <!-- Promo Card 2 -->
+        <div class="bg-gradient-to-b from-ricepaper to-ricepaper/60 border-2 border-forest/40 rounded-3xl p-6 shadow-soft hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative overflow-hidden group">
+          <div class="absolute -right-8 -top-8 w-24 h-24 bg-forest/20 rounded-full blur-xl"></div>
+          <div>
+            <span class="px-3 py-1 rounded-full bg-amberwarm text-roastedearth text-[10px] font-bold uppercase tracking-wider">
+              Sore & Senja
+            </span>
+            <div class="mt-4 mb-2">
+              <h3 class="font-heading font-bold text-deepmoss text-xl">Paket Ngopi Sunset Sawah</h3>
+              <p class="text-sm font-semibold text-deepmoss mt-0.5">Mulai Pukul 15:30 WIB</p>
+            </div>
+            <p class="text-xs text-roastedearth/80 leading-relaxed">
+              Nikmati hembusan angin senja di dek rooftop dengan racikan Kopi Senja Sawah atau teh poci gula batu berpadu aneka kudapan hangat pedesaan.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-coffeebrown/15 flex items-center justify-between">
+            <span class="text-xs font-mono font-bold text-deepmoss">Spot Rooftop 360°</span>
+            <a href="https://order.tepisawah.id" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-forest hover:bg-deepmoss text-warmcream rounded-xl text-xs font-bold transition shadow">
+              Pesan Menu Ini
+            </a>
+          </div>
+        </div>
+
+        <!-- Promo Card 3 -->
+        <div class="bg-gradient-to-b from-ricepaper to-ricepaper/60 border-2 border-golden/40 rounded-3xl p-6 shadow-soft hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative overflow-hidden group">
+          <div class="absolute -right-8 -top-8 w-24 h-24 bg-golden/20 rounded-full blur-xl"></div>
+          <div>
+            <span class="px-3 py-1 rounded-full bg-deepmoss text-warmcream text-[10px] font-bold uppercase tracking-wider">
+              Rombongan & Gathering
+            </span>
+            <div class="mt-4 mb-2">
+              <h3 class="font-heading font-bold text-deepmoss text-xl">Paket Reservasi Rombongan</h3>
+              <p class="text-sm font-semibold text-golden mt-0.5">Keluarga & Acara Khusus</p>
+            </div>
+            <p class="text-xs text-roastedearth/80 leading-relaxed">
+              Alokasi area saung lesehan prioritas untuk gathering kantor, arisan keluarga, maupun rombongan wisata tanpa biaya reservasi tambahan.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-coffeebrown/15 flex items-center justify-between">
+            <span class="text-xs font-mono font-bold text-deepmoss">Kapasitas Fleksibel</span>
+            <button onclick="openReservationModal('Paket Reservasi Rombongan')" class="px-4 py-2 bg-forest hover:bg-deepmoss text-warmcream rounded-xl text-xs font-bold transition shadow">
+              Reservasi Meja
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Promo Notice Banner -->
+      <div class="mt-8 bg-deepmoss text-warmcream rounded-3xl p-6 sm:p-8 border border-golden/30 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div class="space-y-2 text-center sm:text-left">
+          <span class="text-xs font-mono font-bold text-amberwarm uppercase tracking-widest flex items-center justify-center sm:justify-start gap-1.5">
+            <i data-lucide="tag" class="w-3.5 h-3.5"></i>
+            PROMO AKTIF RESTORAN
+          </span>
+          <h3 class="font-heading text-xl sm:text-2xl font-bold">Informasi Menu & Promo Selalu Terkini</h3>
+          <p class="text-xs sm:text-sm text-warmcream/80 max-w-xl">
+            Informasi promo harian, paket musiman, dan ketersediaan porsi selalu diperbarui secara real-time pada sistem pemesanan online kami.
+          </p>
+        </div>
+        <a href="https://order.tepisawah.id" target="_blank" rel="noopener noreferrer" class="px-7 py-3.5 bg-gradient-to-r from-amberwarm to-golden hover:from-golden hover:to-amberwarm text-roastedearth font-bold text-xs sm:text-sm rounded-2xl shadow-lg transition whitespace-nowrap flex items-center gap-2">
+          <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+          <span>Buka order.tepisawah.id</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ================= 7. QR ORDERING EXPERIENCE (PESAN DARI MEJA ANDA) ================= -->
+    <section id="qr-order" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-deepmoss text-warmcream rounded-3xl p-6 sm:p-12 border border-golden/40 shadow-soft relative overflow-hidden">
+        <!-- Subtle Background Glow -->
+        <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-forest/40 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Text & Workflow Intro -->
+          <div class="lg:col-span-6 space-y-4">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amberwarm text-roastedearth uppercase tracking-wider">
+              <i data-lucide="smartphone" class="w-3.5 h-3.5"></i> Digital Dining Experience
+            </span>
+            <h2 class="font-heading text-2xl sm:text-4xl font-bold text-warmcream leading-tight">
+              Pesan Langsung dari Meja Anda
+            </h2>
+            <p class="text-xs sm:text-sm text-warmcream/85 leading-relaxed">
+              Tidak perlu antre. Cukup scan kode QR yang tertera di meja Anda, pilih hidangan Nusantara dan minuman favorit, lalu kirim pesanan langsung dari smartphone.
+            </p>
+
+            <!-- 4-Step Interactive Visual Flow -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-3">
+              <div class="p-3 bg-black/35 rounded-2xl border border-golden/30 text-center space-y-1">
+                <span class="w-6 h-6 rounded-full bg-forest text-amberwarm font-mono font-bold text-xs inline-flex items-center justify-center">1</span>
+                <span class="font-bold text-xs text-amberwarm block">Scan QR</span>
+                <span class="text-[10px] text-warmcream/75 block">Di meja Anda</span>
+              </div>
+              <div class="p-3 bg-black/35 rounded-2xl border border-golden/30 text-center space-y-1">
+                <span class="w-6 h-6 rounded-full bg-forest text-amberwarm font-mono font-bold text-xs inline-flex items-center justify-center">2</span>
+                <span class="font-bold text-xs text-amberwarm block">Pilih Menu</span>
+                <span class="text-[10px] text-warmcream/75 block">Foto & harga jelas</span>
+              </div>
+              <div class="p-3 bg-black/35 rounded-2xl border border-golden/30 text-center space-y-1">
+                <span class="w-6 h-6 rounded-full bg-forest text-amberwarm font-mono font-bold text-xs inline-flex items-center justify-center">3</span>
+                <span class="font-bold text-xs text-amberwarm block">Kirim Order</span>
+                <span class="text-[10px] text-warmcream/75 block">Langsung ke dapur</span>
+              </div>
+              <div class="p-3 bg-black/35 rounded-2xl border border-golden/30 text-center space-y-1">
+                <span class="w-6 h-6 rounded-full bg-forest text-amberwarm font-mono font-bold text-xs inline-flex items-center justify-center">4</span>
+                <span class="font-bold text-xs text-amberwarm block">Sajian Tiba</span>
+                <span class="text-[10px] text-warmcream/75 block">Diantar ke meja</span>
+              </div>
+            </div>
+
+            <div class="pt-4 flex flex-wrap items-center gap-3">
+              <a href="https://order.tepisawah.id" target="_blank" rel="noopener noreferrer" class="px-6 py-3.5 bg-gradient-to-r from-amberwarm to-golden hover:from-golden hover:to-amberwarm text-roastedearth font-bold text-xs sm:text-sm rounded-2xl shadow-lg transition flex items-center gap-2">
+                <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                <span>Pesan Sekarang (order.tepisawah.id)</span>
+              </a>
+              <span class="text-xs text-warmcream/70 flex items-center gap-1.5">
+                <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
+                Mudah, cepat, & ramah keluarga
+              </span>
+            </div>
+          </div>
+
+          <!-- Smartphone Interactive Mockup Card -->
+          <div class="lg:col-span-6 flex justify-center">
+            <div class="bg-black/50 p-4 sm:p-6 rounded-3xl border border-golden/40 max-w-sm w-full shadow-2xl backdrop-blur-md">
+              <div class="bg-warmcream text-roastedearth rounded-2xl p-4 space-y-3.5 shadow-inner">
+                <div class="flex items-center justify-between border-b border-coffeebrown/15 pb-2.5">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-forest text-warmcream flex items-center justify-center">
+                      <i data-lucide="utensils" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                      <span class="font-heading font-bold text-xs text-deepmoss block">Tepi Sawah Order</span>
+                      <span class="text-[10px] text-coffeebrown font-mono">Meja 01 — Saung Sawah</span>
+                    </div>
+                  </div>
+                  <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-800 font-bold">Terhubung</span>
+                </div>
+
+                <div class="space-y-2 text-xs">
+                  <div class="flex items-center justify-between p-2 rounded-xl bg-ricepaper border border-coffeebrown/10">
+                    <span class="font-semibold text-deepmoss">1x Chicken Roaster Rempah</span>
+                    <span class="font-mono text-forest font-bold">Rp 85.000</span>
+                  </div>
+                  <div class="flex items-center justify-between p-2 rounded-xl bg-ricepaper border border-coffeebrown/10">
+                    <span class="font-semibold text-deepmoss">2x Es Kelapa Jeruk Segar</span>
+                    <span class="font-mono text-forest font-bold">Rp 36.000</span>
+                  </div>
+                </div>
+
+                <div class="pt-2 border-t border-coffeebrown/15 flex items-center justify-between text-xs">
+                  <span class="font-medium text-roastedearth/80">Total Tagihan:</span>
+                  <span class="font-mono font-bold text-forest text-sm">Rp 121.000</span>
+                </div>
+
+                <a href="https://order.tepisawah.id" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 bg-forest hover:bg-deepmoss text-warmcream font-bold rounded-xl text-xs text-center block shadow transition">
+                  Kirim Pesanan ke Dapur
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 8. RESERVATION SECTION (MAU DATANG BERSAMA ROMBONGAN?) ================= -->
+    <section id="reservasi" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-ricepaper/80 border border-coffeebrown/20 rounded-3xl p-6 sm:p-12 shadow-soft">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <div class="lg:col-span-7 space-y-4">
+            <span class="text-xs uppercase tracking-[0.25em] font-bold text-forest">Layanan Meja & Acara</span>
+            <h2 class="font-heading text-2xl sm:text-4xl font-bold text-deepmoss leading-tight">
+              Mau Datang Bersama Rombongan?
+            </h2>
+            <p class="text-xs sm:text-sm text-roastedearth/80 leading-relaxed">
+              Rencanakan kunjungan santap bersama keluarga besar, komunitas, rekan kantor, gathering, atau perayaan ulang tahun di Tepi Sawah Ciperna. Kami menyiapkan area saung nyaman dan layanan hangat.
+            </p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-xs">
+              <div class="p-3 bg-white rounded-xl border border-coffeebrown/10 flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-forest shrink-0"></i>
+                <span class="font-medium text-deepmoss">Keluarga Besar</span>
+              </div>
+              <div class="p-3 bg-white rounded-xl border border-coffeebrown/10 flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-forest shrink-0"></i>
+                <span class="font-medium text-deepmoss">Gathering Kantor</span>
+              </div>
+              <div class="p-3 bg-white rounded-xl border border-coffeebrown/10 flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-forest shrink-0"></i>
+                <span class="font-medium text-deepmoss">Rombongan Wisata</span>
+              </div>
+              <div class="p-3 bg-white rounded-xl border border-coffeebrown/10 flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-forest shrink-0"></i>
+                <span class="font-medium text-deepmoss">Arisan & Reuni</span>
+              </div>
+              <div class="p-3 bg-white rounded-xl border border-coffeebrown/10 flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-forest shrink-0"></i>
+                <span class="font-medium text-deepmoss">Meeting Santai</span>
+              </div>
+              <div class="p-3 bg-white rounded-xl border border-coffeebrown/10 flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-forest shrink-0"></i>
+                <span class="font-medium text-deepmoss">Perayaan Spesial</span>
+              </div>
+            </div>
+
+            <div class="pt-3 flex flex-wrap items-center gap-3">
+              <button onclick="openReservationModal()" class="px-6 py-3.5 bg-forest hover:bg-deepmoss text-warmcream font-bold text-xs sm:text-sm rounded-xl shadow transition flex items-center gap-2">
+                <i data-lucide="calendar-check" class="w-4 h-4 text-amberwarm"></i>
+                <span>Reservasi Meja Sekarang</span>
+              </button>
+              <a href="#lokasi" class="px-5 py-3.5 border border-coffeebrown/30 hover:bg-coffeebrown/10 text-roastedearth font-semibold text-xs sm:text-sm rounded-xl transition flex items-center gap-2">
+                <i data-lucide="phone-call" class="w-4 h-4 text-forest"></i>
+                <span>Hubungi Kami</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5">
+            <div class="bg-white p-6 rounded-3xl border border-coffeebrown/20 shadow-md space-y-4">
+              <div class="flex items-center gap-3 border-b border-coffeebrown/15 pb-3">
+                <div class="p-2.5 bg-forest/15 rounded-xl text-forest">
+                  <i data-lucide="info" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-heading font-bold text-deepmoss text-sm">Informasi Reservasi</h4>
+                  <span class="text-[11px] text-roastedearth/70">Tanpa Pungutan Biaya Booking</span>
+                </div>
+              </div>
+
+              <p class="text-xs text-roastedearth/80 leading-relaxed">
+                Reservasi meja membantu tim kami mengalokasikan area saung atau dek rooftop pilihan terbaik sebelum Anda dan rombongan tiba di lokasi.
+              </p>
+
+              <div class="p-3.5 rounded-2xl bg-ricepaper border border-coffeebrown/15 text-xs space-y-1.5">
+                <div class="flex justify-between">
+                  <span class="text-roastedearth/70">Waktu Pelayanan:</span>
+                  <span class="font-semibold text-deepmoss">Setiap Hari, 09:00 - 22:00 WIB</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-roastedearth/70">Fasilitas:</span>
+                  <span class="font-semibold text-deepmoss">Parkir Luas Bus & Mobil</span>
+                </div>
+              </div>
+
+              <button onclick="openReservationModal()" class="w-full py-3 bg-golden hover:bg-amberwarm text-roastedearth font-bold text-xs sm:text-sm rounded-xl shadow transition text-center block">
+                Formulir Reservasi Meja
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 9. GALLERY SECTION (PENGALAMAN & SUASANA TEPI SAWAH) ================= -->
+    <section id="galeri" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+        <div>
+          <span class="text-xs uppercase tracking-[0.25em] font-semibold text-forest">Dokumentasi Restoran</span>
+          <h2 class="font-heading text-2xl sm:text-4xl font-bold text-roastedearth">Galeri Suasana Tepi Sawah</h2>
+          <p class="text-xs sm:text-sm text-roastedearth/75 mt-1">Potret sudut asri, panorama persawahan hijau, dan hidangan favorit.</p>
+        </div>
+        <div class="text-xs text-forest font-semibold flex items-center gap-1">
+          <i data-lucide="camera" class="w-4 h-4"></i>
+          <span>Ciperna, Cirebon</span>
+        </div>
+      </div>
+
+      <!-- Editorial Masonry / Balanced Photo Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Photo 1: Panorama Area Sawah -->
+        <div class="group relative rounded-2xl overflow-hidden border border-coffeebrown/20 shadow-soft bg-ricepaper">
+          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2ikjFUBalXB3oyoV_2mbZFzYbtB0zAcosNZIInPmNqFCS9uL3TIy9H_4j-4OH58gi7iY-wGHxpZIHH811iUnzLB1-UYvofrh3PtcuPXcmz-bi6AekRUgrhcfPnovt2dfQNL-e7eYfSznrnK1qNUsvUnMnuJaUbCu7eXnbz-Rs46-i58MC6aqMHBgQOKOunGBrlqS1O_ANNj99kifHpJncjVU8W4uEgoybFizDGN2gcbu_BYpsx0yaHKi6imIq2ZdQjw" alt="Pemandangan Udara Tepi Sawah Ciperna" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
+          <div class="absolute bottom-3.5 left-3.5 right-3.5 text-warmcream">
+            <span class="text-[10px] text-amberwarm font-mono uppercase tracking-wider block">Suasana Luar Ruang</span>
+            <h4 class="font-heading font-bold text-sm">Panorama Sawah Hijau Ciperna</h4>
+          </div>
+        </div>
+
+        <!-- Photo 2: Ayam Roaster -->
+        <div class="group relative rounded-2xl overflow-hidden border border-coffeebrown/20 shadow-soft bg-ricepaper">
+          <img src="https://lh3.googleusercontent.com/aida/AEtjO1Wfy-FCWGYygUriJF-7w6MHGmPV3jHxAuEkHahIFjrrBal1wRwLbSpeXUW55CNLXYu-HioA17KhzA_aK1UYKuHZLbBpQ9oHSXTiPYTVUkZjfuLgSnrJcsjspkUiFIKEh0UuQ_Tixc4dNiNE2wOaSq-KZq4VqTNmnFIr7bQ2IbZVgNv_87BTuODBFPcz3g5Q75AxDUeWat7P8ctetO9HP4QCq4i2iJfkKFDn0TPbrXTbg3tjKLTB2I1ckGo" alt="Chicken Roaster Tepi Sawah" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
+          <div class="absolute bottom-3.5 left-3.5 right-3.5 text-warmcream">
+            <span class="text-[10px] text-amberwarm font-mono uppercase tracking-wider block">Hidangan Utama</span>
+            <h4 class="font-heading font-bold text-sm">Chicken Roaster Rempah</h4>
+          </div>
+        </div>
+
+        <!-- Photo 3: Gurame Bakar Madu -->
+        <div class="group relative rounded-2xl overflow-hidden border border-coffeebrown/20 shadow-soft bg-ricepaper">
+          <img src="https://lh3.googleusercontent.com/aida/AEtjO1WW0vySU6m0lyBAK6OZ7f2vieYos_k5FAVs2BV3mdJGdimsAnnQty8YQCcswtjjLZAu6U4La18z-OGmOX-aYmSQ6R5HLzSoKPsums9thUP84d4z3LOLk6yUhzQ_oR9lBQVXdnAIiq8MyPbQ5roRmGwUkbOvvjOFq1psfX1ASJmfO8PoStoKIJ_PSe3o6--S5PRZn2KqoR6aaeY8lxNCU1mVKYC9o3oZWg6mPFKoXwVqxAK6PuAh5GmdByVG" alt="Gurame Bakar Madu" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
+          <div class="absolute bottom-3.5 left-3.5 right-3.5 text-warmcream">
+            <span class="text-[10px] text-amberwarm font-mono uppercase tracking-wider block">Kuliner Nusantara</span>
+            <h4 class="font-heading font-bold text-sm">Gurame Bakar Madu Pedas Manis</h4>
+          </div>
+        </div>
+
+        <!-- Photo 4: Nasi Liwet Sawah -->
+        <div class="group relative rounded-2xl overflow-hidden border border-coffeebrown/20 shadow-soft bg-ricepaper">
+          <img src="https://lh3.googleusercontent.com/aida/AEtjO1WOZbkRPsq-M0FpEr6Hxfb_J33SYxBOZrJBONVZahlx9XWvrqK76cmxC0NXhDSgM3G0gAMTSfm4x9lCdlQ9M99M46_4fUBNV3kpywDitaPFo7Wq4CnuSgc2cq-jD4CSNBePELqQms2vjZs8Dmf-H_Xn9_8xaSm36iXb2I0Af4tG_EQWruetSYhW1vGR2_SP_pJ074Cqtht3BLxBOdkzMRNYIl7J7jIyXlgQ4raTsg0mlD1WharDoDrrucg" alt="Nasi Liwet Sawah" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
+          <div class="absolute bottom-3.5 left-3.5 right-3.5 text-warmcream">
+            <span class="text-[10px] text-amberwarm font-mono uppercase tracking-wider block">Sajian Khas</span>
+            <h4 class="font-heading font-bold text-sm">Nasi Liwet Tradisional Santan</h4>
+          </div>
+        </div>
+
+        <!-- Photo 5: Kopi Senja Sawah -->
+        <div class="group relative rounded-2xl overflow-hidden border border-coffeebrown/20 shadow-soft bg-ricepaper">
+          <img src="https://lh3.googleusercontent.com/aida/AEtjO1VU34qYnqtnEjbtkBDelsDtKWuAM23O3CqTDls1DFi9D4HAw-IjyOQsmjCIqxA9inbLzBXDrEuMBc7FnW-p4QGLqe2eJB2aZEIYZ1abNBxeI_x3yOajLmgNjKW_CoBApVCArQ7RbKXFeLxI6Ldpkw-Dpn1I_91huPLRMXhvs4g7YE-75-ZbMqpBo8wCLq6V297dqUkIgP0Y1XdxcyZMYfyetc-JP2ypFQKDGm8gozALzRcmGC28VZVDZD-k" alt="Kopi Senja Sawah" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
+          <div class="absolute bottom-3.5 left-3.5 right-3.5 text-warmcream">
+            <span class="text-[10px] text-amberwarm font-mono uppercase tracking-wider block">Coffee Destination</span>
+            <h4 class="font-heading font-bold text-sm">Kopi Senja Sawah Gula Aren</h4>
+          </div>
+        </div>
+
+        <!-- Photo 6: Es Kelapa Jeruk -->
+        <div class="group relative rounded-2xl overflow-hidden border border-coffeebrown/20 shadow-soft bg-ricepaper">
+          <img src="https://lh3.googleusercontent.com/aida/AEtjO1Vhhjl6js9uQ21r8uQ8KYgpRpsoaCJUjilZMNatMouwXqN2U_mkm6oae5dNggAD9Oqwep5IEU2rOjvdFbHw5bm8HehEGP71bV2F7NlcGoTvq2rg6ter0yotvbXCocZjXr1dD57bb9i5ODyZNpCf2owubvsA9CRHAh0Kadoawq7W23uP0fdpb8CIm-0cdkSaCeq74FuMLTddjG8uwqsH9L4DENbPU1CylX-WRK1aSbwC_p7eeUUOUAk7Hk4" alt="Es Kelapa Jeruk Segar" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
+          <div class="absolute bottom-3.5 left-3.5 right-3.5 text-warmcream">
+            <span class="text-[10px] text-amberwarm font-mono uppercase tracking-wider block">Minuman Segar</span>
+            <h4 class="font-heading font-bold text-sm">Es Kelapa Jeruk Asli</h4>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Social Media Callout (Real and Grounded) -->
+      <div class="mt-8 p-6 bg-ricepaper border border-coffeebrown/20 rounded-3xl text-center flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-center sm:text-left">
+          <h4 class="font-heading font-bold text-deepmoss text-base">Bagikan Pengalaman Anda di Tepi Sawah</h4>
+          <p class="text-xs text-roastedearth/75 mt-0.5">Tag kami dalam foto kebersamaan Anda saat menikmati suasana sawah di Ciperna.</p>
+        </div>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 bg-forest hover:bg-deepmoss text-warmcream rounded-xl text-xs font-semibold flex items-center gap-2 transition shadow">
+          <i data-lucide="instagram" class="w-4 h-4 text-amberwarm"></i>
+          <span>Ikuti di Instagram</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ================= 10. LOCATION & MAPS SECTION (DEKAT GERBANG TOL CIPERNA) ================= -->
+    <section id="lokasi" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-ricepaper/80 border border-coffeebrown/20 rounded-3xl p-6 sm:p-10 shadow-soft space-y-8">
+        
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-coffeebrown/15">
+          <div class="space-y-2">
+            <span class="text-xs uppercase tracking-[0.25em] font-bold text-forest">Aksesibilitas Mudah & Cepat</span>
+            <h2 class="font-heading text-2xl sm:text-3xl font-bold text-deepmoss">Lokasi Strategis — Dekat Gerbang Tol Ciperna</h2>
+            <p class="text-xs sm:text-sm text-roastedearth/80 max-w-2xl leading-relaxed">
+              Hanya berjarak sekitar <strong>3 menit</strong> dari Pintu Keluar Gerbang Tol Ciperna (Tol Cipali / Palimanan - Kanci), sangat cocok untuk persinggahan kuliner keluarga, pelancong, maupun rombongan wisatawan.
+            </p>
+          </div>
+          <a href="https://www.google.com/maps/place/6%C2%B046'16.3%22S+108%C2%B030'45.4%22E/@-6.7711837,108.5119553,19z" target="_blank" rel="noopener noreferrer" class="self-start lg:self-auto px-6 py-3.5 bg-forest hover:bg-deepmoss text-warmcream rounded-2xl text-xs sm:text-sm font-bold shadow transition flex items-center gap-2">
+            <i data-lucide="map" class="w-4 h-4 text-amberwarm"></i>
+            <span>Buka di Google Maps</span>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          
+          <!-- Map Iframe Container -->
+          <div class="lg:col-span-7 bg-white rounded-2xl overflow-hidden border border-coffeebrown/20 shadow-inner flex flex-col">
+            <div class="p-3.5 bg-deepmoss text-warmcream text-xs flex items-center justify-between">
+              <span class="flex items-center gap-1.5 font-semibold">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-amberwarm"></i>
+                Koordinat Presisi: -6.771185, 108.512599
+              </span>
+              <span class="text-[11px] text-warmcream/80">Kec. Talun, Kab. Cirebon</span>
+            </div>
+            <!-- Google Maps Embed directly pointing to the exact coordinates -->
+            <div class="relative w-full h-[300px] sm:h-[380px]">
+              <iframe 
+                src="https://maps.google.com/maps?q=-6.771185,108.512599&hl=id&z=17&output=embed" 
+                class="w-full h-full border-0" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Peta Lokasi Tepi Sawah Ciperna">
+              </iframe>
+            </div>
+          </div>
+
+          <!-- Address and Operational Details -->
+          <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+            
+            <div class="bg-white rounded-2xl overflow-hidden border border-coffeebrown/15 shadow-sm p-5 space-y-4">
+              <div>
+                <span class="text-[10px] text-forest uppercase tracking-widest font-bold block mb-1">Alamat Lengkap</span>
+                <h4 class="font-heading font-bold text-deepmoss text-base">Tepi Sawah Restaurant & Coffee</h4>
+                <p class="text-xs text-roastedearth/85 leading-relaxed mt-1">
+                  <strong>Jl. Raya Ciperna</strong>, Kec. Talun, Kab. Cirebon, Jawa Barat 45171.<br />
+                  (Tepat di tepi hamparan persawahan asri, 3 menit dari Exit Tol Ciperna).
+                </p>
+              </div>
+
+              <div class="pt-3 border-t border-coffeebrown/10 space-y-2 text-xs">
+                <div class="flex items-center justify-between">
+                  <span class="text-roastedearth/70">Hari Operasional:</span>
+                  <span class="font-bold text-deepmoss">Setiap Hari</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-roastedearth/70">Jam Buka:</span>
+                  <span class="font-bold text-forest">09:00 – 22:00 WIB</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-roastedearth/70">Status Hari Ini:</span>
+                  <span class="font-bold text-emerald-700 flex items-center gap-1" id="locationStatusText">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Buka Sekarang
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Parking and Accessibility Facilities -->
+            <div class="bg-forest/10 border border-forest/20 p-5 rounded-2xl space-y-2.5 text-xs">
+              <div class="flex items-center gap-2 font-bold text-deepmoss">
+                <i data-lucide="check-circle-2" class="w-4 h-4 text-forest"></i>
+                <span>Fasilitas Parkir & Kenyamanan Kunjungan</span>
+              </div>
+              <p class="text-roastedearth/80 text-[11px] leading-relaxed">
+                Area parkir luas yang dapat menampung puluhan mobil keluarga, bus pariwisata, serta sepeda motor dengan petugas keamanan siaga untuk memastikan kenyamanan kunjungan Anda.
+              </p>
+            </div>
+
+            <!-- Conversion Action in Location Section -->
+            <div class="flex gap-2">
+              <a href="https://www.google.com/maps/place/6%C2%B046'16.3%22S+108%C2%B030'45.4%22E/@-6.7711837,108.5119553,19z" target="_blank" rel="noopener noreferrer" class="flex-1 py-3 bg-forest hover:bg-deepmoss text-warmcream rounded-xl text-xs font-bold text-center transition shadow flex items-center justify-center gap-1.5">
+                <i data-lucide="navigation" class="w-4 h-4 text-amberwarm"></i>
+                <span>Petunjuk Rute</span>
+              </a>
+              <button onclick="openReservationModal()" class="flex-1 py-3 bg-amberwarm hover:bg-golden text-roastedearth rounded-xl text-xs font-bold text-center transition shadow flex items-center justify-center gap-1.5">
+                <i data-lucide="calendar" class="w-4 h-4"></i>
+                <span>Reservasi Meja</span>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= BOTTOM CONVERSION BAR (FIXED MOBILE CTA) ================= -->
+  <div class="fixed bottom-0 inset-x-0 z-40 bg-deepmoss/95 border-t border-golden/40 p-3 backdrop-blur-md lg:hidden shadow-2xl">
+    <div class="flex items-center gap-2 max-w-md mx-auto">
+      <a href="https://order.tepisawah.id" target="_blank" rel="noopener noreferrer" class="flex-1 py-3 bg-gradient-to-r from-amberwarm to-golden text-roastedearth font-bold text-xs rounded-xl shadow-lg flex items-center justify-center gap-2">
+        <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+        <span>Pesan Sekarang</span>
+      </a>
+      <button onclick="openReservationModal()" class="px-4 py-3 bg-forest border border-golden/50 text-warmcream font-semibold text-xs rounded-xl shadow flex items-center justify-center gap-1.5">
+        <i data-lucide="calendar" class="w-4 h-4 text-amberwarm"></i>
+        <span>Reservasi</span>
+      </button>
+      <a href="https://www.google.com/maps/place/6%C2%B046'16.3%22S+108%C2%B030'45.4%22E/@-6.7711837,108.5119553,19z" target="_blank" rel="noopener noreferrer" class="p-3 bg-white/15 text-warmcream rounded-xl border border-white/20 flex items-center justify-center" aria-label="Buka Peta">
+        <i data-lucide="map-pin" class="w-4 h-4 text-amberwarm"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- ================= OFFICIAL FOOTER ================= -->
+  <footer class="bg-roastedearth text-warmcream/80 border-t border-golden/30 pt-14 pb-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        
+        <!-- Brand Info -->
+        <div class="space-y-4 md:col-span-2">
+          <div class="flex items-center gap-3.5">
+            <div class="h-12 w-12 rounded-xl bg-warmcream/95 p-1 border border-golden/50 flex items-center justify-center shrink-0 shadow">
+              <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFDbqIInhAXLIdEGNQRseKUwPJoQ0fDxZRVEoW2_4bkF1by-8NuL9I7tK4-oZ7H7itLzDuW68L63kd1uYTqFeGLXlsRehr77lGyetG7dF1ejoW6K--0d43sPW9TFel3uzme0d6brmXwviYNRGq6tfrKaGG46R2L8VOJlClhkUowdY0GSQpCySkthhcavTFs8_16tKdxLkZZURfzj_dOJ4zK-1AzrvwGDqzXsSsmt1zNZNJn1h_7QSMqyxIK4FkM2yUNg" alt="Logo Tepi Sawah Restaurant & Coffee" class="h-full w-full object-contain" />
+            </div>
+            <div class="flex flex-col">
+              <span class="font-heading font-bold text-lg text-warmcream">TEPI SAWAH RESTAURANT & COFFEE</span>
+              <span class="text-[10px] text-golden uppercase tracking-widest">Ciperna • Cirebon</span>
+            </div>
+          </div>
+          
+          <p class="text-xs leading-relaxed text-warmcream/75 max-w-md">
+            Restoran dan coffee destination bernuansa pedesaan otentik di tengah hamparan sawah hijau Ciperna. Menyajikan olahan ayam roaster rempah, gurame bakar madu, nasi liwet tradisional, serta racikan kopi senja khas Nusantara.
+          </p>
+
+          <div class="space-y-1.5 text-xs text-warmcream/85">
+            <p class="flex items-center gap-2 text-golden">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5 shrink-0"></i>
+              <span>Jl. Raya Ciperna (Dekat Gerbang Tol Ciperna), Kec. Talun, Kab. Cirebon</span>
+            </p>
+            <p class="flex items-center gap-2 text-warmcream/75">
+              <i data-lucide="clock" class="w-3.5 h-3.5 shrink-0 text-amberwarm"></i>
+              <span>Buka Setiap Hari: 09:00 – 22:00 WIB</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="space-y-3">
+          <h4 class="font-heading font-bold text-sm text-warmcream">Navigasi Halaman</h4>
+          <ul class="text-xs space-y-2 text-warmcream/75">
+            <li><a href="#home" class="hover:text-amberwarm transition">Beranda</a></li>
+            <li><a href="#menu-pilihan" class="hover:text-amberwarm transition">Menu Pilihan</a></li>
+            <li><a href="#promo-paket" class="hover:text-amberwarm transition">Promo & Paket</a></li>
+            <li><a href="#tentang-kami" class="hover:text-amberwarm transition">Tentang Kami</a></li>
+            <li><a href="#qr-order" class="hover:text-amberwarm transition">Pesan di Meja (QR)</a></li>
+            <li><a href="#galeri" class="hover:text-amberwarm transition">Galeri Suasana</a></li>
+            <li><a href="#reservasi" class="hover:text-amberwarm transition">Reservasi Rombongan</a></li>
+            <li><a href="#lokasi" class="hover:text-amberwarm transition">Petunjuk Lokasi</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact & Ordering -->
+        <div class="space-y-3">
+          <h4 class="font-heading font-bold text-sm text-warmcream">Layanan & Kontak</h4>
+          <div class="space-y-2.5 text-xs text-warmcream/75">
+            <p>Pemesanan langsung via smartphone:</p>
+            <a href="https://order.tepisawah.id" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-amberwarm font-semibold hover:underline">
+              <span>order.tepisawah.id</span>
+              <i data-lucide="external-link" class="w-3 h-3"></i>
+            </a>
+
+            <div class="pt-2 space-y-2">
+              <button onclick="openReservationModal()" class="w-full py-2.5 bg-forest hover:bg-forest/80 text-warmcream rounded-xl font-bold transition flex items-center justify-center gap-2">
+                <i data-lucide="calendar" class="w-3.5 h-3.5 text-amberwarm"></i>
+                <span>Reservasi Meja</span>
+              </button>
+              <a href="https://www.google.com/maps/place/6%C2%B046'16.3%22S+108%C2%B030'45.4%22E/@-6.7711837,108.5119553,19z" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 border border-golden/40 hover:bg-white/10 text-warmcream rounded-xl font-semibold transition flex items-center justify-center gap-2">
+                <i data-lucide="map" class="w-3.5 h-3.5 text-amberwarm"></i>
+                <span>Buka Google Maps</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-warmcream/60 gap-4">
+        <p>© 2026 Tepi Sawah Restaurant & Coffee. Ciperna, Cirebon. All rights reserved.</p>
+        <p>Kuliner Nusantara & Coffee di Tepi Sawah</p>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ================= MODAL RESERVASI RESMI ================= -->
+  <div id="reservationModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-ricepaper border border-coffeebrown/20 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative my-auto">
+      <button onclick="closeReservationModal()" class="absolute top-5 right-5 text-roastedearth/60 hover:text-roastedearth p-1" aria-label="Tutup Formulir">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="mb-5">
+        <span class="text-xs font-bold text-forest uppercase tracking-wider">Layanan Restoran</span>
+        <h3 class="font-heading text-xl sm:text-2xl font-bold text-deepmoss">Reservasi Meja Restoran</h3>
+        <p class="text-xs text-roastedearth/75 mt-0.5">Amankan alokasi saung atau rooftop terbaik untuk kunjungan Anda di Tepi Sawah Ciperna.</p>
+      </div>
+
+      <form onsubmit="handleReservationSubmit(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-semibold text-deepmoss mb-1">Nama Pemesan</label>
+          <input type="text" id="resName" required placeholder="Contoh: Rian Anggoro" class="w-full bg-white border border-coffeebrown/20 rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-forest text-roastedearth" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-deepmoss mb-1">Nomor WhatsApp</label>
+            <input type="tel" id="resPhone" required placeholder="0812-xxxx-xxxx" class="w-full bg-white border border-coffeebrown/20 rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-forest text-roastedearth" />
+          </div>
+          <div>
+            <label class="block font-semibold text-deepmoss mb-1">Jumlah Orang</label>
+            <input type="number" id="resGuests" min="1" max="50" value="4" required class="w-full bg-white border border-coffeebrown/20 rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-forest text-roastedearth" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-deepmoss mb-1">Tanggal Kunjungan</label>
+            <input type="date" id="resDate" required class="w-full bg-white border border-coffeebrown/20 rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-forest text-roastedearth" />
+          </div>
+          <div>
+            <label class="block font-semibold text-deepmoss mb-1">Sesi Waktu Kunjungan</label>
+            <select id="resTime" class="w-full bg-white border border-coffeebrown/20 rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-forest text-roastedearth">
+              <option value="11:30 WIB">11:30 WIB (Makan Siang)</option>
+              <option value="13:00 WIB">13:00 WIB (Makan Siang Santai)</option>
+              <option value="16:30 WIB">16:30 WIB (Sunset Sawah & Kopi)</option>
+              <option value="18:30 WIB">18:30 WIB (Makan Malam)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-deepmoss mb-1">Pilihan Tempat Duduk</label>
+          <select id="resTableChoice" class="w-full bg-white border border-coffeebrown/20 rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-forest text-roastedearth">
+            <option value="Saung Lesehan Menghadap Sawah">Saung Lesehan Menghadap Sawah (Favorit)</option>
+            <option value="Dek Rooftop 360° Sunset View">Dek Rooftop 360° Sunset View</option>
+            <option value="Area Utama Semi-Indoor">Area Utama Semi-Indoor</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-deepmoss mb-1">Catatan Tambahan (Opsional)</label>
+          <input type="text" id="resNotes" placeholder="Contoh: Gathering keluarga, butuh kursi bayi" class="w-full bg-white border border-coffeebrown/20 rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-forest text-roastedearth" />
+        </div>
+
+        <div class="pt-3">
+          <button type="submit" class="w-full py-3.5 bg-forest hover:bg-deepmoss text-warmcream font-bold rounded-xl transition shadow flex items-center justify-center gap-2 text-xs sm:text-sm">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Konfirmasi Reservasi Meja</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= SCRIPTS & REALTIME LOGIC ================= -->
+  <script>
+    // Exact Master Food Data from Source of Truth
+    const PRODUCTS = [
+      {
+        id: 'p1',
+        name: 'Chicken Roaster',
+        category: 'MAKANAN',
+        price: 85000,
+        desc: 'Ayam panggang oven rempah spesial Tepi Sawah, empuk, juicy, dan beraroma harum rosemary disajikan lengkap sambal terasi pedesaan.',
+        image: 'https://lh3.googleusercontent.com/aida/AEtjO1Wfy-FCWGYygUriJF-7w6MHGmPV3jHxAuEkHahIFjrrBal1wRwLbSpeXUW55CNLXYu-HioA17KhzA_aK1UYKuHZLbBpQ9oHSXTiPYTVUkZjfuLgSnrJcsjspkUiFIKEh0UuQ_Tixc4dNiNE2wOaSq-KZq4VqTNmnFIr7bQ2IbZVgNv_87BTuODBFPcz3g5Q75AxDUeWat7P8ctetO9HP4QCq4i2iJfkKFDn0TPbrXTbg3tjKLTB2I1ckGo',
+        badge: 'Pilihan Koki'
+      },
+      {
+        id: 'p2',
+        name: 'Nasi Liwet Sawah',
+        category: 'MAKANAN',
+        price: 45000,
+        desc: 'Nasi gurih santan rempah dilengkapi teri medan renyah, petai bakar, telur asin, ayam bumbu kuning, dan sambal terasi daun pisang.',
+        image: 'https://lh3.googleusercontent.com/aida/AEtjO1WOZbkRPsq-M0FpEr6Hxfb_J33SYxBOZrJBONVZahlx9XWvrqK76cmxC0NXhDSgM3G0gAMTSfm4x9lCdlQ9M99M46_4fUBNV3kpywDitaPFo7Wq4CnuSgc2cq-jD4CSNBePELqQms2vjZs8Dmf-H_Xn9_8xaSm36iXb2I0Af4tG_EQWruetSYhW1vGR2_SP_pJ074Cqtht3BLxBOdkzMRNYIl7J7jIyXlgQ4raTsg0mlD1WharDoDrrucg',
+        badge: 'Favorit Santap'
+      },
+      {
+        id: 'p3',
+        name: 'Gurame Bakar Madu',
+        category: 'MAKANAN',
+        price: 95000,
+        desc: 'Ikan gurame segar kolam air tawar dibakar dengan polesan madu hutan alami dan kecap rempah pedas manis bertabur cabai & jeruk limau.',
+        image: 'https://lh3.googleusercontent.com/aida/AEtjO1WW0vySU6m0lyBAK6OZ7f2vieYos_k5FAVs2BV3mdJGdimsAnnQty8YQCcswtjjLZAu6U4La18z-OGmOX-aYmSQ6R5HLzSoKPsums9thUP84d4z3LOLk6yUhzQ_oR9lBQVXdnAIiq8MyPbQ5roRmGwUkbOvvjOFq1psfX1ASJmfO8PoStoKIJ_PSe3o6--S5PRZn2KqoR6aaeY8lxNCU1mVKYC9o3oZWg6mPFKoXwVqxAK6PuAh5GmdByVG',
+        badge: 'Spesial Rempah'
+      },
+      {
+        id: 'p4',
+        name: 'Sayur Asem Klaten',
+        category: 'SAYUR',
+        price: 25000,
+        desc: 'Kuah asam jawa segar kaya cita rasa dengan labu siam, kacang panjang melinjo, jagung manis, dan kacang tanah gurih hangat.',
+        image: 'https://lh3.googleusercontent.com/aida/AEtjO1WED44nO052SRIR3GUEPj9wNdIh_8H2j9cFIj65HGcIPQAyLLNMpJ29ofIYynfQi4UvjsEyJAZxJ0CZPsYVwJOKgHEooVqVUExxQIZ6Whc9tNZ3d7TkbWnbJjmVagmhkCi0Lie5uXU3IqtolA2r5L5WzEPmv25qwwvjpOuIqmr07bKEILzY6KzvRnNG5DhyyZjjjsZsl08y0EzICOPTvjv0CxrVSKoRjwxoSZwJD1SOrktEnzK2rqJCbtQ2',
+        badge: 'Segar Alami'
+      },
+      {
+        id: 'p5',
+        name: 'Es Kelapa Jeruk Segar',
+        category: 'MINUMAN',
+        price: 18000,
+        desc: 'Kelapa muda keruk murni dipadu perasan jeruk manis alami berbulir, disajikan dingin dengan es batu kristal penyejuk dahaga.',
+        image: 'https://lh3.googleusercontent.com/aida/AEtjO1Vhhjl6js9uQ21r8uQ8KYgpRpsoaCJUjilZMNatMouwXqN2U_mkm6oae5dNggAD9Oqwep5IEU2rOjvdFbHw5bm8HehEGP71bV2F7NlcGoTvq2rg6ter0yotvbXCocZjXr1dD57bb9i5ODyZNpCf2owubvsA9CRHAh0Kadoawq7W23uP0fdpb8CIm-0cdkSaCeq74FuMLTddjG8uwqsH9L4DENbPU1CylX-WRK1aSbwC_p7eeUUOUAk7Hk4',
+        badge: 'Pelepas Dahaga'
+      },
+      {
+        id: 'p6',
+        name: 'Kopi Senja Sawah',
+        category: 'MINUMAN',
+        price: 28000,
+        desc: 'Espresso robusta lokal dipadu susu aren kental creamy berlapis es batu segar dengan aroma biji kopi sangrai pedesaan.',
+        image: 'https://lh3.googleusercontent.com/aida/AEtjO1VU34qYnqtnEjbtkBDelsDtKWuAM23O3CqTDls1DFi9D4HAw-IjyOQsmjCIqxA9inbLzBXDrEuMBc7FnW-p4QGLqe2eJB2aZEIYZ1abNBxeI_x3yOajLmgNjKW_CoBApVCArQ7RbKXFeLxI6Ldpkw-Dpn1I_91huPLRMXhvs4g7YE-75-ZbMqpBo8wCLq6V297dqUkIgP0Y1XdxcyZMYfyetc-JP2ypFQKDGm8gozALzRcmGC28VZVDZD-k',
+        badge: 'Signature Coffee'
+      }
+    ];
+
+    let activeCategory = 'SEMUA';
+
+    // 1. Render Featured Menu
+    function renderFeaturedMenu() {
+      const container = document.getElementById('featuredMenuGrid');
+      if (!container) return;
+
+      const items = activeCategory === 'SEMUA' 
+        ? PRODUCTS 
+        : PRODUCTS.filter(p => p.category === activeCategory);
+
+      container.innerHTML = items.map(prod => `
+        <div class="bg-ricepaper/85 border border-coffeebrown/15 rounded-3xl p-4 sm:p-5 shadow-soft hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between overflow-hidden group">
+          <div>
+            <div class="w-full h-48 sm:h-52 rounded-2xl overflow-hidden mb-4 relative shadow-inner">
+              <img src="${prod.image}" alt="${prod.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+              <span class="absolute top-3 left-3 bg-deepmoss/90 text-[10px] text-warmcream px-2.5 py-0.5 rounded-full uppercase tracking-wider backdrop-blur-md border border-golden/30 font-semibold">
+                ${prod.category === 'MAKANAN' ? 'Makanan Utama' : prod.category === 'SAYUR' ? 'Sayur & Sup' : 'Minuman & Kopi'}
+              </span>
+              <span class="absolute bottom-3 left-3 bg-amberwarm text-roastedearth text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
+                ${prod.badge}
+              </span>
+            </div>
+            
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <h3 class="font-heading font-bold text-deepmoss text-base sm:text-lg group-hover:text-forest transition-colors">${prod.name}</h3>
+              <span class="font-mono font-bold text-forest text-sm whitespace-nowrap">Rp ${prod.price.toLocaleString('id-ID')}</span>
+            </div>
+            <p class="text-xs text-roastedearth/75 leading-relaxed">${prod.desc}</p>
+          </div>
+
+          <div class="mt-5 pt-3.5 border-t border-coffeebrown/10 flex items-center justify-between">
+            <span class="text-[11px] text-coffeebrown font-medium flex items-center gap-1">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-forest"></i> Tersedia Hari Ini
+            </span>
+            <a href="https://order.tepisawah.id" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-forest hover:bg-deepmoss text-warmcream rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow">
+              <i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-amberwarm"></i> Pesan
+            </a>
+          </div>
+        </div>
+      `).join('');
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function filterMenu(cat, btn) {
+      activeCategory = cat;
+      document.querySelectorAll('.menu-cat-btn').forEach(b => {
+        b.className = "menu-cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-ricepaper text-roastedearth border border-coffeebrown/20 hover:bg-forest/10";
+      });
+      if (btn) {
+        btn.className = "menu-cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-forest text-warmcream shadow";
+      }
+      renderFeaturedMenu();
+    }
+
+    // 2. Realtime Operating Hours Check (WIB 09:00 - 22:00)
+    function checkRealtimeStatus() {
+      // Create date in UTC+7 (WIB)
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const wibDate = new Date(utc + (3600000 * 7));
+      
+      const hours = wibDate.getHours();
+      const minutes = wibDate.getMinutes();
+      const currentDecimal = hours + (minutes / 60);
+
+      // Open: 09:00 - 22:00
+      const isOpen = currentDecimal >= 9 && currentDecimal < 22;
+
+      const badge = document.getElementById('topStatusBadge');
+      const dot = document.getElementById('topStatusDot');
+      const text = document.getElementById('topStatusText');
+      const locText = document.getElementById('locationStatusText');
+
+      if (isOpen) {
+        if (badge) badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold shadow-sm bg-emerald-500 text-white";
+        if (dot) dot.className = "w-2 h-2 rounded-full bg-white animate-pulse";
+        if (text) text.innerText = "BUKA SEKARANG (OPEN NOW)";
+        if (locText) locText.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Buka Sekarang`;
+      } else {
+        if (badge) badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold shadow-sm bg-red-800 text-warmcream";
+        if (dot) dot.className = "w-2 h-2 rounded-full bg-red-400";
+        if (text) text.innerText = "SEDANG TUTUP • Buka Kembali 09:00 WIB";
+        if (locText) locText.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500"></span> Tutup • Buka Kembali 09:00 WIB`;
+      }
+    }
+
+    // 3. Mobile Navigation Controls
+    function toggleMobileMenu() {
+      const drawer = document.getElementById('mobileMenuDrawer');
+      const openIcon = document.getElementById('menuOpenIcon');
+      const closeIcon = document.getElementById('menuCloseIcon');
+      
+      if (drawer.classList.contains('hidden')) {
+        drawer.classList.remove('hidden');
+        openIcon.classList.add('hidden');
+        closeIcon.classList.remove('hidden');
+      } else {
+        closeMobileMenu();
+      }
+    }
+
+    function closeMobileMenu() {
+      const drawer = document.getElementById('mobileMenuDrawer');
+      const openIcon = document.getElementById('menuOpenIcon');
+      const closeIcon = document.getElementById('menuCloseIcon');
+      if (drawer) drawer.classList.add('hidden');
+      if (openIcon) openIcon.classList.remove('hidden');
+      if (closeIcon) closeIcon.classList.add('hidden');
+    }
+
+    // 4. Reservation Modal Controls
+    function openReservationModal(promoName = '') {
+      const modal = document.getElementById('reservationModal');
+      const tmr = new Date();
+      tmr.setDate(tmr.getDate() + 1);
+      const dateInput = document.getElementById('resDate');
+      if (dateInput) dateInput.value = tmr.toISOString().split('T')[0];
+
+      if (promoName && document.getElementById('resNotes')) {
+        document.getElementById('resNotes').value = `Promo/Paket: ${promoName}`;
+      }
+
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeReservationModal() {
+      const modal = document.getElementById('reservationModal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function handleReservationSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('resName').value;
+      const guests = document.getElementById('resGuests').value;
+      const date = document.getElementById('resDate').value;
+      const time = document.getElementById('resTime').value;
+
+      closeReservationModal();
+      showToast(
+        'Reservasi Meja Diterima!', 
+        `Terima kasih ${name}. Meja untuk ${guests} orang pada ${date} (${time}) telah dicatat. Tim kami akan mengonfirmasi via WhatsApp.`
+      );
+    }
+
+    // 5. Toast Notification Utility
+    let toastTimer = null;
+    function showToast(title, desc) {
+      const el = document.getElementById('toastNotification');
+      if (!el) return;
+      document.getElementById('toastTitle').innerText = title;
+      document.getElementById('toastDesc').innerText = desc;
+
+      el.classList.remove('translate-y-32', 'opacity-0');
+      el.classList.add('translate-y-0', 'opacity-100');
+
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        el.classList.remove('translate-y-0', 'opacity-100');
+        el.classList.add('translate-y-32', 'opacity-0');
+      }, 4200);
+    }
+
+    // Initial Setup
+    window.addEventListener('DOMContentLoaded', () => {
+      checkRealtimeStatus();
+      setInterval(checkRealtimeStatus, 60000); // Check every minute
+      renderFeaturedMenu();
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

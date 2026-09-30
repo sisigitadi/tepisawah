@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TEPI SAWAH — Restaurant &amp; Coffee | Ciperna, Cirebon</title>
+<!-- Google Fonts: Playfair Display + Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            forest: '#2E6B34',
+            deepmoss: '#183A1D',
+            golden: '#DDA15E',
+            amberwarm: '#F3C644',
+            warmcream: '#FEFAE0',
+            ricepaper: '#F8F4DB',
+            roastedearth: '#3D1F10',
+            coffeebrown: '#6F3F24',
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'serif'],
+            sans: ['"Inter"', 'sans-serif'],
+          },
+          boxShadow: {
+            soft: '0 4px 20px -8px rgba(24,58,29,0.25)',
+            glow: '0 0 24px rgba(221, 161, 94, 0.45)',
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      background-color: #FEFAE0;
+      color: #3D1F10;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    .font-heading {
+      font-family: 'Playfair Display', serif;
+    }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: #FEFAE0; }
+    ::-webkit-scrollbar-thumb { background: #DDA15E; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #2E6B34; }
+    .badge-bounce { animation: bounce 0.4s ease; }
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    @media print {
+      body * { visibility: hidden; }
+      #printReceiptModal, #printReceiptModal * { visibility: visible; }
+      #printReceiptModal {
+        position: absolute; left: 0; top: 0; width: 100%;
+        background: white !important; color: black !important; box-shadow: none !important;
+      }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-golden selection:text-white antialiased">
+<!-- ================= TOP NAVIGATION BAR ================= -->
+<header class="sticky top-0 z-50 bg-deepmoss/95 backdrop-blur-md text-white border-b border-golden/30 shadow-md">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="py-3 sm:py-0 sm:h-20 flex flex-col lg:flex-row items-center justify-between gap-3">
+<!-- Brand Logo & Name (Proportional 1600x527 logo rendering) -->
+<div class="w-full lg:w-auto flex items-center justify-between">
+<a class="flex items-center gap-3 group focus:outline-none" href="#home" onclick="showPublicView()">
+<div class="h-10 sm:h-12 px-3 py-1 bg-warmcream/95 rounded-xl border border-golden/50 shadow flex items-center justify-center shrink-0">
+<img alt="Tepi Sawah Restaurant" class="h-8 sm:h-10 w-auto max-w-[150px] sm:max-w-[170px] object-contain transition-transform group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwmlJWtr8qmY9zQvvpEBCHWzT2mMSIboX-ccXnSbEPM97bMQECTed7q4ku7RyFUTvHKH0AjB6xIjWoBEAdeoak_HPJXI_vLiRUikm6BemVg4N8VDi-QY4xvZJjzKjeRlVNXNwWJ7ArYz8TLYp_ME8WTckxFqdbMMQaZK6DPepHlW_0MN-4tB3H7JrwErsCYfy2bmJUbxTdK1Dp_1aBl66fxQig_kvXwOC8oTCYMsC8ljJMlFs0YD7GhIqkfIhySesNe8M"/>
+</div>
+<div class="flex flex-col">
+<span class="font-heading font-bold text-base sm:text-lg tracking-wide text-warmcream group-hover:text-amberwarm transition-colors">TEPI SAWAH</span>
+<span class="text-[9px] sm:text-[10px] tracking-widest text-golden uppercase font-medium">Ciperna • Cirebon</span>
+</div>
+</a>
+<!-- Mobile CTA Reservasi -->
+<button class="lg:hidden px-3 py-1.5 bg-gradient-to-r from-forest to-deepmoss border border-amberwarm/60 text-amberwarm rounded-full text-[11px] font-bold tracking-wide uppercase hover:shadow-glow transition" onclick="openReservationModal()">
+          Reservasi
+        </button>
+</div>
+<!-- Public Navigation Anchor Links (Desktop) -->
+<nav class="lg:flex items-center gap-6 text-xs sm:text-sm font-medium text-warmcream/90" id="publicNavAnchors">
+<a class="hover:text-amberwarm transition" href="#menu-unggulan" onclick="showPublicView()">Menu Pilihan</a>
+<a class="hover:text-amberwarm transition" href="#promo-preopening" onclick="showPublicView()">Promo Pre-Opening</a>
+<a class="hover:text-amberwarm transition" href="#lokasi-peta" onclick="showPublicView()">Lokasi &amp; Peta</a>
+<button class="px-4 py-2 bg-gradient-to-r from-forest to-deepmoss border border-amberwarm/60 text-amberwarm rounded-full text-xs font-semibold tracking-wider uppercase hover:shadow-glow transition flex items-center gap-1.5" onclick="openReservationModal()">
+<svg aria-hidden="true" class="lucide lucide-sparkles w-3.5 h-3.5" data-lucide="sparkles" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg>
+          Reservasi Meja (Promo)
+        </button>
+</nav>
+<!-- View Switcher Tabs: Beranda Publik vs Alur Resto Workflow -->
+<div class="w-full lg:w-auto flex items-center bg-black/45 p-1 rounded-2xl border border-golden/35 shadow-inner overflow-x-auto scrollbar-none">
+<div class="flex items-center gap-1 min-w-max mx-auto lg:mx-0">
+<button class="px-3.5 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all flex items-center gap-1.5 text-warmcream/85 hover:text-white" id="navBtn-public" onclick="showPublicView()">
+<svg aria-hidden="true" class="lucide lucide-home w-3.5 h-3.5" data-lucide="home" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+<span class="">Beranda Publik</span>
+</button>
+<button class="px-3.5 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all flex items-center gap-1.5 bg-forest text-warmcream shadow" id="navBtn-internal" onclick="showInternalWorkflow('order')">
+<svg aria-hidden="true" class="lucide lucide-workflow w-3.5 h-3.5" data-lucide="workflow" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><rect height="8" rx="2" width="8" x="3" y="3"></rect><path d="M7 11v4a2 2 0 0 0 2 2h4"></path><rect height="8" rx="2" width="8" x="13" y="13"></rect></svg>
+<span class="">Alur Internal Resto (Demo)</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- ================= NOTIFICATION TOAST ================= -->
+<div class="fixed bottom-6 right-4 sm:right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 pointer-events-none max-w-sm w-full" id="toastNotification">
+<div class="bg-deepmoss text-warmcream border border-golden/60 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3">
+<div class="p-2 bg-forest text-amberwarm rounded-xl shrink-0" id="toastIcon">
+<svg aria-hidden="true" class="lucide lucide-check-circle-2 w-5 h-5" data-lucide="check-circle-2" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="m16 9-5.5 5.5L8 12"></path></svg>
+</div>
+<div>
+<p class="font-bold text-sm text-warmcream" id="toastTitle">Berhasil</p>
+<p class="text-xs text-warmcream/85 leading-snug" id="toastDesc">Status sistem diperbarui.</p>
+</div>
+</div>
+</div>
+<main class="flex-grow">
+<!-- ============================================================== -->
+<!-- VIEW 1: BERANDA PUBLIK (PROMO, MENU & LOKASI SAJA) ============ -->
+<!-- ============================================================== -->
+<div class="space-y-16 sm:space-y-24 pb-20 hidden" id="view-public">
+<!-- HERO SECTION WITH CRISP IMAGE & DUAL TIMERS -->
+<section class="relative min-h-[640px] lg:min-h-[720px] flex items-center bg-deepmoss text-warmcream overflow-hidden" id="home">
+<!-- Background Photo with Natural Contrast Gradient -->
+<div class="absolute inset-0 z-0">
+<img alt="Panorama Tepi Sawah Ciperna" class="w-full h-full object-cover object-center scale-100 transition-transform duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALfUdD9waUdOVPLq87sZ_gfaWqUXcjWVTCoHnb_FqLbT-AqPQBY5LLsTcjUZKLp9Cp3KLN7tTAEOhBtrUMAYYTVHO5mYbQXBdN08N5V3BhgqUMLAgpqY7rAbWdpzb40q9HWLvVwaGf91SCDkAyaR-e2Sr8j8WYnKeXomzSlFozrQyKKoX6_zvZNooYGDUfIqwx9_5r6eg_k0P6WnGcEXBvy-tRCyycBvTLA0RK1tUCIl6gDn8GsIVMx52gMbLT8hnEWMk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-deepmoss via-deepmoss/80 to-deepmoss/40"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-deepmoss/95 via-deepmoss/75 to-transparent"></div>
+</div>
+<div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 w-full">
+<div class="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-12">
+<!-- Left Content -->
+<div class="w-full lg:w-7/12 space-y-5 sm:space-y-6">
+<div class="flex flex-wrap items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-forest/90 text-amberwarm border border-golden/40 shadow backdrop-blur-sm">
+<svg aria-hidden="true" class="lucide lucide-sparkles w-3.5 h-3.5" data-lucide="sparkles" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg> Authentic Indonesian Dining &amp; Coffee
+              </span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-deepmoss/80 text-warmcream border border-white/20 backdrop-blur-sm">
+<svg aria-hidden="true" class="lucide lucide-map-pin w-3.5 h-3.5 text-amberwarm" data-lucide="map-pin" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg> Dekat Gerbang Tol Ciperna, Cirebon
+              </span>
+</div>
+<div class="drop-shadow-md">
+<span class="text-xs uppercase tracking-[0.25em] font-semibold text-golden mb-2 block">Tradisi Rasa di Tepi Sawah</span>
+<h1 class="font-heading text-3xl sm:text-5xl lg:text-6xl font-bold leading-tight text-warmcream">
+                TEPI SAWAH <br/>
+<span class="text-amberwarm italic font-normal text-2xl sm:text-4xl lg:text-5xl">Restaurant &amp; Coffee</span>
+</h1>
+</div>
+<p class="text-sm sm:text-base text-warmcream/95 max-w-xl font-normal leading-relaxed drop-shadow bg-deepmoss/70 backdrop-blur-md p-4 sm:p-5 rounded-2xl border border-white/15">
+              Sensasi santap kuliner Nusantara otentik dan kopi di tengah hamparan sawah hijau asri Ciperna Cirebon. Nikmati sejuknya angin semilir serta aroma hidangan bakar istimewa bersama keluarga tercinta.
+            </p>
+<!-- Call to Actions -->
+<div class="flex flex-wrap items-center gap-3 pt-1">
+<a class="px-6 py-3.5 bg-golden hover:bg-amberwarm text-roastedearth font-bold text-xs sm:text-sm rounded-2xl shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center gap-2" href="#menu-unggulan">
+<svg aria-hidden="true" class="lucide lucide-utensils w-4 h-4" data-lucide="utensils" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg>
+<span class="">Lihat Menu &amp; Promo</span>
+</a>
+<button class="px-6 py-3.5 bg-forest hover:bg-forest/80 text-warmcream border border-golden/60 font-semibold text-xs sm:text-sm rounded-2xl shadow-lg backdrop-blur-sm transition-all flex items-center gap-2" onclick="openReservationModal()">
+<svg aria-hidden="true" class="lucide lucide-calendar w-4 h-4" data-lucide="calendar" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M8 2v3"></path><path d="M16 2v3"></path><rect height="18" rx="2" width="18" x="3" y="3"></rect><path d="M3 9h18"></path></svg>
+<span class="">Reservasi Pre-Opening</span>
+</button>
+<button class="px-4 py-3 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-medium text-xs rounded-2xl transition flex items-center gap-2" onclick="showInternalWorkflow('order')">
+<svg aria-hidden="true" class="lucide lucide-play-circle w-4 h-4" data-lucide="play-circle" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"></path><circle cx="12" cy="12" r="10"></circle></svg>
+<span class="">Coba Demo Alur Resto</span>
+</button>
+</div>
+</div>
+<!-- Right: Hero Card with Live Clock & Grand Opening Countdown -->
+<div class="w-full lg:w-5/12 max-w-md lg:max-w-none">
+<div class="bg-deepmoss/90 backdrop-blur-lg border border-golden/45 p-5 sm:p-7 rounded-3xl shadow-2xl space-y-5">
+<!-- Realtime Digital Clock Widget -->
+<div class="bg-black/40 border border-golden/30 rounded-2xl p-3 sm:p-4 text-center">
+<div class="flex items-center justify-center gap-2 text-golden text-xs font-semibold uppercase tracking-wider mb-1">
+<svg aria-hidden="true" class="lucide lucide-clock w-3.5 h-3.5 text-emerald-400 animate-pulse" data-lucide="clock" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+<span class="">Waktu Operasional Realtime</span>
+</div>
+<div class="font-mono text-xl sm:text-2xl font-bold text-warmcream tracking-wider" id="liveDigitalClock">
+                  --:--:-- WIB
+                </div>
+<div class="text-[11px] text-warmcream/80 mt-0.5" id="liveDigitalDate">
+                  Memuat tanggal hari ini...
+                </div>
+</div>
+<!-- Grand Opening Countdown Header -->
+<div class="text-center">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amberwarm/20 text-amberwarm text-xs font-bold rounded-full uppercase tracking-wider border border-amberwarm/40">
+<svg aria-hidden="true" class="lucide lucide-sparkles w-3.5 h-3.5" data-lucide="sparkles" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg>
+                  Grand Opening Segera
+                </span>
+<h3 class="font-heading text-lg sm:text-xl font-bold text-warmcream mt-2">Hitung Mundur Pembukaan</h3>
+<p class="text-xs text-warmcream/75 mt-0.5">Menyiapkan pengalaman kuliner pedesaan terbaik di Ciperna</p>
+</div>
+<!-- 4-Col Countdown Clock -->
+<div class="grid grid-cols-4 gap-2 sm:gap-2.5 text-center">
+<div class="bg-deepmoss/95 border border-golden/30 py-2.5 px-1 rounded-2xl shadow-inner">
+<span class="block font-heading text-xl sm:text-2xl font-bold text-amberwarm tabular-nums" id="heroCountdownDays">00</span>
+<span class="text-[9px] uppercase tracking-wider text-warmcream/80">Hari</span>
+</div>
+<div class="bg-deepmoss/95 border border-golden/30 py-2.5 px-1 rounded-2xl shadow-inner">
+<span class="block font-heading text-xl sm:text-2xl font-bold text-amberwarm tabular-nums" id="heroCountdownHours">00</span>
+<span class="text-[9px] uppercase tracking-wider text-warmcream/80">Jam</span>
+</div>
+<div class="bg-deepmoss/95 border border-golden/30 py-2.5 px-1 rounded-2xl shadow-inner">
+<span class="block font-heading text-xl sm:text-2xl font-bold text-amberwarm tabular-nums" id="heroCountdownMinutes">00</span>
+<span class="text-[9px] uppercase tracking-wider text-warmcream/80">Menit</span>
+</div>
+<div class="bg-deepmoss/95 border border-golden/30 py-2.5 px-1 rounded-2xl shadow-inner">
+<span class="block font-heading text-xl sm:text-2xl font-bold text-amberwarm tabular-nums" id="heroCountdownSeconds">00</span>
+<span class="text-[9px] uppercase tracking-wider text-warmcream/80">Detik</span>
+</div>
+</div>
+<!-- Location Snippet -->
+<div class="pt-3 border-t border-golden/20 flex flex-col gap-2 text-xs text-warmcream/85">
+<div class="flex items-start gap-2">
+<svg aria-hidden="true" class="lucide lucide-map-pin w-4 h-4 text-amberwarm shrink-0 mt-0.5" data-lucide="map-pin" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+<span class="">Jl. Raya Ciperna (Dekat Gerbang Tol Ciperna), Kec. Talun, Kab. Cirebon</span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<a class="text-amberwarm hover:text-white font-semibold underline flex items-center gap-1 text-[11px]" href="https://www.google.com/maps/place/6%C2%B046'16.3%22S+108%C2%B030'45.4%22E/@-6.7711837,108.5119553,19z" target="_blank">
+<span class="">Lihat di Google Maps</span>
+<svg aria-hidden="true" class="lucide lucide-external-link w-3 h-3" data-lucide="external-link" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>
+</a>
+<span class="text-[11px] text-warmcream/80 font-medium">Buka 09:00 - 22:00 WIB</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION A: PROMO RESERVASI PRE-OPENING (EXCLUSIVE VOUCHERS) -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="promo-preopening">
+<div class="text-center max-w-2xl mx-auto space-y-2 mb-10">
+<span class="text-xs uppercase tracking-[0.25em] font-bold text-forest">Penawaran Spesial Pre-Opening</span>
+<h2 class="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-roastedearth">Promo Eksklusif Sambut Hari Buka</h2>
+<p class="text-xs sm:text-sm text-roastedearth/75">Daftarkan reservasi awal Anda untuk mendapatkan berbagai keuntungan dan diskon istimewa.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Promo Card 1 -->
+<div class="bg-gradient-to-b from-ricepaper to-ricepaper/50 border-2 border-golden/40 rounded-3xl p-6 shadow-soft hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute -right-10 -top-10 w-28 h-28 bg-amberwarm/20 rounded-full blur-2xl"></div>
+<div>
+<span class="px-3 py-1 rounded-full bg-forest text-warmcream text-[10px] font-bold uppercase tracking-wider">Kuota Terbatas</span>
+<div class="mt-4 mb-2">
+<h3 class="font-heading font-bold text-deepmoss text-xl">Early Bird Voucher 25%</h3>
+<p class="text-2xl font-black text-forest font-mono mt-1">Diskon 25%</p>
+</div>
+<p class="text-xs text-roastedearth/80 leading-relaxed">
+              Khusus 100 reservasi pertama saat grand opening. Berlaku untuk seluruh hidangan makanan utama &amp; paket santap keluarga.
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t border-coffeebrown/15 flex items-center justify-between">
+<span class="text-[11px] text-coffeebrown font-semibold flex items-center gap-1">
+<svg aria-hidden="true" class="lucide lucide-tag w-3.5 h-3.5 text-amberwarm" data-lucide="tag" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"></path><circle cx="7.5" cy="7.5" fill="currentColor" r=".5"></circle></svg> Kode: EARLYBIRD25
+            </span>
+<button class="px-4 py-2 bg-forest hover:bg-deepmoss text-warmcream rounded-xl text-xs font-bold transition shadow" onclick="openReservationModal('Early Bird 25%')">
+              Klaim Promo
+            </button>
+</div>
+</div>
+<!-- Promo Card 2 -->
+<div class="bg-gradient-to-b from-ricepaper to-ricepaper/50 border-2 border-forest/40 rounded-3xl p-6 shadow-soft hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute -right-10 -top-10 w-28 h-28 bg-forest/20 rounded-full blur-2xl"></div>
+<div>
+<span class="px-3 py-1 rounded-full bg-amberwarm text-roastedearth text-[10px] font-bold uppercase tracking-wider">Spesial Keluarga</span>
+<div class="mt-4 mb-2">
+<h3 class="font-heading font-bold text-deepmoss text-xl">Free Es Kelapa Jeruk</h3>
+<p class="text-2xl font-black text-deepmoss font-mono mt-1">Gratis 4 Porsi</p>
+</div>
+<p class="text-xs text-roastedearth/80 leading-relaxed">
+              Dapatkan free dessert segar Es Kelapa Jeruk untuk setiap reservasi meja keluarga minimal 4 orang pada hari kunjungan perdana.
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t border-coffeebrown/15 flex items-center justify-between">
+<span class="text-[11px] text-coffeebrown font-semibold flex items-center gap-1">
+<svg aria-hidden="true" class="lucide lucide-gift w-3.5 h-3.5 text-amberwarm" data-lucide="gift" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M12 7v14"></path><path d="M20 11v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"></path><path d="M7.5 7a1 1 0 0 1 0-5A4.8 8 0 0 1 12 7a4.8 8 0 0 1 4.5-5 1 1 0 0 1 0 5"></path><rect height="4" rx="1" width="18" x="3" y="7"></rect></svg> Meja Min. 4 Orang
+            </span>
+<button class="px-4 py-2 bg-forest hover:bg-deepmoss text-warmcream rounded-xl text-xs font-bold transition shadow" onclick="openReservationModal('Free Es Kelapa Jeruk')">
+              Klaim Promo
+            </button>
+</div>
+</div>
+<!-- Promo Card 3 -->
+<div class="bg-gradient-to-b from-ricepaper to-ricepaper/50 border-2 border-golden/40 rounded-3xl p-6 shadow-soft hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute -right-10 -top-10 w-28 h-28 bg-golden/20 rounded-full blur-2xl"></div>
+<div>
+<span class="px-3 py-1 rounded-full bg-deepmoss text-warmcream text-[10px] font-bold uppercase tracking-wider">Prioritas Tempat</span>
+<div class="mt-4 mb-2">
+<h3 class="font-heading font-bold text-deepmoss text-xl">Gazebo Sunset View</h3>
+<p class="text-2xl font-black text-golden font-mono mt-1">Free Priority Seat</p>
+</div>
+<p class="text-xs text-roastedearth/80 leading-relaxed">
+              Jaminan alokasi gazebo lesehan atau dek rooftop terbaik menghadap hamparan sawah hijau &amp; sunset senja tanpa minimum charge tambahan.
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t border-coffeebrown/15 flex items-center justify-between">
+<span class="text-[11px] text-coffeebrown font-semibold flex items-center gap-1">
+<svg aria-hidden="true" class="lucide lucide-compass w-3.5 h-3.5 text-amberwarm" data-lucide="compass" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"></path></svg> View Sunset Asri
+            </span>
+<button class="px-4 py-2 bg-forest hover:bg-deepmoss text-warmcream rounded-xl text-xs font-bold transition shadow" onclick="openReservationModal('Gazebo Sunset View')">
+              Klaim Promo
+            </button>
+</div>
+</div>
+</div>
+<!-- Banner Promo Full Width -->
+<div class="mt-8 bg-deepmoss text-warmcream rounded-3xl p-6 sm:p-8 border border-golden/30 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
+<div class="space-y-2 text-center sm:text-left">
+<span class="text-xs font-mono font-bold text-amberwarm uppercase tracking-widest">Pre-Booking Dibuka</span>
+<h3 class="font-heading text-xl sm:text-2xl font-bold">Amankan Meja &amp; Kupon Promo Sekarang</h3>
+<p class="text-xs sm:text-sm text-warmcream/80 max-w-xl">
+            Tidak ada pungutan biaya reservasi. Anda hanya perlu memilih tanggal kunjungan untuk memastikan ketersediaan tempat saat pembukaan resmi.
+          </p>
+</div>
+<button class="px-6 py-3.5 bg-gradient-to-r from-amberwarm to-golden hover:from-golden hover:to-amberwarm text-roastedearth font-bold text-xs sm:text-sm rounded-2xl shadow-lg transition whitespace-nowrap" onclick="openReservationModal()">
+          Klaim Promo &amp; Reservasi
+        </button>
+</div>
+</section>
+<!-- SECTION B: MENU UNGGULAN NUSANTARA (KATALOG KULINER) -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="menu-unggulan">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-4">
+<div>
+<span class="text-xs uppercase tracking-[0.25em] font-semibold text-forest">Katalog Kuliner Otentik</span>
+<h2 class="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-roastedearth">Menu Unggulan Nusantara</h2>
+<p class="text-xs sm:text-sm text-roastedearth/75 mt-1">Dimasak dengan bumbu rempah segar dan resep tradisional nusantara.</p>
+</div>
+<!-- Filter tabs for Public menu -->
+<div class="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+<button class="public-cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap bg-ricepaper text-roastedearth border border-coffeebrown/15 hover:bg-forest/10" onclick="filterPublicMenu('SEMUA', this)">Semua</button>
+<button class="public-cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap bg-ricepaper text-roastedearth border border-coffeebrown/15 hover:bg-forest/10" onclick="filterPublicMenu('MAKANAN', this)">Makanan Utama</button>
+<button class="public-cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap bg-ricepaper text-roastedearth border border-coffeebrown/15 hover:bg-forest/10" onclick="filterPublicMenu('SAYUR', this)">Sayur &amp; Sup</button>
+<button class="public-cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap bg-forest text-warmcream shadow" onclick="filterPublicMenu('MINUMAN', this)">Minuman &amp; Kopi</button>
+</div>
+</div>
+<!-- Food Cards Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="publicFoodCardsGrid">
+<div class="bg-ricepaper/80 border border-coffeebrown/15 rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between overflow-hidden group">
+<div>
+<div class="w-full h-48 sm:h-52 rounded-xl overflow-hidden mb-4 relative shadow-sm">
+<img alt="Es Kelapa Jeruk Segar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AEtjO1Vhhjl6js9uQ21r8uQ8KYgpRpsoaCJUjilZMNatMouwXqN2U_mkm6oae5dNggAD9Oqwep5IEU2rOjvdFbHw5bm8HehEGP71bV2F7NlcGoTvq2rg6ter0yotvbXCocZjXr1dD57bb9i5ODyZNpCf2owubvsA9CRHAh0Kadoawq7W23uP0fdpb8CIm-0cdkSaCeq74FuMLTddjG8uwqsH9L4DENbPU1CylX-WRK1aSbwC_p7eeUUOUAk7Hk4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<span class="absolute top-3 left-3 bg-deepmoss/90 text-[10px] text-warmcream px-2.5 py-0.5 rounded-full uppercase tracking-wider backdrop-blur-md border border-golden/30 font-semibold">
+              Minuman &amp; Kopi
+            </span>
+</div>
+<div class="flex items-start justify-between gap-2 mb-2">
+<h3 class="font-heading font-bold text-deepmoss text-base sm:text-lg group-hover:text-forest transition-colors">Es Kelapa Jeruk Segar</h3>
+<span class="font-mono font-bold text-forest text-sm whitespace-nowrap">Rp 18.000</span>
+</div>
+<p class="text-xs text-roastedearth/75 leading-relaxed">Kelapa muda keruk murni dipadu perasan jeruk manis alami berbulir, disajikan dingin dengan es batu kristal penyejuk dahaga.</p>
+</div>
+<div class="mt-4 pt-3 border-t border-coffeebrown/10 flex items-center justify-between">
+<span class="text-[11px] text-coffeebrown font-medium flex items-center gap-1">
+<svg aria-hidden="true" class="lucide lucide-star w-3.5 h-3.5 fill-amberwarm text-amberwarm" data-lucide="star" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg> Pilihan Koki
+          </span>
+<button class="px-3.5 py-1.5 bg-forest hover:bg-deepmoss text-warmcream rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow" onclick="quickOrderFromPublicMenu('p5')">
+<svg aria-hidden="true" class="lucide lucide-plus w-3.5 h-3.5" data-lucide="plus" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg> Coba di Demo
+          </button>
+</div>
+</div>
+<div class="bg-ricepaper/80 border border-coffeebrown/15 rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between overflow-hidden group">
+<div>
+<div class="w-full h-48 sm:h-52 rounded-xl overflow-hidden mb-4 relative shadow-sm">
+<img alt="Kopi Senja Sawah" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AEtjO1VU34qYnqtnEjbtkBDelsDtKWuAM23O3CqTDls1DFi9D4HAw-IjyOQsmjCIqxA9inbLzBXDrEuMBc7FnW-p4QGLqe2eJB2aZEIYZ1abNBxeI_x3yOajLmgNjKW_CoBApVCArQ7RbKXFeLxI6Ldpkw-Dpn1I_91huPLRMXhvs4g7YE-75-ZbMqpBo8wCLq6V297dqUkIgP0Y1XdxcyZMYfyetc-JP2ypFQKDGm8gozALzRcmGC28VZVDZD-k"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<span class="absolute top-3 left-3 bg-deepmoss/90 text-[10px] text-warmcream px-2.5 py-0.5 rounded-full uppercase tracking-wider backdrop-blur-md border border-golden/30 font-semibold">
+              Minuman &amp; Kopi
+            </span>
+</div>
+<div class="flex items-start justify-between gap-2 mb-2">
+<h3 class="font-heading font-bold text-deepmoss text-base sm:text-lg group-hover:text-forest transition-colors">Kopi Senja Sawah</h3>
+<span class="font-mono font-bold text-forest text-sm whitespace-nowrap">Rp 28.000</span>
+</div>
+<p class="text-xs text-roastedearth/75 leading-relaxed">Espresso robusta lokal dipadu susu aren kental creamy berlapis es batu segar dengan aroma biji kopi sangrai pedesaan.</p>
+</div>
+<div class="mt-4 pt-3 border-t border-coffeebrown/10 flex items-center justify-between">
+<span class="text-[11px] text-coffeebrown font-medium flex items-center gap-1">
+<svg aria-hidden="true" class="lucide lucide-star w-3.5 h-3.5 fill-amberwarm text-amberwarm" data-lucide="star" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg> Pilihan Koki
+          </span>
+<button class="px-3.5 py-1.5 bg-forest hover:bg-deepmoss text-warmcream rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow" onclick="quickOrderFromPublicMenu('p6')">
+<svg aria-hidden="true" class="lucide lucide-plus w-3.5 h-3.5" data-lucide="plus" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg> Coba di Demo
+          </button>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION C: LOKASI & GOOGLE MAPS (Near Gerbang Tol Ciperna) -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="lokasi-peta">
+<div class="bg-ricepaper/80 border border-coffeebrown/20 rounded-3xl p-6 sm:p-10 shadow-soft space-y-8">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-coffeebrown/15">
+<div class="space-y-2">
+<span class="text-xs uppercase tracking-[0.25em] font-bold text-forest">Aksesibilitas Mudah &amp; Cepat</span>
+<h2 class="font-heading text-2xl sm:text-3xl font-bold text-deepmoss">Lokasi Strategis — Dekat Gerbang Tol Ciperna</h2>
+<p class="text-xs sm:text-sm text-roastedearth/80 max-w-2xl leading-relaxed">
+              Hanya berjarak sekitar <strong>3 menit</strong> dari Pintu Keluar Gerbang Tol Ciperna (Tol Cipali / Palimanan - Kanci), sangat cocok untuk persinggahan kuliner keluarga maupun rombongan wisatawan.
+            </p>
+</div>
+<a class="self-start lg:self-auto px-5 py-3 bg-forest hover:bg-deepmoss text-warmcream rounded-2xl text-xs sm:text-sm font-bold shadow transition flex items-center gap-2" href="https://www.google.com/maps/place/6%C2%B046'16.3%22S+108%C2%B030'45.4%22E/@-6.7711837,108.5119553,19z" target="_blank">
+<svg aria-hidden="true" class="lucide lucide-map w-4 h-4 text-amberwarm" data-lucide="map" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"></path><path d="M15 5.764v15"></path><path d="M9 3.236v15"></path></svg>
+<span class="">Buka di Google Maps</span>
+</a>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+<!-- Map Iframe & Direct Link Container -->
+<div class="lg:col-span-7 bg-white rounded-2xl overflow-hidden border border-coffeebrown/20 shadow-inner flex flex-col">
+<div class="p-3 bg-deepmoss text-warmcream text-xs flex items-center justify-between">
+<span class="flex items-center gap-1.5 font-semibold">
+<svg aria-hidden="true" class="lucide lucide-map-pin w-3.5 h-3.5 text-amberwarm" data-lucide="map-pin" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                Koordinat Presisi: -6.771185, 108.512599
+              </span>
+<span class="text-[10px] text-warmcream/70">Kec. Talun, Kab. Cirebon</span>
+</div>
+<!-- Google Maps Embed directly pointing to the exact coordinates -->
+<div class="relative w-full h-[280px] sm:h-[350px]">
+<iframe class="w-full h-full border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=-6.771185,108.512599&amp;hl=id&amp;z=17&amp;output=embed" title="Peta Lokasi Tepi Sawah Ciperna">
+</iframe>
+</div>
+</div>
+<!-- Photographic Overview & Address Details -->
+<div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+<div class="bg-white rounded-2xl overflow-hidden border border-coffeebrown/15 shadow-sm">
+<div class="h-44 sm:h-48 overflow-hidden relative">
+<img alt="Fasilitas dan Area Parkir Tepi Sawah" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbiQi1XxTH6hSjFjN8pVLZiJL45HXMSzXvwQS-RIw3DoJXqPCie-rjm0-i6MUxHlbnM01cx6uZxZgZRwjVQYYU1EAArGWf2o21cmeJh96NeufUdkxg8dCvB7725RaQQtn3MsfC5rtG4fYA_BMWTT3a0NHYxuAWSmOF0lG7BpzfSHpn2IFRNnnnOgWr4e6nBCi6crACrov9D7hFVq-7va1CmIEc9IPmGPAWXHgNj290rFxB7Seg0P73LwONvBbKTo-YlCI"/>
+<span class="absolute bottom-2.5 left-2.5 bg-black/70 backdrop-blur-sm text-[10px] text-warmcream px-2.5 py-1 rounded-lg">
+                  Akses parkir luas bus, mobil &amp; motor
+                </span>
+</div>
+<div class="p-4 space-y-2">
+<h4 class="font-heading font-bold text-deepmoss text-base">Alamat Lengkap</h4>
+<p class="text-xs text-roastedearth/85 leading-relaxed">
+<strong>Jl. Raya Ciperna</strong>, Kec. Talun, Kab. Cirebon, Jawa Barat 45171.<br/>
+                  (Tepat di tepi hamparan persawahan hijau, 3 menit dari Pintu Keluar Tol Ciperna).
+                </p>
+</div>
+</div>
+<div class="bg-forest/10 border border-forest/20 p-4 rounded-2xl space-y-2 text-xs">
+<div class="flex items-center gap-2 font-bold text-deepmoss">
+<svg aria-hidden="true" class="lucide lucide-check-circle-2 w-4 h-4 text-forest" data-lucide="check-circle-2" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="m16 9-5.5 5.5L8 12"></path></svg>
+<span class="">Fasilitas Parkir &amp; Area Kunjungan</span>
+</div>
+<p class="text-roastedearth/80 text-[11px] leading-relaxed">
+                Area parkir luas yang dapat menampung puluhan mobil keluarga, bus pariwisata, serta sepeda motor dengan petugas keamanan siaga.
+              </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- ============================================================== -->
+<!-- VIEW 2: ALUR INTERNAL RESTO WORKFLOW (DEMO INTERAKTIF) ======== -->
+<!-- ============================================================== -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6" id="view-internal"><!-- Workspace Header & Pipeline Stepper -->
+<div class="bg-deepmoss text-warmcream p-5 sm:p-6 rounded-3xl shadow-soft border border-golden/30 space-y-5">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-golden/20">
+<div>
+<span class="text-xs font-bold text-amberwarm uppercase tracking-widest flex items-center gap-1.5">
+<svg class="lucide lucide-cpu w-4 h-4" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M12 20v2"></path><path d="M12 2v2"></path><path d="M17 20v2"></path><path d="M17 2v2"></path><path d="M2 12h2"></path><path d="M2 17h2"></path><path d="M2 7h2"></path><path d="M20 12h2"></path><path d="M20 17h2"></path><path d="M20 7h2"></path><path d="M7 20v2"></path><path d="M7 2v2"></path><rect height="16" rx="2" width="16" x="4" y="4"></rect><rect height="8" rx="1" width="8" x="8" y="8"></rect></svg>
+        Sistem Restoran Terintegrasi Tepi Sawah
+      </span>
+<h2 class="font-heading text-xl sm:text-2xl font-bold text-warmcream mt-1">Alur Operasional Internal (Demo Terpadu)</h2>
+<p class="text-xs text-warmcream/80 mt-0.5">Simulasi 4 tahap: Order Meja QR → Verifikasi Pramusaji → Layar Dapur (KDS) → Kasir POS &amp; Struk.</p>
+</div>
+<div class="flex flex-wrap items-center gap-2">
+<button class="px-4 py-2 bg-gradient-to-r from-amberwarm to-golden hover:from-golden hover:to-amberwarm text-roastedearth rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-lg" id="btnFastDemo" onclick="runFastAutoWorkflow()">
+<svg class="lucide lucide-sparkles w-3.5 h-3.5" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg>
+<span>Jalankan Alur Otomatis (Demo Kilat)</span>
+</button>
+<button class="px-3.5 py-2 bg-red-900/60 hover:bg-red-800 text-white rounded-xl text-xs font-semibold border border-red-500/40 transition flex items-center gap-1.5 shadow" onclick="resetDemoData()">
+<svg class="lucide lucide-rotate-ccw w-3.5 h-3.5" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+<span>Reset Data</span>
+</button>
+<button class="px-3.5 py-2 bg-forest hover:bg-deepmoss text-warmcream rounded-xl text-xs font-semibold border border-golden/40 transition flex items-center gap-1.5" onclick="showPublicView()">
+<svg class="lucide lucide-arrow-left w-3.5 h-3.5" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+<span>Kembali</span>
+</button>
+</div>
+</div>
+<!-- 4-Stage Interactive Stepper Pipeline -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
+<button class="internal-tab-btn p-3 rounded-2xl border text-left transition flex items-center justify-between bg-forest text-warmcream border-amberwarm shadow" id="subtab-order" onclick="switchInternalStep('order')">
+<div class="truncate">
+<span class="text-[10px] text-amberwarm font-mono font-bold block uppercase tracking-wider">Tahap 1</span>
+<span class="font-heading font-bold text-xs sm:text-sm block truncate">1. Order Meja QR</span>
+<span class="text-[10px] block opacity-80 truncate">Pelanggan pilih &amp; pesan</span>
+</div>
+<svg class="lucide lucide-qr-code w-5 h-5 text-amberwarm shrink-0" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><rect height="5" rx="1" width="5" x="3" y="3"></rect><rect height="5" rx="1" width="5" x="16" y="3"></rect><rect height="5" rx="1" width="5" x="3" y="16"></rect><path d="M21 16h-3a2 2 0 0 0-2 2v3"></path><path d="M21 21v.01"></path><path d="M12 7v3a2 2 0 0 1-2 2H7"></path><path d="M3 12h.01"></path><path d="M12 3h.01"></path><path d="M12 16v.01"></path><path d="M16 12h1"></path><path d="M21 12v.01"></path><path d="M12 21v-1"></path></svg>
+</button>
+<button class="internal-tab-btn p-3 rounded-2xl border text-left transition flex items-center justify-between bg-deepmoss/70 text-warmcream/80 border-golden/20 hover:border-golden" id="subtab-waiter" onclick="switchInternalStep('waiter')">
+<div class="truncate">
+<span class="text-[10px] text-golden font-mono font-bold block uppercase tracking-wider">Tahap 2</span>
+<span class="font-heading font-bold text-xs sm:text-sm block truncate">2. Verifikasi Pramusaji</span>
+<span class="text-[10px] block opacity-80 truncate">Cek pesanan meja</span>
+</div>
+<svg class="lucide lucide-check-circle-2 w-5 h-5 text-amberwarm shrink-0" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="m16 9-5.5 5.5L8 12"></path></svg>
+</button>
+<button class="internal-tab-btn p-3 rounded-2xl border text-left transition flex items-center justify-between bg-deepmoss/70 text-warmcream/80 border-golden/20 hover:border-golden" id="subtab-kitchen" onclick="switchInternalStep('kitchen')">
+<div class="truncate">
+<span class="text-[10px] text-golden font-mono font-bold block uppercase tracking-wider">Tahap 3</span>
+<span class="font-heading font-bold text-xs sm:text-sm block truncate">3. Layar Dapur KDS</span>
+<span class="text-[10px] block opacity-80 truncate">Olah &amp; sajikan hidangan</span>
+</div>
+<div class="relative shrink-0">
+<svg class="lucide lucide-flame w-5 h-5 text-golden" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"></path></svg>
+<span class="hidden w-2.5 h-2.5 rounded-full bg-amberwarm animate-ping absolute -top-1 -right-1" id="kdsPingBadge"></span>
+</div>
+</button>
+<button class="internal-tab-btn p-3 rounded-2xl border text-left transition flex items-center justify-between bg-deepmoss/70 text-warmcream/80 border-golden/20 hover:border-golden" id="subtab-pos" onclick="switchInternalStep('pos')">
+<div class="truncate">
+<span class="text-[10px] text-golden font-mono font-bold block uppercase tracking-wider">Tahap 4</span>
+<span class="font-heading font-bold text-xs sm:text-sm block truncate">4. Kasir POS &amp; Struk</span>
+<span class="text-[10px] block opacity-80 truncate">Pembayaran &amp; cetak</span>
+</div>
+<svg class="lucide lucide-receipt w-5 h-5 text-golden shrink-0" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M12 17V7"></path><path d="M16 8h-6a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4H8"></path><path d="M4 3a1 1 0 0 1 1-1 1.3 1.3 0 0 1 .7.2l.933.6a1.3 1.3 0 0 0 1.4 0l.934-.6a1.3 1.3 0 0 1 1.4 0l.933.6a1.3 1.3 0 0 0 1.4 0l.933-.6a1.3 1.3 0 0 1 1.4 0l.934.6a1.3 1.3 0 0 0 1.4 0l.933-.6A1.3 1.3 0 0 1 19 2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1 1.3 1.3 0 0 1-.7-.2l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.934.6a1.3 1.3 0 0 1-1.4 0l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-.7.2 1 1 0 0 1-1-1z"></path></svg>
+</button>
+</div>
+</div>
+<!-- TAHAP 1: ORDER MEJA (CUSTOMER QR) -->
+<div class="space-y-6" id="internal-step-order">
+<div class="bg-ricepaper border border-coffeebrown/20 p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-forest text-warmcream flex items-center justify-center font-bold text-lg shadow shrink-0">
+<svg class="lucide lucide-smartphone w-6 h-6" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><rect height="20" rx="2" ry="2" width="14" x="5" y="2"></rect><path d="M12 18h.01"></path></svg>
+</div>
+<div>
+<span class="text-[11px] font-bold text-forest uppercase tracking-wider">Tahap 1: Simulasi Pemesanan Meja QR</span>
+<h3 class="font-heading font-bold text-deepmoss text-lg" id="selectedTableTitle">Meja 01 — Kabin Lesehan Sawah</h3>
+</div>
+</div>
+<div class="flex items-center gap-2 w-full sm:w-auto">
+<label class="text-xs text-roastedearth/80 whitespace-nowrap" for="orderTableSelector">Ganti Meja:</label>
+<select class="bg-white border border-coffeebrown/30 rounded-xl px-3 py-2 text-xs font-semibold text-deepmoss focus:ring-2 focus:ring-forest cursor-pointer flex-1 sm:flex-none" id="orderTableSelector" onchange="changeOrderTable(this.value)">
+<option value="Meja 01">Meja 01 — Kabin Lesehan Sawah</option>
+<option value="Meja 02">Meja 02 — Rooftop 360 View</option>
+<option value="Meja 05">Meja 05 — Gedung Utama Indoor</option>
+</select>
+</div>
+</div>
+<!-- Menu Catalog Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="orderStepMenuGrid"></div>
+<!-- Send Order CTA -->
+<div class="bg-deepmoss text-warmcream p-4 sm:p-5 rounded-2xl border border-golden/30 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="w-12 h-12 rounded-xl bg-amberwarm text-roastedearth flex items-center justify-center font-bold shadow shrink-0">
+<svg class="lucide lucide-shopping-bag w-6 h-6" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M16 10a4 4 0 0 1-8 0"></path><path d="M3.103 6.034h17.794"></path><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"></path></svg>
+</div>
+<span class="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center" id="cartStepQtyBadge">0</span>
+</div>
+<div>
+<span class="text-xs text-warmcream/75">Ringkasan Pesanan Aktif:</span>
+<p class="font-mono font-bold text-lg text-amberwarm" id="cartStepTotalText">Rp 0 (inc. PB1 10%)</p>
+</div>
+</div>
+<div class="flex items-center gap-2 w-full sm:w-auto">
+<button class="flex-1 sm:flex-none px-6 py-3 bg-golden hover:bg-amberwarm text-roastedearth font-bold text-xs sm:text-sm rounded-xl shadow transition flex items-center justify-center gap-2" onclick="sendOrderToKitchenDirect()">
+<svg class="lucide lucide-send w-4 h-4" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path><path d="m21.854 2.147-10.94 10.939"></path></svg>
+<span>Kirim Pesanan ke Pramusaji &amp; Dapur</span>
+</button>
+</div>
+</div>
+</div>
+<!-- TAHAP 2: VERIFIKASI PRAMUSAJI -->
+<div class="space-y-6 hidden" id="internal-step-waiter">
+<div class="bg-deepmoss/90 border border-amberwarm/40 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-soft text-warmcream">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-amberwarm/20 border border-amberwarm/50 flex items-center justify-center text-amberwarm shrink-0">
+<svg class="lucide lucide-check-circle-2 w-5 h-5" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="m16 9-5.5 5.5L8 12"></path></svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-md bg-amberwarm text-roastedearth font-mono text-[10px] font-bold uppercase tracking-wider">Tahap 2</span>
+<h4 class="font-heading font-bold text-sm sm:text-base text-warmcream">Verifikasi Meja Pramusaji (Floor Staff)</h4>
+</div>
+<p class="text-xs text-warmcream/80 mt-0.5">Pramusaji memeriksa tiket masuk dari QR pelanggan, mengonfirmasi ketersediaan porsi, lalu meneruskannya ke KDS dapur.</p>
+</div>
+</div>
+<div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+<button class="w-full sm:w-auto px-4 py-2 bg-forest hover:bg-forest/80 border border-golden/40 text-warmcream rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition shadow" onclick="renderWaiterView()">
+<svg class="lucide lucide-refresh-cw w-3.5 h-3.5" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
+<span>Segarkan Meja</span>
+</button>
+<button class="w-full sm:w-auto px-4 py-2 bg-amberwarm hover:bg-golden text-roastedearth rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition shadow" onclick="switchInternalStep('kitchen')">
+<span>Lanjut ke KDS Dapur</span>
+<svg class="lucide lucide-arrow-right w-3.5 h-3.5" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+</button>
+</div>
+</div>
+<!-- Waiter Verification Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="waiterCardsContainer"></div>
+</div>
+<!-- TAHAP 3: LAYAR DAPUR (KITCHEN DISPLAY SYSTEM) -->
+<div class="space-y-6 hidden" id="internal-step-kitchen">
+<div class="bg-deepmoss/90 border border-amberwarm/40 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-soft text-warmcream">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-amberwarm/20 border border-amberwarm/50 flex items-center justify-center text-amberwarm shrink-0">
+<svg class="lucide lucide-flame w-5 h-5" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"></path></svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-md bg-amberwarm text-roastedearth font-mono text-[10px] font-bold uppercase tracking-wider">Tahap 3</span>
+<h4 class="font-heading font-bold text-sm sm:text-base text-warmcream">Layar KDS Dapur (Kitchen Display System)</h4>
+</div>
+<p class="text-xs text-warmcream/80 mt-0.5">Koki memproses hidangan sesuai antrean prioritas, menandai selesai masak, hingga siap diantar pramusaji ke meja tamu.</p>
+</div>
+</div>
+<div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+<button class="w-full sm:w-auto px-4 py-2 bg-forest hover:bg-forest/80 border border-golden/40 text-warmcream rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition shadow" onclick="renderKitchenDisplay()">
+<svg class="lucide lucide-refresh-cw w-3.5 h-3.5" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
+<span>Segarkan Dapur</span>
+</button>
+<button class="w-full sm:w-auto px-4 py-2 bg-amberwarm hover:bg-golden text-roastedearth rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition shadow" onclick="switchInternalStep('pos')">
+<span>Lanjut ke Kasir POS</span>
+<svg class="lucide lucide-arrow-right w-3.5 h-3.5" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+</button>
+</div>
+</div>
+<!-- 3 Kanban Columns for KDS -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
+<!-- 1. Antrean Baru Masuk -->
+<div class="bg-ricepaper/70 rounded-2xl border-2 border-amberwarm/70 p-4 space-y-3 shadow-soft">
+<div class="flex items-center justify-between pb-3 border-b border-coffeebrown/20">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-amberwarm animate-ping"></span>
+<h3 class="font-heading font-bold text-deepmoss text-sm">Antrean Masuk (Koki)</h3>
+</div>
+<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amberwarm text-roastedearth font-mono" id="kdsCountNew">0</span>
+</div>
+<div class="space-y-3 min-h-[200px]" id="kdsContainerNew"></div>
+</div>
+<!-- 2. Sedang Dimasak -->
+<div class="bg-ricepaper/70 rounded-2xl border-2 border-forest/70 p-4 space-y-3 shadow-soft">
+<div class="flex items-center justify-between pb-3 border-b border-coffeebrown/20">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-forest"></span>
+<h3 class="font-heading font-bold text-deepmoss text-sm">Proses Masak</h3>
+</div>
+<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-forest text-warmcream font-mono" id="kdsCountCooking">0</span>
+</div>
+<div class="space-y-3 min-h-[200px]" id="kdsContainerCooking"></div>
+</div>
+<!-- 3. Siap Saji / Selesai Masak -->
+<div class="bg-ricepaper/70 rounded-2xl border-2 border-emerald-600/70 p-4 space-y-3 shadow-soft">
+<div class="flex items-center justify-between pb-3 border-b border-coffeebrown/20">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-emerald-600"></span>
+<h3 class="font-heading font-bold text-deepmoss text-sm">Siap Saji ke Tamu</h3>
+</div>
+<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-600 text-white font-mono" id="kdsCountReady">0</span>
+</div>
+<div class="space-y-3 min-h-[200px]" id="kdsContainerReady"></div>
+</div>
+</div>
+</div>
+<!-- TAHAP 4: KASIR POS & CETAK STRUK -->
+<div class="space-y-6 hidden" id="internal-step-pos">
+<!-- POS Stat Cards -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+<div class="bg-deepmoss text-warmcream p-4 rounded-2xl border border-golden/25 shadow-soft">
+<span class="text-[10px] sm:text-[11px] text-golden uppercase tracking-wider font-semibold">Total Omset Lunas</span>
+<p class="font-mono text-xl sm:text-2xl font-bold text-amberwarm mt-1" id="posRevenueVal">Rp 0</p>
+</div>
+<div class="bg-deepmoss text-warmcream p-4 rounded-2xl border border-golden/25 shadow-soft">
+<span class="text-[10px] sm:text-[11px] text-golden uppercase tracking-wider font-semibold">Total Tiket Order</span>
+<p class="font-mono text-xl sm:text-2xl font-bold text-warmcream mt-1" id="posOrderCountVal">0</p>
+</div>
+<div class="bg-deepmoss text-warmcream p-4 rounded-2xl border border-golden/25 shadow-soft">
+<span class="text-[10px] sm:text-[11px] text-golden uppercase tracking-wider font-semibold">Pesanan Dapur</span>
+<p class="font-mono text-xl sm:text-2xl font-bold text-emerald-400 mt-1" id="posKitchenActiveVal">0</p>
+</div>
+<div class="bg-deepmoss text-warmcream p-4 rounded-2xl border border-golden/25 shadow-soft">
+<span class="text-[10px] sm:text-[11px] text-golden uppercase tracking-wider font-semibold">Menunggu Kasir</span>
+<p class="font-mono text-xl sm:text-2xl font-bold text-amber-300 mt-1" id="posUnpaidVal">0</p>
+</div>
+</div>
+<!-- POS Billing Table -->
+<div class="bg-ricepaper border border-coffeebrown/20 rounded-3xl p-4 sm:p-6 shadow-soft space-y-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-coffeebrown/15">
+<div>
+<h3 class="font-heading text-lg font-bold text-deepmoss">Daftar Tagihan Meja &amp; Kasir POS</h3>
+<p class="text-xs text-roastedearth/70 mt-0.5">Pilih metode pembayaran (QRIS, Tunai, atau Debit) lalu cetak struk pembayaran resmi.</p>
+</div>
+<div class="flex items-center gap-2">
+<input class="bg-white border border-coffeebrown/25 rounded-xl px-3 py-1.5 text-xs text-roastedearth focus:ring-2 focus:ring-forest" id="posFilterSearch" oninput="renderPosTableList()" placeholder="Cari No. Order / Meja..." type="text"/>
+<button class="p-2 bg-forest text-warmcream rounded-xl hover:bg-deepmoss transition shadow" onclick="renderPosTableView()" title="Segarkan Data">
+<svg class="lucide lucide-refresh-cw w-4 h-4" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto rounded-xl border border-coffeebrown/15 bg-white">
+<table class="w-full text-left text-xs whitespace-nowrap">
+<thead>
+<tr class="bg-coffeebrown/10 text-roastedearth uppercase tracking-wider font-semibold border-b border-coffeebrown/20">
+<th class="py-3 px-3.5">No. Order</th>
+<th class="py-3 px-3.5">Meja</th>
+<th class="py-3 px-3.5">Waktu</th>
+<th class="py-3 px-3.5">Item Pesanan</th>
+<th class="py-3 px-3.5">Total Tagihan</th>
+<th class="py-3 px-3.5">Status Dapur</th>
+<th class="py-3 px-3.5">Status Kasir</th>
+<th class="py-3 px-3.5 text-center">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-coffeebrown/10 text-roastedearth" id="posTableBodyList"></tbody>
+</table>
+</div>
+</div>
+</div></div>
+</main>
+<!-- ================= FOOTER ================= -->
+<footer class="bg-roastedearth text-warmcream/80 border-t border-golden/25 pt-12 pb-8 mt-16">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+<!-- Proportional Logo in Footer -->
+<div class="space-y-4 md:col-span-2">
+<div class="flex items-center gap-3">
+<div class="h-12 px-3 py-1 bg-warmcream/95 rounded-xl border border-golden/50 flex items-center justify-center shrink-0 shadow">
+<img alt="Logo Tepi Sawah Restaurant" class="h-10 w-auto max-w-[170px] object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTek0VnVN8a6O1J6PbfKHB9f56D7KkHcU8sUE3oFN-G_SM3aL2vYU2axEAc7xb9r-mf9JZ7FtUo8g6nzOcEr1HGt4oyu_4WWo4LlO44mX0zMmeOTaCGZ6yQuhlDtRFSYEZTi8NZpnNu1RyIsqAn8ZK1SSR26Citihnue8UgV6fARSxtewYX3yoASSUA5QZiX64CL6nJLuf7Xx19nUnGc-y2JbZElQVY6ZUnEr-S8ewhj16asywAAVO2wXWIKDDb8MnIpA"/>
+</div>
+<div class="flex flex-col">
+<span class="font-heading font-bold text-lg text-warmcream">TEPI SAWAH RESTAURANT</span>
+<span class="text-[10px] text-golden uppercase tracking-widest">Restaurant &amp; Coffee • Ciperna Cirebon</span>
+</div>
+</div>
+<p class="text-xs leading-relaxed text-warmcream/75 max-w-md">
+          Restoran bernuansa pedesaan otentik di tengah hamparan sawah hijau asri Ciperna. Menyajikan olahan ayam roaster, gurame bakar madu, sayur asem, serta racikan kopi senja khas Nusantara.
+        </p>
+<div class="space-y-1 text-xs text-warmcream/85">
+<p class="flex items-center gap-1.5 text-golden">
+<svg aria-hidden="true" class="lucide lucide-map-pin w-3.5 h-3.5 shrink-0" data-lucide="map-pin" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+<span class="">Jl. Raya Ciperna (Dekat Gerbang Tol Ciperna), Kec. Talun, Kab. Cirebon</span>
+</p>
+<p class="flex items-center gap-1.5 text-warmcream/75">
+<svg aria-hidden="true" class="lucide lucide-clock w-3.5 h-3.5 shrink-0 text-amberwarm" data-lucide="clock" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+<span class="">Jam Operasional: Setiap Hari 09:00 - 22:00 WIB</span>
+</p>
+</div>
+</div>
+<!-- Quick Nav Links -->
+<div class="space-y-3">
+<h4 class="font-heading font-bold text-sm text-warmcream">Navigasi Publik</h4>
+<ul class="text-xs space-y-2 text-warmcream/75">
+<li class=""><a class="hover:text-amberwarm transition" href="#menu-unggulan" onclick="showPublicView()">Menu Unggulan Nusantara</a></li>
+<li class=""><a class="hover:text-amberwarm transition" href="#promo-preopening" onclick="showPublicView()">Promo Reservasi Pre-Opening</a></li>
+<li class=""><a class="hover:text-amberwarm transition" href="#lokasi-peta" onclick="showPublicView()">Lokasi Dekat Tol Ciperna</a></li>
+<li class=""><a class="hover:text-amberwarm transition" href="https://www.google.com/maps/place/6%C2%B046'16.3%22S+108%C2%B030'45.4%22E/@-6.7711837,108.5119553,19z" target="_blank">Buka Peta Google Maps</a></li>
+</ul>
+</div>
+<!-- Demo Simulation Links -->
+<div class="space-y-3">
+<h4 class="font-heading font-bold text-sm text-warmcream">Alur Resto (Demo)</h4>
+<ul class="text-xs space-y-2 text-warmcream/75">
+<li class=""><button class="hover:text-amberwarm transition text-left" onclick="showInternalWorkflow('order')">Simulasi Pesan Meja QR</button></li>
+<li class=""><button class="hover:text-amberwarm transition text-left" onclick="showInternalWorkflow('kitchen')">Layar Dapur (Kitchen KDS)</button></li>
+<li class=""><button class="hover:text-amberwarm transition text-left" onclick="showInternalWorkflow('pos')">Kasir POS &amp; Cetak Struk</button></li>
+</ul>
+<div class="pt-2">
+<button class="px-3.5 py-2 bg-red-950/70 hover:bg-red-900 border border-red-500/40 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5" onclick="resetDemoData()">
+<svg aria-hidden="true" class="lucide lucide-trash-2 w-3.5 h-3.5" data-lucide="trash-2" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+<span class="">Reset Data Demo</span>
+</button>
+</div>
+</div>
+</div>
+<div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-warmcream/60 gap-4">
+<p class="">© 2026 Tepi Sawah Restaurant &amp; Coffee Ciperna Cirebon. All rights reserved.</p>
+<p class="">Single Page Application Ecosystem • Responsive Prototype</p>
+</div>
+</div>
+</footer>
+<!-- ============================================================== -->
+<!-- MODALS ======================================================= -->
+<!-- ============================================================== -->
+<!-- 1. MODAL RESERVASI PRE-OPENING -->
+<div class="fixed inset-0 z-50 bg-black/65 backdrop-blur-sm items-center justify-center p-4 overflow-y-auto hidden" id="reservationModal">
+<div class="bg-ricepaper border border-coffeebrown/20 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative my-auto">
+<button class="absolute top-5 right-5 text-roastedearth/60 hover:text-roastedearth p-1" onclick="closeReservationModal()">
+<svg aria-hidden="true" class="lucide lucide-x w-5 h-5" data-lucide="x" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+</button>
+<div class="mb-5">
+<span class="text-xs font-bold text-forest uppercase tracking-wider">Promo Pre-Opening Exclusive</span>
+<h3 class="font-heading text-xl sm:text-2xl font-bold text-deepmoss">Reservasi Meja Restoran</h3>
+<p class="text-xs text-roastedearth/75 mt-0.5">Amankan kupon diskon dan pilihan tempat terbaik di Tepi Sawah Ciperna.</p>
+</div>
+<form class="space-y-3.5 text-xs" onsubmit="handleReservationSubmit(event)">
+<div>
+<label class="block font-semibold text-deepmoss mb-1">Nama Pemesan</label>
+<input class="w-full bg-white border border-coffeebrown/20 rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-forest text-roastedearth" id="resName" placeholder="Contoh: Rian Anggoro" required="" type="text"/>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div>
+<label class="block font-semibold text-deepmoss mb-1">Nomor WhatsApp</label>
+<input class="w-full bg-white border border-coffeebrown/20 rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-forest text-roastedearth" id="resPhone" placeholder="0812-xxxx-xxxx" required="" type="tel"/>
+</div>
+<div>
+<label class="block font-semibold text-deepmoss mb-1">Jumlah Orang</label>
+<input class="w-full bg-white border border-coffeebrown/20 rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-forest text-roastedearth" id="resGuests" max="40" min="1" required="" type="number" value="4"/>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div>
+<label class="block font-semibold text-deepmoss mb-1">Tanggal Kunjungan</label>
+<input class="w-full bg-white border border-coffeebrown/20 rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-forest text-roastedearth" id="resDate" required="" type="date"/>
+</div>
+<div>
+<label class="block font-semibold text-deepmoss mb-1">Sesi Kunjungan</label>
+<select class="w-full bg-white border border-coffeebrown/20 rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-forest text-roastedearth" id="resTime">
+<option value="11:30 WIB">11:30 WIB (Makan Siang)</option>
+<option value="13:00 WIB">13:00 WIB (Makan Siang Santai)</option>
+<option value="16:30 WIB">16:30 WIB (Sunset Sawah &amp; Kopi)</option>
+<option value="18:30 WIB">18:30 WIB (Makan Malam)</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block font-semibold text-deepmoss mb-1">Pilihan Tempat Duduk</label>
+<select class="w-full bg-white border border-coffeebrown/20 rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-forest text-roastedearth" id="resTableChoice">
+<option value="Kabin Lesehan Sawah">Kabin Lesehan Menghadap Sawah (Favorit)</option>
+<option value="Rooftop 360 View">Dek Rooftop 360° Sunset View</option>
+<option value="Gedung Utama Semi-Indoor">Gedung Utama Semi-Indoor</option>
+</select>
+</div>
+<div>
+<label class="block font-semibold text-deepmoss mb-1">Klaim Promo Terpilih</label>
+<input class="w-full bg-amberwarm/15 border border-golden/50 font-semibold rounded-xl px-3.5 py-2 text-deepmoss" id="resPromoTag" readonly="" type="text" value="Early Bird 25%"/>
+</div>
+<div class="pt-2">
+<button class="w-full py-3 bg-forest hover:bg-deepmoss text-warmcream font-bold rounded-xl transition shadow flex items-center justify-center gap-2 text-xs sm:text-sm" type="submit">
+<svg aria-hidden="true" class="lucide lucide-check w-4 h-4" data-lucide="check" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg>
+<span class="">Konfirmasi Reservasi Promo</span>
+</button>
+</div>
+</form>
+</div>
+</div>
+<!-- 2. MODAL KASIR SETTLEMENT -->
+<div class="fixed inset-0 z-50 bg-black/65 backdrop-blur-sm items-center justify-center p-4 overflow-y-auto hidden" id="posPayModal">
+<div class="bg-ricepaper border border-coffeebrown/20 rounded-3xl max-w-md w-full p-5 sm:p-6 shadow-2xl relative my-auto">
+<button class="absolute top-5 right-5 text-roastedearth/60 hover:text-roastedearth p-1" onclick="closePosPayModal()">
+<svg aria-hidden="true" class="lucide lucide-x w-5 h-5" data-lucide="x" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+</button>
+<div class="mb-4">
+<span class="text-xs font-bold text-forest uppercase tracking-wider">Settlement Kasir POS</span>
+<h3 class="font-heading text-xl font-bold text-deepmoss">Proses Pembayaran</h3>
+<p class="text-xs text-roastedearth/70 mt-0.5">Order <span class="font-bold font-mono text-deepmoss" id="payOrderCode">#TS-001</span> — Meja <span class="font-bold" id="payTableId">Meja 01</span></p>
+</div>
+<div class="bg-white p-4 rounded-2xl border border-coffeebrown/15 mb-4 text-xs space-y-2">
+<div class="flex justify-between">
+<span class="text-roastedearth/70">Waktu Order:</span>
+<span class="font-medium" id="payOrderTime">12:02 WIB</span>
+</div>
+<div class="flex justify-between text-sm font-bold text-deepmoss border-t border-coffeebrown/10 pt-2">
+<span class="">Total Bayar:</span>
+<span class="font-mono text-forest font-bold text-base" id="payOrderTotal">Rp 113.300</span>
+</div>
+</div>
+<div class="space-y-2 mb-5">
+<label class="block text-xs font-semibold text-deepmoss">Pilih Metode Pembayaran:</label>
+<div class="grid grid-cols-3 gap-2 text-xs">
+<button class="pos-method-btn p-2.5 rounded-xl border border-coffeebrown/20 bg-white hover:bg-ricepaper font-semibold flex flex-col items-center justify-center gap-1" data-method="QRIS" onclick="selectPosMethod('QRIS')">
+<svg aria-hidden="true" class="lucide lucide-qr-code w-4 h-4" data-lucide="qr-code" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><rect height="5" rx="1" width="5" x="3" y="3"></rect><rect height="5" rx="1" width="5" x="16" y="3"></rect><rect height="5" rx="1" width="5" x="3" y="16"></rect><path d="M21 16h-3a2 2 0 0 0-2 2v3"></path><path d="M21 21v.01"></path><path d="M12 7v3a2 2 0 0 1-2 2H7"></path><path d="M3 12h.01"></path><path d="M12 3h.01"></path><path d="M12 16v.01"></path><path d="M16 12h1"></path><path d="M21 12v.01"></path><path d="M12 21v-1"></path></svg>
+<span class="">QRIS</span>
+</button>
+<button class="pos-method-btn p-2.5 rounded-xl border border-coffeebrown/20 bg-white hover:bg-ricepaper font-semibold flex flex-col items-center justify-center gap-1" data-method="TUNAI" onclick="selectPosMethod('TUNAI')">
+<svg aria-hidden="true" class="lucide lucide-banknote w-4 h-4" data-lucide="banknote" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><rect height="12" rx="2" width="20" x="2" y="6"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
+<span class="">Tunai (Cash)</span>
+</button>
+<button class="pos-method-btn p-2.5 rounded-xl border border-coffeebrown/20 bg-forest text-warmcream font-semibold flex flex-col items-center justify-center gap-1" data-method="DEBIT" onclick="selectPosMethod('DEBIT')">
+<svg aria-hidden="true" class="lucide lucide-credit-card w-4 h-4" data-lucide="credit-card" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><rect height="14" rx="2" width="20" x="2" y="5"></rect><line x1="2" x2="22" y1="10" y2="10"></line><path d="M6 14h2"></path></svg>
+<span class="">Kartu Debit</span>
+</button>
+</div>
+</div>
+<button class="w-full py-3.5 bg-forest hover:bg-deepmoss text-warmcream font-bold text-xs sm:text-sm rounded-xl shadow-lg transition flex items-center justify-center gap-2" onclick="confirmPaymentAndPrint()">
+<svg aria-hidden="true" class="lucide lucide-printer w-4 h-4" data-lucide="printer" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"></path><rect height="8" rx="1" width="12" x="6" y="14"></rect></svg>
+<span class="">Bayar &amp; Cetak Struk Resmi</span>
+</button>
+</div>
+</div>
+<!-- 3. MODAL CETAK STRUK RESMI (PRINT RECEIPT) -->
+<div class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto" id="printReceiptModal">
+<div class="bg-white rounded-2xl max-w-sm w-full p-5 sm:p-6 text-black shadow-2xl font-mono text-xs space-y-4 my-auto"><div class="no-print flex justify-end -mb-2">
+<button aria-label="Tutup Modal Struk" class="text-gray-500 hover:text-black p-1 rounded-lg hover:bg-gray-100 transition" onclick="closePrintReceiptModal()" title="Tutup">
+<i class="w-4 h-4" data-lucide="x"></i>
+</button>
+</div>
+<div class="text-center space-y-1 pb-3 border-b border-dashed border-gray-400">
+<h4 class="font-bold text-sm tracking-wider uppercase">TEPI SAWAH RESTAURANT</h4>
+<p class="text-[10px] text-gray-600">Jl. Raya Ciperna (Dekat Tol Ciperna)</p>
+<p class="text-[10px] text-gray-600">Kec. Talun, Kab. Cirebon • Telp: 0812-9988-7766</p>
+</div>
+<div class="flex justify-between text-[11px] pb-2 border-b border-dashed border-gray-400">
+<div>
+<p class="">No. Order: <span class="font-bold" id="rcptOrderNo">#TS-001</span></p>
+<p class="">Meja     : <span class="" id="rcptTableNo">Meja 01</span></p>
+</div>
+<div class="text-right">
+<p class="" id="rcptDateVal">2026-09-25</p>
+<p class="" id="rcptTimeVal">12:30 WIB</p>
+</div>
+</div>
+<div class="space-y-1.5 py-2 border-b border-dashed border-gray-400" id="rcptItemsWrapper">
+<!-- Items list -->
+</div>
+<div class="space-y-1 text-[11px] pt-1">
+<div class="flex justify-between">
+<span class="">Subtotal:</span>
+<span class="" id="rcptSubtotalVal">Rp 0</span>
+</div>
+<div class="flex justify-between">
+<span class="">PB1 Restoran (10%):</span>
+<span class="" id="rcptTaxVal">Rp 0</span>
+</div>
+<div class="flex justify-between font-bold text-xs pt-1 border-t border-gray-300">
+<span class="">TOTAL BAYAR:</span>
+<span class="" id="rcptTotalVal">Rp 0</span>
+</div>
+<div class="flex justify-between text-gray-600 text-[10px]">
+<span class="">Metode Pembayaran:</span>
+<span class="" id="rcptMethodVal">QRIS</span>
+</div>
+<div class="flex justify-between text-emerald-700 font-bold text-[10px]">
+<span class="">Status Transaksi:</span>
+<span class="">LUNAS (PAID)</span>
+</div>
+</div>
+<div class="text-center text-[10px] text-gray-500 pt-3 border-t border-dashed border-gray-400">
+<p class="">Matur Kesuwun Atas Kunjungan Anda!</p>
+<p class="">Selamat Menikmati Suasana Sawah Ciperna.</p>
+</div>
+<div class="no-print pt-2 flex gap-2">
+<button class="flex-1 py-2.5 bg-black text-white rounded-lg font-bold flex items-center justify-center gap-1.5 hover:bg-gray-800 text-xs" onclick="window.print()">
+<svg aria-hidden="true" class="lucide lucide-printer w-3.5 h-3.5" data-lucide="printer" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"></path><rect height="8" rx="1" width="12" x="6" y="14"></rect></svg> Cetak Struk
+      </button>
+<button class="px-4 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-100 text-xs" onclick="closePrintReceiptModal()">
+        Tutup
+      </button>
+</div>
+</div>
+</div>
+<!-- ============================================================== -->
+<!-- JAVASCRIPT & STATE MANAGEMENT ================================ -->
+<!-- ============================================================== -->
+<script>
+  // 1. MASTER PRODUCTS DATA WITH EXACT DATASTORE ASSETS
+  const PRODUCTS = [
+    {
+      id: 'p1',
+      name: 'Chicken Roaster',
+      category: 'MAKANAN',
+      price: 85000,
+      desc: 'Ayam panggang oven rempah spesial Tepi Sawah, empuk, juicy, dan beraroma harum rosemary disajikan lengkap sambal terasi pedesaan.',
+      image: 'https://lh3.googleusercontent.com/aida/AEtjO1Wfy-FCWGYygUriJF-7w6MHGmPV3jHxAuEkHahIFjrrBal1wRwLbSpeXUW55CNLXYu-HioA17KhzA_aK1UYKuHZLbBpQ9oHSXTiPYTVUkZjfuLgSnrJcsjspkUiFIKEh0UuQ_Tixc4dNiNE2wOaSq-KZq4VqTNmnFIr7bQ2IbZVgNv_87BTuODBFPcz3g5Q75AxDUeWat7P8ctetO9HP4QCq4i2iJfkKFDn0TPbrXTbg3tjKLTB2I1ckGo'
+    },
+    {
+      id: 'p2',
+      name: 'Nasi Liwet Sawah',
+      category: 'MAKANAN',
+      price: 45000,
+      desc: 'Nasi gurih santan rempah dilengkapi teri medan renyah, petai bakar, telur asin, ayam bumbu kuning, dan sambal terasi daun pisang.',
+      image: 'https://lh3.googleusercontent.com/aida/AEtjO1WOZbkRPsq-M0FpEr6Hxfb_J33SYxBOZrJBONVZahlx9XWvrqK76cmxC0NXhDSgM3G0gAMTSfm4x9lCdlQ9M99M46_4fUBNV3kpywDitaPFo7Wq4CnuSgc2cq-jD4CSNBePELqQms2vjZs8Dmf-H_Xn9_8xaSm36iXb2I0Af4tG_EQWruetSYhW1vGR2_SP_pJ074Cqtht3BLxBOdkzMRNYIl7J7jIyXlgQ4raTsg0mlD1WharDoDrrucg'
+    },
+    {
+      id: 'p3',
+      name: 'Gurame Bakar Madu',
+      category: 'MAKANAN',
+      price: 95000,
+      desc: 'Ikan gurame segar kolam air tawar dibakar dengan polesan madu hutan alami dan kecap rempah pedas manis bertabur cabai & jeruk limau.',
+      image: 'https://lh3.googleusercontent.com/aida/AEtjO1WW0vySU6m0lyBAK6OZ7f2vieYos_k5FAVs2BV3mdJGdimsAnnQty8YQCcswtjjLZAu6U4La18z-OGmOX-aYmSQ6R5HLzSoKPsums9thUP84d4z3LOLk6yUhzQ_oR9lBQVXdnAIiq8MyPbQ5roRmGwUkbOvvjOFq1psfX1ASJmfO8PoStoKIJ_PSe3o6--S5PRZn2KqoR6aaeY8lxNCU1mVKYC9o3oZWg6mPFKoXwVqxAK6PuAh5GmdByVG'
+    },
+    {
+      id: 'p4',
+      name: 'Sayur Asem Klaten',
+      category: 'SAYUR',
+      price: 25000,
+      desc: 'Kuah asam jawa segar kaya cita rasa dengan labu siam, kacang panjang melinjo, jagung manis, dan kacang tanah gurih hangat.',
+      image: 'https://lh3.googleusercontent.com/aida/AEtjO1WED44nO052SRIR3GUEPj9wNdIh_8H2j9cFIj65HGcIPQAyLLNMpJ29ofIYynfQi4UvjsEyJAZxJ0CZPsYVwJOKgHEooVqVUExxQIZ6Whc9tNZ3d7TkbWnbJjmVagmhkCi0Lie5uXU3IqtolA2r5L5WzEPmv25qwwvjpOuIqmr07bKEILzY6KzvRnNG5DhyyZjjjsZsl08y0EzICOPTvjv0CxrVSKoRjwxoSZwJD1SOrktEnzK2rqJCbtQ2'
+    },
+    {
+      id: 'p5',
+      name: 'Es Kelapa Jeruk Segar',
+      category: 'MINUMAN',
+      price: 18000,
+      desc: 'Kelapa muda keruk murni dipadu perasan jeruk manis alami berbulir, disajikan dingin dengan es batu kristal penyejuk dahaga.',
+      image: 'https://lh3.googleusercontent.com/aida/AEtjO1Vhhjl6js9uQ21r8uQ8KYgpRpsoaCJUjilZMNatMouwXqN2U_mkm6oae5dNggAD9Oqwep5IEU2rOjvdFbHw5bm8HehEGP71bV2F7NlcGoTvq2rg6ter0yotvbXCocZjXr1dD57bb9i5ODyZNpCf2owubvsA9CRHAh0Kadoawq7W23uP0fdpb8CIm-0cdkSaCeq74FuMLTddjG8uwqsH9L4DENbPU1CylX-WRK1aSbwC_p7eeUUOUAk7Hk4'
+    },
+    {
+      id: 'p6',
+      name: 'Kopi Senja Sawah',
+      category: 'MINUMAN',
+      price: 28000,
+      desc: 'Espresso robusta lokal dipadu susu aren kental creamy berlapis es batu segar dengan aroma biji kopi sangrai pedesaan.',
+      image: 'https://lh3.googleusercontent.com/aida/AEtjO1VU34qYnqtnEjbtkBDelsDtKWuAM23O3CqTDls1DFi9D4HAw-IjyOQsmjCIqxA9inbLzBXDrEuMBc7FnW-p4QGLqe2eJB2aZEIYZ1abNBxeI_x3yOajLmgNjKW_CoBApVCArQ7RbKXFeLxI6Ldpkw-Dpn1I_91huPLRMXhvs4g7YE-75-ZbMqpBo8wCLq6V297dqUkIgP0Y1XdxcyZMYfyetc-JP2ypFQKDGm8gozALzRcmGC28VZVDZD-k'
+    }
+  ];
+
+  // Initial Demo Orders
+  const DEFAULT_ORDERS = [
+    {
+      orderId: 'TS-001',
+      table: 'Meja 01',
+      time: '12:20 WIB',
+      timestamp: Date.now() - 1000 * 60 * 18,
+      status: 'COOKING', // 'NEW', 'COOKING', 'READY', 'COMPLETED'
+      paymentStatus: 'UNPAID', // 'UNPAID', 'PAID'
+      paymentMethod: null,
+      items: [
+        { productId: 'p1', name: 'Chicken Roaster', qty: 1, price: 85000 },
+        { productId: 'p2', name: 'Nasi Liwet Sawah', qty: 2, price: 45000 },
+        { productId: 'p5', name: 'Es Kelapa Jeruk Segar', qty: 2, price: 18000 }
+      ],
+      subtotal: 211000,
+      tax: 21100,
+      total: 232100
+    },
+    {
+      orderId: 'TS-002',
+      table: 'Meja 02',
+      time: '12:35 WIB',
+      timestamp: Date.now() - 1000 * 60 * 6,
+      status: 'NEW',
+      paymentStatus: 'UNPAID',
+      paymentMethod: null,
+      items: [
+        { productId: 'p3', name: 'Gurame Bakar Madu', qty: 1, price: 95000 },
+        { productId: 'p6', name: 'Kopi Senja Sawah', qty: 2, price: 28000 }
+      ],
+      subtotal: 151000,
+      tax: 15100,
+      total: 166100
+    }
+  ];
+
+  // Application State
+  let appState = {
+    currentMainView: 'public', // 'public' or 'internal'
+    currentInternalStep: 'order', // 'order', 'kitchen', 'pos'
+    selectedTable: 'Meja 01',
+    tableCart: {}, // productId -> qty
+    orders: [],
+    activePayingOrderId: null,
+    selectedPayMethod: 'QRIS',
+    publicFilter: 'SEMUA'
+  };
+
+  function loadState() {
+    const saved = localStorage.getItem('tepisawah_orders_v2');
+    if (saved) {
+      try {
+        appState.orders = JSON.parse(saved);
+      } catch (e) {
+        appState.orders = JSON.parse(JSON.stringify(DEFAULT_ORDERS));
+      }
+    } else {
+      appState.orders = JSON.parse(JSON.stringify(DEFAULT_ORDERS));
+      saveOrders();
+    }
+  }
+
+  function saveOrders() {
+    localStorage.setItem('tepisawah_orders_v2', JSON.stringify(appState.orders));
+  }
+
+  // 2. VIEW SWITCHER (PUBLIC vs INTERNAL WORKFLOW)
+  function showPublicView() {
+    appState.currentMainView = 'public';
+    document.getElementById('view-public').classList.remove('hidden');
+    document.getElementById('view-internal').classList.add('hidden');
+
+    document.getElementById('navBtn-public').className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all flex items-center gap-1.5 bg-forest text-warmcream shadow";
+    document.getElementById('navBtn-internal').className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all flex items-center gap-1.5 text-warmcream/85 hover:text-white";
+
+    const publicAnchors = document.getElementById('publicNavAnchors');
+    if (publicAnchors) {
+      publicAnchors.classList.remove('hidden');
+      publicAnchors.classList.add('lg:flex');
+    }
+
+    renderPublicFoodCards();
+    lucide.createIcons();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showInternalWorkflow(step = 'order') {
+    appState.currentMainView = 'internal';
+    document.getElementById('view-public').classList.add('hidden');
+    document.getElementById('view-internal').classList.remove('hidden');
+
+    document.getElementById('navBtn-public').className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all flex items-center gap-1.5 text-warmcream/85 hover:text-white";
+    document.getElementById('navBtn-internal').className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all flex items-center gap-1.5 bg-forest text-warmcream shadow";
+
+    switchInternalStep(step);
+    lucide.createIcons();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function switchInternalStep(step) {
+    appState.currentInternalStep = step;
+    const steps = ['order', 'kitchen', 'pos'];
+
+    steps.forEach(s => {
+      const el = document.getElementById('internal-step-' + s);
+      const btn = document.getElementById('subtab-' + s);
+      if (s === step) {
+        el.classList.remove('hidden');
+        btn.className = "internal-tab-btn p-3 rounded-2xl border text-left transition flex items-center justify-between bg-forest text-warmcream border-amberwarm shadow";
+      } else {
+        el.classList.add('hidden');
+        btn.className = "internal-tab-btn p-3 rounded-2xl border text-left transition flex items-center justify-between bg-deepmoss/70 text-warmcream/80 border-golden/20 hover:border-golden";
+      }
+    });
+
+    if (step === 'order') {
+      renderOrderStepCards();
+      updateCartSummary();
+    } else if (step === 'kitchen') {
+      renderKitchenDisplay();
+      document.getElementById('kdsPingBadge').classList.add('hidden');
+    } else if (step === 'pos') {
+      renderPosTableView();
+    }
+
+    lucide.createIcons();
+  }
+
+  // 3. PUBLIC FOOD CARDS RENDERING & FILTERING
+  function filterPublicMenu(category, btnElement) {
+    appState.publicFilter = category;
+    document.querySelectorAll('.public-cat-btn').forEach(btn => {
+      btn.className = "public-cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap bg-ricepaper text-roastedearth border border-coffeebrown/15 hover:bg-forest/10";
+    });
+    if (btnElement) {
+      btnElement.className = "public-cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap bg-forest text-warmcream shadow";
+    }
+    renderPublicFoodCards();
+  }
+
+  function renderPublicFoodCards() {
+    const container = document.getElementById('publicFoodCardsGrid');
+    if (!container) return;
+
+    let items = PRODUCTS;
+    if (appState.publicFilter !== 'SEMUA') {
+      items = PRODUCTS.filter(p => p.category === appState.publicFilter);
+    }
+
+    container.innerHTML = items.map(prod => `
+      <div class="bg-ricepaper/80 border border-coffeebrown/15 rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between overflow-hidden group">
+        <div>
+          <div class="w-full h-48 sm:h-52 rounded-xl overflow-hidden mb-4 relative shadow-sm">
+            <img src="${prod.image}" alt="${prod.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+            <span class="absolute top-3 left-3 bg-deepmoss/90 text-[10px] text-warmcream px-2.5 py-0.5 rounded-full uppercase tracking-wider backdrop-blur-md border border-golden/30 font-semibold">
+              ${prod.category === 'MAKANAN' ? 'Makanan Utama' : prod.category === 'SAYUR' ? 'Sayur & Sup' : 'Minuman & Kopi'}
+            </span>
+          </div>
+          <div class="flex items-start justify-between gap-2 mb-2">
+            <h3 class="font-heading font-bold text-deepmoss text-base sm:text-lg group-hover:text-forest transition-colors">${prod.name}</h3>
+            <span class="font-mono font-bold text-forest text-sm whitespace-nowrap">Rp ${prod.price.toLocaleString('id-ID')}</span>
+          </div>
+          <p class="text-xs text-roastedearth/75 leading-relaxed">${prod.desc}</p>
+        </div>
+        <div class="mt-4 pt-3 border-t border-coffeebrown/10 flex items-center justify-between">
+          <span class="text-[11px] text-coffeebrown font-medium flex items-center gap-1">
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-amberwarm text-amberwarm"></i> Pilihan Koki
+          </span>
+          <button onclick="quickOrderFromPublicMenu('${prod.id}')" class="px-3.5 py-1.5 bg-forest hover:bg-deepmoss text-warmcream rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Coba di Demo
+          </button>
+        </div>
+      </div>
+    `).join('');
+    lucide.createIcons();
+  }
+
+  function quickOrderFromPublicMenu(productId) {
+    if (!appState.tableCart[productId]) {
+      appState.tableCart[productId] = 0;
+    }
+    appState.tableCart[productId] += 1;
+    showInternalWorkflow('order');
+    showToast('Item Masuk ke Meja Demo', 'Silakan lanjutkan kirim ke kitchen atau tambah menu lain.');
+  }
+
+  // 4. STEP 1: SIMULASI ORDER MEJA
+  function changeOrderTable(tbl) {
+    appState.selectedTable = tbl;
+    const names = {
+      'Meja 01': 'Meja 01 — Kabin Lesehan Sawah',
+      'Meja 02': 'Meja 02 — Rooftop 360 View',
+      'Meja 05': 'Meja 05 — Gedung Utama Indoor'
+    };
+    document.getElementById('selectedTableTitle').innerText = names[tbl] || tbl;
+    showToast('Meja Diubah', `Sekarang memesan untuk ${tbl}`);
+  }
+
+  function renderOrderStepCards() {
+    const grid = document.getElementById('orderStepMenuGrid');
+    if (!grid) return;
+
+    grid.innerHTML = PRODUCTS.map(prod => {
+      const qty = appState.tableCart[prod.id] || 0;
+      return `
+        <div class="bg-ricepaper border border-coffeebrown/15 rounded-2xl p-4 shadow-soft flex flex-col justify-between hover:border-golden/50 transition">
+          <div>
+            <div class="w-full h-40 rounded-xl overflow-hidden mb-3 relative shadow-inner">
+              <img src="${prod.image}" alt="${prod.name}" class="w-full h-full object-cover">
+              <span class="absolute top-2.5 left-2.5 bg-deepmoss/90 text-[9px] text-warmcream px-2 py-0.5 rounded-full uppercase tracking-wider">
+                ${prod.category}
+              </span>
+            </div>
+            <h4 class="font-heading font-bold text-deepmoss text-base leading-tight">${prod.name}</h4>
+            <p class="font-mono font-bold text-forest text-xs mt-1">Rp ${prod.price.toLocaleString('id-ID')}</p>
+            <p class="text-[11px] text-roastedearth/70 mt-1 line-clamp-2">${prod.desc}</p>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-coffeebrown/10 flex items-center justify-between">
+            ${qty > 0 ? `
+              <div class="w-full flex items-center justify-between bg-white rounded-xl border border-coffeebrown/20 px-2 py-1 shadow-sm">
+                <button onclick="changeCartQty('${prod.id}', -1)" class="text-deepmoss font-bold hover:text-red-600 px-2 text-base transition">-</button>
+                <span class="font-bold font-mono text-xs text-deepmoss">${qty} porsi</span>
+                <button onclick="changeCartQty('${prod.id}', 1)" class="text-deepmoss font-bold hover:text-forest px-2 text-base transition">+</button>
+              </div>
+            ` : `
+              <button onclick="changeCartQty('${prod.id}', 1)" class="w-full py-2 bg-forest hover:bg-deepmoss text-warmcream rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Tambah Porsi
+              </button>
+            `}
+          </div>
+        </div>
+      `;
+    }).join('');
+    lucide.createIcons();
+  }
+
+  function changeCartQty(prodId, delta) {
+    const current = appState.tableCart[prodId] || 0;
+    const updated = Math.max(0, current + delta);
+    if (updated === 0) {
+      delete appState.tableCart[prodId];
+    } else {
+      appState.tableCart[prodId] = updated;
+    }
+    renderOrderStepCards();
+    updateCartSummary();
+  }
+
+  function updateCartSummary() {
+    let totalQty = 0;
+    let subtotal = 0;
+
+    Object.keys(appState.tableCart).forEach(id => {
+      const qty = appState.tableCart[id];
+      const prod = PRODUCTS.find(p => p.id === id);
+      if (prod && qty > 0) {
+        totalQty += qty;
+        subtotal += prod.price * qty;
+      }
+    });
+
+    const tax = Math.round(subtotal * 0.10);
+    const grandTotal = subtotal + tax;
+
+    document.getElementById('cartStepQtyBadge').innerText = totalQty;
+    document.getElementById('cartStepTotalText').innerText = `Rp ${grandTotal.toLocaleString('id-ID')} (inc. PB1 10%)`;
+  }
+
+  function sendOrderToKitchenDirect() {
+    const itemKeys = Object.keys(appState.tableCart);
+    if (itemKeys.length === 0) {
+      showToast('Pilih Menu Dahulu', 'Pilih minimal satu hidangan untuk dikirim ke dapur.');
+      return;
+    }
+
+    let subtotal = 0;
+    const items = itemKeys.map(id => {
+      const prod = PRODUCTS.find(p => p.id === id);
+      const qty = appState.tableCart[id];
+      const price = prod ? prod.price : 0;
+      subtotal += price * qty;
+      return {
+        productId: id,
+        name: prod ? prod.name : 'Menu',
+        qty: qty,
+        price: price
+      };
+    });
+
+    const tax = Math.round(subtotal * 0.10);
+    const total = subtotal + tax;
+
+    const orderNum = 'TS-' + String(appState.orders.length + 1).padStart(3, '0');
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} WIB`;
+
+    const newOrder = {
+      orderId: orderNum,
+      table: appState.selectedTable,
+      time: timeStr,
+      timestamp: Date.now(),
+      status: 'NEW',
+      paymentStatus: 'UNPAID',
+      paymentMethod: null,
+      items: items,
+      subtotal: subtotal,
+      tax: tax,
+      total: total
+    };
+
+    appState.orders.unshift(newOrder);
+    saveOrders();
+
+    // Clear active table cart
+    appState.tableCart = {};
+    renderOrderStepCards();
+    updateCartSummary();
+
+    // Notify & Show KDS ping
+    document.getElementById('kdsPingBadge').classList.remove('hidden');
+    showToast('Tiket Masuk ke Kitchen!', `Order #${orderNum} (${newOrder.table}) siap diproses memasak.`);
+
+    // Auto navigate to Kitchen KDS tab for seamless workflow feel
+    setTimeout(() => {
+      switchInternalStep('kitchen');
+    }, 700);
+  }
+
+  // 5. STEP 2: KITCHEN DISPLAY SYSTEM (KDS)
+  function renderKitchenDisplay() {
+    const colNew = document.getElementById('kdsContainerNew');
+    const colCooking = document.getElementById('kdsContainerCooking');
+    const colReady = document.getElementById('kdsContainerReady');
+
+    const newOrders = appState.orders.filter(o => o.status === 'NEW');
+    const cookingOrders = appState.orders.filter(o => o.status === 'COOKING');
+    const readyOrders = appState.orders.filter(o => o.status === 'READY');
+
+    document.getElementById('kdsCountNew').innerText = newOrders.length;
+    document.getElementById('kdsCountCooking').innerText = cookingOrders.length;
+    document.getElementById('kdsCountReady').innerText = readyOrders.length;
+
+    colNew.innerHTML = renderKdsTicketList(newOrders, 'NEW');
+    colCooking.innerHTML = renderKdsTicketList(cookingOrders, 'COOKING');
+    colReady.innerHTML = renderKdsTicketList(readyOrders, 'READY');
+
+    lucide.createIcons();
+  }
+
+  function renderKdsTicketList(list, type) {
+    if (list.length === 0) {
+      return `<div class="text-center py-8 text-xs text-roastedearth/40 italic">Tidak ada tiket di tahapan ini</div>`;
+    }
+
+    return list.map(order => `
+      <div class="bg-white rounded-2xl p-4 border border-coffeebrown/20 shadow-sm space-y-3">
+        <div class="flex items-center justify-between border-b border-coffeebrown/10 pb-2">
+          <div>
+            <span class="font-mono font-bold text-base text-deepmoss">#${order.orderId}</span>
+            <span class="ml-2 font-bold text-xs bg-amberwarm/30 text-roastedearth px-2 py-0.5 rounded">${order.table}</span>
+          </div>
+          <span class="text-[10px] text-forest font-semibold">${order.time}</span>
+        </div>
+
+        <div class="space-y-1 text-xs">
+          ${order.items.map(it => `
+            <div class="flex justify-between border-b border-dashed border-gray-100 pb-1">
+              <span><strong class="text-deepmoss">${it.qty}x</strong> ${it.name}</span>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="pt-2 border-t border-coffeebrown/10">
+          ${type === 'NEW' ? `
+            <button onclick="advanceOrderStatus('${order.orderId}', 'COOKING')" class="w-full py-2 bg-amberwarm hover:bg-golden text-roastedearth font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5">
+              <i data-lucide="flame" class="w-3.5 h-3.5"></i> Mulai Memasak
+            </button>
+          ` : type === 'COOKING' ? `
+            <button onclick="advanceOrderStatus('${order.orderId}', 'READY')" class="w-full py-2 bg-forest hover:bg-deepmoss text-warmcream font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5">
+              <i data-lucide="bell" class="w-3.5 h-3.5"></i> Selesai Masak (Siap Saji)
+            </button>
+          ` : `
+            <button onclick="advanceOrderStatus('${order.orderId}', 'COMPLETED')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5">
+              <i data-lucide="check-check" class="w-3.5 h-3.5"></i> Sajikan &amp; Teruskan Kasir
+            </button>
+          `}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function advanceOrderStatus(orderId, nextStatus) {
+    const o = appState.orders.find(item => item.orderId === orderId);
+    if (o) {
+      o.status = nextStatus;
+      saveOrders();
+      renderKitchenDisplay();
+      showToast('Status Dapur Diperbarui', `Order #${orderId} kini berstatus: ${nextStatus}`);
+
+      if (nextStatus === 'COMPLETED') {
+        setTimeout(() => {
+          switchInternalStep('pos');
+        }, 500);
+      }
+    }
+  }
+
+  // 6. STEP 3: KASIR POS & CETAK STRUK
+  function renderPosTableView() {
+    let rev = 0;
+    let kitchenCount = 0;
+    let unpaidCount = 0;
+
+    appState.orders.forEach(o => {
+      if (o.paymentStatus === 'PAID') rev += o.total;
+      else unpaidCount += 1;
+      if (o.status !== 'COMPLETED') kitchenCount += 1;
+    });
+
+    document.getElementById('posRevenueVal').innerText = `Rp ${rev.toLocaleString('id-ID')}`;
+    document.getElementById('posOrderCountVal').innerText = appState.orders.length;
+    document.getElementById('posKitchenActiveVal').innerText = kitchenCount;
+    document.getElementById('posUnpaidVal').innerText = unpaidCount;
+
+    renderPosTableList();
+  }
+
+  function renderPosTableList() {
+    const tbody = document.getElementById('posTableBodyList');
+    const query = (document.getElementById('posFilterSearch').value || '').toLowerCase();
+
+    let list = appState.orders;
+    if (query) {
+      list = list.filter(o => o.orderId.toLowerCase().includes(query) || o.table.toLowerCase().includes(query));
+    }
+
+    if (list.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-roastedearth/60">Tidak ada data transaksi</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = list.map(o => {
+      const summary = o.items.map(i => `${i.qty}x ${i.name}`).join(', ');
+      return `
+        <tr class="hover:bg-coffeebrown/5 transition">
+          <td class="py-3 px-3.5 font-mono font-bold text-deepmoss">#${o.orderId}</td>
+          <td class="py-3 px-3.5 font-bold">${o.table}</td>
+          <td class="py-3 px-3.5 text-roastedearth/70">${o.time}</td>
+          <td class="py-3 px-3.5 max-w-xs truncate" title="${summary}">${summary}</td>
+          <td class="py-3 px-3.5 font-mono font-bold text-forest">Rp ${o.total.toLocaleString('id-ID')}</td>
+          <td class="py-3 px-3.5">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
+              o.status === 'NEW' ? 'bg-amberwarm/40 text-roastedearth' :
+              o.status === 'COOKING' ? 'bg-forest/20 text-forest' :
+              o.status === 'READY' ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-700'
+            }">${o.status}</span>
+          </td>
+          <td class="py-3 px-3.5">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+              o.paymentStatus === 'PAID' ? 'bg-emerald-600 text-white' : 'bg-red-100 text-red-700'
+            }">${o.paymentStatus} ${o.paymentMethod ? `(${o.paymentMethod})` : ''}</span>
+          </td>
+          <td class="py-3 px-3.5 text-center">
+            ${o.paymentStatus === 'UNPAID' ? `
+              <button onclick="openPosPayModal('${o.orderId}')" class="px-3 py-1.5 bg-forest hover:bg-deepmoss text-warmcream font-semibold rounded-lg transition text-xs flex items-center gap-1 mx-auto shadow-sm">
+                <i data-lucide="credit-card" class="w-3.5 h-3.5"></i> Bayar
+              </button>
+            ` : `
+              <button onclick="previewReceiptModal('${o.orderId}')" class="px-3 py-1.5 bg-ricepaper hover:bg-coffeebrown/15 border border-coffeebrown/20 text-deepmoss font-semibold rounded-lg transition text-xs flex items-center gap-1 mx-auto shadow-sm">
+                <i data-lucide="printer" class="w-3.5 h-3.5"></i> Struk
+              </button>
+            `}
+          </td>
+        </tr>
+      `;
+    }).join('');
+    lucide.createIcons();
+  }
+
+  function openPosPayModal(orderId) {
+    const o = appState.orders.find(item => item.orderId === orderId);
+    if (!o) return;
+
+    appState.activePayingOrderId = orderId;
+    document.getElementById('payOrderCode').innerText = '#' + o.orderId;
+    document.getElementById('payTableId').innerText = o.table;
+    document.getElementById('payOrderTime').innerText = o.time;
+    document.getElementById('payOrderTotal').innerText = `Rp ${o.total.toLocaleString('id-ID')}`;
+
+    selectPosMethod('QRIS');
+    document.getElementById('posPayModal').classList.remove('hidden');
+    document.getElementById('posPayModal').classList.add('flex');
+    lucide.createIcons();
+  }
+
+  function closePosPayModal() {
+    document.getElementById('posPayModal').classList.add('hidden');
+    document.getElementById('posPayModal').classList.remove('flex');
+  }
+
+  function selectPosMethod(method) {
+    appState.selectedPayMethod = method;
+    document.querySelectorAll('.pos-method-btn').forEach(btn => {
+      if (btn.dataset.method === method) {
+        btn.className = "pos-method-btn p-2.5 rounded-xl border border-coffeebrown/20 bg-forest text-warmcream font-semibold flex flex-col items-center justify-center gap-1";
+      } else {
+        btn.className = "pos-method-btn p-2.5 rounded-xl border border-coffeebrown/20 bg-white hover:bg-ricepaper font-semibold flex flex-col items-center justify-center gap-1";
+      }
+    });
+    lucide.createIcons();
+  }
+
+  function confirmPaymentAndPrint() {
+    const o = appState.orders.find(item => item.orderId === appState.activePayingOrderId);
+    if (!o) return;
+
+    o.paymentStatus = 'PAID';
+    o.paymentMethod = appState.selectedPayMethod;
+    saveOrders();
+
+    closePosPayModal();
+    renderPosTableView();
+    showToast('Pembayaran Lunas!', `Order #${o.orderId} sukses dibayar via ${appState.selectedPayMethod}`);
+    previewReceiptModal(o.orderId);
+  }
+
+  function previewReceiptModal(orderId) {
+    const o = appState.orders.find(item => item.orderId === orderId);
+    if (!o) return;
+
+    document.getElementById('rcptOrderNo').innerText = '#' + o.orderId;
+    document.getElementById('rcptTableNo').innerText = o.table;
+    document.getElementById('rcptTimeVal').innerText = o.time;
+    document.getElementById('rcptMethodVal').innerText = o.paymentMethod || 'QRIS';
+
+    const now = new Date();
+    document.getElementById('rcptDateVal').innerText = now.toISOString().split('T')[0];
+
+    const wrapper = document.getElementById('rcptItemsWrapper');
+    wrapper.innerHTML = o.items.map(it => `
+      <div class="flex justify-between">
+        <span>${it.qty}x ${it.name}</span>
+        <span>Rp ${(it.price * it.qty).toLocaleString('id-ID')}</span>
+      </div>
+    `).join('');
+
+    document.getElementById('rcptSubtotalVal').innerText = `Rp ${o.subtotal.toLocaleString('id-ID')}`;
+    document.getElementById('rcptTaxVal').innerText = `Rp ${o.tax.toLocaleString('id-ID')}`;
+    document.getElementById('rcptTotalVal').innerText = `Rp ${o.total.toLocaleString('id-ID')}`;
+
+    document.getElementById('printReceiptModal').classList.remove('hidden');
+    document.getElementById('printReceiptModal').classList.add('flex');
+    lucide.createIcons();
+  }
+
+  function closePrintReceiptModal() {
+    document.getElementById('printReceiptModal').classList.add('hidden');
+    document.getElementById('printReceiptModal').classList.remove('flex');
+  }
+
+  // 7. REALTIME DIGITAL CLOCK & LIVE COUNTDOWN
+  function startLiveClocks() {
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('id-ID', { hour12: false }) + ' WIB';
+      const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+      const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+      const dateStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+      const clockEl = document.getElementById('liveDigitalClock');
+      const dateEl = document.getElementById('liveDigitalDate');
+
+      if (clockEl) clockEl.innerText = timeStr;
+      if (dateEl) dateEl.innerText = dateStr;
+    }
+
+    // Dynamic Countdown (target: October 2026 or 75 days ahead)
+    let grandOpeningTimestamp = localStorage.getItem('tepisawah_countdown_ts');
+    if (!grandOpeningTimestamp) {
+      grandOpeningTimestamp = Date.now() + (75 * 24 * 60 * 60 * 1000);
+      localStorage.setItem('tepisawah_countdown_ts', grandOpeningTimestamp.toString());
+    } else {
+      grandOpeningTimestamp = parseInt(grandOpeningTimestamp, 10);
+      if (grandOpeningTimestamp <= Date.now()) {
+        grandOpeningTimestamp = Date.now() + (75 * 24 * 60 * 60 * 1000);
+        localStorage.setItem('tepisawah_countdown_ts', grandOpeningTimestamp.toString());
+      }
+    }
+
+    function updateCountdown() {
+      const now = Date.now();
+      const diff = grandOpeningTimestamp - now;
+
+      if (diff > 0) {
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+        const dEl = document.getElementById('heroCountdownDays');
+        const hEl = document.getElementById('heroCountdownHours');
+        const mEl = document.getElementById('heroCountdownMinutes');
+        const sEl = document.getElementById('heroCountdownSeconds');
+
+        if (dEl) dEl.innerText = String(d).padStart(2, '0');
+        if (hEl) hEl.innerText = String(h).padStart(2, '0');
+        if (mEl) mEl.innerText = String(m).padStart(2, '0');
+        if (sEl) sEl.innerText = String(s).padStart(2, '0');
+      }
+    }
+
+    updateClock();
+    updateCountdown();
+    setInterval(() => {
+      updateClock();
+      updateCountdown();
+    }, 1000);
+  }
+
+  // 8. RESERVATION MODAL
+  function openReservationModal(promoName = 'Early Bird 25%') {
+    const tmr = new Date();
+    tmr.setDate(tmr.getDate() + 2);
+    document.getElementById('resDate').value = tmr.toISOString().split('T')[0];
+    document.getElementById('resPromoTag').value = promoName;
+
+    document.getElementById('reservationModal').classList.remove('hidden');
+    document.getElementById('reservationModal').classList.add('flex');
+    lucide.createIcons();
+  }
+
+  function closeReservationModal() {
+    document.getElementById('reservationModal').classList.add('hidden');
+    document.getElementById('reservationModal').classList.remove('flex');
+  }
+
+  function handleReservationSubmit(e) {
+    e.preventDefault();
+    const name = document.getElementById('resName').value;
+    const phone = document.getElementById('resPhone').value;
+    const promo = document.getElementById('resPromoTag').value;
+    const table = document.getElementById('resTableChoice').value;
+
+    closeReservationModal();
+    showToast('Reservasi Berhasil!', `Kupon ${promo} berhasil diklaim atas nama ${name}. Tim kami akan mengirimkan QR konfirmasi ke WhatsApp ${phone}.`);
+  }
+
+  // 9. TOAST NOTIFICATION UTILITY
+  let toastTimer = null;
+  function showToast(title, desc) {
+    const el = document.getElementById('toastNotification');
+    document.getElementById('toastTitle').innerText = title;
+    document.getElementById('toastDesc').innerText = desc;
+
+    el.classList.remove('translate-y-32', 'opacity-0');
+    el.classList.add('translate-y-0', 'opacity-100');
+
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      el.classList.remove('translate-y-0', 'opacity-100');
+      el.classList.add('translate-y-32', 'opacity-0');
+    }, 3800);
+  }
+
+  // 10. RESET DEMO DATA
+  function resetDemoData() {
+    if (confirm('Kembalikan semua pesanan demo ke setelan default?')) {
+      localStorage.removeItem('tepisawah_orders_v2');
+      appState.orders = JSON.parse(JSON.stringify(DEFAULT_ORDERS));
+      appState.tableCart = {};
+      saveOrders();
+
+      if (appState.currentMainView === 'internal') {
+        switchInternalStep(appState.currentInternalStep);
+      }
+      showToast('Data Demo Direset', 'Semua order simulasi berhasil dikembalikan ke default.');
+    }
+  }
+
+  // 11. BOOTSTRAP INITIALIZATION
+  window.addEventListener('DOMContentLoaded', () => {
+    loadState();
+    startLiveClocks();
+    renderPublicFoodCards();
+    lucide.createIcons();
+  });
+</script>
+<script>
+  // Update internal step router for 4 steps
+  const originalSwitchInternalStep = window.switchInternalStep;
+  window.switchInternalStep = function(step) {
+    appState.currentInternalStep = step;
+    const steps = ['order', 'waiter', 'kitchen', 'pos'];
+    steps.forEach(s => {
+      const el = document.getElementById('internal-step-' + s);
+      const btn = document.getElementById('subtab-' + s);
+      if (el) {
+        if (s === step) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
+      }
+      if (btn) {
+        if (s === step) {
+          btn.className = "internal-tab-btn p-3 rounded-2xl border text-left transition flex items-center justify-between bg-forest text-warmcream border-amberwarm shadow";
+        } else {
+          btn.className = "internal-tab-btn p-3 rounded-2xl border text-left transition flex items-center justify-between bg-deepmoss/70 text-warmcream/80 border-golden/20 hover:border-golden";
+        }
+      }
+    });
+
+    if (step === 'order') {
+      renderOrderStepCards();
+      updateCartSummary();
+    } else if (step === 'waiter') {
+      renderWaiterView();
+    } else if (step === 'kitchen') {
+      renderKitchenDisplay();
+      const badge = document.getElementById('kdsPingBadge');
+      if (badge) badge.classList.add('hidden');
+    } else if (step === 'pos') {
+      renderPosTableView();
+    }
+    if (window.lucide) lucide.createIcons();
+  };
+
+  // Waiter Stage View Renderer
+  window.renderWaiterView = function() {
+    const container = document.getElementById('waiterCardsContainer');
+    if (!container) return;
+    const unverified = appState.orders.filter(o => o.status === 'NEW' || !o.waiterVerified);
+    if (unverified.length === 0) {
+      container.innerHTML = `
+        <div class="col-span-full py-12 text-center bg-ricepaper/70 rounded-2xl border border-dashed border-coffeebrown/20">
+          <p class="text-sm text-deepmoss font-semibold">Semua pesanan meja telah diverifikasi pramusaji.</p>
+          <p class="text-xs text-roastedearth/60 mt-1">Silakan lanjutkan ke Layar Dapur KDS untuk memantau masakan.</p>
+          <button onclick="switchInternalStep('kitchen')" class="mt-4 px-4 py-2 bg-forest text-warmcream rounded-xl text-xs font-semibold hover:bg-deepmoss transition shadow">
+            Buka Layar Dapur KDS
+          </button>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = unverified.map(order => `
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-coffeebrown/20 shadow-soft space-y-3">
+        <div class="flex items-center justify-between border-b border-coffeebrown/10 pb-2.5">
+          <div>
+            <span class="font-mono font-bold text-base text-deepmoss">#${order.orderId}</span>
+            <span class="ml-2 font-bold text-xs bg-amberwarm/30 text-roastedearth px-2.5 py-0.5 rounded-full">${order.table}</span>
+          </div>
+          <span class="text-[11px] text-forest font-semibold">${order.time}</span>
+        </div>
+        <div class="space-y-1.5 text-xs py-1">
+          ${order.items.map(it => `
+            <div class="flex justify-between border-b border-dashed border-gray-100 pb-1">
+              <span><strong class="text-deepmoss font-mono">${it.qty}x</strong> ${it.name}</span>
+              <span class="text-roastedearth/70 font-mono">Rp ${(it.price * it.qty).toLocaleString('id-ID')}</span>
+            </div>
+          `).join('')}
+        </div>
+        <div class="flex items-center justify-between text-xs pt-1">
+          <span class="text-roastedearth/70">Total Bill:</span>
+          <span class="font-mono font-bold text-forest text-sm">Rp ${order.total.toLocaleString('id-ID')}</span>
+        </div>
+        <div class="pt-2 border-t border-coffeebrown/10 flex gap-2">
+          <button onclick="confirmWaiterOrder('${order.orderId}')" class="w-full py-2.5 bg-forest hover:bg-deepmoss text-warmcream font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check w-4 h-4"><path d="M20 6 9 17l-5-5"></path></svg>
+            <span>Verifikasi &amp; Teruskan ke KDS</span>
+          </button>
+        </div>
+      </div>
+    `).join('');
+    if (window.lucide) lucide.createIcons();
+  };
+
+  window.confirmWaiterOrder = function(orderId) {
+    const order = appState.orders.find(o => o.orderId === orderId);
+    if (order) {
+      order.waiterVerified = true;
+      saveOrders();
+      renderWaiterView();
+      showToast('Pesanan Terverifikasi!', `Order #${orderId} telah diteruskan ke Dapur (KDS).`);
+    }
+  };
+
+  // Fast Automated Demo Routine
+  let isAutoRunning = false;
+  window.runFastAutoWorkflow = function() {
+    if (isAutoRunning) return;
+    isAutoRunning = true;
+    const btn = document.getElementById('btnFastDemo');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = `<span class="animate-spin">⏳</span> Memproses Alur Otomatis...`;
+    btn.disabled = true;
+
+    // 1. Reset to fresh demo order
+    appState.tableCart = { 'p1': 1, 'p5': 2 };
+    switchInternalStep('order');
+    showToast('Tahap 1: Pesan Meja QR', 'Menyiapkan 1x Chicken Roaster & 2x Es Kelapa Jeruk...');
+
+    setTimeout(() => {
+      sendOrderToKitchenDirect();
+      const latestOrder = appState.orders[0];
+      showToast('Tahap 2: Pramusaji', `Pesanan #${latestOrder.orderId} masuk verifikasi meja.`);
+      switchInternalStep('waiter');
+
+      setTimeout(() => {
+        confirmWaiterOrder(latestOrder.orderId);
+        showToast('Tahap 3: Dapur KDS', `Koki memulai olahan hidangan #${latestOrder.orderId}`);
+        switchInternalStep('kitchen');
+
+        setTimeout(() => {
+          advanceOrderStatus(latestOrder.orderId, 'COOKING');
+          setTimeout(() => {
+            advanceOrderStatus(latestOrder.orderId, 'READY');
+            showToast('Tahap 3: Siap Saji', `Pesanan #${latestOrder.orderId} matang dan siap saji!`);
+
+            setTimeout(() => {
+              advanceOrderStatus(latestOrder.orderId, 'COMPLETED');
+              showToast('Tahap 4: Kasir POS', `Order #${latestOrder.orderId} siap dilakukan pembayaran lunas & struk.`);
+              switchInternalStep('pos');
+              openPosPayModal(latestOrder.orderId);
+
+              isAutoRunning = false;
+              btn.innerHTML = originalText;
+              btn.disabled = false;
+            }, 1200);
+          }, 1200);
+        }, 1200);
+      }, 1200);
+    }, 1200);
+  };
+
+  // Initial boot trigger if internal view active
+  if (appState.currentMainView === 'internal') {
+    switchInternalStep(appState.currentInternalStep || 'order');
+  }
+</script></body></html>

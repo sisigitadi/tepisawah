@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"surface-container":"#f2efd5","outline-variant":"#c0c9bc","on-tertiary-fixed":"#341100","on-surface":"#1d1c0d","on-error":"#ffffff","inverse-surface":"#323120","rice-paper":"#F8F4DB","secondary":"#835418","secondary-fixed":"#ffdcbb","surface-variant":"#e7e3ca","on-secondary-container":"#784a0d","surface-container-lowest":"#ffffff","surface-bright":"#fefae0","on-primary-fixed-variant":"#12521e","surface-dim":"#dedbc2","surface":"#fefae0","primary-fixed":"#b0f3ad","on-tertiary-container":"#ffcfb8","leaf-tint":"rgba(46, 107, 52, 0.08)","primary-container":"#2e6b34","tertiary":"#6a3b20","tertiary-container":"#865235","on-primary":"#ffffff","inverse-on-surface":"#f5f1d8","on-error-container":"#93000a","on-secondary-fixed":"#2b1700","secondary-container":"#fdbd77","amber-warm":"#F3C644","outline":"#71796e","primary-fixed-dim":"#95d693","tertiary-fixed-dim":"#fcb794","on-tertiary":"#ffffff","on-primary-container":"#a7e9a5","golden-sheen":"rgba(221, 161, 94, 0.25)","error":"#ba1a1a","error-container":"#ffdad6","on-primary-fixed":"#002106","surface-container-highest":"#e7e3ca","secondary-fixed-dim":"#faba75","on-secondary":"#ffffff","inverse-primary":"#95d693","on-background":"#1d1c0d","primary":"#12521e","roasted-earth":"#3D1F10","surface-tint":"#2e6b34","background":"#fefae0","surface-container-high":"#ede9cf","surface-container-low":"#f8f4db","deep-moss":"#183A1D","on-surface-variant":"#41493f","on-secondary-fixed-variant":"#673d00","on-tertiary-fixed-variant":"#6a3b20","tertiary-fixed":"#ffdbca"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-sm":"0.5rem","space-xs":"0.25rem","space-xxl":"4rem","gutter-sm":"1rem","gutter-lg":"2rem","margin-desktop":"3rem","space-md":"1rem","margin-mobile":"1rem","space-lg":"1.5rem","space-xl":"2.5rem","margin":"1.5rem","gutter":"1.5rem"},fontFamily:{"display-hero":["Playfair Display"],"body-md":["Inter"],"monospace-data":["monospace"],"eyebrow-accent":["Inter"],"headline-lg-mobile":["Playfair Display"],"label-sm":["Inter"],"display-hero-mobile":["Playfair Display"],"headline-sm":["Playfair Display"],"body-sm":["Inter"],"headline-lg":["Playfair Display"],"title-editorial":["Playfair Display"],"label-md":["Inter"],"body-lg":["Inter"],"headline-md":["Playfair Display"]},fontSize:{"display-hero":["56px",{"lineHeight":"64px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-md":["15px",{"lineHeight":"24px","fontWeight":"400"}],"monospace-data":["13px",{"lineHeight":"18px","fontWeight":"500"}],"eyebrow-accent":["11px",{"lineHeight":"14px","letterSpacing":"0.18em","fontWeight":"700"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","fontWeight":"700"}],"label-sm":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"display-hero-mobile":["32px",{"lineHeight":"40px","letterSpacing":"-0.01em","fontWeight":"700"}],"headline-sm":["20px",{"lineHeight":"28px","fontWeight":"600"}],"body-sm":["13px",{"lineHeight":"20px","fontWeight":"400"}],"headline-lg":["36px",{"lineHeight":"44px","letterSpacing":"-0.01em","fontWeight":"700"}],"title-editorial":["18px",{"lineHeight":"26px","fontWeight":"500"}],"label-md":["14px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"600"}],"body-lg":["18px",{"lineHeight":"28px","fontWeight":"400"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"600"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 h-16 z-50 bg-deep-moss text-surface-bright shadow-[0_4px_20px_rgba(24,58,29,0.35)]"><div class="h-16 w-full px-gutter-lg flex items-center justify-between"><div class="flex items-center gap-space-md"><img alt="Logo Tepi Sawah.png" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XL00OI-aDgeuVUPV20dG8RbF1gZHLtGNbKicnH2nppz88Y-KaKrL9znZV6lJsCWPVUSEozdWTBSXXwevTgdpwpfCim030P4cg1o8r07zkGpNBCeaCS2CD6buJyaXNPNg9BN9lPfP35AirtMiyJ0NWIVFu6ciV_oU8f7jhFpQf0i-bzRwqxvEvPUXZAiOSnsR0bbO3CVcQ8DdGlAQSkrb9GoRzPzHg0QvIycTS0Vww4jjCICdttbBRklo0NOYpKvmvXXfNV4wTcyg"/><div class="flex flex-col"><span class="font-title-editorial text-title-editorial leading-none tracking-tight text-surface-bright">Tepi Sawah</span><span class="font-eyebrow-accent text-eyebrow-accent tracking-widest text-amber-warm uppercase">Cashier POS</span></div></div><div class="flex items-center gap-space-lg"><div class="hidden xl:flex items-center gap-space-sm bg-primary/40 px-space-md py-space-xs rounded-full"><span class="material-symbols-outlined text-amber-warm text-[18px]">schedule</span><span class="font-monospace-data text-monospace-data text-surface-bright font-medium">27 Sep 2026, 11:32 WIB</span></div><div class="flex items-center gap-space-sm bg-primary-container px-space-md py-space-xs rounded-full text-on-primary"><span class="w-2 h-2 rounded-full bg-amber-warm animate-pulse"></span><span class="font-label-sm text-label-sm font-semibold">Kasir: Sigit</span><span class="text-on-primary-container text-label-sm">•</span><span class="font-label-sm text-label-sm text-on-primary-container">Shift 1 Pagi - Active</span></div><div class="hidden lg:flex items-center gap-space-sm"><div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-primary/30 text-surface-bright"><span class="w-2 h-2 rounded-full bg-primary-fixed"></span><span class="font-label-sm text-label-sm">Kitchen: Live</span></div><div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-primary/30 text-surface-bright"><span class="w-2 h-2 rounded-full bg-primary-fixed"></span><span class="font-label-sm text-label-sm">Tables: Sync</span></div></div><div class="flex items-center gap-space-md"><button class="relative p-space-xs text-surface-bright hover:text-amber-warm transition-colors"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-0 right-0 w-4 h-4 bg-error text-on-error rounded-full text-[10px] flex items-center justify-center font-bold">3</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><aside class="fixed left-0 top-16 bottom-0 w-64 bg-surface-container-low z-40 flex flex-col justify-between shadow-[2px_0_12px_rgba(24,58,29,0.06)]"><div class="flex flex-col py-space-md"><nav class="flex flex-col gap-1 px-space-sm" data-active-classes="bg-primary-container text-on-primary font-semibold shadow-sm"><a aria-current="page" class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg transition-all bg-primary-container text-on-primary font-semibold shadow-sm" data-path="pos-terminal" href="#"><span class="material-symbols-outlined text-[20px]">point_of_sale</span><span class="font-label-md text-label-md">Payment Terminal</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="order-pipeline" href="#"><span class="material-symbols-outlined text-[20px]">receipt_long</span><span class="font-label-md text-label-md">Orders Pipeline</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="table-layout" href="#"><span class="material-symbols-outlined text-[20px]">table_restaurant</span><span class="font-label-md text-label-md">Table Layout</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="operational-dashboard" href="#"><span class="material-symbols-outlined text-[20px]">analytics</span><span class="font-label-md text-label-md">Dashboard</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="transaction-history" href="#"><span class="material-symbols-outlined text-[20px]">history</span><span class="font-label-md text-label-md">Transaction History</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="daily-reports" href="#"><span class="material-symbols-outlined text-[20px]">summarize</span><span class="font-label-md text-label-md">Daily Reports</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="shift-management" href="#"><span class="material-symbols-outlined text-[20px]">badge</span><span class="font-label-md text-label-md">Shift &amp; Cash</span></a></nav></div><div class="bg-surface-container p-space-sm mx-space-sm mb-space-sm rounded-lg flex flex-col gap-1"><div class="font-eyebrow-accent text-eyebrow-accent text-tertiary uppercase tracking-wider mb-1">Quick Hotkeys</div><div class="grid grid-cols-2 gap-1 text-[11px] font-monospace-data text-on-surface-variant"><span><strong class="text-primary">F1</strong> Cari</span><span><strong class="text-primary">F2</strong> Baru</span><span><strong class="text-primary">F3</strong> Bayar</span><span><strong class="text-primary">F4</strong> Refresh</span><span class="col-span-2"><strong class="text-error">ESC</strong> Batal</span></div></div></aside><div class="pl-64"><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<div class="w-full px-gutter-lg py-space-md">
+<!-- Header Sub-Bar & Cashier Context -->
+<div class="flex flex-wrap items-center justify-between gap-space-md mb-space-md pb-space-sm bg-surface-container-low px-space-lg py-space-sm rounded-xl shadow-sm">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-primary-container text-on-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[24px]">point_of_sale</span>
+</div>
+<div>
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-deep-moss">Kasir Utama #01</span>
+<span class="px-space-xs py-0.5 rounded text-[10px] font-eyebrow-accent uppercase bg-primary/10 text-primary font-bold">Terminal Online</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Lobi Utama Ciperna • Shift Pagi (07:00 - 15:30) • Sinkronisasi EDC &amp; QRIS Siap</p>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs bg-surface px-space-md py-space-xs rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[20px]">account_balance_wallet</span>
+<div class="flex flex-col">
+<span class="font-eyebrow-accent text-[10px] text-tertiary">Kas Laci Sekarang</span>
+<span class="font-monospace-data text-label-md font-bold text-deep-moss">Rp 2.450.000</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs bg-surface px-space-md py-space-xs rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">receipt</span>
+<div class="flex flex-col">
+<span class="font-eyebrow-accent text-[10px] text-tertiary">Selesai Hari Ini</span>
+<span class="font-monospace-data text-label-md font-bold text-primary">48 Transaksi</span>
+</div>
+</div>
+<button class="bg-surface hover:bg-surface-container text-on-surface-variant px-space-sm py-space-xs rounded-lg text-label-sm font-semibold flex items-center gap-1 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">lock_reset</span> Laci Kas
+        </button>
+</div>
+</div>
+<!-- 3-Panel Enterprise Grid Layout -->
+<div class="grid grid-cols-12 gap-space-md items-start">
+<!-- ==================== LEFT PANEL: QUEUE & SEARCH ==================== -->
+<section class="col-span-12 xl:col-span-3 lg:col-span-4 flex flex-col gap-space-md bg-surface-container-low p-space-md rounded-xl shadow-sm">
+<!-- Search & Hotkey Bar -->
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-space-sm flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</span>
+<input class="w-full pl-9 pr-12 py-space-sm rounded-lg bg-surface text-on-surface placeholder:text-outline text-label-md outline-none transition-shadow shadow-sm focus:shadow-md" id="orderSearchInput" placeholder="F1 Cari order, meja, no bill..." type="text" value=""/>
+<span class="absolute inset-y-0 right-0 pr-space-sm flex items-center">
+<kbd class="px-1.5 py-0.5 text-[10px] font-monospace-data bg-surface-container text-on-surface-variant rounded">F1</kbd>
+</span>
+</div>
+<!-- Filter Queue Tabs -->
+<div class="flex flex-col gap-space-xs">
+<div class="grid grid-cols-3 gap-1 bg-surface-container p-1 rounded-lg">
+<button class="px-space-xs py-space-xs rounded text-center text-[11px] font-label-sm font-bold bg-primary-container text-on-primary shadow-sm transition-all">
+              Menunggu (3)
+            </button>
+<button class="px-space-xs py-space-xs rounded text-center text-[11px] font-label-sm font-medium text-on-surface-variant hover:text-on-surface transition-all">
+              Proses (2)
+            </button>
+<button class="px-space-xs py-space-xs rounded text-center text-[11px] font-label-sm font-medium text-on-surface-variant hover:text-on-surface transition-all">
+              Semua (53)
+            </button>
+</div>
+<div class="flex items-center justify-between px-space-xs text-[11px] text-tertiary font-eyebrow-accent uppercase tracking-wider">
+<span>Antrean Pembayaran Kasir</span>
+<span class="flex items-center gap-1 text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span> Real-time</span>
+</div>
+</div>
+<!-- Order Queue Cards List -->
+<div class="flex flex-col gap-space-sm max-h-[640px] overflow-y-auto pr-0.5">
+<!-- Card 1: Selected (Order #TS-001) -->
+<article class="relative p-space-md rounded-xl bg-rice-paper shadow-md transition-all cursor-pointer group">
+<div class="absolute left-0 top-3 bottom-3 w-1.5 bg-primary-container rounded-r-full"></div>
+<div class="flex items-center justify-between mb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="font-monospace-data text-label-md font-bold text-deep-moss">#TS-001</span>
+<span class="px-2 py-0.5 text-[10px] font-eyebrow-accent rounded-full bg-amber-warm/30 text-roasted-earth font-bold">QR MEJA</span>
+</div>
+<span class="font-monospace-data text-[12px] text-tertiary">11:28 WIB</span>
+</div>
+<div class="flex items-baseline justify-between mb-space-xs">
+<div>
+<h4 class="font-headline-sm text-[17px] font-bold text-deep-moss">Meja A12</h4>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Kabin Sawah Utara • 3 menu</p>
+</div>
+<div class="text-right">
+<span class="font-title-editorial text-[18px] font-bold text-primary">Rp 259.785</span>
+<span class="block text-[10px] font-eyebrow-accent text-secondary font-semibold">INC. TAX &amp; DISC</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-xs mt-space-xs bg-surface-container/50 px-2 py-1 rounded">
+<span class="inline-flex items-center gap-1 text-[11px] text-tertiary font-medium">
+<span class="material-symbols-outlined text-[14px]">smartphone</span> Tamu Self-Scan
+              </span>
+<span class="px-2 py-0.5 text-[10px] rounded-full bg-error-container text-on-error-container font-semibold uppercase tracking-wider">
+                Waiting Bill
+              </span>
+</div>
+</article>
+<!-- Card 2: Order #TS-002 -->
+<article class="p-space-md rounded-xl bg-surface hover:bg-rice-paper shadow-sm hover:shadow transition-all cursor-pointer group">
+<div class="flex items-center justify-between mb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="font-monospace-data text-label-md font-bold text-on-surface">#TS-002</span>
+<span class="px-2 py-0.5 text-[10px] font-eyebrow-accent rounded-full bg-surface-container text-on-surface-variant font-bold">WAITER POS</span>
+</div>
+<span class="font-monospace-data text-[12px] text-outline">11:30 WIB</span>
+</div>
+<div class="flex items-baseline justify-between mb-space-xs">
+<div>
+<h4 class="font-headline-sm text-[16px] font-semibold text-on-surface">Meja S02</h4>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Saung Lesehan 2 • 2 menu</p>
+</div>
+<div class="text-right">
+<span class="font-title-editorial text-[17px] font-bold text-deep-moss">Rp 138.000</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-xs mt-space-xs px-1">
+<span class="inline-flex items-center gap-1 text-[11px] text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">person</span> Waiter Dimas
+              </span>
+<span class="px-2 py-0.5 text-[10px] rounded-full bg-secondary-container/60 text-on-secondary-container font-semibold uppercase">
+                Menunggu
+              </span>
+</div>
+</article>
+<!-- Card 3: Order #TS-003 -->
+<article class="p-space-md rounded-xl bg-surface hover:bg-rice-paper shadow-sm hover:shadow transition-all cursor-pointer group">
+<div class="flex items-center justify-between mb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="font-monospace-data text-label-md font-bold text-on-surface">#TS-003</span>
+<span class="px-2 py-0.5 text-[10px] font-eyebrow-accent rounded-full bg-amber-warm/30 text-roasted-earth font-bold">QR MEJA</span>
+</div>
+<span class="font-monospace-data text-[12px] text-outline">11:15 WIB</span>
+</div>
+<div class="flex items-baseline justify-between mb-space-xs">
+<div>
+<h4 class="font-headline-sm text-[16px] font-semibold text-on-surface">Meja R01</h4>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Rooftop Sunset • 4 menu</p>
+</div>
+<div class="text-right">
+<span class="font-title-editorial text-[17px] font-bold text-deep-moss">Rp 320.000</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-xs mt-space-xs px-1">
+<span class="inline-flex items-center gap-1 text-[11px] text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">smartphone</span> Tamu Rooftop
+              </span>
+<span class="px-2 py-0.5 text-[10px] rounded-full bg-secondary-container/60 text-on-secondary-container font-semibold uppercase">
+                Menunggu
+              </span>
+</div>
+</article>
+<!-- Card 4: Order #TS-004 (Sedang Masak) -->
+<article class="p-space-md rounded-xl bg-surface/70 hover:bg-rice-paper shadow-sm opacity-90 transition-all cursor-pointer">
+<div class="flex items-center justify-between mb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="font-monospace-data text-label-md font-semibold text-on-surface-variant">#TS-004</span>
+<span class="px-2 py-0.5 text-[10px] font-eyebrow-accent rounded-full bg-primary-fixed/40 text-on-primary-fixed-variant font-bold">DAPUR</span>
+</div>
+<span class="font-monospace-data text-[12px] text-outline">11:34 WIB</span>
+</div>
+<div class="flex items-baseline justify-between mb-space-xs">
+<div>
+<h4 class="font-headline-sm text-[16px] font-medium text-on-surface">Meja G05</h4>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Gazebo Bambu • 5 menu</p>
+</div>
+<div class="text-right">
+<span class="font-title-editorial text-[16px] font-bold text-on-surface">Rp 412.500</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-xs mt-space-xs px-1 text-[11px] text-primary">
+<span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">soup_kitchen</span> Sedang Disiapkan</span>
+<span class="text-tertiary">Billing Hold</span>
+</div>
+</article>
+</div>
+<!-- Quick Summary Metrics Widget -->
+<div class="bg-surface p-space-sm rounded-lg flex items-center justify-between shadow-sm mt-auto">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]">insights</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Total Unpaid:</span>
+</div>
+<span class="font-monospace-data text-label-md font-bold text-error">Rp 1.130.285 (4)</span>
+</div>
+</section>
+<!-- ==================== CENTER PANEL: SELECTED ORDER INSPECTOR ==================== -->
+<section class="col-span-12 xl:col-span-5 lg:col-span-8 flex flex-col gap-space-md">
+<!-- Order Header Banner -->
+<div class="bg-deep-moss text-surface-bright p-space-lg rounded-xl shadow-md relative overflow-hidden">
+<div class="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-primary/30 to-transparent pointer-events-none"></div>
+<div class="relative z-10 flex flex-wrap items-start justify-between gap-space-sm">
+<div>
+<div class="flex items-center gap-space-sm mb-1">
+<span class="px-space-sm py-0.5 text-[11px] font-eyebrow-accent rounded-full bg-amber-warm text-roasted-earth font-bold tracking-wider uppercase">
+                  Active Bill Inspector
+                </span>
+<span class="font-monospace-data text-monospace-data text-surface-bright/80">Ticket #TS-20260927-001</span>
+</div>
+<h2 class="font-display-hero text-[30px] leading-tight font-bold text-surface-bright flex items-center gap-2">
+                Meja A12 <span class="text-[18px] font-body-md font-normal text-surface-dim">• Kabin Sawah Utara</span>
+</h2>
+<div class="flex items-center gap-space-md text-[13px] text-surface-variant mt-space-xs">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-amber-warm">person</span> Tamu Meja A12 (Family 4 Pax)</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-primary-fixed">verified</span> QR Auto-Validated</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-[11px] font-eyebrow-accent text-surface-dim uppercase">Waktu Pesanan</span>
+<span class="font-monospace-data text-label-md text-amber-warm font-semibold">11:28:14 WIB (18m lalu)</span>
+<div class="mt-2 flex items-center gap-1">
+<span class="px-2 py-0.5 rounded text-[11px] font-label-sm bg-primary text-on-primary">Pax: 4</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-label-sm bg-surface-container-highest/20 text-surface-bright">Pajak PB1: Aktif</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Itemized Food & Beverage Registry (Table-less clean card row styling) -->
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-xs border-b-0">
+<span class="font-eyebrow-accent text-eyebrow-accent uppercase tracking-widest text-tertiary">Rincian Menu Dipesan (3 Varian • 5 Porsi)</span>
+<button class="text-primary hover:text-deep-moss text-[12px] font-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">edit_note</span> Tambah Catatan Meja
+            </button>
+</div>
+<!-- Items Stack -->
+<div class="flex flex-col gap-space-sm divide-y-0">
+<!-- Item 1: Chicken Roaster -->
+<div class="p-space-md bg-surface rounded-xl shadow-sm flex items-start justify-between gap-space-md transition-all hover:bg-rice-paper">
+<div class="flex items-start gap-space-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex-shrink-0 overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Succulent roasted chicken with Indonesian herbs and spices plated on natural banana leaf dish in rustic ambient light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdhb1eF1MPmEGUMT5T9RVtnS4rzv5FdS233o59JrypZxve-OcnDogIsGAown8RJ8v_J9c2Ph7arb3NpzBz0dc8WLJxmoyMYlHvjOe_Fk7pEeNBJ2sfFSzoFbcWicVGEMEN5Sbf-ATYJVOFvFZ9zrkzx6Xc9qg2RM5hRsjgLfqX4w5NlcAMHr8-K1EHKKvWXD7mzsr6BkBcscOWEWfn2R1qZMBzVcH-AfVyaQkusyA6Q6rQvs-8an4p"/>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-[16px] font-bold text-deep-moss">Chicken Roaster Rempah Sawah</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-monospace-data bg-primary-fixed/40 text-on-primary-fixed-variant font-bold">MAKANAN</span>
+</div>
+<span class="text-body-sm text-[12px] text-tertiary">2 porsi × Rp 85.000</span>
+<!-- Special note badge -->
+<div class="mt-1.5 inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-secondary-container/40 text-on-secondary-container text-[11px] font-body-sm">
+<span class="material-symbols-outlined text-[14px] text-secondary">chat</span>
+<span><strong>Catatan:</strong> Sambal matah dipisah, ayam matang empuk buat lansia.</span>
+</div>
+</div>
+</div>
+<div class="text-right flex-shrink-0">
+<span class="font-title-editorial text-[17px] font-bold text-deep-moss block">Rp 170.000</span>
+<span class="text-[11px] font-label-sm text-outline font-normal">KDS: Ready</span>
+</div>
+</div>
+<!-- Item 2: Nasi Liwet -->
+<div class="p-space-md bg-surface rounded-xl shadow-sm flex items-start justify-between gap-space-md transition-all hover:bg-rice-paper">
+<div class="flex items-start gap-space-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex-shrink-0 overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Traditional Sundanese Nasi Liwet rice served in claypot with fried anchovies, lemongrass and petai beans in warm golden atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQspuZ9wY2G3Q7hHUuaRAsc5RrqZQ1Ddw6DlgSCeh5inEI1cSyzLjhPfa6r_aRKNZ5LLVfkZtSYlHTDQaJZyrU0Eh2PCrss4dc3Vn4rObrDWcUBwdoHHhFZCDSSwtBQjHJAmjaiLbIMlnNW52iSWxxHA1PPVWP0FMPg3mCkfMwprBw4w760XuvoH8oCeVfGF9Vsq2fc0lM0Z5rvbTzZwNK11Q543t2ejkg1Bxs-9NZ_LstS2zkg7J2"/>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-[16px] font-bold text-deep-moss">Nasi Liwet Sawah Komplit (Kastrol)</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-monospace-data bg-primary-fixed/40 text-on-primary-fixed-variant font-bold">MAKANAN</span>
+</div>
+<span class="text-body-sm text-[12px] text-tertiary">1 porsi × Rp 45.000</span>
+<p class="text-[11px] text-on-surface-variant mt-0.5">Termasuk lalapan segar ciperna, sambal terasi teruji.</p>
+</div>
+</div>
+<div class="text-right flex-shrink-0">
+<span class="font-title-editorial text-[17px] font-bold text-deep-moss block">Rp 45.000</span>
+<span class="text-[11px] font-label-sm text-outline font-normal">KDS: Ready</span>
+</div>
+</div>
+<!-- Item 3: Es Kelapa Jeruk -->
+<div class="p-space-md bg-surface rounded-xl shadow-sm flex items-start justify-between gap-space-md transition-all hover:bg-rice-paper">
+<div class="flex items-start gap-space-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex-shrink-0 overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Refreshing tall glass of iced fresh young coconut mixed with squeezed kalamansi orange and ice cubes in sunny outdoor restaurant view" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGtN4LTKEEvqk5l3FA1mmrHJamTkolwwlOzymXM98EMznGpJrCij_qTriANbugIOqB6pV0qz1FgMuOPxSB_4Ox0he2kDP1Uyvb38Yu0eDCNGg6PCGkIc5gg7l7Qo0jSbnUCf63Dqzpgzk6XVYM9ep7UOKohWWgQd67AWn22-hFeLwBgyPjyE7mR3a7rV7mJsSCHV0LOQQ_ZNVguRQ1IUDbfXhgy9GVcBrS_1wRkafI3qXCpojLEgwa"/>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-[16px] font-bold text-deep-moss">Es Kelapa Jeruk Segar Ciperna</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-monospace-data bg-secondary-fixed text-on-secondary-fixed font-bold">MINUMAN</span>
+</div>
+<span class="text-body-sm text-[12px] text-tertiary">2 porsi × Rp 18.000</span>
+<p class="text-[11px] text-on-surface-variant mt-0.5">Less sweet (gula aren sedikit dipisah).</p>
+</div>
+</div>
+<div class="text-right flex-shrink-0">
+<span class="font-title-editorial text-[17px] font-bold text-deep-moss block">Rp 36.000</span>
+<span class="text-[11px] font-label-sm text-outline font-normal">Bar: Served</span>
+</div>
+</div>
+</div>
+<!-- Calculation Ledger Breakout -->
+<div class="bg-surface rounded-xl p-space-md shadow-sm flex flex-col gap-2">
+<div class="flex justify-between items-center text-body-sm text-on-surface-variant">
+<span>Subtotal Makanan &amp; Minuman</span>
+<span class="font-monospace-data font-semibold text-on-surface">Rp 251.000</span>
+</div>
+<!-- Promo Applied -->
+<div class="flex justify-between items-center text-body-sm text-primary py-1 px-2 rounded bg-leaf-tint">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">local_offer</span>
+<span class="font-semibold">Diskon Promo Lunch 10% (TS-LUNCH10)</span>
+<span class="text-[10px] font-eyebrow-accent bg-surface px-1.5 py-0.5 rounded text-secondary font-bold">Spv. Rian</span>
+</div>
+<span class="font-monospace-data font-bold">-Rp 25.100</span>
+</div>
+<div class="flex justify-between items-center text-body-sm text-on-surface-variant">
+<span>Dasar Pengenaan Pajak (DPP)</span>
+<span class="font-monospace-data">Rp 225.900</span>
+</div>
+<div class="flex justify-between items-center text-body-sm text-on-surface-variant">
+<span>Resto Tax / Pajak PB1 (10%)</span>
+<span class="font-monospace-data font-medium">Rp 22.590</span>
+</div>
+<div class="flex justify-between items-center text-body-sm text-on-surface-variant">
+<span>Service Charge Hospitality (5%)</span>
+<span class="font-monospace-data font-medium">Rp 11.295</span>
+</div>
+<!-- Grand Total Highlight -->
+<div class="pt-2 mt-1 border-t-0 bg-rice-paper p-space-md rounded-lg flex items-center justify-between">
+<div>
+<span class="font-eyebrow-accent text-eyebrow-accent uppercase tracking-wider text-secondary">Total Tagihan Final</span>
+<p class="text-[11px] text-tertiary">Sudah termasuk PB1 &amp; Service Charge</p>
+</div>
+<div class="text-right">
+<span class="font-display-hero text-[32px] leading-tight font-bold text-deep-moss" id="inspectorTotalValue">Rp 259.785</span>
+</div>
+</div>
+</div>
+<!-- Bottom Action strip for Inspector -->
+<div class="flex items-center gap-space-sm pt-space-xs">
+<button class="flex-1 py-space-sm px-space-md rounded-lg bg-surface text-deep-moss hover:bg-surface-container font-label-md font-semibold text-center flex items-center justify-center gap-2 shadow-sm transition-colors">
+<span class="material-symbols-outlined text-[18px]">print</span> Cetak Struk Dapur / Bill Tamu
+            </button>
+<button class="py-space-sm px-space-md rounded-lg bg-surface-container text-tertiary hover:bg-error-container hover:text-on-error-container font-label-md font-semibold text-center flex items-center justify-center gap-1 shadow-sm transition-colors">
+<span class="material-symbols-outlined text-[18px]">cancel</span> Void Menu
+            </button>
+</div>
+</div>
+</section>
+<!-- ==================== RIGHT PANEL: PAYMENT EXECUTION & SETTLEMENT ==================== -->
+<section class="col-span-12 xl:col-span-4 lg:col-span-12 flex flex-col gap-space-md">
+<div class="bg-surface-container-low p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
+<!-- Split Bill Toggle Control -->
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-[18px] font-bold text-deep-moss">Eksekusi Pembayaran</span>
+<div class="inline-flex p-1 bg-surface-container rounded-lg text-[12px] font-label-sm font-semibold">
+<button class="px-2.5 py-1 rounded bg-deep-moss text-surface-bright shadow-sm">Single Bill</button>
+<button class="px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface">Split Item</button>
+<button class="px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface">Custom Pax</button>
+</div>
+</div>
+<!-- Payment Channel Selector Grid -->
+<div class="grid grid-cols-2 gap-space-xs">
+<!-- Cash (Active default) -->
+<button class="p-space-md rounded-xl bg-primary-container text-on-primary shadow-md flex items-center gap-space-sm transition-all text-left" id="methodCash" onclick="setPaymentMethod('cash')">
+<div class="w-10 h-10 rounded-lg bg-surface/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">payments</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md font-bold leading-tight">Tunai (Cash)</span>
+<span class="text-[11px] text-on-primary-container">Laci Otomatis</span>
+</div>
+</button>
+<!-- QRIS Dinamis -->
+<button class="p-space-md rounded-xl bg-surface hover:bg-rice-paper text-on-surface shadow-sm flex items-center gap-space-sm transition-all text-left" id="methodQRIS" onclick="setPaymentMethod('qris')">
+<div class="w-10 h-10 rounded-lg bg-amber-warm/30 text-roasted-earth flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">qr_code_scanner</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md font-bold leading-tight">QRIS Dinamis</span>
+<span class="text-[11px] text-on-surface-variant">BCA / Mandiri / GoPay</span>
+</div>
+</button>
+<!-- Mesin EDC -->
+<button class="p-space-md rounded-xl bg-surface hover:bg-rice-paper text-on-surface shadow-sm flex items-center gap-space-sm transition-all text-left" id="methodEDC" onclick="setPaymentMethod('edc')">
+<div class="w-10 h-10 rounded-lg bg-secondary-container/50 text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">credit_card</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md font-bold leading-tight">Kartu EDC</span>
+<span class="text-[11px] text-on-surface-variant">Debit / Credit Mandiri</span>
+</div>
+</button>
+<!-- E-Wallet / Transfer -->
+<button class="p-space-md rounded-xl bg-surface hover:bg-rice-paper text-on-surface shadow-sm flex items-center gap-space-sm transition-all text-left" id="methodWallet" onclick="setPaymentMethod('wallet')">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high text-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">account_balance</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md font-bold leading-tight">Transfer Bank</span>
+<span class="text-[11px] text-on-surface-variant">BCA VA / Settlement</span>
+</div>
+</button>
+</div>
+<!-- DYNAMIC PAYMENT WORKSPACE: CASH TENDERED -->
+<div class="flex flex-col gap-space-md bg-surface p-space-md rounded-xl shadow-sm" id="cashWorkspace">
+<div class="flex items-center justify-between">
+<label class="font-eyebrow-accent text-eyebrow-accent uppercase tracking-wider text-tertiary">Uang Diterima Pelanggan (Tendered)</label>
+<span class="text-[11px] font-monospace-data text-secondary">Tagihan: Rp 259.785</span>
+</div>
+<!-- Preset Buttons -->
+<div class="grid grid-cols-3 gap-space-xs">
+<button class="py-space-xs px-1 rounded-lg bg-surface-container hover:bg-surface-container-high font-monospace-data text-[12px] font-bold text-deep-moss transition-colors" onclick="setNominal(260000)">
+                [Pas] 260.000
+              </button>
+<button class="py-space-xs px-1 rounded-lg bg-surface-container hover:bg-surface-container-high font-monospace-data text-[12px] font-bold text-deep-moss transition-colors" onclick="setNominal(300000)">
+                Rp 300.000
+              </button>
+<button class="py-space-xs px-1 rounded-lg bg-surface-container hover:bg-surface-container-high font-monospace-data text-[12px] font-bold text-deep-moss transition-colors" onclick="setNominal(500000)">
+                Rp 500.000
+              </button>
+</div>
+<!-- Big Input -->
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 font-title-editorial text-[20px] font-bold text-secondary">Rp</span>
+<input class="w-full pl-12 pr-4 py-space-sm rounded-lg bg-rice-paper text-deep-moss font-monospace-data text-[24px] font-bold outline-none shadow-inner" id="cashInput" oninput="calcChange()" type="text" value="300.000"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-error text-[18px]" onclick="clearNominal()">
+<span class="material-symbols-outlined text-[20px]">backspace</span>
+</button>
+</div>
+<!-- Auto Change Calculator Display -->
+<div class="p-space-md rounded-xl bg-surface-container flex items-center justify-between">
+<div>
+<span class="font-eyebrow-accent text-eyebrow-accent uppercase tracking-wider text-secondary">Kembalian Otomatis</span>
+<span class="block text-[11px] text-tertiary">Uang pecahan kasir aman</span>
+</div>
+<div class="text-right">
+<span class="font-monospace-data text-[26px] font-bold text-primary" id="cashChange">Rp 40.215</span>
+</div>
+</div>
+<!-- Quick Denomination breakdown hint -->
+<div class="flex items-center justify-between text-[11px] font-monospace-data text-on-surface-variant px-1">
+<span>Saran pecahan kasir:</span>
+<span class="font-bold text-deep-moss">2x 20k + 1x 200 (bulatkan)</span>
+</div>
+</div>
+<!-- DYNAMIC PAYMENT WORKSPACE: QRIS PREVIEW (Hidden by default, shown on switch) -->
+<div class="hidden flex-col gap-space-sm bg-surface p-space-md rounded-xl shadow-sm text-center" id="qrisWorkspace">
+<div class="flex items-center justify-between pb-1">
+<span class="font-eyebrow-accent text-[11px] text-tertiary uppercase">QRIS Settlement Gateway</span>
+<div class="flex items-center gap-1 font-monospace-data text-[12px] text-error font-bold">
+<span class="material-symbols-outlined text-[16px]">timer</span>
+<span id="qrisTimer">04:45</span>
+</div>
+</div>
+<!-- QR Simulated Canvas Container -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl mx-auto w-48 h-48 flex flex-col items-center justify-center relative shadow-sm">
+<!-- Inline SVG Artistic QR Mockup -->
+<svg class="w-40 h-40" fill="currentColor" viewbox="0 0 100 100">
+<path d="M5,5 h30 v30 h-30 z M10,10 v20 h20 v-20 z M15,15 h10 v10 h-10 z" fill="#183A1D"></path>
+<path d="M65,5 h30 v30 h-30 z M70,10 v20 h20 v-20 z M75,15 h10 v10 h-10 z" fill="#183A1D"></path>
+<path d="M5,65 h30 v30 h-30 z M10,70 v20 h20 v-20 z M15,75 h10 v10 h-10 z" fill="#183A1D"></path>
+<rect fill="#12521e" height="8" width="8" x="42" y="10"></rect>
+<rect fill="#12521e" height="12" width="6" x="52" y="18"></rect>
+<rect fill="#12521e" height="6" width="12" x="40" y="28"></rect>
+<rect fill="#12521e" height="6" width="12" x="15" y="42"></rect>
+<rect fill="#12521e" height="8" width="8" x="25" y="52"></rect>
+<rect fill="#835418" height="10" width="10" x="45" y="45"></rect>
+<rect fill="#12521e" height="14" width="8" x="60" y="42"></rect>
+<rect fill="#12521e" height="6" width="12" x="75" y="45"></rect>
+<rect fill="#12521e" height="12" width="8" x="45" y="65"></rect>
+<rect fill="#12521e" height="8" width="14" x="58" y="68"></rect>
+<rect fill="#12521e" height="10" width="10" x="75" y="65"></rect>
+<rect fill="#12521e" height="8" width="15" x="65" y="82"></rect>
+<rect fill="#12521e" height="6" width="12" x="45" y="85"></rect>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<span class="px-1.5 py-0.5 rounded bg-surface text-[10px] font-bold text-deep-moss shadow-sm">TS-001</span>
+</div>
+</div>
+<div class="text-[12px] text-on-surface-variant font-body-sm">
+<p class="font-semibold text-deep-moss">NMID: ID1020261947264</p>
+<p class="text-[11px] text-tertiary">Customer facing screen menampilkan kode ini</p>
+</div>
+<div class="flex items-center justify-center gap-2 p-2 rounded bg-leaf-tint text-primary text-[12px] font-medium">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+<span>Menunggu Konfirmasi Pembayaran Server Bank...</span>
+</div>
+</div>
+<!-- PRIMARY ACTION BUTTON: COMPLETE & PRINT -->
+<div class="flex flex-col gap-space-xs mt-space-xs">
+<button class="w-full py-space-md px-space-lg rounded-xl bg-primary hover:bg-deep-moss text-surface-bright font-headline-sm text-[18px] font-bold flex items-center justify-center gap-space-sm shadow-md transition-all hover:scale-[1.01] active:scale-[0.99]" id="btnPayFinal" onclick="triggerSettlementSuccess()">
+<span class="material-symbols-outlined text-[24px]">receipt_long</span>
+<span>Bayar &amp; Cetak Struk (F3 / Enter)</span>
+</button>
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="py-space-sm px-space-xs rounded-lg bg-surface hover:bg-rice-paper text-deep-moss font-label-sm font-semibold flex items-center justify-center gap-1 shadow-sm transition-colors">
+<span class="material-symbols-outlined text-[16px]">visibility</span> Preview Struk
+              </button>
+<button class="py-space-sm px-space-xs rounded-lg bg-surface hover:bg-error-container hover:text-on-error-container text-tertiary font-label-sm font-semibold flex items-center justify-center gap-1 shadow-sm transition-colors">
+<span class="material-symbols-outlined text-[16px]">delete_forever</span> Batal / Void (Spv)
+              </button>
+</div>
+</div>
+</div>
+<!-- AUTHENTIC THERMAL SLIP DOCK (Collapsible preview to ensure speed) -->
+<div class="bg-surface-container-low p-space-md rounded-xl shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between text-tertiary">
+<span class="font-eyebrow-accent text-[11px] uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">local_printshop</span> Thermal 80mm Output
+            </span>
+<span class="font-monospace-data text-[11px] text-primary">Printer EPSON: READY</span>
+</div>
+<!-- Thermal Slip Container mimicking paper roll -->
+<div class="bg-surface-container-lowest text-on-surface p-space-md rounded-lg font-monospace-data text-[11px] leading-tight shadow-inner flex flex-col gap-1.5 select-all">
+<div class="text-center font-bold text-[13px] tracking-widest uppercase">
+              WARUNG TEPI SAWAH
+            </div>
+<div class="text-center text-[10px] text-on-surface-variant pb-1">
+              Jl. Raya Ciperna No. 88, Cirebon<br/>Telp: (0231) 882910
+            </div>
+<div class="py-1 flex justify-between text-[10px]">
+<span>27/09/26 11:32 WIB</span>
+<span>Kasir: Sigit</span>
+</div>
+<div class="flex justify-between text-[10px]">
+<span>No: #TS-20260927-001</span>
+<span>Meja: A12 (Kabin)</span>
+</div>
+<!-- Items mini roll -->
+<div class="py-1.5 flex flex-col gap-1">
+<div class="flex justify-between">
+<span>Chicken Roaster (2x)</span>
+<span>170.000</span>
+</div>
+<div class="text-[10px] text-on-surface-variant italic pl-2">- Sambal matah dipisah</div>
+<div class="flex justify-between">
+<span>Nasi Liwet Komplit (1x)</span>
+<span>45.000</span>
+</div>
+<div class="flex justify-between">
+<span>Es Kelapa Jeruk (2x)</span>
+<span>36.000</span>
+</div>
+</div>
+<!-- Totals mini roll -->
+<div class="py-1 flex flex-col gap-0.5">
+<div class="flex justify-between"><span>Subtotal:</span><span>251.000</span></div>
+<div class="flex justify-between text-primary font-bold"><span>Disc Promo 10%:</span><span>-25.100</span></div>
+<div class="flex justify-between"><span>PB1 (10%):</span><span>22.590</span></div>
+<div class="flex justify-between"><span>Service (5%):</span><span>11.295</span></div>
+<div class="flex justify-between font-bold text-[12px] pt-1 text-deep-moss">
+<span>TOTAL AKHIR:</span>
+<span>Rp 259.785</span>
+</div>
+<div class="flex justify-between text-[10px] text-on-surface-variant">
+<span>Tendered (CASH):</span>
+<span>300.000</span>
+</div>
+<div class="flex justify-between font-bold text-[11px]">
+<span>KEMBALI:</span>
+<span>Rp 40.215</span>
+</div>
+</div>
+<div class="text-center text-[10px] pt-2 text-on-surface-variant">
+              Maturnuwun - Hatur Nuhun.<br/>
+              Instagram: @tepisawah.ciperna
+            </div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Inline Micro-interactions Script -->
+<script>
+    const grandTotal = 259785;
+
+    function setPaymentMethod(method) {
+      const btnCash = document.getElementById('methodCash');
+      const btnQRIS = document.getElementById('methodQRIS');
+      const btnEDC = document.getElementById('methodEDC');
+      const btnWallet = document.getElementById('methodWallet');
+
+      const cashWs = document.getElementById('cashWorkspace');
+      const qrisWs = document.getElementById('qrisWorkspace');
+
+      // Reset styles
+      [btnCash, btnQRIS, btnEDC, btnWallet].forEach(btn => {
+        btn.className = "p-space-md rounded-xl bg-surface hover:bg-rice-paper text-on-surface shadow-sm flex items-center gap-space-sm transition-all text-left";
+      });
+
+      if (method === 'cash') {
+        btnCash.className = "p-space-md rounded-xl bg-primary-container text-on-primary shadow-md flex items-center gap-space-sm transition-all text-left";
+        cashWs.classList.remove('hidden');
+        qrisWs.classList.add('hidden');
+      } else if (method === 'qris') {
+        btnQRIS.className = "p-space-md rounded-xl bg-primary-container text-on-primary shadow-md flex items-center gap-space-sm transition-all text-left";
+        cashWs.classList.add('hidden');
+        qrisWs.classList.remove('hidden');
+      } else if (method === 'edc') {
+        btnEDC.className = "p-space-md rounded-xl bg-primary-container text-on-primary shadow-md flex items-center gap-space-sm transition-all text-left";
+        cashWs.classList.remove('hidden');
+        qrisWs.classList.add('hidden');
+      } else {
+        btnWallet.className = "p-space-md rounded-xl bg-primary-container text-on-primary shadow-md flex items-center gap-space-sm transition-all text-left";
+        cashWs.classList.remove('hidden');
+        qrisWs.classList.add('hidden');
+      }
+    }
+
+    function setNominal(amount) {
+      document.getElementById('cashInput').value = amount.toLocaleString('id-ID');
+      calcChange();
+    }
+
+    function clearNominal() {
+      document.getElementById('cashInput').value = '';
+      document.getElementById('cashChange').innerText = 'Rp 0';
+    }
+
+    function calcChange() {
+      const rawVal = document.getElementById('cashInput').value.replace(/\./g, '').replace(/,/g, '');
+      const inputVal = parseInt(rawVal, 10);
+      const changeEl = document.getElementById('cashChange');
+
+      if (isNaN(inputVal)) {
+        changeEl.innerText = 'Rp 0';
+        return;
+      }
+
+      const diff = inputVal - grandTotal;
+      if (diff >= 0) {
+        changeEl.innerText = 'Rp ' + diff.toLocaleString('id-ID');
+        changeEl.className = 'font-monospace-data text-[26px] font-bold text-primary';
+      } else {
+        changeEl.innerText = '-Rp ' + Math.abs(diff).toLocaleString('id-ID');
+        changeEl.className = 'font-monospace-data text-[26px] font-bold text-error';
+      }
+    }
+
+    function triggerSettlementSuccess() {
+      const btn = document.getElementById('btnPayFinal');
+      const originalHtml = btn.innerHTML;
+      btn.innerHTML = `<span class="material-symbols-outlined text-[24px] animate-spin">refresh</span> <span>Mencetak Struk Kasir &amp; Sinkronisasi...</span>`;
+      btn.classList.remove('bg-primary');
+      btn.classList.add('bg-deep-moss');
+
+      setTimeout(() => {
+        btn.innerHTML = `<span class="material-symbols-outlined text-[24px]">check_circle</span> <span>Pembayaran Sukses! (Laci Terbuka)</span>`;
+        btn.classList.remove('bg-deep-moss');
+        btn.classList.add('bg-primary-container');
+        setTimeout(() => {
+          btn.innerHTML = originalHtml;
+          btn.classList.remove('bg-primary-container');
+          btn.classList.add('bg-primary');
+        }, 2200);
+      }, 1000);
+    }
+
+    // Global Key Listener for Enterprise POS Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'F1') {
+        e.preventDefault();
+        document.getElementById('orderSearchInput').focus();
+      } else if (e.key === 'F3') {
+        e.preventDefault();
+        triggerSettlementSuccess();
+      }
+    });
+  </script>
+</div></main></div></body></html>

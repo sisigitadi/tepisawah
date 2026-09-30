@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+
+<html lang="id"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"on-surface-variant":"#41493f","on-secondary":"#ffffff","on-tertiary":"#ffffff","inverse-primary":"#95d693","error-container":"#ffdad6","on-tertiary-fixed":"#341100","on-tertiary-container":"#ffcfb8","inverse-on-surface":"#f5f1d8","surface-container":"#f2efd5","leaf-tint":"rgba(46, 107, 52, 0.08)","surface-bright":"#fefae0","tertiary-fixed-dim":"#fcb794","secondary":"#835418","secondary-fixed":"#ffdcbb","surface-variant":"#e7e3ca","on-error-container":"#93000a","rice-paper":"#F8F4DB","primary-container":"#2e6b34","primary-fixed":"#b0f3ad","on-primary-container":"#a7e9a5","primary":"#12521e","on-secondary-fixed":"#2b1700","on-primary-fixed":"#002106","on-secondary-container":"#784a0d","surface-tint":"#2e6b34","on-error":"#ffffff","tertiary-container":"#865235","secondary-container":"#fdbd77","on-surface":"#1d1c0d","error":"#ba1a1a","on-tertiary-fixed-variant":"#6a3b20","on-secondary-fixed-variant":"#673d00","on-primary":"#ffffff","inverse-surface":"#323120","on-background":"#1d1c0d","deep-moss":"#183A1D","surface-container-highest":"#e7e3ca","secondary-fixed-dim":"#faba75","primary-fixed-dim":"#95d693","golden-sheen":"rgba(221, 161, 94, 0.25)","surface-container-low":"#f8f4db","roasted-earth":"#3D1F10","tertiary":"#6a3b20","outline":"#71796e","surface":"#fefae0","outline-variant":"#c0c9bc","background":"#fefae0","amber-warm":"#F3C644","surface-container-high":"#ede9cf","surface-container-lowest":"#ffffff","tertiary-fixed":"#ffdbca","surface-dim":"#dedbc2","on-primary-fixed-variant":"#12521e"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-md":"1rem","gutter":"1.5rem","gutter-sm":"1rem","margin":"1.5rem","space-lg":"1.5rem","margin-mobile":"1rem","space-sm":"0.5rem","gutter-lg":"2rem","space-xxl":"4rem","margin-desktop":"3rem","space-xl":"2.5rem","space-xs":"0.25rem"},"fontFamily":{"body-lg":["Inter"],"headline-md":["Playfair Display"],"display-hero-mobile":["Playfair Display"],"body-md":["Inter"],"body-sm":["Inter"],"title-editorial":["Playfair Display"],"display-hero":["Playfair Display"],"headline-lg":["Playfair Display"],"headline-lg-mobile":["Playfair Display"],"eyebrow-accent":["Inter"],"label-md":["Inter"],"label-sm":["Inter"],"monospace-data":["monospace"],"headline-sm":["Playfair Display"]},"fontSize":{"body-lg":["18px",{"lineHeight":"28px","fontWeight":"400"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"600"}],"display-hero-mobile":["32px",{"lineHeight":"40px","letterSpacing":"-0.01em","fontWeight":"700"}],"body-md":["15px",{"lineHeight":"24px","fontWeight":"400"}],"body-sm":["13px",{"lineHeight":"20px","fontWeight":"400"}],"title-editorial":["18px",{"lineHeight":"26px","fontWeight":"500"}],"display-hero":["56px",{"lineHeight":"64px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-lg":["36px",{"lineHeight":"44px","letterSpacing":"-0.01em","fontWeight":"700"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","fontWeight":"700"}],"eyebrow-accent":["11px",{"lineHeight":"14px","letterSpacing":"0.18em","fontWeight":"700"}],"label-md":["14px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"600"}],"label-sm":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"monospace-data":["13px",{"lineHeight":"18px","fontWeight":"500"}],"headline-sm":["20px",{"lineHeight":"28px","fontWeight":"600"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low z-50 flex flex-col shadow-[0_1px_8px_rgba(0,0,0,0.04)] overflow-y-auto"><div class="h-16 px-space-md flex items-center gap-space-sm bg-surface-container-low"><img alt="Logo Tepi Sawah.png" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-embedded-images/AG143WPj-xRj_k4550Qf88m6Qk03aI669E1F0A6Qo6N9aBqM=s0"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-deep-moss tracking-tight leading-none">Tepi Sawah</span><span class="font-eyebrow-accent text-eyebrow-accent text-secondary tracking-widest uppercase mt-0.5">Admin &amp; Console</span></div></div><nav class="flex-1 px-space-sm py-space-md space-y-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-bold"><div class="px-space-sm pb-space-xs"><span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase tracking-widest">Ringkasan</span></div><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="dashboard-overview" href="#"><span class="material-symbols-outlined text-[20px]">space_dashboard</span><span class="font-label-md text-label-md">Dashboard Operasional</span></a><div class="pt-space-md px-space-sm pb-space-xs"><span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase tracking-widest">Operasional Menu &amp; Meja</span></div><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg transition-colors bg-primary-container text-on-primary-container font-bold" data-path="katalog-menu-terpusat" href="#"><span class="material-symbols-outlined text-[20px]">restaurant_menu</span><span class="font-label-md text-label-md">Katalog Menu Terpusat</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="kategori-menu" href="#"><span class="material-symbols-outlined text-[20px]">category</span><span class="font-label-md text-label-md">Kategori Menu</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="grup-modifier" href="#"><span class="material-symbols-outlined text-[20px]">tune</span><span class="font-label-md text-label-md">Grup Modifier</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="denah-meja-area" href="#"><span class="material-symbols-outlined text-[20px]">table_restaurant</span><span class="font-label-md text-label-md">Denah Meja &amp; Area</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="kelola-qr-meja-digital" href="#"><span class="material-symbols-outlined text-[20px]">qr_code_2</span><span class="font-label-md text-label-md">Kelola QR Meja Digital</span></a><div class="pt-space-md px-space-sm pb-space-xs"><span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase tracking-widest">Akses &amp; Karyawan</span></div><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="pengguna-user-list" href="#"><span class="material-symbols-outlined text-[20px]">badge</span><span class="font-label-md text-label-md">Daftar Pengguna / Staf</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="peran-hak-akses-role-matrix" href="#"><span class="material-symbols-outlined text-[20px]">admin_panel_settings</span><span class="font-label-md text-label-md">Peran &amp; Hak Akses (Matrix)</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="izin-supervisor" href="#"><span class="material-symbols-outlined text-[20px]">verified_user</span><span class="font-label-md text-label-md">Izin Supervisor</span></a><div class="pt-space-md px-space-sm pb-space-xs"><span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase tracking-widest">Konfigurasi Sistem</span></div><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="profil-restoran-jam-buka" href="#"><span class="material-symbols-outlined text-[20px]">storefront</span><span class="font-label-md text-label-md">Profil &amp; Jam Operasional</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="alur-pemesanan-qr-kasir" href="#"><span class="material-symbols-outlined text-[20px]">point_of_sale</span><span class="font-label-md text-label-md">Alur Pemesanan &amp; Kasir</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="pengaturan-pembayaran-pajak-pb1" href="#"><span class="material-symbols-outlined text-[20px]">receipt_long</span><span class="font-label-md text-label-md">Pembayaran &amp; Pajak PB1</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="sla-dapur-panggilan-waiter" href="#"><span class="material-symbols-outlined text-[20px]">notifications_active</span><span class="font-label-md text-label-md">SLA Dapur &amp; Waiter Call</span></a><div class="pt-space-md px-space-sm pb-space-xs"><span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase tracking-widest">Keamanan &amp; Audit</span></div><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="log-aktivitas-audit-trail" href="#"><span class="material-symbols-outlined text-[20px]">history_toggle_off</span><span class="font-label-md text-label-md">Log Aktivitas &amp; Audit Trail</span></a></nav><div class="p-space-md bg-surface-container-high m-space-sm rounded-xl"><div class="flex items-center justify-between mb-space-xs"><span class="font-label-sm text-label-sm text-roasted-earth font-semibold">Ciperna Cloud POS</span><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span></div><p class="font-body-sm text-body-sm text-on-surface-variant">v2.4.8 - Server Terhubung Stabil</p></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 px-gutter flex items-center justify-between"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs bg-surface-container px-space-sm py-1 rounded-full"><span class="w-2.5 h-2.5 rounded-full bg-primary"></span><span class="font-label-sm text-label-sm font-semibold text-deep-moss uppercase tracking-wider">Restoran Buka / Online</span></div><div class="hidden lg:flex items-center gap-space-xs text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">schedule</span><span class="font-body-sm text-body-sm">Jam Operasional: <span class="font-monospace-data text-monospace-data text-roasted-earth font-semibold">10:00 - 22:00 WIB</span></span></div><div class="hidden xl:flex items-center gap-space-xs text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">sync_alt</span><span class="font-body-sm text-body-sm">Shift: <span class="font-label-sm text-label-sm font-semibold text-deep-moss">Siang (Ahmad / Kasir Utama)</span></span></div></div><div class="flex items-center gap-space-md"><button class="p-space-xs rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors relative" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span></button><div class="flex items-center gap-space-sm pl-space-sm border-l border-outline-variant/30"><div class="text-right hidden sm:block"><div class="font-label-md text-label-md text-on-surface leading-tight">Bapak Hendra</div><div class="font-body-sm text-body-sm text-secondary leading-tight">Owner / Master Admin</div></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="relative pt-16 bg-surface w-full min-h-screen px-gutter py-space-lg"><div class="flex flex-col w-full">
+<!-- Top Real-time Synchronization Broadcast Banner -->
+<div class="mb-space-lg bg-surface-container-high rounded-xl p-space-md shadow-sm relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="absolute -right-8 -bottom-8 w-44 h-44 bg-primary-fixed/30 rounded-full blur-2xl pointer-events-none"></div>
+<div class="flex items-start md:items-center gap-space-sm z-10">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[22px]">cloud_sync</span>
+</div>
+<div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-md text-label-md text-deep-moss">Single Source of Truth Catalog Engine</span>
+<span class="inline-flex items-center px-space-xs py-0.5 rounded-full text-[10px] font-bold bg-primary text-on-primary tracking-wider uppercase">Active Sync</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+          Perubahan menu dan ketersediaan langsung terupdate ke seluruh terminal tanpa perlu restart sistem (Public Web, QR Meja, Waiter App, Cashier POS, dan Kitchen KDS).
+        </p>
+</div>
+</div>
+<div class="flex items-center gap-space-xs shrink-0 z-10 self-end md:self-center">
+<div class="flex -space-x-1.5 overflow-hidden p-1 bg-surface-container rounded-full">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center text-[11px] font-bold" title="Customer QR Meja">QR</div>
+<div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-[11px] font-bold" title="Waiter Mobile">W</div>
+<div class="w-6 h-6 rounded-full bg-deep-moss text-surface-bright flex items-center justify-center text-[11px] font-bold" title="Cashier POS">POS</div>
+<div class="w-6 h-6 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center text-[11px] font-bold" title="Kitchen Display System">KDS</div>
+</div>
+<span class="font-monospace-data text-monospace-data text-deep-moss text-xs font-semibold px-space-xs">5 Node Aktif</span>
+</div>
+</div>
+<!-- Snapshot Integrity Explanatory Bar -->
+<div class="mb-space-lg bg-surface-container-low rounded-lg p-space-sm flex items-center justify-between gap-space-sm shadow-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]">verified</span>
+<span class="font-label-sm text-label-sm text-roasted-earth">Prinsip Order Snapshot Integrity Aktif:</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Penyesuaian nominal harga katalog tidak akan mengubah histori transaksi laporan lampau.</span>
+</div>
+<span class="hidden sm:inline-block font-monospace-data text-monospace-data text-secondary text-xs">Immutable-Audit v2.1</span>
+</div>
+<!-- Action Control Header & Filtering Bar -->
+<div class="mb-space-lg flex flex-col xl:flex-row xl:items-center justify-between gap-space-md">
+<!-- Search & Quick Filters -->
+<div class="flex flex-wrap items-center gap-space-sm flex-1">
+<div class="relative w-full sm:w-72">
+<span class="material-symbols-outlined absolute left-space-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full pl-9 pr-space-sm py-2 rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm focus:outline-none focus:bg-surface-container-lowest focus:shadow-md transition-all placeholder:text-outline" id="searchInput" placeholder="Cari nama menu, station, atau SKU..." type="text"/>
+</div>
+<!-- Category Filter Pills -->
+<div class="flex items-center gap-1.5 overflow-x-auto py-1">
+<button class="category-btn px-space-sm py-1.5 rounded-full font-label-sm text-label-sm bg-primary text-on-primary shadow-sm transition-colors whitespace-nowrap" onclick="filterCategory('Semua', this)">Semua (6)</button>
+<button class="category-btn px-space-sm py-1.5 rounded-full font-label-sm text-label-sm bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors whitespace-nowrap" onclick="filterCategory('Makanan Utama', this)">Makanan Utama (3)</button>
+<button class="category-btn px-space-sm py-1.5 rounded-full font-label-sm text-label-sm bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors whitespace-nowrap" onclick="filterCategory('Sayur &amp; Sup', this)">Sayur &amp; Sup (1)</button>
+<button class="category-btn px-space-sm py-1.5 rounded-full font-label-sm text-label-sm bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors whitespace-nowrap" onclick="filterCategory('Minuman &amp; Kopi', this)">Minuman &amp; Kopi (2)</button>
+<button class="category-btn px-space-sm py-1.5 rounded-full font-label-sm text-label-sm bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors whitespace-nowrap" onclick="filterCategory('Lauk Pendamping', this)">Lauk Pendamping (0)</button>
+</div>
+</div>
+<!-- Right Primary Controls -->
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="flex items-center gap-space-xs px-space-sm py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-deep-moss font-label-md text-label-md transition-all" onclick="toggleModifierModal(true)">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+<span>Kelola Grup Modifier</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-2 rounded-lg bg-primary hover:bg-deep-moss text-on-primary font-label-md text-label-md shadow-md hover:-translate-y-0.5 transition-all" onclick="openProductDrawer('new')">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span>+ Tambah Menu Baru</span>
+</button>
+</div>
+</div>
+<!-- Operational Stat Cards Overview -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md mb-space-lg">
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-sm flex items-center justify-between">
+<div>
+<span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase">Menu Terdaftar</span>
+<div class="font-headline-md text-headline-md text-deep-moss mt-0.5">6 SKU</div>
+<span class="font-body-sm text-body-sm text-secondary">3 Kategori Aktif</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[26px]">restaurant</span>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-sm flex items-center justify-between">
+<div>
+<span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase">Siap Disajikan</span>
+<div class="font-headline-md text-headline-md text-primary mt-0.5">5 Item</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Live di POS &amp; QR Meja</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-primary-fixed/40 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[26px]">check_circle</span>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-sm flex items-center justify-between">
+<div>
+<span class="font-eyebrow-accent text-eyebrow-accent text-secondary uppercase">Sold Out Sementara</span>
+<div class="font-headline-md text-headline-md text-error mt-0.5">1 Item</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Stok harian habis</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-error-container/60 flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-[26px]">block</span>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-sm flex items-center justify-between">
+<div>
+<span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase">Kitchen Stations</span>
+<div class="font-headline-md text-headline-md text-roasted-earth mt-0.5">3 KDS</div>
+<span class="font-body-sm text-body-sm text-secondary">Grill, Saung, Bar Minuman</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-secondary-fixed/50 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[26px]">skillet</span>
+</div>
+</div>
+</div>
+<!-- Central Product Table Canvas -->
+<div class="bg-surface-container-lowest rounded-xl shadow-md overflow-hidden flex flex-col mb-space-xxl">
+<!-- View Switcher & Table Metadata -->
+<div class="p-space-md bg-surface-container-low flex items-center justify-between flex-wrap gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<span class="font-title-editorial text-title-editorial text-deep-moss">Daftar Katalog Produk</span>
+<span class="text-xs px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-monospace-data" id="itemCountDisplay">6 Menu Ditampilkan</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="p-1.5 rounded-lg bg-surface-container text-deep-moss font-semibold hover:bg-surface-container-high transition-colors" id="viewTableBtn" onclick="switchView('table')" title="Table View">
+<span class="material-symbols-outlined text-[20px]">table_rows</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors" id="viewGridBtn" onclick="switchView('grid')" title="Grid Card View">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+</button>
+</div>
+</div>
+<!-- Table View Container -->
+<div class="overflow-x-auto w-full" id="tableViewContainer">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container text-on-surface-variant font-eyebrow-accent text-eyebrow-accent uppercase tracking-wider">
+<tr>
+<th class="py-space-sm px-space-md">Menu / Hidangan</th>
+<th class="py-space-sm px-space-md">Kategori</th>
+<th class="py-space-sm px-space-md">Harga POS</th>
+<th class="py-space-sm px-space-md">KDS Station</th>
+<th class="py-space-sm px-space-md">Modifier Group</th>
+<th class="py-space-sm px-space-md text-center">Status Terminal</th>
+<th class="py-space-sm px-space-md text-right">Aksi Terpadu</th>
+</tr>
+</thead>
+<tbody class="divide-y-0 text-on-surface" id="catalogTableBody">
+<!-- Item 1: Chicken Roaster -->
+<tr class="menu-row bg-surface-container-lowest hover:bg-surface-container-low/60 transition-colors" data-category="Makanan Utama" data-id="1" data-status="available">
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<img class="w-14 h-14 rounded-xl object-cover shrink-0 shadow-sm" data-alt="A plate of traditional Indonesian roasted chicken with aromatic yellow spices garnished with fresh lemon basil and sliced chili, warm earth ceramic plate, natural sunny restaurant lighting, professional food photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAm__tgfks5bOFWr9P1iQtWnvTKPt9bj_nyUL2f6JQ3xgLW29dgL2FjxZvdmw-zcQyqNmfgFUsekeusa1hQLnJEkE4UsxcQixgAYYe5FFgubOVdvx1TyhNVC5Qi-Jz8v1RRSJRFtF2A8OvQI7doXG5_AZXvMiKshzQnxE7K0twg-CvmgbYRBfZGFpY3Hn-weT-tuPO5eJCmcEfT6gb9D6XRkk_g0ZuSfbiUcg2Jd3b2tQWdnpgzx3X"/>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-deep-moss text-base leading-tight">Chicken Roaster Rempah Sawah</span>
+<span class="font-monospace-data text-monospace-data text-secondary text-xs mt-0.5">SKU-CKN-01 • Best Seller</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded-full text-xs font-semibold bg-surface-container text-on-surface-variant">Makanan Utama</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-monospace-data text-monospace-data font-bold text-roasted-earth">Rp 85.000</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">local_fire_department</span>
+<span class="font-body-sm text-body-sm font-medium text-deep-moss">Grill 1</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-wrap gap-1">
+<span class="px-2 py-0.5 rounded-md bg-surface-container text-[11px] font-medium text-on-surface-variant">Tingkat Pedas</span>
+<span class="px-2 py-0.5 rounded-md bg-surface-container text-[11px] font-medium text-on-surface-variant">Pilihan Sambal</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-center">
+<button class="status-btn inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full text-xs font-semibold bg-primary-fixed/40 text-primary hover:bg-primary-fixed/80 transition-all cursor-pointer" onclick="toggleAvailability(1)">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span>Tersedia (Ready)</span>
+</button>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-space-xs">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-deep-moss hover:bg-surface-container transition-colors" onclick="openProductDrawer('edit', 1)" title="Edit Menu">
+<span class="material-symbols-outlined text-[18px]">edit_square</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container transition-colors" onclick="toggleAvailability(1)" title="Ubah Status Ketersediaan">
+<span class="material-symbols-outlined text-[18px]">toggle_on</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors" onclick="archiveProduct(1)" title="Arsipkan">
+<span class="material-symbols-outlined text-[18px]">archive</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Item 2: Nasi Liwet Kastrol -->
+<tr class="menu-row bg-surface-container-low/20 hover:bg-surface-container-low/60 transition-colors" data-category="Makanan Utama" data-id="2" data-status="available">
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<img class="w-14 h-14 rounded-xl object-cover shrink-0 shadow-sm" data-alt="Traditional Indonesian cast iron pot filled with aromatic fragrant Liwet rice with petai, salted fish, lemongrass and red chili garnish, organic rustic Sundanese restaurant atmosphere, soft sunlight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgvrZd9mtuX4xocEnHOoVd9NjJ2_St2INoYhE8o4RPIBJhu0fdjhLh8jTanW6PfJFeuL2wfQ9pAesiHQd0DLqvL3BoOQNXiR6PQsfIyVRC9Mx2rrfwUSqXDQ-ZET0oBiGaO2f0QMU9HXpMo_rxbaygSGdp7vMJEsUdnjOKUEpUOx0_r8tjle1aoDC4-fBTG73uTHJXLy1cBC7aSfO8je9l4i--BFHaKQOEJekJ4LpZRInkLIzRTNwX"/>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-deep-moss text-base leading-tight">Nasi Liwet Kastrol Sawah</span>
+<span class="font-monospace-data text-monospace-data text-secondary text-xs mt-0.5">SKU-LWT-02 • Khas Sunda</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded-full text-xs font-semibold bg-surface-container text-on-surface-variant">Makanan Utama</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-monospace-data text-monospace-data font-bold text-roasted-earth">Rp 45.000</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">soup_kitchen</span>
+<span class="font-body-sm text-body-sm font-medium text-deep-moss">Saung &amp; Liwet</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-wrap gap-1">
+<span class="px-2 py-0.5 rounded-md bg-surface-container text-[11px] font-medium text-on-surface-variant">Porsi Tambahan</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-center">
+<button class="status-btn inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full text-xs font-semibold bg-primary-fixed/40 text-primary hover:bg-primary-fixed/80 transition-all cursor-pointer" onclick="toggleAvailability(2)">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span>Tersedia (Ready)</span>
+</button>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-space-xs">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-deep-moss hover:bg-surface-container transition-colors" onclick="openProductDrawer('edit', 2)" title="Edit Menu">
+<span class="material-symbols-outlined text-[18px]">edit_square</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container transition-colors" onclick="toggleAvailability(2)" title="Ubah Status Ketersediaan">
+<span class="material-symbols-outlined text-[18px]">toggle_on</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors" onclick="archiveProduct(2)" title="Arsipkan">
+<span class="material-symbols-outlined text-[18px]">archive</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Item 3: Gurame Bakar Madu (SOLD OUT) -->
+<tr class="menu-row bg-surface-container-lowest hover:bg-surface-container-low/60 transition-colors opacity-90" data-category="Makanan Utama" data-id="3" data-status="soldout">
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="relative">
+<img class="w-14 h-14 rounded-xl object-cover shrink-0 grayscale-[25%] shadow-sm" data-alt="Whole grilled freshwater gourami fish glazed with caramelized sweet honey soy sauce on banana leaf plate, topped with lime slice, warm natural daylight food photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx2_7UPMnxphVchiiWR8ymxE3YiaHnLLwYgHxyZmK5CNgihVT19UHF66sRI7Kp20oPUpFo2zgES_cSygIEHlSX-B10fTphkgiLXyRrjbmk30imZXRiCwWFHVr8X_mFuN7B5_NSs6ct88H7AGrM8xud9KFrXRpM85_rW4JBy6T-OENUxmsnWkCRjkDMGoI5L8LOfCcwT65-Jg7GdvApNZ5eXqVPDS9j_OCZQPqktbuOhxLLaWqY1To0"/>
+<span class="absolute inset-0 bg-roasted-earth/40 rounded-xl flex items-center justify-center text-[10px] font-bold text-surface-bright tracking-wider uppercase">Habis</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-deep-moss text-base leading-tight">Gurame Bakar Madu Sawah</span>
+<span class="font-monospace-data text-monospace-data text-error text-xs mt-0.5">Stok ikan kolam habis hari ini</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded-full text-xs font-semibold bg-surface-container text-on-surface-variant">Makanan Utama</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-monospace-data text-monospace-data font-bold text-roasted-earth">Rp 95.000</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">local_fire_department</span>
+<span class="font-body-sm text-body-sm font-medium text-deep-moss">Grill 1</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-wrap gap-1">
+<span class="px-2 py-0.5 rounded-md bg-surface-container text-[11px] font-medium text-on-surface-variant">Tingkat Pedas</span>
+<span class="px-2 py-0.5 rounded-md bg-surface-container text-[11px] font-medium text-on-surface-variant">Pilihan Sambal</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-center">
+<button class="status-btn inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full text-xs font-semibold bg-error-container text-on-error-container hover:bg-error-container/80 transition-all cursor-pointer" onclick="toggleAvailability(3)" title="Klik untuk mengembalikan status ke Tersedia">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span>Sold Out (Habis)</span>
+</button>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-space-xs">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-deep-moss hover:bg-surface-container transition-colors" onclick="openProductDrawer('edit', 3)" title="Edit Menu">
+<span class="material-symbols-outlined text-[18px]">edit_square</span>
+</button>
+<button class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-colors" onclick="toggleAvailability(3)" title="Buka Ketersediaan">
+<span class="material-symbols-outlined text-[18px]">toggle_off</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors" onclick="archiveProduct(3)" title="Arsipkan">
+<span class="material-symbols-outlined text-[18px]">archive</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Item 4: Sayur Asem Klaten Rempah -->
+<tr class="menu-row bg-surface-container-low/20 hover:bg-surface-container-low/60 transition-colors" data-category="Sayur &amp; Sup" data-id="4" data-status="available">
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<img class="w-14 h-14 rounded-xl object-cover shrink-0 shadow-sm" data-alt="Traditional clear sour vegetable tamarind soup Sayur Asem in a terracotta bowl with corn, melinjo, peanuts and yardlong beans, organic warm dining setup." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFfNqHkyMxynff8Ox0IXjET9MhqCm41GfA9d-KA0_3biQgBEMj_mc1kriMhWbXG34Nk4cFqZH3JLHkB5z2O3Os3Taq3-p1vGld8riVe3UP78QLhM_Gh5dZIxdyCDLE7eJcHNqHT9iSVLGjva2Lw4_9NButmGr_UDdFTkQ0TKZT5UamdPtNPdYzC10WivUT-HexK3sudv1tPkKeQwSPI4bHuqKqO4N5aKhUVQ82FTTyOHNtiWFBaLNW"/>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-deep-moss text-base leading-tight">Sayur Asem Klaten Rempah</span>
+<span class="font-monospace-data text-monospace-data text-secondary text-xs mt-0.5">SKU-SYM-04 • Kuah Segar</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded-full text-xs font-semibold bg-surface-container text-on-surface-variant">Sayur &amp; Sup</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-monospace-data text-monospace-data font-bold text-roasted-earth">Rp 25.000</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">soup_kitchen</span>
+<span class="font-body-sm text-body-sm font-medium text-deep-moss">Saung &amp; Liwet</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="text-on-surface-variant/60 text-xs italic font-body-sm">Standard (Tanpa mod)</span>
+</td>
+<td class="py-space-md px-space-md text-center">
+<button class="status-btn inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full text-xs font-semibold bg-primary-fixed/40 text-primary hover:bg-primary-fixed/80 transition-all cursor-pointer" onclick="toggleAvailability(4)">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span>Tersedia (Ready)</span>
+</button>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-space-xs">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-deep-moss hover:bg-surface-container transition-colors" onclick="openProductDrawer('edit', 4)" title="Edit Menu">
+<span class="material-symbols-outlined text-[18px]">edit_square</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container transition-colors" onclick="toggleAvailability(4)" title="Ubah Status Ketersediaan">
+<span class="material-symbols-outlined text-[18px]">toggle_on</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors" onclick="archiveProduct(4)" title="Arsipkan">
+<span class="material-symbols-outlined text-[18px]">archive</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Item 5: Es Kelapa Jeruk Segar -->
+<tr class="menu-row bg-surface-container-lowest hover:bg-surface-container-low/60 transition-colors" data-category="Minuman &amp; Kopi" data-id="5" data-status="available">
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<img class="w-14 h-14 rounded-xl object-cover shrink-0 shadow-sm" data-alt="Chilled young coconut water mixed with freshly squeezed orange juice, shredded coconut meat, ice cubes in a tall glass with natural bamboo straw on wooden tabletop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDF1Uff25DN2q9t3rWncM1xsNI_5qhCjcR3bHQZknVysDqVwnpUWErsYJihxgn6NsBAWgMZw71ERquG-U062kQV7Og7ZoTS1s0gNLYrQTXyEybkEtTe6YXsLQ9k-BkzOf40-0a_DbhEa0ezHsQ46Zp9IY9RwifXNlPjf5qySj0zOdYd4tNs5np_MPtoSj_EIwBHqzCu_wt15drmGqXSY7xR6dAluEguKmci9wjG2hPrT5Yphn9sw9IM"/>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-deep-moss text-base leading-tight">Es Kelapa Jeruk Segar</span>
+<span class="font-monospace-data text-monospace-data text-secondary text-xs mt-0.5">SKU-BEV-05 • Favorit Siang</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded-full text-xs font-semibold bg-surface-container text-on-surface-variant">Minuman &amp; Kopi</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-monospace-data text-monospace-data font-bold text-roasted-earth">Rp 18.000</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">local_bar</span>
+<span class="font-body-sm text-body-sm font-medium text-deep-moss">Bar Minuman</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-wrap gap-1">
+<span class="px-2 py-0.5 rounded-md bg-surface-container text-[11px] font-medium text-on-surface-variant">Level Gula</span>
+<span class="px-2 py-0.5 rounded-md bg-surface-container text-[11px] font-medium text-on-surface-variant">Es Kristal</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-center">
+<button class="status-btn inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full text-xs font-semibold bg-primary-fixed/40 text-primary hover:bg-primary-fixed/80 transition-all cursor-pointer" onclick="toggleAvailability(5)">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span>Tersedia (Ready)</span>
+</button>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-space-xs">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-deep-moss hover:bg-surface-container transition-colors" onclick="openProductDrawer('edit', 5)" title="Edit Menu">
+<span class="material-symbols-outlined text-[18px]">edit_square</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container transition-colors" onclick="toggleAvailability(5)" title="Ubah Status Ketersediaan">
+<span class="material-symbols-outlined text-[18px]">toggle_on</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors" onclick="archiveProduct(5)" title="Arsipkan">
+<span class="material-symbols-outlined text-[18px]">archive</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Item 6: Kopi Senja Sawah -->
+<tr class="menu-row bg-surface-container-low/20 hover:bg-surface-container-low/60 transition-colors" data-category="Minuman &amp; Kopi" data-id="6" data-status="available">
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<img class="w-14 h-14 rounded-xl object-cover shrink-0 shadow-sm" data-alt="Artisanal iced coffee latte made from local Robusta beans with palm sugar layer and creamy milk poured in a modern clear glassware, afternoon golden hour backdrop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdB03Im-hBGD5mZXznNPm2FiDjEBWf1vJ42klmVpTOh07G5jGa-UjIGuHCuozCz_0HEiLiG-8u9btq6Q3PGcouJYJ0saHY_LVG5AsnAHr_QnzO10ZorwZGpk_WVppP0TabFK5qmK2Rua_dt-1wcNlA_XyaK1otxiupr9MXG4n5Z2OLjTc0MS4b5UhwLVyfAycsmQxyTT1k-iXYYIjReJCRiwDQNTP7jovgkuTZ9cTFEkyPpZqWzLAv"/>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-deep-moss text-base leading-tight">Kopi Senja Sawah (Robusta Ciperna)</span>
+<span class="font-monospace-data text-monospace-data text-secondary text-xs mt-0.5">SKU-COF-06 • Signature Roast</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded-full text-xs font-semibold bg-surface-container text-on-surface-variant">Minuman &amp; Kopi</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-monospace-data text-monospace-data font-bold text-roasted-earth">Rp 28.000</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">local_bar</span>
+<span class="font-body-sm text-body-sm font-medium text-deep-moss">Bar Minuman</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-wrap gap-1">
+<span class="px-2 py-0.5 rounded-md bg-surface-container text-[11px] font-medium text-on-surface-variant">Jenis Susu</span>
+<span class="px-2 py-0.5 rounded-md bg-surface-container text-[11px] font-medium text-on-surface-variant">Level Manis</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-center">
+<button class="status-btn inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full text-xs font-semibold bg-primary-fixed/40 text-primary hover:bg-primary-fixed/80 transition-all cursor-pointer" onclick="toggleAvailability(6)">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span>Tersedia (Ready)</span>
+</button>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-space-xs">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-deep-moss hover:bg-surface-container transition-colors" onclick="openProductDrawer('edit', 6)" title="Edit Menu">
+<span class="material-symbols-outlined text-[18px]">edit_square</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container transition-colors" onclick="toggleAvailability(6)" title="Ubah Status Ketersediaan">
+<span class="material-symbols-outlined text-[18px]">toggle_on</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-error hover:bg-error-container/40 transition-colors" onclick="archiveProduct(6)" title="Arsipkan">
+<span class="material-symbols-outlined text-[18px]">archive</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Grid Card View (Toggled via JS) -->
+<div class="p-space-md grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space-md hidden" id="gridViewContainer">
+<!-- Card 1 -->
+<div class="menu-card bg-surface-container-low rounded-xl p-space-md flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow" data-category="Makanan Utama" data-id="1" data-status="available">
+<div>
+<div class="relative w-full h-44 rounded-lg overflow-hidden mb-space-sm">
+<img class="w-full h-full object-cover" data-alt="Indonesian herb roasted chicken with sambal and rice, artisanal plating, warm natural lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbfU5LCG5uZCIBhfzmQE0kYemwZGdKUxhhT5vdEo_2I2xKr5dd4lT9mrnaFO_gnWmKXfMWxVLQb_vAoBNkLf6FzbUUlPFQfBvYkOwk7GOosjcyKbVfWwHGJhr1O8FTkh-8UFTyahGtbhTR6a27eHajQc_XeT-5WCl0DhILf4cKExPUmWDX67SoXm55yJKW9gSoQ78YQ8RU-sg99lPIU3JBHLWbJBXvJWImWnFQ42E3C6wQlPbcEMNm"/>
+<span class="absolute top-2 right-2 px-space-xs py-0.5 rounded-full bg-primary text-on-primary text-xs font-semibold">Ready</span>
+</div>
+<div class="flex items-start justify-between gap-space-xs">
+<h4 class="font-headline-sm text-headline-sm text-deep-moss text-base">Chicken Roaster Rempah Sawah</h4>
+<span class="font-monospace-data text-monospace-data font-bold text-roasted-earth whitespace-nowrap">Rp 85.000</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Ayam panggang dengan bumbu rempah kuning gurih, daun kemangi segar, dan sambal terasi khas Ciperna.</p>
+<div class="mt-space-sm flex flex-wrap gap-1">
+<span class="text-xs px-2 py-0.5 rounded bg-surface-container text-on-surface-variant">Grill 1</span>
+<span class="text-xs px-2 py-0.5 rounded bg-surface-container text-on-surface-variant">2 Modifier</span>
+</div>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between border-t-0 bg-surface-container-high/40 p-2 rounded-lg">
+<button class="font-label-sm text-label-sm text-primary hover:underline" onclick="toggleAvailability(1)">Toggle Ketersediaan</button>
+<button class="px-space-sm py-1 rounded bg-deep-moss text-on-primary font-label-sm text-label-sm" onclick="openProductDrawer('edit', 1)">Edit</button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="menu-card bg-surface-container-low rounded-xl p-space-md flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow" data-category="Makanan Utama" data-id="2" data-status="available">
+<div>
+<div class="relative w-full h-44 rounded-lg overflow-hidden mb-space-sm">
+<img class="w-full h-full object-cover" data-alt="Traditional Sundanese Liwet rice in cast iron pot with dried anchovies and chili." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSe_merXz1L5AajLvzPLMxgVNVLsAUTmncxKUcU0ssuvxet7NnzS_eC8APuxHtiAuQ67V0KRz06Vm-OxjWEyQ1hbjOfWaLKRugeL6xifiyDJDSpGsmGfHibVTEtWAR8U9J3UypoTZqZzWmSiLhDoQVX4t7quxy-yY2GDG9CNyIM8a0eoUjNyADag6FKznGfWi18G1LHcZKDgs3ZMWiFr0gLnkQWwPn8gCw8M7r3oISgW2GorXNDkEq"/>
+<span class="absolute top-2 right-2 px-space-xs py-0.5 rounded-full bg-primary text-on-primary text-xs font-semibold">Ready</span>
+</div>
+<div class="flex items-start justify-between gap-space-xs">
+<h4 class="font-headline-sm text-headline-sm text-deep-moss text-base">Nasi Liwet Kastrol Sawah</h4>
+<span class="font-monospace-data text-monospace-data font-bold text-roasted-earth whitespace-nowrap">Rp 45.000</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Nasi liwet wangi rempah, ikan teri asin, petai bakar, dan bawang merah utuh khas Sunda.</p>
+<div class="mt-space-sm flex flex-wrap gap-1">
+<span class="text-xs px-2 py-0.5 rounded bg-surface-container text-on-surface-variant">Saung &amp; Liwet</span>
+<span class="text-xs px-2 py-0.5 rounded bg-surface-container text-on-surface-variant">1 Modifier</span>
+</div>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between bg-surface-container-high/40 p-2 rounded-lg">
+<button class="font-label-sm text-label-sm text-primary hover:underline" onclick="toggleAvailability(2)">Toggle Ketersediaan</button>
+<button class="px-space-sm py-1 rounded bg-deep-moss text-on-primary font-label-sm text-label-sm" onclick="openProductDrawer('edit', 2)">Edit</button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="menu-card bg-surface-container-low rounded-xl p-space-md flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow" data-category="Makanan Utama" data-id="3" data-status="soldout">
+<div>
+<div class="relative w-full h-44 rounded-lg overflow-hidden mb-space-sm">
+<img class="w-full h-full object-cover grayscale-[30%]" data-alt="Grilled fish gourami honey barbecue sauce on banana leaf." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYfIARABlUvbJa_mX1A8puj5hK153S_JHAhXicAetUZn72OdTeE-zO8G0a1DLCBUDMtbBgyFWJWneZgQycjdMZ15qwsJJrsendFD6QLHUXbfmnjOjX3TxMehWB-JQCj2051eE0UGqoJqcej97lhbBZ6Y6yMEM9WfwyBbhTQHAiZ9X1ZcAxgBWAka5p4eUtnsfzPZbRMN8aDtPWYXMwFw1NV9gKVx3JkFJapnllgMGvN5aKZsKptmG1"/>
+<span class="absolute top-2 right-2 px-space-xs py-0.5 rounded-full bg-error text-on-error text-xs font-semibold">Sold Out</span>
+</div>
+<div class="flex items-start justify-between gap-space-xs">
+<h4 class="font-headline-sm text-headline-sm text-deep-moss text-base">Gurame Bakar Madu Sawah</h4>
+<span class="font-monospace-data text-monospace-data font-bold text-roasted-earth whitespace-nowrap">Rp 95.000</span>
+</div>
+<p class="font-body-sm text-body-sm text-error mt-1">Stok kolam ikan habis hari ini. KDS dan QR Meja terkunci otomatis.</p>
+<div class="mt-space-sm flex flex-wrap gap-1">
+<span class="text-xs px-2 py-0.5 rounded bg-surface-container text-on-surface-variant">Grill 1</span>
+<span class="text-xs px-2 py-0.5 rounded bg-surface-container text-on-surface-variant">2 Modifier</span>
+</div>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between bg-surface-container-high/40 p-2 rounded-lg">
+<button class="font-label-sm text-label-sm text-secondary hover:underline" onclick="toggleAvailability(3)">Aktifkan Stok</button>
+<button class="px-space-sm py-1 rounded bg-deep-moss text-on-primary font-label-sm text-label-sm" onclick="openProductDrawer('edit', 3)">Edit</button>
+</div>
+</div>
+</div>
+<!-- Table Pagination & Footer Information -->
+<div class="p-space-md bg-surface-container-low flex items-center justify-between flex-wrap gap-space-sm">
+<div class="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<span>Menampilkan</span>
+<span class="font-bold text-deep-moss">1 - 6</span>
+<span>dari total 6 hidangan</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1 rounded-md bg-surface-container text-on-surface-variant hover:bg-surface-container-high text-xs font-semibold disabled:opacity-50" disabled="">Sebelumnya</button>
+<button class="px-space-sm py-1 rounded-md bg-primary text-on-primary text-xs font-semibold">1</button>
+<button class="px-space-sm py-1 rounded-md bg-surface-container text-on-surface-variant hover:bg-surface-container-high text-xs font-semibold disabled:opacity-50" disabled="">Selanjutnya</button>
+</div>
+</div>
+</div>
+<!-- Integrated Slide-Over Product Editor Drawer (Modal / Panel) -->
+<div aria-labelledby="slide-over-title" aria-modal="true" class="fixed inset-0 z-50 overflow-hidden hidden" id="productDrawer" role="dialog">
+<!-- Backdrop Blur with ambient Deep Moss touch -->
+<div class="absolute inset-0 bg-deep-moss/40 backdrop-blur-sm transition-opacity opacity-0 duration-300" id="drawerBackdrop" onclick="closeProductDrawer()"></div>
+<div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+<div class="pointer-events-auto w-screen max-w-xl transform transition-transform duration-300 ease-in-out translate-x-full bg-surface-container-lowest shadow-2xl flex flex-col justify-between" id="drawerContent">
+<!-- Drawer Header -->
+<div class="p-space-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-eyebrow-accent text-eyebrow-accent text-secondary uppercase">Katalog Terpusat • Editor Engine</span>
+<h3 class="font-headline-md text-headline-md text-deep-moss mt-0.5" id="drawerTitle">Tambah Menu Baru</h3>
+</div>
+<button class="p-space-xs rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" onclick="closeProductDrawer()">
+<span class="material-symbols-outlined text-[24px]">close</span>
+</button>
+</div>
+<!-- Drawer Scrollable Body -->
+<div class="p-space-lg space-y-space-md overflow-y-auto flex-1">
+<!-- Live Snapshot Alert inside Editor -->
+<div class="bg-surface-container p-space-sm rounded-lg flex items-start gap-space-xs text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5">info</span>
+<span>Penetapan harga dan modifikasi di sini akan otomatis disinkronisasikan ke POS &amp; Kitchen KDS saat disimpan.</span>
+</div>
+<!-- Form Fields -->
+<div class="space-y-space-sm">
+<div>
+<label class="block font-label-sm text-label-sm text-deep-moss uppercase tracking-wider mb-1">Nama Produk / Hidangan *</label>
+<input class="w-full px-space-sm py-2 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:bg-surface-container-lowest focus:shadow-md transition-all placeholder:text-outline" id="inputProductName" placeholder="Contoh: Ayam Bakar Tepi Sawah" type="text" value="Chicken Roaster Rempah Sawah"/>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
+<div>
+<label class="block font-label-sm text-label-sm text-deep-moss uppercase tracking-wider mb-1">Kategori Menu *</label>
+<select class="w-full px-space-sm py-2 rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm focus:outline-none focus:bg-surface-container-lowest focus:shadow-md transition-all" id="inputCategory">
+<option value="Makanan Utama">Makanan Utama</option>
+<option value="Sayur &amp; Sup">Sayur &amp; Sup</option>
+<option value="Minuman &amp; Kopi">Minuman &amp; Kopi</option>
+<option value="Lauk Pendamping">Lauk Pendamping</option>
+</select>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-deep-moss uppercase tracking-wider mb-1">Target Stasiun KDS *</label>
+<select class="w-full px-space-sm py-2 rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm focus:outline-none focus:bg-surface-container-lowest focus:shadow-md transition-all" id="inputKitchenStation">
+<option value="Grill 1">Grill 1 (Panggangan)</option>
+<option value="Saung &amp; Liwet">Saung &amp; Liwet (Nasi/Sup)</option>
+<option value="Bar Minuman">Bar Minuman &amp; Kopi</option>
+<option value="Snack Bar">Snack Bar &amp; Gorengan</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-deep-moss uppercase tracking-wider mb-1">Harga Server-Side (Rp) *</label>
+<div class="relative">
+<span class="absolute left-space-sm top-1/2 -translate-y-1/2 font-monospace-data font-bold text-secondary text-sm">Rp</span>
+<input class="w-full pl-10 pr-space-sm py-2 rounded-lg bg-surface-container-low text-on-surface font-monospace-data text-body-md font-semibold focus:outline-none focus:bg-surface-container-lowest focus:shadow-md transition-all" id="inputProductPrice" placeholder="85000" type="number" value="85000"/>
+</div>
+<span class="text-[11px] text-on-surface-variant font-body-sm mt-0.5 block">Harga bersih sebelum PB1 Restoran 10% (dihitung saat checkout POS).</span>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-deep-moss uppercase tracking-wider mb-1">Deskripsi Kuliner &amp; Resep Ringkas</label>
+<textarea class="w-full px-space-sm py-2 rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm focus:outline-none focus:bg-surface-container-lowest focus:shadow-md transition-all placeholder:text-outline" id="inputProductDesc" placeholder="Deskripsi untuk tamu di QR digital..." rows="3">Ayam panggang dengan rendaman bumbu rempah kuning gurih, daun kemangi segar, dan sambal terasi khas Ciperna.</textarea>
+</div>
+<!-- Upload Photo Thumbnail Area -->
+<div>
+<label class="block font-label-sm text-label-sm text-deep-moss uppercase tracking-wider mb-1">Foto Hidangan (Visual Publik &amp; QR)</label>
+<div class="p-space-md rounded-xl bg-surface-container-low text-center flex flex-col items-center justify-center hover:bg-surface-container transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-[36px] text-secondary group-hover:scale-110 transition-transform">add_photo_alternate</span>
+<span class="font-label-sm text-label-sm text-deep-moss mt-1">Unggah atau seret foto menu</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-xs">Maks 3MB (Format WEBP, JPG, PNG resolusi tinggi)</span>
+</div>
+</div>
+<!-- Availability & Lifecycle Status Toggles -->
+<div class="bg-surface-container-low p-space-md rounded-xl space-y-space-sm">
+<span class="font-label-sm text-label-sm text-deep-moss uppercase tracking-wider block">Ketersediaan &amp; Status Publikasi</span>
+<div class="flex items-center justify-between">
+<div>
+<div class="font-label-md text-label-md text-deep-moss">Status Stok (Availability)</div>
+<div class="text-xs text-on-surface-variant">Matikan jika bahan baku habis untuk memblokir orderan dari QR &amp; Waiter.</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" id="toggleAvailableStatus" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface-lowest after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<div>
+<div class="font-label-md text-label-md text-deep-moss">Status Katalog</div>
+<div class="text-xs text-on-surface-variant">Tentukan apakah menu aktif ditawarkan atau draft.</div>
+</div>
+<select class="px-space-sm py-1 rounded bg-surface-container text-xs font-semibold text-deep-moss">
+<option selected="" value="ACTIVE">ACTIVE (Aktif)</option>
+<option value="INACTIVE">INACTIVE (Nonaktif)</option>
+<option value="ARCHIVED">ARCHIVED (Diarsipkan)</option>
+</select>
+</div>
+</div>
+<!-- Modifier Groups Checkboxes -->
+<div class="bg-surface-container-low p-space-md rounded-xl">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-sm text-label-sm text-deep-moss uppercase tracking-wider">Tautkan Grup Modifier</span>
+<button class="text-xs text-primary font-semibold hover:underline" onclick="toggleModifierModal(true)" type="button">+ Grup Baru</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-xs mb-space-sm">Opsi kustomisasi yang wajib atau opsional dipilih oleh pembeli saat memesan.</p>
+<div class="space-y-space-xs">
+<label class="flex items-center gap-space-xs p-2 rounded-lg hover:bg-surface-container transition-colors cursor-pointer">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-primary accent-primary" type="checkbox"/>
+<div class="flex-1 flex items-center justify-between text-xs">
+<span class="font-semibold text-deep-moss">Tingkat Pedas (Level 0 s/d Level 5)</span>
+<span class="text-on-surface-variant">Wajib dipilih • Gratis</span>
+</div>
+</label>
+<label class="flex items-center gap-space-xs p-2 rounded-lg hover:bg-surface-container transition-colors cursor-pointer">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-primary accent-primary" type="checkbox"/>
+<div class="flex-1 flex items-center justify-between text-xs">
+<span class="font-semibold text-deep-moss">Pilihan Sambal (Terasi, Matah, Dadak, Bawang)</span>
+<span class="text-on-surface-variant">Opsional • Extra Rp 5.000</span>
+</div>
+</label>
+<label class="flex items-center gap-space-xs p-2 rounded-lg hover:bg-surface-container transition-colors cursor-pointer">
+<input class="w-4 h-4 rounded text-primary focus:ring-primary accent-primary" type="checkbox"/>
+<div class="flex-1 flex items-center justify-between text-xs">
+<span class="font-semibold text-deep-moss">Pilihan Jenis Es (Less Ice, Normal, No Ice)</span>
+<span class="text-on-surface-variant">Khusus Minuman</span>
+</div>
+</label>
+<label class="flex items-center gap-space-xs p-2 rounded-lg hover:bg-surface-container transition-colors cursor-pointer">
+<input class="w-4 h-4 rounded text-primary focus:ring-primary accent-primary" type="checkbox"/>
+<div class="flex-1 flex items-center justify-between text-xs">
+<span class="font-semibold text-deep-moss">Porsi Tambahan (1/2 Ekor, 1 Ekor Utuh)</span>
+<span class="text-on-surface-variant">Porsi Dinamis</span>
+</div>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Drawer Action Footer -->
+<div class="p-space-md bg-surface-container-low flex items-center justify-between gap-space-sm">
+<button class="px-space-md py-2 rounded-lg bg-surface-container text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md transition-colors" onclick="closeProductDrawer()" type="button">
+            Batal
+          </button>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-lg py-2 rounded-lg bg-primary hover:bg-deep-moss text-on-primary font-label-md text-label-md shadow-md transition-all flex items-center gap-space-xs" onclick="saveProductData()" type="button">
+<span class="material-symbols-outlined text-[18px]">save</span>
+<span>Simpan &amp; Sinkronkan</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Modifier Groups Management Modal -->
+<div aria-labelledby="modal-title" aria-modal="true" class="fixed inset-0 z-50 overflow-y-auto hidden" id="modifierModal" role="dialog">
+<div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+<div class="fixed inset-0 bg-deep-moss/40 backdrop-blur-sm transition-opacity" onclick="toggleModifierModal(false)"></div>
+<span aria-hidden="true" class="hidden sm:inline-block sm:align-middle sm:h-screen">​</span>
+<div class="inline-block align-bottom bg-surface-container-lowest rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+<div class="p-space-lg bg-surface-container-low flex items-center justify-between">
+<div>
+<span class="font-eyebrow-accent text-eyebrow-accent text-secondary uppercase">Konfigurasi Tambahan</span>
+<h3 class="font-headline-md text-headline-md text-deep-moss">Kelola Grup Modifier Menu</h3>
+</div>
+<button class="p-space-xs rounded-full hover:bg-surface-container text-on-surface-variant" onclick="toggleModifierModal(false)">
+<span class="material-symbols-outlined text-[22px]">close</span>
+</button>
+</div>
+<div class="p-space-lg space-y-space-md max-h-[614px] overflow-y-auto">
+<!-- Existing Modifier List Item 1 -->
+<div class="bg-surface-container-low p-space-md rounded-xl space-y-space-xs">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-md text-label-md text-deep-moss">Tingkat Pedas</span>
+<span class="ml-2 text-xs px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed">Wajib Dipilih (Single Choice)</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-1 rounded text-on-surface-variant hover:text-deep-moss"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-1 rounded text-on-surface-variant hover:text-error"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</div>
+<p class="text-xs text-on-surface-variant">Pilihan: Level 0 (Tidak Pedas), Level 1 (Sedang), Level 2 (Pedas Sawah), Level 3 (Extra Pedas +Rp 3.000)</p>
+</div>
+<!-- Existing Modifier List Item 2 -->
+<div class="bg-surface-container-low p-space-md rounded-xl space-y-space-xs">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-md text-label-md text-deep-moss">Pilihan Sambal Khas</span>
+<span class="ml-2 text-xs px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed">Opsional (Multiple Choice)</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-1 rounded text-on-surface-variant hover:text-deep-moss"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-1 rounded text-on-surface-variant hover:text-error"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+</div>
+</div>
+<p class="text-xs text-on-surface-variant">Pilihan: Sambal Terasi Dadak (+Rp 5.000), Sambal Mangga Muda (+Rp 6.000), Sambal Bawang (+Rp 5.000)</p>
+</div>
+<!-- Add New Modifier Button -->
+<button class="w-full py-2.5 rounded-xl border-2 border-dashed border-outline-variant text-deep-moss hover:bg-surface-container font-label-md text-label-md transition-all flex items-center justify-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+<span>Buat Grup Modifier Baru</span>
+</button>
+</div>
+<div class="p-space-md bg-surface-container-low text-right">
+<button class="px-space-md py-2 rounded-lg bg-primary text-on-primary font-label-md text-label-md" onclick="toggleModifierModal(false)">Tutup &amp; Terapkan</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Live Toast Notification Element for Real-time Feedback -->
+<div class="fixed bottom-6 right-6 z-50 bg-deep-moss text-surface-bright px-space-md py-space-sm rounded-xl shadow-2xl flex items-center gap-space-sm transform translate-y-24 opacity-0 transition-all duration-300" id="syncToast">
+<span class="material-symbols-outlined text-primary-fixed text-[24px]">check_circle</span>
+<div>
+<div class="font-label-md text-label-md text-surface-bright leading-tight">Katalog Tersinkronisasi!</div>
+<div class="font-body-sm text-body-sm text-inverse-on-surface text-xs mt-0.5" id="toastMessage">Menu &amp; status telah dikirim ke 5 terminal aktif.</div>
+</div>
+</div>
+</div>
+<script>
+  // Filter by Category
+  function filterCategory(cat, btn) {
+    // Button styling
+    document.querySelectorAll('.category-btn').forEach(el => {
+      el.className = "category-btn px-space-sm py-1.5 rounded-full font-label-sm text-label-sm bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors whitespace-nowrap";
+    });
+    btn.className = "category-btn px-space-sm py-1.5 rounded-full font-label-sm text-label-sm bg-primary text-on-primary shadow-sm transition-colors whitespace-nowrap";
+
+    // Filter table rows and cards
+    let visibleCount = 0;
+    const rows = document.querySelectorAll('.menu-row');
+    const cards = document.querySelectorAll('.menu-card');
+
+    rows.forEach(r => {
+      const match = (cat === 'Semua' || r.getAttribute('data-category') === cat);
+      r.style.display = match ? '' : 'none';
+      if(match) visibleCount++;
+    });
+
+    cards.forEach(c => {
+      const match = (cat === 'Semua' || c.getAttribute('data-category') === cat);
+      c.style.display = match ? '' : 'none';
+    });
+
+    const counter = document.getElementById('itemCountDisplay');
+    if (counter) counter.innerText = visibleCount + ' Menu Ditampilkan';
+  }
+
+  // Search Input Filter
+  document.getElementById('searchInput')?.addEventListener('input', function(e) {
+    const q = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('.menu-row');
+    const cards = document.querySelectorAll('.menu-card');
+    let count = 0;
+
+    rows.forEach(r => {
+      const text = r.innerText.toLowerCase();
+      const match = text.includes(q);
+      r.style.display = match ? '' : 'none';
+      if(match) count++;
+    });
+
+    cards.forEach(c => {
+      const text = c.innerText.toLowerCase();
+      c.style.display = text.includes(q) ? '' : 'none';
+    });
+
+    const counter = document.getElementById('itemCountDisplay');
+    if (counter) counter.innerText = count + ' Menu Ditampilkan';
+  });
+
+  // Switch between Table and Grid View
+  function switchView(view) {
+    const table = document.getElementById('tableViewContainer');
+    const grid = document.getElementById('gridViewContainer');
+    const tableBtn = document.getElementById('viewTableBtn');
+    const gridBtn = document.getElementById('viewGridBtn');
+
+    if(view === 'grid') {
+      table.classList.add('hidden');
+      grid.classList.remove('hidden');
+      gridBtn.className = "p-1.5 rounded-lg bg-surface-container text-deep-moss font-semibold hover:bg-surface-container-high transition-colors";
+      tableBtn.className = "p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors";
+    } else {
+      table.classList.remove('hidden');
+      grid.classList.add('hidden');
+      tableBtn.className = "p-1.5 rounded-lg bg-surface-container text-deep-moss font-semibold hover:bg-surface-container-high transition-colors";
+      gridBtn.className = "p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors";
+    }
+  }
+
+  // Toggle Availability Status with Live Sync Notification
+  function toggleAvailability(id) {
+    const row = document.querySelector(`.menu-row[data-id="${id}"]`);
+    if(!row) return;
+
+    const currentStatus = row.getAttribute('data-status');
+    const statusBtn = row.querySelector('.status-btn');
+    const name = row.querySelector('.text-deep-moss').innerText;
+
+    if(currentStatus === 'available') {
+      row.setAttribute('data-status', 'soldout');
+      row.classList.add('opacity-85');
+      if (statusBtn) {
+        statusBtn.className = "status-btn inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full text-xs font-semibold bg-error-container text-on-error-container hover:bg-error-container/80 transition-all cursor-pointer";
+        statusBtn.innerHTML = '<span class="w-2 h-2 rounded-full bg-error"></span><span>Sold Out (Habis)</span>';
+      }
+      showSyncToast(`${name} diset SOLD OUT. QR & KDS segera terkunci.`);
+    } else {
+      row.setAttribute('data-status', 'available');
+      row.classList.remove('opacity-85');
+      if (statusBtn) {
+        statusBtn.className = "status-btn inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full text-xs font-semibold bg-primary-fixed/40 text-primary hover:bg-primary-fixed/80 transition-all cursor-pointer";
+        statusBtn.innerHTML = '<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span>Tersedia (Ready)</span>';
+      }
+      showSyncToast(`${name} kembali TERSEDIA. Langsung aktif di seluruh POS.`);
+    }
+  }
+
+  // Drawer Controls
+  function openProductDrawer(mode, id = null) {
+    const drawer = document.getElementById('productDrawer');
+    const backdrop = document.getElementById('drawerBackdrop');
+    const content = document.getElementById('drawerContent');
+    const title = document.getElementById('drawerTitle');
+
+    drawer.classList.remove('hidden');
+    setTimeout(() => {
+      backdrop.classList.remove('opacity-0');
+      backdrop.classList.add('opacity-100');
+      content.classList.remove('translate-x-full');
+      content.classList.add('translate-x-0');
+    }, 10);
+
+    if(mode === 'new') {
+      title.innerText = 'Tambah Menu Baru';
+      document.getElementById('inputProductName').value = '';
+      document.getElementById('inputProductPrice').value = '';
+      document.getElementById('inputProductDesc').value = '';
+    } else {
+      title.innerText = 'Edit Menu & KDS Routing';
+      if(id === 1) {
+        document.getElementById('inputProductName').value = 'Chicken Roaster Rempah Sawah';
+        document.getElementById('inputProductPrice').value = '85000';
+      }
+    }
+  }
+
+  function closeProductDrawer() {
+    const backdrop = document.getElementById('drawerBackdrop');
+    const content = document.getElementById('drawerContent');
+
+    backdrop.classList.remove('opacity-100');
+    backdrop.classList.add('opacity-0');
+    content.classList.remove('translate-x-0');
+    content.classList.add('translate-x-full');
+
+    setTimeout(() => {
+      document.getElementById('productDrawer').classList.add('hidden');
+    }, 300);
+  }
+
+  function saveProductData() {
+    closeProductDrawer();
+    showSyncToast('Menu berhasil diperbarui & disiarkan via MQTT ke POS dan KDS!');
+  }
+
+  function archiveProduct(id) {
+    if(confirm('Arsipkan produk ini? Menu tidak akan muncul lagi di QR Meja maupun POS.')) {
+      const row = document.querySelector(`.menu-row[data-id="${id}"]`);
+      if(row) row.style.display = 'none';
+      showSyncToast('Menu berhasil diarsipkan ke database katalog.');
+    }
+  }
+
+  // Modifier Modal Controls
+  function toggleModifierModal(show) {
+    const modal = document.getElementById('modifierModal');
+    if(show) {
+      modal.classList.remove('hidden');
+    } else {
+      modal.classList.add('hidden');
+    }
+  }
+
+  // Real-time synchronization Toast visual
+  function showSyncToast(msg) {
+    const toast = document.getElementById('syncToast');
+    const label = document.getElementById('toastMessage');
+    if(label) label.innerText = msg;
+
+    toast.classList.remove('translate-y-24', 'opacity-0');
+    toast.classList.add('translate-y-0', 'opacity-100');
+
+    setTimeout(() => {
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      toast.classList.add('translate-y-24', 'opacity-0');
+    }, 3500);
+  }
+</script></main></div></body></html>

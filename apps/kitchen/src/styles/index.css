@@ -6,14 +6,18 @@
   --color-deepmoss: #183A1D;
   --color-golden: #DDA15E;
   --color-amberwarm: #F3C644;
-  --color-dark-bg: #0F172A;
-  --color-card-bg: #1E293B;
-  --color-card-border: #334155;
-  --color-text-bright: #F8FAFC;
-  --color-text-dim: #94A3B8;
+  --color-warmcream: #FEFAE0;
+  --color-ricepaper: #F8F4DB;
+  --color-roastedearth: #3D1F10;
+  --color-coffeebrown: #6F3F24;
+  --color-dark-bg: #101f13;
+  --color-card-bg: #16291a;
+  --color-card-border: #2e5334;
+  --color-text-bright: #f0eede;
+  --color-text-dim: #a8b8a4;
   --color-alert-red: #EF4444;
   --color-alert-amber: #F59E0B;
-  --color-alert-green: #10B981;
+  --color-alert-green: #4a9a56;
 }
 
 body {
@@ -35,9 +39,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #020617;
+  background-color: #0a140b;
   padding: 0.85rem 1.5rem;
-  border-bottom: 2px solid #1E293B;
+  border-bottom: 2px solid #16291a;
 }
 
 .kds-brand {
@@ -50,7 +54,7 @@ body {
   font-size: 1.2rem;
   font-weight: 800;
   letter-spacing: 0.05em;
-  color: #38BDF8;
+  color: #dda15e;
 }
 
 .kds-station {
@@ -64,8 +68,8 @@ body {
 }
 
 .kds-stat-btn {
-  background: #1E293B;
-  border: 1px solid #334155;
+  background: #16291a;
+  border: 1px solid #2e5334;
   color: var(--color-text-dim);
   padding: 0.45rem 0.9rem;
   border-radius: 6px;
@@ -75,9 +79,9 @@ body {
 }
 
 .kds-stat-btn.active {
-  background: #2563EB;
+  background: #2e6b34;
   color: white;
-  border-color: #3B82F6;
+  border-color: #3d7a4a;
 }
 
 /* Main Area */
@@ -110,8 +114,8 @@ body {
 
 .ticket-header {
   padding: 1rem;
-  background: #0F172A;
-  border-bottom: 1px solid #334155;
+  background: #101f13;
+  border-bottom: 1px solid #2e5334;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -124,7 +128,7 @@ body {
 
 .ticket-order-num {
   font-size: 0.85rem;
-  color: #94A3B8;
+  color: #a8b8a4;
   font-family: monospace;
 }
 
@@ -136,7 +140,7 @@ body {
 
 .ticket-area-sub {
   font-size: 0.8rem;
-  color: #64748B;
+  color: #7d8a7d;
 }
 
 .ticket-timer {
@@ -144,8 +148,8 @@ body {
   font-weight: 700;
   padding: 0.25rem 0.6rem;
   border-radius: 6px;
-  background: #1E293B;
-  color: #CBD5E1;
+  background: #16291a;
+  color: #c8d4c2;
 }
 
 .ticket-timer.timer-alert {
@@ -175,7 +179,7 @@ body {
 }
 
 .item-qty-badge {
-  background: #0284C7;
+  background: #6f3f24;
   color: white;
   font-weight: 800;
   font-size: 0.95rem;
@@ -192,13 +196,13 @@ body {
 .item-title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #F8FAFC;
+  color: #f0eede;
   line-height: 1.3;
 }
 
 .item-instruction {
   font-size: 0.85rem;
-  color: #FDE047;
+  color: #f3c644;
   margin-top: 0.25rem;
   font-style: italic;
 }
@@ -206,8 +210,8 @@ body {
 /* Footer / Action */
 .ticket-footer {
   padding: 0.85rem 1rem;
-  background: #0F172A;
-  border-top: 1px solid #334155;
+  background: #101f13;
+  border-top: 1px solid #2e5334;
 }
 
 .kds-btn-action {
@@ -226,19 +230,19 @@ body {
 }
 
 .btn-start {
-  background: #2563EB;
+  background: #2e6b34;
   color: white;
 }
 
 .btn-ready {
-  background: #16A34A;
+  background: #2e6b34;
   color: white;
 }
 
 .ticket-ready-notice {
   text-align: center;
   padding: 0.5rem;
-  color: #4ADE80;
+  color: #7fb069;
   font-weight: 700;
   font-size: 0.95rem;
   background: rgba(34, 197, 94, 0.1);

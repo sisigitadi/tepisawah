@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+
+<html lang="id"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"on-surface-variant":"#41493f","on-secondary":"#ffffff","on-tertiary":"#ffffff","inverse-primary":"#95d693","error-container":"#ffdad6","on-tertiary-fixed":"#341100","on-tertiary-container":"#ffcfb8","inverse-on-surface":"#f5f1d8","surface-container":"#f2efd5","leaf-tint":"rgba(46, 107, 52, 0.08)","surface-bright":"#fefae0","tertiary-fixed-dim":"#fcb794","secondary":"#835418","secondary-fixed":"#ffdcbb","surface-variant":"#e7e3ca","on-error-container":"#93000a","rice-paper":"#F8F4DB","primary-container":"#2e6b34","primary-fixed":"#b0f3ad","on-primary-container":"#a7e9a5","primary":"#12521e","on-secondary-fixed":"#2b1700","on-primary-fixed":"#002106","on-secondary-container":"#784a0d","surface-tint":"#2e6b34","on-error":"#ffffff","tertiary-container":"#865235","secondary-container":"#fdbd77","on-surface":"#1d1c0d","error":"#ba1a1a","on-tertiary-fixed-variant":"#6a3b20","on-secondary-fixed-variant":"#673d00","on-primary":"#ffffff","inverse-surface":"#323120","on-background":"#1d1c0d","deep-moss":"#183A1D","surface-container-highest":"#e7e3ca","secondary-fixed-dim":"#faba75","primary-fixed-dim":"#95d693","golden-sheen":"rgba(221, 161, 94, 0.25)","surface-container-low":"#f8f4db","roasted-earth":"#3D1F10","tertiary":"#6a3b20","outline":"#71796e","surface":"#fefae0","outline-variant":"#c0c9bc","background":"#fefae0","amber-warm":"#F3C644","surface-container-high":"#ede9cf","surface-container-lowest":"#ffffff","tertiary-fixed":"#ffdbca","surface-dim":"#dedbc2","on-primary-fixed-variant":"#12521e"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-md":"1rem","gutter":"1.5rem","gutter-sm":"1rem","margin":"1.5rem","space-lg":"1.5rem","margin-mobile":"1rem","space-sm":"0.5rem","gutter-lg":"2rem","space-xxl":"4rem","margin-desktop":"3rem","space-xl":"2.5rem","space-xs":"0.25rem"},"fontFamily":{"body-lg":["Inter"],"headline-md":["Playfair Display"],"display-hero-mobile":["Playfair Display"],"body-md":["Inter"],"body-sm":["Inter"],"title-editorial":["Playfair Display"],"display-hero":["Playfair Display"],"headline-lg":["Playfair Display"],"headline-lg-mobile":["Playfair Display"],"eyebrow-accent":["Inter"],"label-md":["Inter"],"label-sm":["Inter"],"monospace-data":["monospace"],"headline-sm":["Playfair Display"]},"fontSize":{"body-lg":["18px",{"lineHeight":"28px","fontWeight":"400"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"600"}],"display-hero-mobile":["32px",{"lineHeight":"40px","letterSpacing":"-0.01em","fontWeight":"700"}],"body-md":["15px",{"lineHeight":"24px","fontWeight":"400"}],"body-sm":["13px",{"lineHeight":"20px","fontWeight":"400"}],"title-editorial":["18px",{"lineHeight":"26px","fontWeight":"500"}],"display-hero":["56px",{"lineHeight":"64px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-lg":["36px",{"lineHeight":"44px","letterSpacing":"-0.01em","fontWeight":"700"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","fontWeight":"700"}],"eyebrow-accent":["11px",{"lineHeight":"14px","letterSpacing":"0.18em","fontWeight":"700"}],"label-md":["14px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"600"}],"label-sm":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"monospace-data":["13px",{"lineHeight":"18px","fontWeight":"500"}],"headline-sm":["20px",{"lineHeight":"28px","fontWeight":"600"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low z-50 flex flex-col shadow-[0_1px_8px_rgba(0,0,0,0.04)] overflow-y-auto"><div class="h-16 px-space-md flex items-center gap-space-sm bg-surface-container-low"><img alt="Logo Tepi Sawah.png" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-embedded-images/AG143WPj-xRj_k4550Qf88m6Qk03aI669E1F0A6Qo6N9aBqM=s0"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-deep-moss tracking-tight leading-none">Tepi Sawah</span><span class="font-eyebrow-accent text-eyebrow-accent text-secondary tracking-widest uppercase mt-0.5">Admin &amp; Console</span></div></div><nav class="flex-1 px-space-sm py-space-md space-y-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-bold"><div class="px-space-sm pb-space-xs"><span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase tracking-widest">Ringkasan</span></div><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="dashboard-overview" href="#"><span class="material-symbols-outlined text-[20px]">space_dashboard</span><span class="font-label-md text-label-md">Dashboard Operasional</span></a><div class="pt-space-md px-space-sm pb-space-xs"><span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase tracking-widest">Operasional Menu &amp; Meja</span></div><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="katalog-menu-terpusat" href="#"><span class="material-symbols-outlined text-[20px]">restaurant_menu</span><span class="font-label-md text-label-md">Katalog Menu Terpusat</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="kategori-menu" href="#"><span class="material-symbols-outlined text-[20px]">category</span><span class="font-label-md text-label-md">Kategori Menu</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="grup-modifier" href="#"><span class="material-symbols-outlined text-[20px]">tune</span><span class="font-label-md text-label-md">Grup Modifier</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="denah-meja-area" href="#"><span class="material-symbols-outlined text-[20px]">table_restaurant</span><span class="font-label-md text-label-md">Denah Meja &amp; Area</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="kelola-qr-meja-digital" href="#"><span class="material-symbols-outlined text-[20px]">qr_code_2</span><span class="font-label-md text-label-md">Kelola QR Meja Digital</span></a><div class="pt-space-md px-space-sm pb-space-xs"><span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase tracking-widest">Akses &amp; Karyawan</span></div><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="pengguna-user-list" href="#"><span class="material-symbols-outlined text-[20px]">badge</span><span class="font-label-md text-label-md">Daftar Pengguna / Staf</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg transition-colors bg-primary-container text-on-primary-container font-bold" data-path="peran-hak-akses-role-matrix" href="#"><span class="material-symbols-outlined text-[20px]">admin_panel_settings</span><span class="font-label-md text-label-md">Peran &amp; Hak Akses (Matrix)</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="izin-supervisor" href="#"><span class="material-symbols-outlined text-[20px]">verified_user</span><span class="font-label-md text-label-md">Izin Supervisor</span></a><div class="pt-space-md px-space-sm pb-space-xs"><span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase tracking-widest">Konfigurasi Sistem</span></div><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="profil-restoran-jam-buka" href="#"><span class="material-symbols-outlined text-[20px]">storefront</span><span class="font-label-md text-label-md">Profil &amp; Jam Operasional</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="alur-pemesanan-qr-kasir" href="#"><span class="material-symbols-outlined text-[20px]">point_of_sale</span><span class="font-label-md text-label-md">Alur Pemesanan &amp; Kasir</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="pengaturan-pembayaran-pajak-pb1" href="#"><span class="material-symbols-outlined text-[20px]">receipt_long</span><span class="font-label-md text-label-md">Pembayaran &amp; Pajak PB1</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="sla-dapur-panggilan-waiter" href="#"><span class="material-symbols-outlined text-[20px]">notifications_active</span><span class="font-label-md text-label-md">SLA Dapur &amp; Waiter Call</span></a><div class="pt-space-md px-space-sm pb-space-xs"><span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase tracking-widest">Keamanan &amp; Audit</span></div><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="log-aktivitas-audit-trail" href="#"><span class="material-symbols-outlined text-[20px]">history_toggle_off</span><span class="font-label-md text-label-md">Log Aktivitas &amp; Audit Trail</span></a></nav><div class="p-space-md bg-surface-container-high m-space-sm rounded-xl"><div class="flex items-center justify-between mb-space-xs"><span class="font-label-sm text-label-sm text-roasted-earth font-semibold">Ciperna Cloud POS</span><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span></div><p class="font-body-sm text-body-sm text-on-surface-variant">v2.4.8 - Server Terhubung Stabil</p></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 px-gutter flex items-center justify-between"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs bg-surface-container px-space-sm py-1 rounded-full"><span class="w-2.5 h-2.5 rounded-full bg-primary"></span><span class="font-label-sm text-label-sm font-semibold text-deep-moss uppercase tracking-wider">Restoran Buka / Online</span></div><div class="hidden lg:flex items-center gap-space-xs text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">schedule</span><span class="font-body-sm text-body-sm">Jam Operasional: <span class="font-monospace-data text-monospace-data text-roasted-earth font-semibold">10:00 - 22:00 WIB</span></span></div><div class="hidden xl:flex items-center gap-space-xs text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">sync_alt</span><span class="font-body-sm text-body-sm">Shift: <span class="font-label-sm text-label-sm font-semibold text-deep-moss">Siang (Ahmad / Kasir Utama)</span></span></div></div><div class="flex items-center gap-space-md"><button class="p-space-xs rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors relative" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span></button><div class="flex items-center gap-space-sm pl-space-sm border-l border-outline-variant/30"><div class="text-right hidden sm:block"><div class="font-label-md text-label-md text-on-surface leading-tight">Bapak Hendra</div><div class="font-body-sm text-body-sm text-secondary leading-tight">Owner / Master Admin</div></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="relative pt-16 bg-surface w-full min-h-screen px-gutter py-space-lg"><div class="flex flex-col w-full space-y-space-xl">
+<!-- Top Stat Bento / Glance Overview -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<!-- Stat 1 -->
+<div class="bg-surface-container-low p-space-lg rounded-xl shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-eyebrow-accent text-eyebrow-accent text-secondary uppercase tracking-widest">Total Akun Terdaftar</span>
+<span class="material-symbols-outlined text-primary text-[24px]">group</span>
+</div>
+<div class="mt-space-md flex items-baseline gap-space-xs">
+<span class="font-display-hero-mobile text-display-hero-mobile text-deep-moss font-bold">14</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ 20 Lisensi Kasir Cloud</span>
+</div>
+<div class="mt-space-xs flex items-center gap-space-xs">
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-primary font-semibold">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> 7 Pengguna Online Saat Ini
+        </span>
+</div>
+<div class="absolute -bottom-6 -right-6 w-24 h-24 bg-primary/5 rounded-full pointer-events-none"></div>
+</div>
+<!-- Stat 2 -->
+<div class="bg-surface-container-low p-space-lg rounded-xl shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-eyebrow-accent text-eyebrow-accent text-secondary uppercase tracking-widest">Peran Terdefinisi</span>
+<span class="material-symbols-outlined text-secondary text-[24px]">verified_user</span>
+</div>
+<div class="mt-space-md flex items-baseline gap-space-xs">
+<span class="font-display-hero-mobile text-display-hero-mobile text-deep-moss font-bold">6</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Level Otoritas Hierarki</span>
+</div>
+<div class="mt-space-xs">
+<span class="font-label-sm text-label-sm text-tertiary">Role Matrix Sinkron per Cabang</span>
+</div>
+<div class="absolute -bottom-6 -right-6 w-24 h-24 bg-secondary/5 rounded-full pointer-events-none"></div>
+</div>
+<!-- Stat 3 -->
+<div class="bg-surface-container-low p-space-lg rounded-xl shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-eyebrow-accent text-eyebrow-accent text-secondary uppercase tracking-widest">Sesi Aktif &amp; POS</span>
+<span class="material-symbols-outlined text-primary text-[24px]">point_of_sale</span>
+</div>
+<div class="mt-space-md flex items-baseline gap-space-xs">
+<span class="font-display-hero-mobile text-display-hero-mobile text-deep-moss font-bold">4</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Terminal / KDS Aktif</span>
+</div>
+<div class="mt-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Shift 1 Siang: Sigit Wicaksono</span>
+</div>
+<div class="absolute -bottom-6 -right-6 w-24 h-24 bg-primary/5 rounded-full pointer-events-none"></div>
+</div>
+<!-- Stat 4 / Quick Action -->
+<div class="bg-surface-container-high p-space-lg rounded-xl shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div>
+<span class="font-eyebrow-accent text-eyebrow-accent text-roasted-earth uppercase tracking-widest">Integritas Keamanan</span>
+<p class="font-headline-sm text-headline-sm text-deep-moss mt-1">2FA &amp; SPV PIN</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Semua void &amp; diskon memerlukan PIN Supervisor yang diotorisasi.</p>
+</div>
+<div class="mt-space-md flex items-center gap-space-sm">
+<button class="w-full bg-primary hover:bg-deep-moss text-surface font-label-md text-label-md py-space-sm px-space-md rounded-lg shadow-sm flex items-center justify-center gap-space-xs transition-colors" id="btnNewStaff" type="button">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+<span>Tambah Pengguna</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Main Workspace with Tabs -->
+<div class="bg-surface-container-low rounded-xl shadow-sm overflow-hidden flex flex-col">
+<!-- Tab Headers & Actions Bar -->
+<div class="bg-surface-container px-gutter py-space-sm flex flex-wrap items-center justify-between gap-space-md">
+<!-- Tabs Navigation -->
+<nav aria-label="Tabs Pengaturan Akses" class="flex items-center gap-space-xs overflow-x-auto py-1" id="tabNav">
+<button class="tab-item active flex items-center gap-space-xs px-space-md py-space-sm rounded-lg font-label-md text-label-md bg-primary-container text-on-primary-container shadow-sm transition-all whitespace-nowrap" id="tabBtn-tab-users" onclick="switchTab('tab-users')" type="button">
+<span class="material-symbols-outlined text-[18px]">badge</span>
+<span>Daftar Pengguna / Users</span>
+<span class="ml-1 px-1.5 py-0.5 text-[11px] font-bold rounded-full bg-primary text-surface">7</span>
+</button>
+<button class="tab-item flex items-center gap-space-xs px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all whitespace-nowrap" id="tabBtn-tab-matrix" onclick="switchTab('tab-matrix')" type="button">
+<span class="material-symbols-outlined text-[18px]">grid_view</span>
+<span>Matriks Hak Akses / Permission Matrix</span>
+<span class="ml-1 px-1.5 py-0.5 text-[11px] font-bold rounded-full bg-secondary text-surface">11 Rules</span>
+</button>
+<button class="tab-item flex items-center gap-space-xs px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all whitespace-nowrap" id="tabBtn-tab-roles" onclick="switchTab('tab-roles')" type="button">
+<span class="material-symbols-outlined text-[18px]">admin_panel_settings</span>
+<span>Peran / Role Management</span>
+</button>
+<button class="tab-item flex items-center gap-space-xs px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-all whitespace-nowrap" id="tabBtn-tab-sessions" onclick="switchTab('tab-sessions')" type="button">
+<span class="material-symbols-outlined text-[18px]">devices</span>
+<span>Log Sesi Aktif</span>
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+</button>
+</nav>
+<!-- Global Filter/Search helper for active view -->
+<div class="flex items-center gap-space-sm">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="bg-surface text-on-surface pl-9 pr-3 py-1.5 rounded-lg text-body-sm font-body-sm placeholder:text-on-surface-variant/60 focus:outline-none focus:ring-2 focus:ring-primary w-52 md:w-64 shadow-inner" id="filterInput" placeholder="Cari nama, role, modul..." type="text"/>
+</div>
+<button class="p-2 rounded-lg bg-surface hover:bg-surface-container-high text-on-surface-variant transition-colors" title="Export CSV Data Pengguna" type="button">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</button>
+</div>
+</div>
+<!-- TAB 1: DAFTAR PENGGUNA / USERS -->
+<div class="tab-content block" id="tab-users">
+<!-- Role Filters Strip -->
+<div class="px-gutter py-space-sm bg-surface-container-low flex flex-wrap items-center gap-space-xs">
+<span class="font-eyebrow-accent text-eyebrow-accent text-on-surface-variant uppercase mr-2">Filter Peran:</span>
+<button class="role-filter-btn px-3 py-1 rounded-full text-label-sm font-label-sm bg-primary text-surface" onclick="filterUserList('ALL')" type="button">Semua (7)</button>
+<button class="role-filter-btn px-3 py-1 rounded-full text-label-sm font-label-sm bg-surface-container text-on-surface-variant hover:bg-surface-container-high" onclick="filterUserList('OWNER')" type="button">Owner (1)</button>
+<button class="role-filter-btn px-3 py-1 rounded-full text-label-sm font-label-sm bg-surface-container text-on-surface-variant hover:bg-surface-container-high" onclick="filterUserList('ADMIN')" type="button">Admin (1)</button>
+<button class="role-filter-btn px-3 py-1 rounded-full text-label-sm font-label-sm bg-surface-container text-on-surface-variant hover:bg-surface-container-high" onclick="filterUserList('SUPERVISOR')" type="button">Supervisor (1)</button>
+<button class="role-filter-btn px-3 py-1 rounded-full text-label-sm font-label-sm bg-surface-container text-on-surface-variant hover:bg-surface-container-high" onclick="filterUserList('CASHIER')" type="button">Kasir (1)</button>
+<button class="role-filter-btn px-3 py-1 rounded-full text-label-sm font-label-sm bg-surface-container text-on-surface-variant hover:bg-surface-container-high" onclick="filterUserList('KITCHEN')" type="button">Dapur (1)</button>
+<button class="role-filter-btn px-3 py-1 rounded-full text-label-sm font-label-sm bg-surface-container text-on-surface-variant hover:bg-surface-container-high" onclick="filterUserList('WAITER')" type="button">Waiter (2)</button>
+</div>
+<!-- Users Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left" id="userTable">
+<thead>
+<tr class="bg-surface-container-high text-on-surface-variant font-eyebrow-accent text-eyebrow-accent uppercase tracking-wider">
+<th class="py-3 px-gutter">Staf &amp; Kredensial</th>
+<th class="py-3 px-space-md">Peran &amp; Level</th>
+<th class="py-3 px-space-md">Cakupan Hak Akses</th>
+<th class="py-3 px-space-md">Status &amp; Shift</th>
+<th class="py-3 px-space-md">Sesi Terakhir</th>
+<th class="py-3 px-gutter text-right">Tindakan</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1: Budi Santoso -->
+<tr class="user-row hover:bg-surface-container/50 transition-colors" data-name="Budi Santoso" data-role="OWNER">
+<td class="py-space-md px-gutter">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-primary text-surface flex items-center justify-center font-bold text-label-md shadow-sm">
+                    BS
+                  </div>
+<div>
+<div class="font-label-md text-label-md text-deep-moss font-bold flex items-center gap-2">
+                      Budi Santoso
+                      <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-warm/30 text-roasted-earth">Root</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">budi.santoso@tepisawah.id</div>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full text-label-sm font-label-sm bg-roasted-earth text-surface font-semibold">
+<span class="material-symbols-outlined text-[15px]">shield_person</span> OWNER
+                </span>
+</td>
+<td class="py-space-md px-space-md max-w-xs">
+<p class="font-body-sm text-body-sm text-deep-moss font-semibold">All Modules &amp; Financials</p>
+<p class="text-[12px] text-on-surface-variant">Akses Penuh PB1, Laporan P&amp;L, Audit Log, Bypass PIN</p>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-primary/10 text-primary font-bold">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> ACTIVE
+                </span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="font-body-sm text-body-sm text-on-surface">10 menit lalu</div>
+<div class="font-monospace-data text-[11px] text-on-surface-variant">Web Console / Chrome</div>
+</td>
+<td class="py-space-md px-gutter text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Lihat Profil" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Ubah Akses" type="button">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Siti Rahma -->
+<tr class="user-row hover:bg-surface-container/50 transition-colors" data-name="Siti Rahma" data-role="ADMIN">
+<td class="py-space-md px-gutter">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-label-md shadow-sm">
+                    SR
+                  </div>
+<div>
+<div class="font-label-md text-label-md text-deep-moss font-bold">Siti Rahma</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">siti.rahma@tepisawah.id</div>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full text-label-sm font-label-sm bg-primary-container text-on-primary-container font-semibold">
+<span class="material-symbols-outlined text-[15px]">manage_accounts</span> ADMIN
+                </span>
+</td>
+<td class="py-space-md px-space-md max-w-xs">
+<p class="font-body-sm text-body-sm text-deep-moss font-semibold">Konfigurasi, Menu, Meja, QR, User</p>
+<p class="text-[12px] text-on-surface-variant">Pengaturan Sistem, Manajemen Meja Saung, Master Stok</p>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-primary/10 text-primary font-bold">
+<span class="w-2 h-2 rounded-full bg-primary"></span> ACTIVE
+                </span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="font-body-sm text-body-sm text-on-surface">1 jam lalu</div>
+<div class="font-monospace-data text-[11px] text-on-surface-variant">Admin Desktop Ciperna</div>
+</td>
+<td class="py-space-md px-gutter text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Lihat Profil" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Ubah Akses" type="button">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Rian Anggoro -->
+<tr class="user-row hover:bg-surface-container/50 transition-colors" data-name="Rian Anggoro" data-role="SUPERVISOR">
+<td class="py-space-md px-gutter">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-label-md shadow-sm">
+                    RA
+                  </div>
+<div>
+<div class="font-label-md text-label-md text-deep-moss font-bold">Rian Anggoro</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">rian.spv@tepisawah.id</div>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full text-label-sm font-label-sm bg-secondary text-surface font-semibold">
+<span class="material-symbols-outlined text-[15px]">verified</span> SUPERVISOR
+                </span>
+</td>
+<td class="py-space-md px-space-md max-w-xs">
+<p class="font-body-sm text-body-sm text-deep-moss font-semibold">Shift, Void/Refund Approval, Discount Override</p>
+<p class="text-[12px] text-on-surface-variant">Otorisasi PIN Void, Monitoring Antrean KDS &amp; Waiter Call</p>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-primary/10 text-primary font-bold">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> ACTIVE
+                </span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="font-body-sm text-body-sm text-on-surface">25 menit lalu</div>
+<div class="font-monospace-data text-[11px] text-on-surface-variant">Tablet SPV Floor / Android</div>
+</td>
+<td class="py-space-md px-gutter text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Lihat Profil" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Ubah Akses" type="button">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4: Sigit Wicaksono -->
+<tr class="user-row hover:bg-surface-container/50 transition-colors" data-name="Sigit Wicaksono" data-role="CASHIER">
+<td class="py-space-md px-gutter">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-surface-variant text-on-surface flex items-center justify-center font-bold text-label-md shadow-sm">
+                    SW
+                  </div>
+<div>
+<div class="font-label-md text-label-md text-deep-moss font-bold">Sigit Wicaksono</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">sigit.kasir@tepisawah.id</div>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full text-label-sm font-label-sm bg-tertiary-container text-surface font-semibold">
+<span class="material-symbols-outlined text-[15px]">point_of_sale</span> CASHIER
+                </span>
+</td>
+<td class="py-space-md px-space-md max-w-xs">
+<p class="font-body-sm text-body-sm text-deep-moss font-semibold">POS Terminal, Payment, Receipt, Shift Closing</p>
+<p class="text-[12px] text-on-surface-variant">Cetak Bill Meja, Penerimaan Tunai/QRIS, Rekonsiliasi Kas</p>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col gap-0.5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-label-sm font-label-sm bg-primary/10 text-primary font-bold">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span> ACTIVE
+                  </span>
+<span class="text-[11px] font-semibold text-roasted-earth">Shift 1 Aktif (Drawer #01)</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="font-body-sm text-body-sm text-on-surface">Aktif sekarang</div>
+<div class="font-monospace-data text-[11px] text-on-surface-variant">Terminal Kasir 1 / POS Station</div>
+</td>
+<td class="py-space-md px-gutter text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Lihat Profil" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Ubah Akses" type="button">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5: Chef Komarudin -->
+<tr class="user-row hover:bg-surface-container/50 transition-colors" data-name="Chef Komarudin" data-role="KITCHEN">
+<td class="py-space-md px-gutter">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-tertiary text-surface flex items-center justify-center font-bold text-label-md shadow-sm">
+                    CK
+                  </div>
+<div>
+<div class="font-label-md text-label-md text-deep-moss font-bold">Chef Komarudin</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">komar.kitchen@tepisawah.id</div>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full text-label-sm font-label-sm bg-tertiary text-surface font-semibold">
+<span class="material-symbols-outlined text-[15px]">skillet</span> KITCHEN
+                </span>
+</td>
+<td class="py-space-md px-space-md max-w-xs">
+<p class="font-body-sm text-body-sm text-deep-moss font-semibold">KDS Antrean Dapur, Mark Cooking/Ready, Recall</p>
+<p class="text-[12px] text-on-surface-variant">Layar Sentuh Display Dapur, Tiket Pesanan Masak, Prioritas SLA</p>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-primary/10 text-primary font-bold">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> ACTIVE
+                </span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="font-body-sm text-body-sm text-on-surface">5 menit lalu</div>
+<div class="font-monospace-data text-[11px] text-on-surface-variant">KDS TouchScreen Main Dapur</div>
+</td>
+<td class="py-space-md px-gutter text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Lihat Profil" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Ubah Akses" type="button">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 6: Asep Sunandar -->
+<tr class="user-row hover:bg-surface-container/50 transition-colors" data-name="Asep Sunandar" data-role="WAITER">
+<td class="py-space-md px-gutter">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest text-deep-moss flex items-center justify-center font-bold text-label-md shadow-sm">
+                    AS
+                  </div>
+<div>
+<div class="font-label-md text-label-md text-deep-moss font-bold">Asep Sunandar</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">asep.waiter@tepisawah.id</div>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full text-label-sm font-label-sm bg-secondary-container text-roasted-earth font-semibold">
+<span class="material-symbols-outlined text-[15px]">room_service</span> WAITER
+                </span>
+</td>
+<td class="py-space-md px-space-md max-w-xs">
+<p class="font-body-sm text-body-sm text-deep-moss font-semibold">Service Board, Call Waiter, Serve Food, Request Bill</p>
+<p class="text-[12px] text-on-surface-variant">Pramusaji Floater - Notifikasi Panggilan Meja Outdoor</p>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-primary/10 text-primary font-bold">
+<span class="w-2 h-2 rounded-full bg-primary"></span> ACTIVE
+                </span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="font-body-sm text-body-sm text-on-surface">3 menit lalu</div>
+<div class="font-monospace-data text-[11px] text-on-surface-variant">Handheld POS / Area Sawah</div>
+</td>
+<td class="py-space-md px-gutter text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Lihat Profil" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Ubah Akses" type="button">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 7: Dimas Saputra -->
+<tr class="user-row hover:bg-surface-container/50 transition-colors" data-name="Dimas Saputra" data-role="WAITER">
+<td class="py-space-md px-gutter">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest text-deep-moss flex items-center justify-center font-bold text-label-md shadow-sm">
+                    DS
+                  </div>
+<div>
+<div class="font-label-md text-label-md text-deep-moss font-bold">Dimas Saputra</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">dimas.saung@tepisawah.id</div>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full text-label-sm font-label-sm bg-secondary-container text-roasted-earth font-semibold">
+<span class="material-symbols-outlined text-[15px]">room_service</span> WAITER
+                </span>
+</td>
+<td class="py-space-md px-space-md max-w-xs">
+<p class="font-body-sm text-body-sm text-deep-moss font-semibold">Service Board, Call Waiter, Serve Food, Request Bill</p>
+<p class="text-[12px] text-on-surface-variant">Pramusaji Saung Gazebo 01-10 - Antar Pesanan &amp; Status Meja</p>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-primary/10 text-primary font-bold">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> ACTIVE
+                </span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="font-body-sm text-body-sm text-on-surface">12 menit lalu</div>
+<div class="font-monospace-data text-[11px] text-on-surface-variant">Handheld Smartwatch &amp; POS</div>
+</td>
+<td class="py-space-md px-gutter text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Lihat Profil" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors" title="Ubah Akses" type="button">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination / Staff Summary Bar -->
+<div class="px-gutter py-space-sm bg-surface-container flex flex-wrap items-center justify-between text-body-sm text-on-surface-variant">
+<span>Menampilkan <strong>7</strong> staf operasional aktif dari total <strong>14</strong> pengguna</span>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-deep-moss font-semibold">Tepi Sawah Ciperna Cloud Security:</span>
+<span class="font-monospace-data text-[11px] bg-surface-container-high px-2 py-0.5 rounded text-roasted-earth">RBAC-v4.1 Enforcement Enabled</span>
+</div>
+</div>
+</div>
+<!-- TAB 2: MATRIKS HAK AKSES / PERMISSION MATRIX -->
+<div class="tab-content hidden flex-col" id="tab-matrix">
+<!-- Matrix Header Info & Bulk Actions -->
+<div class="px-gutter py-space-md bg-surface-container-low flex flex-wrap items-center justify-between gap-space-md">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-deep-moss">Matriks Izin Otoritas (RBAC System)</span>
+<span class="px-2 py-0.5 rounded bg-primary/10 text-primary font-label-sm text-label-sm font-bold">11 Kebijakan Akses</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+            Konfigurasikan batas operasional per peran staf. Modifikasi langsung tercermin pada terminal POS, KDS dapur, dan mobile waiter.
+          </p>
+</div>
+<div class="flex items-center gap-space-sm flex-wrap">
+<button class="px-space-md py-space-sm rounded-lg font-label-md text-label-md bg-surface-container-highest hover:bg-surface-variant text-on-surface transition-colors flex items-center gap-space-xs shadow-sm" id="btnResetMatrix" type="button">
+<span class="material-symbols-outlined text-[18px]">restart_alt</span>
+<span>Reset Default Role Policy</span>
+</button>
+<button class="px-space-md py-space-sm rounded-lg font-label-md text-label-md bg-primary hover:bg-deep-moss text-surface transition-all flex items-center gap-space-xs shadow-md" id="btnSaveMatrix" type="button">
+<span class="material-symbols-outlined text-[18px]">save</span>
+<span>Simpan Perubahan Matriks Izin</span>
+</button>
+</div>
+</div>
+<!-- Notification Toast Container -->
+<div class="hidden mx-gutter my-space-xs p-space-sm rounded-lg bg-primary-container text-on-primary-container flex items-center justify-between shadow-sm" id="matrixToast">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span class="font-label-md text-label-md font-semibold" id="toastMessage">Kebijakan permission matrix berhasil disimpan ke cloud database.</span>
+</div>
+<button class="text-on-primary-container hover:opacity-80" onclick="document.getElementById('matrixToast').classList.add('hidden')" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<!-- Matrix Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left" id="matrixTable">
+<thead>
+<tr class="bg-surface-container-high text-deep-moss font-eyebrow-accent text-eyebrow-accent uppercase tracking-wider">
+<th class="py-4 px-gutter w-96">Modul &amp; Tindakan Operasional</th>
+<th class="py-4 px-space-md text-center bg-surface-container-high/80">
+<div class="flex flex-col items-center">
+<span class="text-roasted-earth font-bold">Owner</span>
+<span class="font-mono text-[10px] text-on-surface-variant">Level 0</span>
+</div>
+</th>
+<th class="py-4 px-space-md text-center">
+<div class="flex flex-col items-center">
+<span class="text-deep-moss font-bold">Admin</span>
+<span class="font-mono text-[10px] text-on-surface-variant">Level 1</span>
+</div>
+</th>
+<th class="py-4 px-space-md text-center bg-surface-container-high/80">
+<div class="flex flex-col items-center">
+<span class="text-secondary font-bold">Supervisor</span>
+<span class="font-mono text-[10px] text-on-surface-variant">Level 2</span>
+</div>
+</th>
+<th class="py-4 px-space-md text-center">
+<div class="flex flex-col items-center">
+<span class="text-tertiary-container font-bold">Kasir (POS)</span>
+<span class="font-mono text-[10px] text-on-surface-variant">Front Office</span>
+</div>
+</th>
+<th class="py-4 px-space-md text-center bg-surface-container-high/80">
+<div class="flex flex-col items-center">
+<span class="text-tertiary font-bold">Dapur (KDS)</span>
+<span class="font-mono text-[10px] text-on-surface-variant">Kitchen Production</span>
+</div>
+</th>
+<th class="py-4 px-space-md text-center">
+<div class="flex flex-col items-center">
+<span class="text-secondary font-bold">Pramusaji (Waiter)</span>
+<span class="font-mono text-[10px] text-on-surface-variant">Floor Service</span>
+</div>
+</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container text-body-sm font-body-sm">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container/40 transition-colors">
+<td class="py-3 px-gutter">
+<div class="font-label-md text-label-md text-deep-moss font-bold">Lihat Katalog Menu</div>
+<div class="text-[12px] text-on-surface-variant">Menampilkan seluruh item kuliner Sunda, minuman, &amp; status availability</div>
+</td>
+<!-- Owner -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Admin -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Supervisor -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Kasir -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Dapur -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Pramusaji -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container/40 transition-colors">
+<td class="py-3 px-gutter">
+<div class="font-label-md text-label-md text-deep-moss font-bold">Tambah/Edit/Arsipkan Menu</div>
+<div class="text-[12px] text-on-surface-variant">Perubahan harga, resep bumbu, opsi modifier, dan penonaktifan stok</div>
+</td>
+<!-- Owner -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Admin -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Supervisor -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Kasir -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Dapur -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Pramusaji -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container/40 transition-colors">
+<td class="py-3 px-gutter">
+<div class="font-label-md text-label-md text-deep-moss font-bold">Kelola Meja &amp; Regenerasi QR Code</div>
+<div class="text-[12px] text-on-surface-variant">Denah Saung, pairing token sesi meja dinamis, unduh PDF QR Meja</div>
+</td>
+<!-- Owner -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Admin -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Supervisor -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-secondary/10 text-secondary" title="Hanya melihat denah &amp; cetak ulang QR">
+                  View Only
+                </span>
+</td>
+<!-- Kasir -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Dapur -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Pramusaji -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container/40 transition-colors">
+<td class="py-3 px-gutter">
+<div class="font-label-md text-label-md text-deep-moss font-bold">Konfirmasi Order &amp; Tolak Order</div>
+<div class="text-[12px] text-on-surface-variant">Memvalidasi tiket pesanan masuk dari QR Pelanggan ke KDS Dapur</div>
+</td>
+<!-- Owner -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Admin -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Supervisor -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Kasir -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Dapur -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Pramusaji -->
+<td class="py-3 px-space-md text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-warm/30 text-roasted-earth" title="Pramusaji hanya input pesanan verbal ke sistem">
+                  Request Only
+                </span>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container/40 transition-colors">
+<td class="py-3 px-gutter">
+<div class="font-label-md text-label-md text-deep-moss font-bold">Eksekusi Pembayaran Kasir POS</div>
+<div class="text-[12px] text-on-surface-variant">Penyelesaian transaksi: Tunai, QRIS Dinamis, Split Bill, Struk PB1</div>
+</td>
+<!-- Owner -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Admin -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Supervisor -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Kasir -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Dapur -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Pramusaji -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="hover:bg-surface-container/40 transition-colors">
+<td class="py-3 px-gutter">
+<div class="font-label-md text-label-md text-deep-moss font-bold">Otorisasi Diskon &amp; Void/Refund</div>
+<div class="text-[12px] text-on-surface-variant">Pembatalan item setelah print dapur, diskon member/VIP khusus</div>
+</td>
+<!-- Owner -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Admin -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Supervisor -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Kasir -->
+<td class="py-3 px-space-md text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-tertiary/10 text-tertiary" title="Harus memasukkan PIN Supervisor untuk eksekusi void">
+                  Need SPV PIN
+                </span>
+</td>
+<!-- Dapur -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Pramusaji -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+</tr>
+<!-- Row 7 -->
+<tr class="hover:bg-surface-container/40 transition-colors">
+<td class="py-3 px-gutter">
+<div class="font-label-md text-label-md text-deep-moss font-bold">Operasional Dapur &amp; Selesai Masak</div>
+<div class="text-[12px] text-on-surface-variant">Ubah status pesanan KDS (Cooking -&gt; Ready to Serve -&gt; Recall)</div>
+</td>
+<!-- Owner -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Admin -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Supervisor -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Kasir -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Dapur -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Pramusaji -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+</tr>
+<!-- Row 8 -->
+<tr class="hover:bg-surface-container/40 transition-colors">
+<td class="py-3 px-gutter">
+<div class="font-label-md text-label-md text-deep-moss font-bold">Antar Makanan &amp; Mark Served</div>
+<div class="text-[12px] text-on-surface-variant">Penyelesaian dispatch saung &amp; dismiss pager pemanggil waiter</div>
+</td>
+<!-- Owner -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Admin -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Supervisor -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Kasir -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Dapur -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Pramusaji -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+</tr>
+<!-- Row 9 -->
+<tr class="hover:bg-surface-container/40 transition-colors">
+<td class="py-3 px-gutter">
+<div class="font-label-md text-label-md text-deep-moss font-bold">Kelola Pengguna &amp; Hak Akses</div>
+<div class="text-[12px] text-on-surface-variant">Buat kredensial staf baru, reset PIN SPV, dan penugasan peran</div>
+</td>
+<!-- Owner -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Admin -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Supervisor -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Kasir -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Dapur -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Pramusaji -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+</tr>
+<!-- Row 10 -->
+<tr class="hover:bg-surface-container/40 transition-colors">
+<td class="py-3 px-gutter">
+<div class="font-label-md text-label-md text-deep-moss font-bold">Pengaturan Sistem, PB1 &amp; Jam Buka</div>
+<div class="text-[12px] text-on-surface-variant">Tarif pajak restoran 10%, printer thermal routing, profil Ciperna</div>
+</td>
+<!-- Owner -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Admin -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Supervisor -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Kasir -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Dapur -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Pramusaji -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+</tr>
+<!-- Row 11 -->
+<tr class="hover:bg-surface-container/40 transition-colors">
+<td class="py-3 px-gutter">
+<div class="font-label-md text-label-md text-deep-moss font-bold">Akses Audit Trail Lengkap</div>
+<div class="text-[12px] text-on-surface-variant">Log pembukaan laci kas, riwayat void transaksi, audit IP perangkat</div>
+</td>
+<!-- Owner -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Admin -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Supervisor -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto hover:bg-primary/20 transition-all" data-state="checked" type="button">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+<!-- Kasir -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Dapur -->
+<td class="py-3 px-space-md text-center bg-surface-container-low/40">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+<!-- Pramusaji -->
+<td class="py-3 px-space-md text-center">
+<button class="matrix-toggle w-8 h-8 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center mx-auto hover:bg-surface-container-highest transition-all" data-state="cross" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Legend & Footnote -->
+<div class="px-gutter py-space-sm bg-surface-container flex flex-wrap items-center justify-between gap-space-sm text-body-sm text-on-surface-variant">
+<div class="flex items-center gap-space-md flex-wrap">
+<span class="font-eyebrow-accent text-eyebrow-accent uppercase">Petunjuk Visual:</span>
+<div class="flex items-center gap-1.5">
+<span class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[14px] font-bold">
+<span class="material-symbols-outlined text-[15px]">check</span>
+</span>
+<span class="text-[12px]">Izin Penuh (Klik untuk Toggle)</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-6 h-6 rounded-full bg-surface-container-high text-outline-variant flex items-center justify-center text-[14px]">
+<span class="material-symbols-outlined text-[15px]">close</span>
+</span>
+<span class="text-[12px]">Tidak Diizinkan</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-tertiary/10 text-tertiary text-[11px] font-bold">Need SPV PIN</span>
+<span class="text-[12px]">Wajib Otorisasi Khusus</span>
+</div>
+</div>
+<div class="text-[12px] text-secondary font-medium">
+          Perubahan pada Owner dilindungi &amp; tidak dapat dinonaktifkan.
+        </div>
+</div>
+</div>
+<!-- TAB 3: ROLE MANAGEMENT -->
+<div class="tab-content hidden p-gutter" id="tab-roles">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Role Card 1: Owner -->
+<div class="bg-surface p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-roasted-earth text-surface font-bold">Level 0</span>
+<span class="font-monospace-data text-[12px] text-on-surface-variant">1 Pengguna</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-deep-moss">OWNER</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Pemegang hak tertinggi. Kontrol finansial menyeluruh, audit forensik, dan legalitas akun.</p>
+</div>
+<div class="mt-space-md pt-space-sm border-t border-surface-container flex items-center justify-between text-body-sm">
+<span class="text-primary font-bold text-label-sm">Bypass Segala PIN</span>
+<button class="text-secondary hover:text-deep-moss font-label-sm text-label-sm" type="button">Detail Aturan →</button>
+</div>
+</div>
+<!-- Role Card 2: Admin -->
+<div class="bg-surface p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-bold">Level 1</span>
+<span class="font-monospace-data text-[12px] text-on-surface-variant">1 Pengguna</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-deep-moss">ADMINISTRATOR</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Pengelola katalog menu saung, tata letak denah, sinkronisasi QR pelanggan, dan konfigurasi POS.</p>
+</div>
+<div class="mt-space-md pt-space-sm border-t border-surface-container flex items-center justify-between text-body-sm">
+<span class="text-deep-moss font-bold text-label-sm">System Operations</span>
+<button class="text-secondary hover:text-deep-moss font-label-sm text-label-sm" type="button">Detail Aturan →</button>
+</div>
+</div>
+<!-- Role Card 3: Supervisor -->
+<div class="bg-surface p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-secondary text-surface font-bold">Level 2</span>
+<span class="font-monospace-data text-[12px] text-on-surface-variant">1 Pengguna</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-deep-moss">SUPERVISOR FLOOR</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Otorisator shift lapangan, pembatalan pesanan void, diskon tamu VIP, dan pengawas SLA dapur.</p>
+</div>
+<div class="mt-space-md pt-space-sm border-t border-surface-container flex items-center justify-between text-body-sm">
+<span class="text-secondary font-bold text-label-sm">PIN Security Issuer</span>
+<button class="text-secondary hover:text-deep-moss font-label-sm text-label-sm" type="button">Detail Aturan →</button>
+</div>
+</div>
+<!-- Role Card 4: Cashier -->
+<div class="bg-surface p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-tertiary-container text-surface font-bold">Front Office</span>
+<span class="font-monospace-data text-[12px] text-on-surface-variant">1 Pengguna</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-deep-moss">CASHIER / KASIR</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Operator mesin kasir POS Ciperna, penagihan pembayaran tunai/non-tunai, dan tutup shift kasir.</p>
+</div>
+<div class="mt-space-md pt-space-sm border-t border-surface-container flex items-center justify-between text-body-sm">
+<span class="text-on-surface-variant font-bold text-label-sm">POS Locked Device</span>
+<button class="text-secondary hover:text-deep-moss font-label-sm text-label-sm" type="button">Detail Aturan →</button>
+</div>
+</div>
+<!-- Role Card 5: Kitchen -->
+<div class="bg-surface p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-tertiary text-surface font-bold">Kitchen</span>
+<span class="font-monospace-data text-[12px] text-on-surface-variant">1 Pengguna</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-deep-moss">KITCHEN / KDS</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Operasional layar dapur, penerima tiket order otomatis, timer durasi memasak masakan Sunda.</p>
+</div>
+<div class="mt-space-md pt-space-sm border-t border-surface-container flex items-center justify-between text-body-sm">
+<span class="text-tertiary font-bold text-label-sm">KDS Station Only</span>
+<button class="text-secondary hover:text-deep-moss font-label-sm text-label-sm" type="button">Detail Aturan →</button>
+</div>
+</div>
+<!-- Role Card 6: Waiter -->
+<div class="bg-surface p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-secondary-container text-roasted-earth font-bold">Service Floor</span>
+<span class="font-monospace-data text-[12px] text-on-surface-variant">2 Pengguna</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-deep-moss">WAITER / PRAMUSAJI</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Penerima bel saung gazebo, pengantar makanan matang ke meja, asisten pemesanan pelanggan.</p>
+</div>
+<div class="mt-space-md pt-space-sm border-t border-surface-container flex items-center justify-between text-body-sm">
+<span class="text-secondary font-bold text-label-sm">Mobile POS Companion</span>
+<button class="text-secondary hover:text-deep-moss font-label-sm text-label-sm" type="button">Detail Aturan →</button>
+</div>
+</div>
+</div>
+</div>
+<!-- TAB 4: LOG SESI AKTIF -->
+<div class="tab-content hidden p-gutter" id="tab-sessions">
+<div class="space-y-space-md">
+<div class="flex items-center justify-between">
+<p class="font-headline-sm text-headline-sm text-deep-moss">Terminal &amp; Perangkat Terhubung Saat Ini</p>
+<button class="px-space-md py-1.5 rounded-lg bg-error-container text-on-error-container font-label-sm text-label-sm flex items-center gap-1 hover:bg-error hover:text-on-error transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">logout</span>
+<span>Putuskan Semua Sesi Non-Admin</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- Session Item 1 -->
+<div class="p-space-md bg-surface rounded-xl shadow-sm flex items-start justify-between">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mt-1">
+<span class="material-symbols-outlined text-[22px]">laptop_chromebook</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md font-bold text-deep-moss">Budi Santoso (Owner)</span>
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">MacBook Pro - Google Chrome 122.0</div>
+<div class="font-monospace-data text-[11px] text-secondary mt-1">IP: 192.168.1.104 (Local Wi-Fi Ciperna Internal)</div>
+<div class="text-[12px] text-on-surface-variant">Login: 10:14 WIB - Masa Sesi: 8 Jam Kedepan</div>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-primary-container text-on-primary-container">Aktif</span>
+</div>
+<!-- Session Item 2 -->
+<div class="p-space-md bg-surface rounded-xl shadow-sm flex items-start justify-between">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mt-1">
+<span class="material-symbols-outlined text-[22px]">point_of_sale</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md font-bold text-deep-moss">Sigit Wicaksono (Kasir Utama)</span>
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">POS Terminal Station #01 (Sunmi T2s)</div>
+<div class="font-monospace-data text-[11px] text-secondary mt-1">IP: 192.168.1.50 (Ethernet POS VLAN)</div>
+<div class="text-[12px] text-on-surface-variant">Shift 1 Pagi: Buka Kas Rp 500.000 (09:45 WIB)</div>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-primary-container text-on-primary-container">Aktif</span>
+</div>
+<!-- Session Item 3 -->
+<div class="p-space-md bg-surface rounded-xl shadow-sm flex items-start justify-between">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-tertiary/10 text-tertiary flex items-center justify-center mt-1">
+<span class="material-symbols-outlined text-[22px]">tv</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md font-bold text-deep-moss">Chef Komarudin (Head Chef)</span>
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">KDS Kitchen Display Wall Unit #1</div>
+<div class="font-monospace-data text-[11px] text-secondary mt-1">IP: 192.168.1.61 (Kitchen VLAN)</div>
+<div class="text-[12px] text-on-surface-variant">Antrean Aktif: 6 Pesanan Saung</div>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-primary-container text-on-primary-container">Aktif</span>
+</div>
+<!-- Session Item 4 -->
+<div class="p-space-md bg-surface rounded-xl shadow-sm flex items-start justify-between">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center mt-1">
+<span class="material-symbols-outlined text-[22px]">tablet_android</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md font-bold text-deep-moss">Rian Anggoro (Head Supervisor)</span>
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Samsung Galaxy Tab Active (Floor Duty)</div>
+<div class="font-monospace-data text-[11px] text-secondary mt-1">IP: 192.168.1.112 (Staff Wi-Fi)</div>
+<div class="text-[12px] text-on-surface-variant">Baterai: 84% - Standby Floor Service</div>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-primary-container text-on-primary-container">Aktif</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Editorial Atmosphere Banner -->
+<div class="bg-surface-container-high rounded-xl p-gutter shadow-sm relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-space-lg">
+<div class="max-w-xl z-10">
+<div class="flex items-center gap-2 mb-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">security</span>
+<span class="font-eyebrow-accent text-eyebrow-accent text-primary uppercase tracking-widest">Keamanan Operasional Tepi Sawah</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-deep-moss font-headline-md">
+        Standar Ketat Operasional &amp; Integritas Kasir Ciperna
+      </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 leading-relaxed">
+        Setiap void pesanan yang dibatalkan setelah masuk dapur dicatat permanen dalam audit trail anti-hapus. Otorisasi supervisor PIN menjamin akurasi stok dapur dan penerimaan kas tanpa selisih.
+      </p>
+</div>
+<div class="flex items-center gap-space-md z-10">
+<div class="text-right">
+<div class="font-label-sm text-label-sm text-on-surface-variant">Database Sinkronisasi:</div>
+<div class="font-monospace-data text-monospace-data text-deep-moss font-bold">Cloud Server #10 (JKT)</div>
+<div class="font-body-sm text-[11px] text-primary">Latency: 14ms (Optimal)</div>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined text-[28px]">cloud_done</span>
+</div>
+</div>
+<!-- Ambient leaf tint glow -->
+<div class="absolute -right-10 -bottom-10 w-64 h-64 bg-primary/5 rounded-full blur-2xl pointer-events-none"></div>
+</div>
+</div>
+<script>
+  // Tab Switcher Micro-interaction
+  function switchTab(tabId) {
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(el => {
+      el.classList.add('hidden');
+      el.classList.remove('block', 'flex');
+    });
+
+    // Reset all tab button styles
+    document.querySelectorAll('.tab-item').forEach(btn => {
+      btn.classList.remove('bg-primary-container', 'text-on-primary-container', 'shadow-sm');
+      btn.classList.add('text-on-surface-variant');
+    });
+
+    // Show target tab
+    const target = document.getElementById(tabId);
+    if (tabId === 'tab-matrix') {
+      target.classList.remove('hidden');
+      target.classList.add('flex');
+    } else {
+      target.classList.remove('hidden');
+      target.classList.add('block');
+    }
+
+    // Set active button style
+    const activeBtn = document.getElementById('tabBtn-' + tabId);
+    if (activeBtn) {
+      activeBtn.classList.remove('text-on-surface-variant');
+      activeBtn.classList.add('bg-primary-container', 'text-on-primary-container', 'shadow-sm');
+    }
+  }
+
+  // Interactive Matrix Checkbox Toggles
+  document.querySelectorAll('.matrix-toggle').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const currentState = this.getAttribute('data-state');
+      const icon = this.querySelector('.material-symbols-outlined');
+
+      if (currentState === 'checked') {
+        this.setAttribute('data-state', 'cross');
+        this.classList.remove('bg-primary/10', 'text-primary');
+        this.classList.add('bg-surface-container-high', 'text-outline-variant');
+        icon.textContent = 'close';
+      } else {
+        this.setAttribute('data-state', 'checked');
+        this.classList.remove('bg-surface-container-high', 'text-outline-variant');
+        this.classList.add('bg-primary/10', 'text-primary');
+        icon.textContent = 'check';
+      }
+    });
+  });
+
+  // Save Matrix Toast Trigger
+  const btnSaveMatrix = document.getElementById('btnSaveMatrix');
+  if (btnSaveMatrix) {
+    btnSaveMatrix.addEventListener('click', function() {
+      const toast = document.getElementById('matrixToast');
+      const msg = document.getElementById('toastMessage');
+      msg.textContent = 'Matriks Hak Akses berhasil diperbarui & disinkronkan ke 4 terminal kasir/KDS.';
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 5000);
+    });
+  }
+
+  // Reset Default Role Policy Trigger
+  const btnResetMatrix = document.getElementById('btnResetMatrix');
+  if (btnResetMatrix) {
+    btnResetMatrix.addEventListener('click', function() {
+      if (confirm('Kembalikan semua kebijakan matriks izin ke default sistem Tepi Sawah POS?')) {
+        const toast = document.getElementById('matrixToast');
+        const msg = document.getElementById('toastMessage');
+        msg.textContent = 'Kebijakan izin peran dikembalikan ke konfigurasi standar pabrik POS.';
+        toast.classList.remove('hidden');
+      }
+    });
+  }
+
+  // User Filter by Role
+  function filterUserList(role) {
+    // update button styling
+    document.querySelectorAll('.role-filter-btn').forEach(b => {
+      b.classList.remove('bg-primary', 'text-surface');
+      b.classList.add('bg-surface-container', 'text-on-surface-variant');
+    });
+    event.currentTarget.classList.remove('bg-surface-container', 'text-on-surface-variant');
+    event.currentTarget.classList.add('bg-primary', 'text-surface');
+
+    const rows = document.querySelectorAll('#userTable .user-row');
+    rows.forEach(row => {
+      const userRole = row.getAttribute('data-role');
+      if (role === 'ALL' || userRole === role) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+
+  // Filter / Search Input
+  const filterInput = document.getElementById('filterInput');
+  if (filterInput) {
+    filterInput.addEventListener('input', function(e) {
+      const query = e.target.value.toLowerCase();
+      const rows = document.querySelectorAll('#userTable .user-row');
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        if (text.includes(query)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    });
+  }
+
+  // Quick Action Tambah Pengguna Notice
+  const btnNewStaff = document.getElementById('btnNewStaff');
+  if (btnNewStaff) {
+    btnNewStaff.addEventListener('click', function() {
+      alert('Membuka modal penambahan staf baru: Anda dapat mendaftarkan nama, peran (RBAC), nomor kartu RFID / PIN kasir.');
+    });
+  }
+</script></main></div></body></html>
