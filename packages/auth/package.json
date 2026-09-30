@@ -1,0 +1,32 @@
+{
+  "name": "@tepisawah/auth",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Supabase auth client, session management and route guards",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@tepisawah/database": "workspace:*",
+    "@tepisawah/permissions": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@supabase/supabase-js": "^2.117.2",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "jsdom": "^25.0.1",
+    "typescript": "^5.7.3",
+    "vitest": "^3.2.7"
+  }
+}

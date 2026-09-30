@@ -1,0 +1,27 @@
+# Supabase local development configuration (Phase 0 scaffold).
+# Local defaults only — production configuration is managed by the deployment
+# pipeline, never committed here.
+project_id = "tepisawah"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+
+[db]
+port = 54322
+shadow_port = 54323
+
+[studio]
+enabled = true
+port = 54324
+
+[auth]
+enabled = true
+site_url = "http://localhost:5173"
+
+[realtime]
+enabled = true
+
+[edge_runtime]
+enabled = true

@@ -1,0 +1,76 @@
+Tepi Sawah MASTER PROJECT PACK v1.0
+Generated: 2026-09-27
+
+ROOT
+- README.md
+- MANIFEST.txt
+
+PROJECT
+- docs/project/PROJECT_RULES.md
+- docs/project/DESIGN_FREEZE.md
+- docs/PROJECT_DOCUMENTATION_INDEX.md
+
+BRAND
+- docs/brand/BRAND_DIRECTION.md
+
+DESIGN
+- docs/design/MASTER_DESIGN_SYSTEM.md
+- docs/design/DESIGN_SYSTEM.md
+
+ARCHITECTURE
+- docs/architecture/TECHNICAL_ARCHITECTURE.md
+- docs/architecture/REPOSITORY_STRUCTURE.md
+- docs/architecture/REALTIME_SPEC.md
+- docs/architecture/DEPLOYMENT_ARCHITECTURE.md
+
+DATABASE
+- docs/database/DATABASE_SCHEMA.md
+- docs/database/DATABASE_MIGRATION_PLAN.md
+
+API / SECURITY / ENVIRONMENT / QA
+- docs/api/API_CONTRACT.md
+- docs/security/AUTH_RBAC_RLS.md
+- docs/environment/ENVIRONMENT_CONFIG.md
+- docs/qa/TESTING_STRATEGY.md
+
+IMPLEMENTATION
+- docs/implementation/CLINE_IMPLEMENTATION_PLAN.md
+- docs/implementation/MASTER_CLINE_PROMPT.md
+- docs/implementation/GIT_WORKFLOW.md
+
+OPERATIONS
+- docs/operations/ORDER_STATE.md
+
+PRODUCT DEFINITION SOURCE PACK
+- docs/product/source-pack/01_BRAND_DIRECTION.md
+- docs/product/source-pack/02_BRD.md
+- docs/product/source-pack/03_PRD.md
+- docs/product/source-pack/04_USER_ROLES.md
+- docs/product/source-pack/05_USER_FLOW.md
+- docs/product/source-pack/06_ORDER_STATE.md
+- docs/product/source-pack/07_DATABASE_SCHEMA.md
+- docs/product/source-pack/08_FEATURE_MATRIX.md
+- docs/product/source-pack/09_DESIGN_SYSTEM.md
+- docs/product/source-pack/10_CLINERULES.md
+- docs/product/source-pack/11_GIT_WORKFLOW.md
+- docs/product/source-pack/12_DEPLOYMENT_ARCHITECTURE.md
+- docs/product/source-pack/README.md
+
+STITCH PROMPTS
+- docs/prompts/README.md
+- docs/prompts/01-homepage.md
+- docs/prompts/02-customer-qr-ordering.md
+- docs/prompts/03-cashier-pos.md
+- docs/prompts/04-kitchen-kds.md
+- docs/prompts/05-waiter-service.md
+- docs/prompts/06-admin-management.md
+
+PROTOTYPE
+- docs/prototype/pre-opening/index.html
+
+VISUAL REFERENCES
+- visual-references/01-stitch-admin-overview.png
+- visual-references/02-stitch-system-overview.png
+
+NOTE
+This pack intentionally does not include credentials, API keys, Supabase service-role keys, passwords, or production secrets.

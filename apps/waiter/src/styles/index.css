@@ -1,0 +1,153 @@
+/* @tepisawah/waiter global styles. Design tokens live in @tepisawah/ui. */
+:root {
+  color-scheme: light;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+  padding: 1rem;
+}
+
+/* ---------------------------------------------------------------------------
+ * Manual order (Phase 8A). Handheld-first: one column, big touch targets, and
+ * the price always visible next to its product so the waiter never quotes a
+ * number the kitchen did not compute.
+ * --------------------------------------------------------------------------- */
+.manual-order {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.manual-order__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--color-text-muted, #6b7280);
+}
+
+.manual-order__field select,
+.manual-order__field textarea,
+.manual-order__notes input {
+  font: inherit;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--color-border, #d1d5db);
+  border-radius: 0.375rem;
+  background: var(--color-surface, #ffffff);
+  color: var(--color-text, #111827);
+}
+
+.manual-order__hint,
+.manual-order__price-hint {
+  color: var(--color-text-muted, #6b7280);
+  font-size: 0.85rem;
+}
+
+.manual-order__session {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+}
+
+.manual-order__session--open {
+  color: var(--color-success, #15803d);
+}
+
+.manual-order__session--closed {
+  color: var(--color-danger, #b91c1c);
+}
+
+.manual-order__catalog,
+.manual-order__products {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.manual-order__category {
+  margin-bottom: 1rem;
+}
+
+.manual-order__category-name {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+}
+
+.manual-order__product {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.35rem 0.75rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--color-border, #e5e7eb);
+}
+
+.manual-order__product-name {
+  font-weight: 600;
+}
+
+.manual-order__product-price {
+  color: var(--color-text-muted, #6b7280);
+  font-variant-numeric: tabular-nums;
+}
+
+.manual-order__out {
+  grid-column: 1 / -1;
+  color: var(--color-danger, #b91c1c);
+  font-size: 0.8rem;
+}
+
+.manual-order__stepper {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.manual-order__qty {
+  min-width: 1.75rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.manual-order__notes {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.manual-order__notes-label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted, #6b7280);
+}
+
+.manual-order__actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.manual-order__total {
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.manual-order__error {
+  color: var(--color-danger, #b91c1c);
+  font-weight: 600;
+}

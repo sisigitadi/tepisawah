@@ -1,0 +1,20 @@
+{
+  "name": "@tepisawah/payments",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Payment types, methods, statuses and API contract",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tepisawah/types": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}

@@ -1,0 +1,235 @@
+/**
+ * Staff roles and their granted permissions.
+ *
+ * Roles are the six MVP staff roles from AUTH_RBAC_RLS.md §6
+ * (`waiter`, `cashier`, `kitchen`, `supervisor`, `admin`, `owner`) and match
+ * the `roles.code` values seeded in `supabase/seed`. Only role→permission
+ * mappings live here; business rules stay server-side
+ * (REPOSITORY_STRUCTURE.md §34).
+ *
+ * The baseline matrix below mirrors AUTH_RBAC_RLS.md §9. Owner and admin are
+ * deliberately NOT identical (§10): owner is seeded with the grants below and
+ * no more, and supervisor gains operational authority without system
+ * administration (§11). The database seed is the authority; this map exists so
+ * frontend guards can hide UI the user cannot reach.
+ */
+import { PERMISSIONS, type Permission } from "./permissions.js";
+
+export const ROLES = {
+  waiter: "waiter",
+  cashier: "cashier",
+  kitchen: "kitchen",
+  supervisor: "supervisor",
+  admin: "admin",
+  owner: "owner",
+} as const;
+
+export type Role = (typeof ROLES)[keyof typeof ROLES];
+
+/** Every staff role, for iteration and validation. */
+export const ALL_ROLES: readonly Role[] = Object.values(ROLES);
+
+const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
+  // Waiter — table service and manual orders (§9: Mark Served, Service Request).
+  [ROLES.waiter]: [
+    PERMISSIONS.CATALOG_READ,
+    PERMISSIONS.TABLES_READ,
+    PERMISSIONS.ORDERS_CREATE_MANUAL,
+    PERMISSIONS.ORDERS_READ,
+    PERMISSIONS.ORDERS_SERVE,
+    PERMISSIONS.SERVICE_REQUESTS_READ,
+    PERMISSIONS.SERVICE_REQUESTS_CREATE,
+    PERMISSIONS.SERVICE_REQUESTS_ACKNOWLEDGE,
+    PERMISSIONS.SERVICE_REQUESTS_RESOLVE,
+    PERMISSIONS.DASHBOARD_READ,
+  ],
+
+  // Cashier — confirmation and payment (§9: Confirm/Reject, Payment Create).
+  [ROLES.cashier]: [
+    PERMISSIONS.CATALOG_READ,
+    PERMISSIONS.TABLES_READ,
+    PERMISSIONS.ORDERS_CREATE_MANUAL,
+    PERMISSIONS.ORDERS_READ,
+    PERMISSIONS.ORDERS_CONFIRM,
+    PERMISSIONS.ORDERS_REJECT,
+    PERMISSIONS.SERVICE_REQUESTS_READ,
+    PERMISSIONS.PAYMENTS_READ,
+    PERMISSIONS.PAYMENTS_CREATE,
+    PERMISSIONS.AUDIT_READ,
+    PERMISSIONS.DASHBOARD_READ,
+  ],
+
+  // Kitchen — KDS operations (§9: Kitchen Start/Ready).
+  [ROLES.kitchen]: [
+    PERMISSIONS.CATALOG_READ,
+    PERMISSIONS.TABLES_READ,
+    PERMISSIONS.ORDERS_READ,
+    PERMISSIONS.KITCHEN_READ,
+    PERMISSIONS.KITCHEN_START,
+    PERMISSIONS.KITCHEN_READY,
+    PERMISSIONS.DASHBOARD_READ,
+  ],
+
+  // Supervisor — operational authority, not system administration (§11).
+  [ROLES.supervisor]: [
+    PERMISSIONS.CATALOG_READ,
+    PERMISSIONS.TABLES_READ,
+    PERMISSIONS.TABLES_CREATE,
+    PERMISSIONS.TABLES_UPDATE,
+    PERMISSIONS.TABLES_ARCHIVE,
+    PERMISSIONS.TABLE_SESSIONS_READ,
+    PERMISSIONS.TABLE_SESSIONS_MANAGE,
+    PERMISSIONS.ORDERS_CREATE_MANUAL,
+    PERMISSIONS.ORDERS_READ,
+    PERMISSIONS.ORDERS_CONFIRM,
+    PERMISSIONS.ORDERS_REJECT,
+    PERMISSIONS.ORDERS_TRANSITION,
+    PERMISSIONS.ORDERS_CANCEL,
+    PERMISSIONS.ORDERS_RECALL,
+    PERMISSIONS.ORDERS_SERVE,
+    PERMISSIONS.KITCHEN_READ,
+    PERMISSIONS.KITCHEN_START,
+    PERMISSIONS.KITCHEN_READY,
+    PERMISSIONS.KITCHEN_RECALL,
+    PERMISSIONS.SERVICE_REQUESTS_READ,
+    PERMISSIONS.SERVICE_REQUESTS_CREATE,
+    PERMISSIONS.SERVICE_REQUESTS_ACKNOWLEDGE,
+    PERMISSIONS.SERVICE_REQUESTS_RESOLVE,
+    PERMISSIONS.PAYMENTS_READ,
+    PERMISSIONS.PAYMENTS_CREATE,
+    PERMISSIONS.PAYMENTS_REFUND,
+    PERMISSIONS.PAYMENTS_VOID,
+    PERMISSIONS.AUDIT_READ,
+    PERMISSIONS.DASHBOARD_READ,
+  ],
+
+  // Admin — system configuration, catalog, users, roles (§10).
+  [ROLES.admin]: [
+    PERMISSIONS.CATALOG_READ,
+    PERMISSIONS.CATALOG_CREATE,
+    PERMISSIONS.CATALOG_UPDATE,
+    PERMISSIONS.CATALOG_ARCHIVE,
+    PERMISSIONS.CATEGORIES_MANAGE,
+    PERMISSIONS.MODIFIERS_MANAGE,
+    PERMISSIONS.TABLES_READ,
+    PERMISSIONS.TABLES_CREATE,
+    PERMISSIONS.TABLES_UPDATE,
+    PERMISSIONS.TABLES_ARCHIVE,
+    PERMISSIONS.TABLES_QR_MANAGE,
+    PERMISSIONS.TABLE_SESSIONS_READ,
+    PERMISSIONS.TABLE_SESSIONS_MANAGE,
+    PERMISSIONS.ORDERS_CREATE_MANUAL,
+    PERMISSIONS.ORDERS_READ,
+    PERMISSIONS.ORDERS_CONFIRM,
+    PERMISSIONS.ORDERS_REJECT,
+    PERMISSIONS.ORDERS_TRANSITION,
+    PERMISSIONS.ORDERS_CANCEL,
+    PERMISSIONS.ORDERS_RECALL,
+    PERMISSIONS.ORDERS_SERVE,
+    PERMISSIONS.KITCHEN_READ,
+    PERMISSIONS.KITCHEN_START,
+    PERMISSIONS.KITCHEN_READY,
+    PERMISSIONS.KITCHEN_RECALL,
+    PERMISSIONS.SERVICE_REQUESTS_READ,
+    PERMISSIONS.SERVICE_REQUESTS_CREATE,
+    PERMISSIONS.SERVICE_REQUESTS_ACKNOWLEDGE,
+    PERMISSIONS.SERVICE_REQUESTS_RESOLVE,
+    PERMISSIONS.PAYMENTS_READ,
+    PERMISSIONS.PAYMENTS_CREATE,
+    PERMISSIONS.PAYMENTS_REFUND,
+    PERMISSIONS.PAYMENTS_VOID,
+    PERMISSIONS.USERS_READ,
+    PERMISSIONS.USERS_CREATE,
+    PERMISSIONS.USERS_UPDATE,
+    PERMISSIONS.USERS_DISABLE,
+    PERMISSIONS.USERS_ROLES_MANAGE,
+    PERMISSIONS.ROLES_READ,
+    PERMISSIONS.ROLES_MANAGE,
+    PERMISSIONS.PERMISSIONS_READ,
+    PERMISSIONS.AUDIT_READ,
+    PERMISSIONS.SETTINGS_READ,
+    PERMISSIONS.SETTINGS_MANAGE,
+    PERMISSIONS.DASHBOARD_READ,
+  ],
+
+  // Owner — business-level visibility and high-risk operations (§10). Seeded
+  // explicitly; do not assume owner holds every permission.
+  [ROLES.owner]: [
+    PERMISSIONS.CATALOG_READ,
+    PERMISSIONS.CATALOG_CREATE,
+    PERMISSIONS.CATALOG_UPDATE,
+    PERMISSIONS.CATALOG_ARCHIVE,
+    PERMISSIONS.CATEGORIES_MANAGE,
+    PERMISSIONS.MODIFIERS_MANAGE,
+    PERMISSIONS.TABLES_READ,
+    PERMISSIONS.TABLES_CREATE,
+    PERMISSIONS.TABLES_UPDATE,
+    PERMISSIONS.TABLES_ARCHIVE,
+    PERMISSIONS.TABLES_QR_MANAGE,
+    PERMISSIONS.TABLE_SESSIONS_READ,
+    PERMISSIONS.TABLE_SESSIONS_MANAGE,
+    PERMISSIONS.ORDERS_CREATE_MANUAL,
+    PERMISSIONS.ORDERS_READ,
+    PERMISSIONS.ORDERS_CONFIRM,
+    PERMISSIONS.ORDERS_REJECT,
+    PERMISSIONS.ORDERS_TRANSITION,
+    PERMISSIONS.ORDERS_CANCEL,
+    PERMISSIONS.ORDERS_RECALL,
+    PERMISSIONS.ORDERS_SERVE,
+    PERMISSIONS.KITCHEN_READ,
+    PERMISSIONS.KITCHEN_START,
+    PERMISSIONS.KITCHEN_READY,
+    PERMISSIONS.KITCHEN_RECALL,
+    PERMISSIONS.SERVICE_REQUESTS_READ,
+    PERMISSIONS.SERVICE_REQUESTS_CREATE,
+    PERMISSIONS.SERVICE_REQUESTS_ACKNOWLEDGE,
+    PERMISSIONS.SERVICE_REQUESTS_RESOLVE,
+    PERMISSIONS.PAYMENTS_READ,
+    PERMISSIONS.PAYMENTS_CREATE,
+    PERMISSIONS.PAYMENTS_REFUND,
+    PERMISSIONS.PAYMENTS_VOID,
+    PERMISSIONS.USERS_READ,
+    PERMISSIONS.USERS_CREATE,
+    PERMISSIONS.USERS_UPDATE,
+    PERMISSIONS.USERS_DISABLE,
+    PERMISSIONS.USERS_ROLES_MANAGE,
+    PERMISSIONS.ROLES_READ,
+    PERMISSIONS.ROLES_MANAGE,
+    PERMISSIONS.PERMISSIONS_READ,
+    PERMISSIONS.AUDIT_READ,
+    PERMISSIONS.SETTINGS_READ,
+    PERMISSIONS.SETTINGS_MANAGE,
+    PERMISSIONS.DASHBOARD_READ,
+  ],
+};
+
+/** Permissions granted directly by a single role. */
+export function rolePermissions(role: Role): readonly Permission[] {
+  return ROLE_PERMISSIONS[role];
+}
+
+/**
+ * Effective permissions for a set of roles — the union over all granted
+ * permissions (AUTH_RBAC_RLS.md §12). A user may hold several roles and there
+ * is no precedence: any granted permission is held.
+ *
+ * Frontend callers pass the roles resolved from `/me`; the backend computes the
+ * same union from `user_roles` + `role_permissions` under RLS.
+ */
+export function resolvePermissions(
+  roles: readonly Role[] | null | undefined,
+): readonly Permission[] {
+  if (!roles || roles.length === 0) return [];
+  const granted = new Set<Permission>();
+  for (const role of roles) {
+    if (isRole(role)) {
+      for (const permission of ROLE_PERMISSIONS[role]) granted.add(permission);
+    }
+  }
+  return [...granted];
+}
+
+/** True when the value is one of the six staff roles. */
+export function isRole(candidate: string): candidate is Role {
+  return (ALL_ROLES as readonly string[]).includes(candidate);
+}

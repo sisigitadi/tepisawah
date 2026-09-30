@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.base.json",
+  "include": [],
+  "references": [
+    { "path": "packages/ui" },
+    { "path": "packages/auth" },
+    { "path": "packages/database" },
+    { "path": "packages/permissions" },
+    { "path": "packages/catalog" },
+    { "path": "packages/orders" },
+    { "path": "packages/payments" },
+    { "path": "packages/realtime" },
+    { "path": "packages/config" },
+    { "path": "packages/types" },
+    { "path": "apps/web" },
+    { "path": "apps/order" },
+    { "path": "apps/pos" },
+    { "path": "apps/kitchen" },
+    { "path": "apps/waiter" },
+    { "path": "apps/admin" }
+  ],
+  "files": []
+}
