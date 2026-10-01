@@ -173,11 +173,13 @@ export function HomePage(): ReactNode {
           <div className="pos-subbar__identity">
             <div className="pos-subbar__icon" aria-hidden="true">
               <TerminalGlyph />
-            </div>
-            <div>
+            </div>              <div>
               <div className="pos-subbar__title-row">
                 <span className="pos-subbar__title">Kasir Utama #01</span>
                 <span className="pos-subbar__online">Terminal Online</span>
+                <a className="pos-subbar__queue-link" href="?confirm">
+                  Konfirmasi Pesanan →
+                </a>
               </div>
               <p className="pos-subbar__hint">
                 Lobi Utama Ciperna • Shift Pagi (07:00 - 15:30) • Sinkronisasi EDC &amp; QRIS Siap

@@ -1,7 +1,7 @@
 /**
  * @tepisawah/pos — feature barrel.
  *
- * Phase 0 scaffold: feature modules exist as placeholder public API surfaces.
- * Each feature re-exports through this barrel once implemented; deep internal
- * imports are not allowed (§43).
+ * Each feature re-exports its public API surface here; deep internal imports
+ * are not allowed (REPOSITORY_STRUCTURE.md §43).
  */
+export * from "./orders/index.js";

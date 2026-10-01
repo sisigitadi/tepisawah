@@ -1,16 +1,17 @@
 /**
  * @tepisawah/pos — `orders` feature.
  *
- * Phase 0 scaffold: structure and tooling only.
- * Public API surface of the feature; deep internal imports are not allowed (§43).
- */
-
-/**
- * Feature contents land in later phases:
+ * Cashier order handling: the confirmation queue between submit and the
+ * kitchen. Reads ride the `orders_staff_read` RLS policy; commands are the
+ * guarded `transition_order()` calls (API_CONTRACT.md §12.1, §13).
  *
- * - `components/` — feature UI
- * - `hooks/` — feature state
- * - `services/` — feature backend calls (via command contracts)
- * - `schemas/` — validation schemas
- * - `types/` — feature types
+ * Public API surface of the feature; deep internal imports are not allowed
+ * (REPOSITORY_STRUCTURE.md §43).
  */
+export { ConfirmQueuePage } from "./confirm-queue-page.js";
+export {
+  confirmOrder,
+  loadConfirmationQueue,
+  rejectOrder,
+} from "./service.js";
+export type { OrdersQueryError, OrdersQueryResult, StaffOrder } from "./service.js";
