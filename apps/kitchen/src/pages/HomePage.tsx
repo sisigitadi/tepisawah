@@ -19,6 +19,7 @@
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@tepisawah/auth";
 import { PERMISSIONS } from "@tepisawah/permissions";
+import { useOrderBoardChannel } from "@tepisawah/database";
 
 import {
   loadBoard,
@@ -26,6 +27,7 @@ import {
   startCooking,
   type StaffOrder,
 } from "../lib/board.js";
+import { getSupabaseClient } from "../lib/supabase.js";
 
 /** Minutes elapsed since `iso`, floored for the ⏱ badge. */
 function elapsedMinutesSince(iso: string | null, now: number): number {
@@ -35,7 +37,6 @@ function elapsedMinutesSince(iso: string | null, now: number): number {
   return Math.max(0, Math.floor((now - then) / 60_000));
 }
 
-const POLL_INTERVAL_MS = 15_000;
 const CLOCK_TICK_MS = 30_000;
 const OVERDUE_MINUTES = 15;
 
@@ -60,11 +61,10 @@ export function HomePage(): ReactNode {
     setOrders(result.data ?? []);
   }, []);
 
-  useEffect(() => {
-    void refresh();
-    const poll = window.setInterval(() => void refresh(), POLL_INTERVAL_MS);
-    return () => window.clearInterval(poll);
-  }, [refresh]);
+  // Live: any INSERT/UPDATE on `orders` (submit, confirm, cook, ready, serve,
+  // pay) triggers a debounced refetch; a slow poll remains as the safety net
+  // for dropped sockets (useOrderBoardChannel).
+  useOrderBoardChannel(getSupabaseClient(), refresh);
 
   // Keep the ⏱ badges honest without refetching.
   useEffect(() => {

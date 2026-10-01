@@ -12,4 +12,5 @@ export * from "./tables.js";
 export * from "./tables-public.js";
 export * from "./sessions.js";
 export * from "./orders.js";
+export * from "./order-board-channel.js";
 export * from "./settings.js";

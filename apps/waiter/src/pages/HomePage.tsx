@@ -16,12 +16,14 @@
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@tepisawah/auth";
 import { PERMISSIONS } from "@tepisawah/permissions";
+import { useOrderBoardChannel } from "@tepisawah/database";
 
 import {
   loadReadyOrders,
   serveOrder,
   type StaffOrder,
 } from "../features/ready-orders/index.js";
+import { getSupabaseClient } from "../lib/supabase.js";
 
 interface ServiceCall {
   id: string;
@@ -82,8 +84,6 @@ const SAMPLE_TABLES: WaiterTable[] = [
   { id: "w-6", name: "Meja 06", area: "Gazebo B", status: "available" },
 ];
 
-const POLL_INTERVAL_MS = 15_000;
-
 export function HomePage(): ReactNode {
   const { can } = useAuth();
   const [readyOrders, setReadyOrders] = useState<ReadyOrder[]>([]);
@@ -108,11 +108,10 @@ export function HomePage(): ReactNode {
     setReadyOrders((result.data ?? []).map((order) => toReadyOrder(order, Date.now())));
   }, []);
 
-  useEffect(() => {
-    void refreshBoard();
-    const poll = window.setInterval(() => void refreshBoard(), POLL_INTERVAL_MS);
-    return () => window.clearInterval(poll);
-  }, [refreshBoard]);
+  // Live: the kitchen marking an order ready (UPDATE on `orders`) lands the
+  // card here instantly; a slow poll remains as the safety net
+  // (useOrderBoardChannel).
+  useOrderBoardChannel(getSupabaseClient(), refreshBoard);
 
   // Keep the "x mnt lalu" badges honest without refetching.
   useEffect(() => {

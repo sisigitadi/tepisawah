@@ -20,6 +20,7 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useAuth } from "@tepisawah/auth";
 import { PERMISSIONS } from "@tepisawah/permissions";
+import { useOrderBoardChannel } from "@tepisawah/database";
 import { TerminalChrome } from "../features/terminal/TerminalChrome.js";
 import { OrderQueue, type QueueFilter } from "../features/terminal/OrderQueue.js";
 import { BillInspector } from "../features/terminal/BillInspector.js";
@@ -30,13 +31,12 @@ import {
   type QueueOrder,
 } from "../data/terminal.js";
 import { loadPayQueue, settleOrder } from "../lib/orders.js";
+import { getSupabaseClient } from "../lib/supabase.js";
 import {
   LockResetIcon,
   ReceiptIcon,
   WalletIcon,
 } from "@tepisawah/ui";
-
-const POLL_INTERVAL_MS = 15_000;
 
 export function HomePage(): ReactNode {
   const { can } = useAuth();
@@ -81,11 +81,10 @@ export function HomePage(): ReactNode {
     setOrders(result.orders);
   }, []);
 
-  useEffect(() => {
-    void refresh();
-    const poll = window.setInterval(() => void refresh(), POLL_INTERVAL_MS);
-    return () => window.clearInterval(poll);
-  }, [refresh]);
+  // Live: any INSERT/UPDATE on `orders` (a waiter serving is what lands an
+  // order on this terminal) triggers a debounced refetch; a slow poll remains
+  // as the safety net for dropped sockets (useOrderBoardChannel).
+  useOrderBoardChannel(getSupabaseClient(), refresh);
 
   // Keep a valid selection as the live queue changes underneath.
   useEffect(() => {

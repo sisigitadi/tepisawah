@@ -14,6 +14,7 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useAuth } from "@tepisawah/auth";
 import { PERMISSIONS } from "@tepisawah/permissions";
+import { useOrderBoardChannel } from "@tepisawah/database";
 
 import {
   confirmOrder,
@@ -21,8 +22,7 @@ import {
   rejectOrder,
   type StaffOrder,
 } from "./service.js";
-
-const POLL_INTERVAL_MS = 15_000;
+import { getSupabaseClient } from "../../lib/supabase.js";
 
 type Phase = "loading" | "ready" | "error";
 
@@ -74,11 +74,9 @@ export function ConfirmQueuePage(): ReactNode {
     setOrders(result.data ?? []);
   }, []);
 
-  useEffect(() => {
-    void refresh();
-    const poll = window.setInterval(() => void refresh(), POLL_INTERVAL_MS);
-    return () => window.clearInterval(poll);
-  }, [refresh]);
+  // Live: a customer or waiter submitting lands here instantly (INSERT on
+  // `orders`); a slow poll remains as the safety net (useOrderBoardChannel).
+  useOrderBoardChannel(getSupabaseClient(), refresh);
 
   // Keep the waiting-time badges honest without refetching.
   useEffect(() => {
