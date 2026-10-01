@@ -17,6 +17,10 @@ name: CI
 #
 # The smoke script resolves process.env ahead of any .env file, so these are the
 # only place the staging credentials live — nothing is committed.
+#
+# Build the backend these point at once with:
+#   pnpm setup:staging   (scripts/setup-staging.mjs; reads the same STAGING_*
+#   names from the environment or a gitignored .env.staging.local)
 
 on:
   push:
