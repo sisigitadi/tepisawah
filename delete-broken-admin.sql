@@ -1,10 +1,11 @@
 -- =============================================================================
 -- Tepi Sawah — Delete the broken manually-created admin
 --
--- The auth.users row inserted by create-admin-user.sql is malformed for this
--- GoTrue version and makes sign-in return
--- 500 "Database error querying schema". Deleting it clears the way for a
--- Dashboard-created user, which gets the correct shape.
+-- A directly SQL-inserted auth.users row is malformed for this GoTrue version
+-- and makes sign-in return 500 "Database error querying schema" — even when a
+-- companion auth.identities row is present (that was tried and does not help).
+-- Deleting it clears the way for a Dashboard-created user, which gets the
+-- correct shape. This is the recovery path both projects have used.
 --
 -- Cascade handles the dependents automatically:
 --   auth.identities        (on delete cascade)

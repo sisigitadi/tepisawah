@@ -21,9 +21,13 @@
  * case from a workstation on an IPv4-only network — new Supabase projects
  * expose `db.*` as IPv6-only): run `pnpm build:staging` and paste the generated
  * `supabase/staging-bootstrap.sql` into the project's SQL Editor instead. That
- * document applies the same migrations + seed and also creates this admin
- * account, so no direct database connection is needed at all. This script is
- * the programmatic path for environments that can reach the database.
+ * document applies the same migrations + seed and grants the admin role; the
+ * login itself is created in the Dashboard first (it deliberately does not
+ * insert auth.users — directly-inserted auth rows are unloginable on this
+ * Supabase version, answering 500 "Database error querying schema"). This
+ * script is the programmatic path for environments that can reach the
+ * database: it creates the login through the Auth Admin API instead, which
+ * produces the same shape as the Dashboard.
  *
  * Safety:
  *   - The database password and service-role key are read from the
@@ -262,7 +266,9 @@ try {
         "  This workstation cannot open a direct Postgres connection to this project.\n" +
         "  Instead: run `pnpm build:staging` and paste supabase/staging-bootstrap.sql\n" +
         "  into the project's SQL Editor — it applies the schema, the seed, and the\n" +
-        "  admin account in one step.",
+        "  admin role grant in one step. Create the login itself in the Dashboard\n" +
+        "  first (Authentication → Users → Add user, Auto Confirm ON), using the\n" +
+        "  password from STAGING_ADMIN_PASSWORD.",
     );
   } else {
     console.error(`setup-staging: FAILED — ${error.message}`);
