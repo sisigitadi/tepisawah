@@ -14,6 +14,7 @@
     "lint": "pnpm -r run lint",
     "test": "pnpm -r run test",
     "smoke": "node scripts/smoke-order-chain.mjs",
+    "build:staging": "node scripts/build-staging-sql.mjs",
     "setup:staging": "node scripts/setup-staging.mjs",
     "clean": "pnpm -r run clean"
   },

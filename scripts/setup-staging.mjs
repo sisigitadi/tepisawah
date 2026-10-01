@@ -17,6 +17,14 @@
  * gated by an explicit opt-in variable set (`STAGING_*`), so this script can
  * only ever reach a project the operator deliberately targets.
  *
+ * Alternative when the direct Postgres endpoint is unreachable (the common
+ * case from a workstation on an IPv4-only network — new Supabase projects
+ * expose `db.*` as IPv6-only): run `pnpm build:staging` and paste the generated
+ * `supabase/staging-bootstrap.sql` into the project's SQL Editor instead. That
+ * document applies the same migrations + seed and also creates this admin
+ * account, so no direct database connection is needed at all. This script is
+ * the programmatic path for environments that can reach the database.
+ *
  * Safety:
  *   - The database password and service-role key are read from the
  *     `STAGING_*` variables (or a gitignored root `.env.staging.local`); they
@@ -248,7 +256,17 @@ try {
   await ensureAdminUser();
   console.log("setup-staging: done — staging is ready for the smoke test");
 } catch (error) {
-  console.error(`setup-staging: FAILED — ${error.message}`);
+  if (error.code === "ENODATA" || error.code === "ENOTFOUND" || error.code === "ECONNREFUSED") {
+    console.error(
+      `setup-staging: cannot reach the database at db.${projectHost} (${error.code}).\n` +
+        "  This workstation cannot open a direct Postgres connection to this project.\n" +
+        "  Instead: run `pnpm build:staging` and paste supabase/staging-bootstrap.sql\n" +
+        "  into the project's SQL Editor — it applies the schema, the seed, and the\n" +
+        "  admin account in one step.",
+    );
+  } else {
+    console.error(`setup-staging: FAILED — ${error.message}`);
+  }
   code = 1;
 } finally {
   await client.end();
