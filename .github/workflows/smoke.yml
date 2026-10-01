@@ -1,0 +1,55 @@
+name: Smoke
+
+# End-to-end order chain against the live staging backend. Unlike CI/build/test,
+# this job exercises the real database: it runs the whole customer-to-cashier
+# lifecycle (draft -> submit -> confirm -> cook -> ready -> serve -> pay)
+# through the same @tepisawah/database query layer the apps ship, and reports
+# each step. It catches regressions that unit tests structurally cannot — a
+# renamed RPC argument, a revoked grant, a broken RLS policy — before they reach
+# the floor mid-service.
+#
+# Secrets (Settings -> Secrets and variables -> Actions):
+#   STAGING_SUPABASE_URL           staging project URL
+#   STAGING_SUPABASE_ANON_KEY      staging publishable key
+#   STAGING_ADMIN_EMAIL            staff account permitted to transition orders
+#   STAGING_ADMIN_PASSWORD         its password
+#   STAGING_SERVICE_ROLE_KEY       bypasses RLS so the run can delete the order
+#                                  it created; without it every build leaves one
+#                                  PAID test order behind in staging
+#
+# The smoke script resolves process.env ahead of any .env file, so these are the
+# only place the staging credentials live — nothing is committed.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # The script imports the built ESM barrel, so the package must be bundled
+      # first (the Node runtime cannot consume `src/index.ts` directly).
+      - run: pnpm --filter @tepisawah/database build
+
+      - name: Order chain smoke test
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.STAGING_SUPABASE_ANON_KEY }}
+          SMOKE_ADMIN_EMAIL: ${{ secrets.STAGING_ADMIN_EMAIL }}
+          SMOKE_ADMIN_PASSWORD: ${{ secrets.STAGING_ADMIN_PASSWORD }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.STAGING_SERVICE_ROLE_KEY }}
+        run: node scripts/smoke-order-chain.mjs

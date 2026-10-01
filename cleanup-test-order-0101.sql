@@ -10,6 +10,7 @@
 --   TS-20261001-0104  live-pipeline E2E, left mid-PREPARING
 --   TS-20261001-0105  order-chain smoke test, DRAFT -> PAID
 --   TS-20261001-0106  order-chain smoke test, DRAFT -> PAID
+--   TS-20261001-0107  order-chain smoke test, DRAFT -> PAID (CI-path proof)
 --
 -- The database design (deliberately) grants no DELETE on the order tables to
 -- any client role — creation, transitions and exception handling are all
@@ -31,7 +32,8 @@ create temp table _cleanup_order on commit drop as
     'TS-20261001-0103',
     'TS-20261001-0104',
     'TS-20261001-0105',
-    'TS-20261001-0106'
+    'TS-20261001-0106',
+    'TS-20261001-0107'
   );
 
 -- Children first, parent last (FK direction).

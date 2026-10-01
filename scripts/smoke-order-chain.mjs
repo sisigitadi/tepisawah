@@ -26,10 +26,12 @@
  * same places, or from the flags above. It is NEVER hardcoded — a staff
  * password does not belong in a committed file (ENVIRONMENT_CONFIG.md §6).
  *
- * The script leaves one PAID test order in the database. Client roles hold no
- * DELETE grant on `orders` by design (every mutation rides a SECURITY DEFINER
- * RPC), so it cannot clean up after itself; it prints the exact SQL to remove
- * the row instead. Pass `--keep` to skip that notice for repeat runs.
+ * The script leaves one PAID test order in the database unless it can delete
+ * it. Client roles hold no DELETE grant on `orders` by design (every mutation
+ * rides a SECURITY DEFINER RPC), so cleanup needs `SUPABASE_SERVICE_ROLE_KEY`,
+ * which bypasses RLS and is server-side only (ENVIRONMENT_CONFIG.md §6) — a CI
+ * secret, typically absent on a workstation. Without it the run prints the
+ * exact SQL to remove the row instead. Pass `--keep` to skip both paths.
  *
  * Exits 1 if any step fails, 0 only when the whole chain is verified.
  */
@@ -278,6 +280,9 @@ async function run() {
   const anonKey = resolveValue("VITE_SUPABASE_ANON_KEY");
   const email = resolveValue("SMOKE_ADMIN_EMAIL", adminEmail);
   const password = resolveValue("SMOKE_ADMIN_PASSWORD", adminPassword);
+  // Optional: lets the run delete the order it created. Server-side only —
+  // absent on a workstation by default, present as a CI secret.
+  const serviceKey = env.SUPABASE_SERVICE_ROLE_KEY || resolveValue("SUPABASE_SERVICE_ROLE_KEY");
   if (!supabaseUrl || !anonKey) {
     throw new SmokeError(
       "Supabase URL / anon key not found. Configure VITE_SUPABASE_URL and " +
@@ -427,7 +432,18 @@ async function run() {
       `DRAFT -> SUBMITTED -> PENDING_CONFIRMATION -> CONFIRMED -> PREPARING -> READY -> SERVED -> PAID`,
     ),
   );
-  if (!keep) printCleanup(orderNumber, ctx.table.tableCode);
+  if (!keep) {
+    if (serviceKey) {
+      const removed = await cleanupOrder(supabaseUrl, serviceKey, draftOrder.id);
+      console.log(
+        dim(`cleaned up ${orderNumber} (service role): order, items, modifiers, history`),
+      );
+      if (removed)
+        console.log(dim(`  removed ${removed} item row(s)`));
+    } else {
+      printCleanup(orderNumber, ctx.table.tableCode);
+    }
+  }
   return 0;
 }
 
@@ -447,9 +463,57 @@ async function readHistory(staff, orderId) {
 }
 
 /**
- * Print the SQL that removes the smoke-test order. Client roles hold no DELETE
- * grant on `orders` by design — every mutation rides a SECURITY DEFINER RPC —
- * so the script cannot delete the row it created. Children first, parent last.
+ * Remove the order the run just created.
+ *
+ * Client roles hold no DELETE grant on the order tables by design — every
+ * mutation rides a SECURITY DEFINER RPC — so cleanup needs the service-role
+ * key, which bypasses RLS. That key is server-side only (ENVIRONMENT_CONFIG.md
+ * §6): in CI it comes from a secret, and on a configured workstation it is
+ * usually absent, in which case `printCleanup` hands the operator the SQL
+ * instead. Children are deleted first, parent last (FK direction).
+ */
+async function cleanupOrder(supabaseUrl, serviceKey, orderId) {
+  const headers = { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` };
+  const rest = (path) => `${supabaseUrl}/rest/v1/${path}`;
+
+  const items = await fetch(
+    rest(`order_items?select=id&order_id=eq.${orderId}`),
+    { headers },
+  );
+  const itemRows = items.ok ? await items.json() : [];
+  const itemIds = itemRows.map((row) => row.id).filter(Boolean);
+
+  const deletes = [
+    itemIds.length > 0
+      ? fetch(
+          rest(`order_item_modifiers?order_item_id=in.(${itemIds.join(",")})`),
+          { method: "DELETE", headers },
+        )
+      : Promise.resolve(),
+    fetch(rest(`order_items?order_id=eq.${orderId}`), { method: "DELETE", headers }),
+    fetch(rest(`table_session_order_links?order_id=eq.${orderId}`), {
+      method: "DELETE",
+      headers,
+    }),
+    fetch(rest(`order_status_history?order_id=eq.${orderId}`), {
+      method: "DELETE",
+      headers,
+    }),
+    fetch(rest(`orders?id=eq.${orderId}`), { method: "DELETE", headers }),
+  ];
+  const results = await Promise.all(deletes);
+  const failed = results.filter((result) => result && !result.ok);
+  if (failed.length > 0) {
+    throw new SmokeError(
+      `service-role cleanup failed on ${failed.length} table(s); the test order remains`,
+    );
+  }
+  return itemIds.length;
+}
+
+/**
+ * Print the SQL that removes the smoke-test order, for the case where no
+ * service-role key is available. Children first, parent last.
  */
 function printCleanup(orderNumber, tableCode) {
   const where = `where order_number = '${orderNumber}'`;
