@@ -17,11 +17,16 @@
  * exists` / `create or replace` / `drop ... if exists`, the seed upserts on
  * conflict, and the admin block only inserts what is missing.
  *
- * The admin block mirrors the dev project's `create-admin-user.sql`: it writes
- * auth.users + auth.identities (GoTrue's sign-in path needs the identities row —
- * without it sign-in 500s), the profile, and the `admin` role grant. Its email
- * and password are read from the gitignored `.env.staging.local` so the document
- * is paste-and-run; if those are absent it emits a loud placeholder instead.
+ * The admin block provisions the app-level half of the smoke-test login — the
+ * active profile and the `admin` role grant — against a login created in the
+ * Supabase Dashboard. It deliberately does NOT write auth.users / auth.identities:
+ * directly-inserted auth rows are unreliable on this Supabase version and make
+ * GoTrue's sign-in path answer 500 "Database error querying schema", even with a
+ * companion identity row. Creating the login in the Dashboard is the only path
+ * verified to work. Because the block touches only the public schema it carries
+ * no password, and its email is read from the gitignored `.env.staging.local`
+ * so the document is paste-and-run; if it is absent it emits a loud placeholder
+ * instead.
  *
  * Usage: pnpm build:staging   →  supabase/staging-bootstrap.sql
  *        Then paste it into the staging project's SQL Editor and Run.
@@ -70,23 +75,19 @@ function parseEnvFile(file) {
 
 const stagingEnv = parseEnvFile(STAGING_ENV);
 const adminEmail = stagingEnv.STAGING_ADMIN_EMAIL;
-const adminPassword = stagingEnv.STAGING_ADMIN_PASSWORD;
 
-if (!adminEmail || !adminPassword) {
+if (!adminEmail) {
   console.warn(
-    "build-staging-sql: WARNING — STAGING_ADMIN_EMAIL / STAGING_ADMIN_PASSWORD\n" +
-      "  are not set in .env.staging.local. The bootstrap document was still\n" +
-      "  written, but its admin block carries placeholder values you MUST edit\n" +
-      "  in the SQL Editor before running it.",
+    "build-staging-sql: WARNING — STAGING_ADMIN_EMAIL is not set in\n" +
+      "  .env.staging.local. The bootstrap document was still written, but its\n" +
+      "  admin block targets a placeholder address you MUST edit in the SQL\n" +
+      "  Editor before running it.",
   );
 }
 
 /** Escape single quotes for a SQL string literal. */
 const lit = (value) => String(value).replace(/'/g, "''");
 const emailLit = lit(adminEmail || "admin@tepisawah.id");
-// Deliberately invalid placeholder: if it ever reaches the database it fails
-// loudly rather than silently creating a account with a garbage password.
-const passwordLit = lit(adminPassword || "CHANGE_ME_IN_SQL_EDITOR");
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Migration discovery (sorted paths == application order)
@@ -108,75 +109,48 @@ if (!migrationFiles.length) {
 const adminBlock = `-- ${rule}
 -- ADMIN ACCOUNT — the smoke test signs in as this user.
 -- ${rule}
--- Same idempotent pattern as the dev project's create-admin-user.sql:
---   1. auth.users row with a bcrypt-hashed password and email_confirmed_at set,
---      so sign-in works and no confirmation email is sent.
---   2. auth.identities row — GoTrue's sign-in path reads this relation; a
---      directly-inserted auth.users row without it 500s on login.
---   3. public.profiles row, active.
---   4. the \`admin\` role grant in public.user_roles, which is what
+-- The login itself is created in the Supabase Dashboard (Authentication →
+-- Users → Add user, Auto Confirm ON, password = STAGING_ADMIN_PASSWORD). This
+-- block provisions only the app-level half against that login.
+--
+-- Why not insert auth.users here: directly-inserted auth.* rows are unreliable
+-- on this Supabase version. Even with a companion auth.identities row, GoTrue's
+-- sign-in path answers 500 "Database error querying schema" for them, while
+-- Dashboard-created users sign in fine. Writing the login where GoTrue writes it
+-- is the only path verified to work — the dev project's admin is created the
+-- same way (see grant-admin-role.sql).
+--
+-- This block touches only the public schema, so it is safe to re-run at any
+-- time, and it carries no password — the bootstrap document stays secret-free
+-- apart from the seed data.
+--
+--   1. public.profiles row, active.
+--   2. the \`admin\` role grant in public.user_roles, which is what
 --      fetchCurrentUserRoles() reads through RLS. Without it the panel shows
 --      "unauthorized".
+--
+-- >>> If the login uses a different address, change it in the two places <<<
+-- >>> below before running.                                           <<<
 -- Plain SQL only (no PL/pgSQL): safe in the Supabase SQL Editor.
-with params as (
-  select '${emailLit}'::text as v_email,
-         '${passwordLit}'::text as v_password
-),
-created as (
-  insert into auth.users
-    (id, instance_id, aud, role, email, encrypted_password,
-     email_confirmed_at, created_at, updated_at,
-     raw_app_meta_data, raw_user_meta_data, is_super_admin)
-  select
-    gen_random_uuid(),
-    '00000000-0000-0000-0000-000000000000',
-    'authenticated', 'authenticated',
-    v_email,
-    crypt(v_password, gen_salt('bf', 10)),
-    now(), now(), now(),
-    '{"role":"admin"}'::jsonb, '{}'::jsonb, false
-  from params
-  where not exists (select 1 from auth.users u where u.email = params.v_email)
-  returning id, email
-),
-resolved as (
-  select id, email from created
-  union all
-  select u.id, u.email
-  from auth.users u, params
-  where u.email = params.v_email
-    and not exists (select 1 from created)
-),
-identity as (
-  insert into auth.identities
-    (id, user_id, provider_id, provider, identity_data,
-     created_at, updated_at, last_sign_in_at)
-  -- email is a GENERATED column on identities in this Supabase version, derived
-  -- from identity_data, so it is not written directly.
-  select
-    gen_random_uuid(),
-    resolved.id,
-    resolved.id::text,
-    'email',
-    jsonb_build_object('sub', resolved.id::text, 'email', resolved.email),
-    now(), now(), now()
-  from resolved
-  where not exists (select 1 from auth.identities i where i.user_id = resolved.id)
-),
-profile as (
-  insert into public.profiles (id, display_name, is_active)
-  select resolved.id, split_part(params.v_email, '@', 1), true
-  from resolved, params
-  on conflict (id) do update set is_active = true
-  returning id
-)
+
+-- 1. public.profiles
+insert into public.profiles (id, display_name, is_active)
+select auth.users.id, split_part(auth.users.email, '@', 1), true
+from auth.users
+where auth.users.email = '${emailLit}'
+on conflict (id) do update set is_active = true;
+
+-- 2. the admin role grant
 insert into public.user_roles (user_id, role_id)
-select profile.id, roles.id
-from profile, public.roles
-where roles.code = 'admin'
+select auth.users.id, roles.id
+from auth.users, public.roles
+where auth.users.email = '${emailLit}'
+  and roles.code = 'admin'
 on conflict (user_id, role_id) do nothing;
 
--- Verification — the smoke admin must appear with the admin role.
+-- Verification — the smoke admin must appear with the admin role and exactly
+-- one identity. If identities is 0, the login has not been created in the
+-- Dashboard yet; if email_confirmed is false, Auto Confirm was left off.
 select u.email,
        u.email_confirmed_at is not null as email_confirmed,
        p.is_active,
@@ -215,6 +189,12 @@ const header = `-- ${rule}
 -- replace\` / \`drop if exists\`, every seed statement upserts on conflict, and
 -- the admin block only inserts what is missing — so a partial first run can
 -- simply be retried in full.
+--
+-- PREREQUISITE: the smoke-test login must exist first. Create it in the
+-- dashboard (Authentication → Users → Add user, Auto Confirm ON) with the
+-- password from .env.staging.local. The admin block here then grants that
+-- login the admin role; it does not create the login itself — directly-inserted
+-- auth.* rows make GoTrue's sign-in path answer 500.
 -- ${rule}
 `;
 
@@ -236,6 +216,6 @@ console.log(
     `${parts.join("\n").split("\n").length} lines)`,
 );
 console.log("  Paste it into the staging project's SQL Editor and Run.");
-if (!adminEmail || !adminPassword) {
-  console.log("  ⚠ Edit the admin `params` CTE before running — placeholder credentials in use.");
+if (!adminEmail) {
+  console.log("  ⚠ Edit the admin email literals before running — placeholder address in use.");
 }
