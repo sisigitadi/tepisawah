@@ -1,25 +1,71 @@
 name: CI
 
+# Single pipeline for the whole monorepo: lint -> typecheck -> test -> build ->
+# smoke. The steps are ordered and fail fast, so a broken contract stops the run
+# before anything costlier or riskier executes — in particular the smoke step
+# only touches the live staging database once lint, types, unit tests and the
+# build have all passed.
+#
+# Smoke secrets (Settings -> Secrets and variables -> Actions):
+#   STAGING_SUPABASE_URL           staging project URL
+#   STAGING_SUPABASE_ANON_KEY      staging publishable key
+#   STAGING_ADMIN_EMAIL            staff account permitted to transition orders
+#   STAGING_ADMIN_PASSWORD         its password
+#   STAGING_SERVICE_ROLE_KEY       bypasses RLS so the run can delete the order
+#                                  it created; without it every build leaves one
+#                                  PAID test order behind in staging
+#
+# The smoke script resolves process.env ahead of any .env file, so these are the
+# only place the staging credentials live — nothing is committed.
+
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-    - uses: pnpm/action-setup@v4
-      with:
-        version: 12
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 20
-        cache: pnpm
-    - run: pnpm install --frozen-lockfile
-      - run: pnpm run lint
-      - run: pnpm run typecheck
-      - run: pnpm run test
-      - run: pnpm run build
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Unit tests
+        run: pnpm run test
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Verify build output
+        run: node scripts/verify-build.mjs
+
+      # End-to-end order chain against the live staging backend: the whole
+      # customer-to-cashier lifecycle (draft -> submit -> confirm -> cook ->
+      # ready -> serve -> pay) through the same @tepisawah/database query layer
+      # the apps ship. It catches regressions unit tests structurally cannot — a
+      # renamed RPC argument, a revoked grant, a broken RLS policy — before they
+      # reach the floor mid-service. The script imports the built ESM barrel,
+      # which the Build step above has already produced in this same workspace.
+      - name: Order chain smoke test
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.STAGING_SUPABASE_ANON_KEY }}
+          SMOKE_ADMIN_EMAIL: ${{ secrets.STAGING_ADMIN_EMAIL }}
+          SMOKE_ADMIN_PASSWORD: ${{ secrets.STAGING_ADMIN_PASSWORD }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.STAGING_SERVICE_ROLE_KEY }}
+        run: node scripts/smoke-order-chain.mjs
