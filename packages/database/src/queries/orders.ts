@@ -237,7 +237,7 @@ export async function fetchOrder(
 
   const base = untypedTable(client, "orders").select(
     "id, order_number, table_id, table_session_id, source, status, notes, " +
-      "subtotal, discount, tax, total, idempotency_key, created_by, created_at, updated_at",
+      "subtotal, discount, tax, total, idempotency_key, version, created_by, created_at, updated_at",
   );
 
   const result = await base.eq("id", orderId).order("created_at", { ascending: false });

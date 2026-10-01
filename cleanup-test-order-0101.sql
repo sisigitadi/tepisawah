@@ -1,11 +1,15 @@
 -- =============================================================================
 -- Tepi Sawah — Remove checkout + confirmation-queue + serve E2E test orders
 --
--- Created by the live-pipeline E2E runs (2026-09-30 / 2026-10-01):
+-- Created by the live-pipeline E2E runs and the order-chain smoke test
+-- (2026-09-30 / 2026-10-01):
 --   TS-20260930-0101  checkout E2E, DRAFT -> PAID  (lifecycle proof)
 --   TS-20261001-0102  confirmation-queue E2E, REJECTED with reason
 --   TS-20261001-0103  full-chain E2E: confirm -> READY -> SERVED from the UIs
 --                     (customer note: "Tanpa sambal, makanan untuk anak")
+--   TS-20261001-0104  live-pipeline E2E, left mid-PREPARING
+--   TS-20261001-0105  order-chain smoke test, DRAFT -> PAID
+--   TS-20261001-0106  order-chain smoke test, DRAFT -> PAID
 --
 -- The database design (deliberately) grants no DELETE on the order tables to
 -- any client role — creation, transitions and exception handling are all
@@ -24,7 +28,10 @@ create temp table _cleanup_order on commit drop as
   where order_number in (
     'TS-20260930-0101',
     'TS-20261001-0102',
-    'TS-20261001-0103'
+    'TS-20261001-0103',
+    'TS-20261001-0104',
+    'TS-20261001-0105',
+    'TS-20261001-0106'
   );
 
 -- Children first, parent last (FK direction).
@@ -45,6 +52,8 @@ drop table _cleanup_order;
 -- =============================================================================
 -- Verification. Expected: the three test orders count 0, no orphan child rows.
 -- The seed's own demo orders (TS-20260927-*, TS-20260929-*) are untouched.
+-- Every smoke order number starts with TS-20261001-, so the guard below also
+-- proves the smoke runs left nothing behind.
 -- =============================================================================
 select
   (select count(*) from public.orders where order_number like 'TS-2026%' and source = 'CUSTOMER_QR') as remaining_test_orders,

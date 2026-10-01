@@ -13,6 +13,7 @@
     "typecheck": "pnpm -r run typecheck",
     "lint": "pnpm -r run lint",
     "test": "pnpm -r run test",
+    "smoke": "node scripts/smoke-order-chain.mjs",
     "clean": "pnpm -r run clean"
   },
   "devDependencies": {

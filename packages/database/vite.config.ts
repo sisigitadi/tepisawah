@@ -12,6 +12,17 @@ import { defineConfig } from "vitest/config";
  * default node environment is enough.
  */
 export default defineConfig({
+  resolve: {
+    alias: {
+      // The board-channel hook imports `react`. The apps consume it from
+      // `src/index.ts` through their own bundler, which supplies the real
+      // React; the `dist` barrel is a self-contained Node module for tooling,
+      // so the bare specifier is pointed at a no-op stub instead of being
+      // externalized (an external `react` would make the bundle
+      // unresolvable from Node — see `react-stub.ts`).
+      react: "./src/react-stub.ts",
+    },
+  },
   build: {
     lib: {
       entry: "src/index.ts",
