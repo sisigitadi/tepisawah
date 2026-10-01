@@ -1,10 +1,11 @@
 -- =============================================================================
--- Tepi Sawah — Remove checkout + confirmation-queue E2E test orders
+-- Tepi Sawah — Remove checkout + confirmation-queue + serve E2E test orders
 --
 -- Created by the live-pipeline E2E runs (2026-09-30 / 2026-10-01):
 --   TS-20260930-0101  checkout E2E, DRAFT -> PAID  (lifecycle proof)
 --   TS-20261001-0102  confirmation-queue E2E, REJECTED with reason
---   TS-20261001-0103  confirmation-queue E2E, CONFIRMED (with customer note)
+--   TS-20261001-0103  full-chain E2E: confirm -> READY -> SERVED from the UIs
+--                     (customer note: "Tanpa sambal, makanan untuk anak")
 --
 -- The database design (deliberately) grants no DELETE on the order tables to
 -- any client role — creation, transitions and exception handling are all

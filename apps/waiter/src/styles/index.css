@@ -315,3 +315,32 @@ body {
   border-top: 1px dashed var(--color-border);
   padding-top: 0.4rem;
 }
+
+/* Live-board alerts (load failure / refused serve action). */
+.waiter-alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0 0 0.9rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid rgba(220, 38, 38, 0.45);
+  border-radius: 10px;
+  background: rgba(220, 38, 38, 0.08);
+  color: #b91c1c;
+  font-size: 0.85rem;
+}
+
+.waiter-alert__retry {
+  padding: 0.3rem 0.8rem;
+  border: 1px solid rgba(220, 38, 38, 0.45);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.btn-waiter-serve:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

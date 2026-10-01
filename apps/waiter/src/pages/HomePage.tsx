@@ -6,8 +6,22 @@
  * - Ready orders (food waiting to be served)
  * - Service requests (Call Waiter, Request Bill)
  * - Serve action & quick manual order trigger
+ *
+ * The "Siap Saji" board is LIVE: it lists every READY order from the
+ * database through the `orders_staff_read` RLS policy, and "Tandai Sudah
+ * Disajikan" moves one READY -> SERVED through the guarded
+ * `transition_order()` command (`orders.serve`, optimistic version —
+ * API_CONTRACT.md §13, §26). The other two tabs are still design samples.
  */
-import { useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useAuth } from "@tepisawah/auth";
+import { PERMISSIONS } from "@tepisawah/permissions";
+
+import {
+  loadReadyOrders,
+  serveOrder,
+  type StaffOrder,
+} from "../features/ready-orders/index.js";
 
 interface ServiceCall {
   id: string;
@@ -22,6 +36,28 @@ interface ReadyOrder {
   table: string;
   items: string[];
   readySince: string;
+  /** Database order, carried so the serve action has its version handle. */
+  raw: StaffOrder;
+}
+
+/** "x mnt lalu" since the kitchen marked the order ready. */
+function readyAgo(iso: string | null, now: number): string {
+  if (iso === null) return "baru saja";
+  const then = Date.parse(iso);
+  if (!Number.isFinite(then)) return "baru saja";
+  const minutes = Math.max(0, Math.floor((now - then) / 60_000));
+  return `${minutes} mnt lalu`;
+}
+
+function toReadyOrder(order: StaffOrder, now: number): ReadyOrder {
+  return {
+    id: order.id,
+    orderNumber: `#${order.orderNumber}`,
+    table: order.tableName,
+    items: order.items.map((item) => `${item.quantity}x ${item.name}`),
+    readySince: readyAgo(order.updatedAt ?? order.createdAt, now),
+    raw: order,
+  };
 }
 
 interface WaiterTable {
@@ -37,23 +73,6 @@ const SAMPLE_SERVICE_CALLS: ServiceCall[] = [
   { id: "sc-2", table: "Meja 05", type: "CALL_WAITER", timeAgo: "4 mnt lalu" },
 ];
 
-const SAMPLE_READY_ORDERS: ReadyOrder[] = [
-  {
-    id: "ro-1",
-    orderNumber: "ORD-001",
-    table: "Meja 01",
-    readySince: "3 mnt lalu",
-    items: ["1x Gurame Bakar Madu", "2x Nasi Liwet Sawah Komplit", "1x Karedok Leunca Segar"],
-  },
-  {
-    id: "ro-2",
-    orderNumber: "ORD-004",
-    table: "Meja 02",
-    readySince: "1 mnt lalu",
-    items: ["1x Pepes Ikan Mas", "1x Bakwan Jagung"],
-  },
-];
-
 const SAMPLE_TABLES: WaiterTable[] = [
   { id: "w-1", name: "Meja 01", area: "Saung A", status: "occupied", orderSummary: "Masakan siap antar" },
   { id: "w-2", name: "Meja 02", area: "Saung A", status: "needs_attention", orderSummary: "Minta Tagihan" },
@@ -63,14 +82,65 @@ const SAMPLE_TABLES: WaiterTable[] = [
   { id: "w-6", name: "Meja 06", area: "Gazebo B", status: "available" },
 ];
 
+const POLL_INTERVAL_MS = 15_000;
+
 export function HomePage(): ReactNode {
-  const [readyOrders, setReadyOrders] = useState<ReadyOrder[]>(SAMPLE_READY_ORDERS);
+  const { can } = useAuth();
+  const [readyOrders, setReadyOrders] = useState<ReadyOrder[]>([]);
+  const [boardPhase, setBoardPhase] = useState<"loading" | "ready" | "error">("loading");
+  const [boardError, setBoardError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [now, setNow] = useState<number>(() => Date.now());
   const [serviceCalls, setServiceCalls] = useState<ServiceCall[]>(SAMPLE_SERVICE_CALLS);
   const [activeTab, setActiveTab] = useState<"ready" | "requests" | "tables">("ready");
 
-  const handleServeOrder = (id: string) => {
-    setReadyOrders((prev) => prev.filter((o) => o.id !== id));
-  };
+  const refreshBoard = useCallback(async () => {
+    const result = await loadReadyOrders();
+    if (result.error) {
+      setBoardError(result.error.message);
+      setBoardPhase("error");
+      return;
+    }
+    setBoardError(null);
+    setBoardPhase("ready");
+    setNow(Date.now());
+    setReadyOrders((result.data ?? []).map((order) => toReadyOrder(order, Date.now())));
+  }, []);
+
+  useEffect(() => {
+    void refreshBoard();
+    const poll = window.setInterval(() => void refreshBoard(), POLL_INTERVAL_MS);
+    return () => window.clearInterval(poll);
+  }, [refreshBoard]);
+
+  // Keep the "x mnt lalu" badges honest without refetching.
+  useEffect(() => {
+    const clock = window.setInterval(() => setNow(Date.now()), 30_000);
+    return () => window.clearInterval(clock);
+  }, []);
+
+  /**
+   * One guarded server-side hop: READY -> SERVED. The command re-checks
+   * `orders.serve` and the version the card rendered (§26); the board
+   * refetches so the tab always matches the database.
+   */
+  const handleServeOrder = useCallback(
+    async (order: ReadyOrder) => {
+      if (busyId !== null) return;
+      setBusyId(order.id);
+      setActionError(null);
+      const result = await serveOrder(order.raw);
+      setBusyId(null);
+      if (result.error) {
+        setActionError(result.error.message);
+        void refreshBoard();
+        return;
+      }
+      void refreshBoard();
+    },
+    [busyId, refreshBoard],
+  );
 
   const handleResolveCall = (id: string) => {
     setServiceCalls((prev) => prev.filter((c) => c.id !== id));
@@ -116,11 +186,30 @@ export function HomePage(): ReactNode {
 
       {/* Main Tab Content */}
       <main className="waiter-body">
-        {/* Ready Orders Tab */}
+        {/* Ready Orders Tab — live from the database */}
         {activeTab === "ready" && (
           <div className="waiter-section-content">
             <h2 className="waiter-heading">Pesanan Siap Diantar ke Tamu</h2>
-            {readyOrders.length === 0 ? (
+            {boardError !== null ? (
+              <div className="waiter-alert" role="alert">
+                <span>Papan tidak dapat dimuat: {boardError}</span>
+                <button
+                  type="button"
+                  className="waiter-alert__retry"
+                  onClick={() => void refreshBoard()}
+                >
+                  Coba lagi
+                </button>
+              </div>
+            ) : null}
+            {actionError !== null ? (
+              <div className="waiter-alert" role="alert">
+                {actionError}
+              </div>
+            ) : null}
+            {boardPhase === "loading" ? (
+              <p aria-live="polite">Memuat papan siap saji…</p>
+            ) : boardPhase === "ready" && readyOrders.length === 0 ? (
               <div className="waiter-empty-card">
                 <span>✓</span> Semua hidangan dapur telah diantar.
               </div>
@@ -145,9 +234,17 @@ export function HomePage(): ReactNode {
                     <button
                       type="button"
                       className="btn-waiter-serve"
-                      onClick={() => handleServeOrder(order.id)}
+                      disabled={busyId !== null || !can(PERMISSIONS.ORDERS_SERVE)}
+                      title={
+                        can(PERMISSIONS.ORDERS_SERVE)
+                          ? undefined
+                          : "Sesi Anda tidak memegang izin orders.serve"
+                      }
+                      onClick={() => void handleServeOrder(order)}
                     >
-                      ✓ Tandai Sudah Disajikan ke Tamu
+                      {busyId === order.id
+                        ? "Memproses…"
+                        : "✓ Tandai Sudah Disajikan ke Tamu"}
                     </button>
                   </div>
                 ))}
