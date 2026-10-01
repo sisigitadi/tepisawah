@@ -19,7 +19,7 @@
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@tepisawah/auth";
 import { PERMISSIONS } from "@tepisawah/permissions";
-import { useOrderBoardChannel } from "@tepisawah/database";
+import { orderBoardStatusLabel, useOrderBoardChannel } from "@tepisawah/database";
 
 import {
   loadBoard,
@@ -64,7 +64,7 @@ export function HomePage(): ReactNode {
   // Live: any INSERT/UPDATE on `orders` (submit, confirm, cook, ready, serve,
   // pay) triggers a debounced refetch; a slow poll remains as the safety net
   // for dropped sockets (useOrderBoardChannel).
-  useOrderBoardChannel(getSupabaseClient(), refresh);
+  const boardChannel = useOrderBoardChannel(getSupabaseClient(), refresh);
 
   // Keep the ⏱ badges honest without refetching.
   useEffect(() => {
@@ -121,6 +121,12 @@ export function HomePage(): ReactNode {
         <div className="kds-brand">
           <span className="kds-title">KITCHEN DISPLAY SYSTEM</span>
           <span className="kds-station">Stasiun: Hot Kitchen & Bakaran</span>
+          <span
+            className={`live-chip live-chip--${boardChannel.status}`}
+            title="Koneksi realtime papan dapur"
+          >
+            {orderBoardStatusLabel(boardChannel.status)}
+          </span>
         </div>
         <div className="kds-stats">
           <button

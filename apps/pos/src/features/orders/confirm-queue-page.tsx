@@ -14,7 +14,7 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useAuth } from "@tepisawah/auth";
 import { PERMISSIONS } from "@tepisawah/permissions";
-import { useOrderBoardChannel } from "@tepisawah/database";
+import { orderBoardStatusLabel, useOrderBoardChannel } from "@tepisawah/database";
 
 import {
   confirmOrder,
@@ -76,7 +76,7 @@ export function ConfirmQueuePage(): ReactNode {
 
   // Live: a customer or waiter submitting lands here instantly (INSERT on
   // `orders`); a slow poll remains as the safety net (useOrderBoardChannel).
-  useOrderBoardChannel(getSupabaseClient(), refresh);
+  const boardChannel = useOrderBoardChannel(getSupabaseClient(), refresh);
 
   // Keep the waiting-time badges honest without refetching.
   useEffect(() => {
@@ -131,6 +131,12 @@ export function ConfirmQueuePage(): ReactNode {
               currency: "IDR",
               maximumFractionDigits: 0,
             }).format(totalValue)}
+          </span>
+          <span
+            className={`live-chip live-chip--${boardChannel.status}`}
+            title="Koneksi realtime antrean konfirmasi"
+          >
+            {orderBoardStatusLabel(boardChannel.status)}
           </span>
         </div>
       </header>

@@ -16,7 +16,7 @@
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@tepisawah/auth";
 import { PERMISSIONS } from "@tepisawah/permissions";
-import { useOrderBoardChannel } from "@tepisawah/database";
+import { orderBoardStatusLabel, useOrderBoardChannel } from "@tepisawah/database";
 
 import {
   loadReadyOrders,
@@ -111,7 +111,7 @@ export function HomePage(): ReactNode {
   // Live: the kitchen marking an order ready (UPDATE on `orders`) lands the
   // card here instantly; a slow poll remains as the safety net
   // (useOrderBoardChannel).
-  useOrderBoardChannel(getSupabaseClient(), refreshBoard);
+  const boardChannel = useOrderBoardChannel(getSupabaseClient(), refreshBoard);
 
   // Keep the "x mnt lalu" badges honest without refetching.
   useEffect(() => {
@@ -152,6 +152,12 @@ export function HomePage(): ReactNode {
         <div className="waiter-staff-info">
           <span className="waiter-badge">Pramusaji: Dimas</span>
           <span className="waiter-section">Area: Saung & Gazebo</span>
+          <span
+            className={`live-chip live-chip--${boardChannel.status}`}
+            title="Koneksi realtime papan siap saji"
+          >
+            {orderBoardStatusLabel(boardChannel.status)}
+          </span>
         </div>
         <a href="?order" className="btn-manual-order">
           ➕ Buat Pesanan Manual

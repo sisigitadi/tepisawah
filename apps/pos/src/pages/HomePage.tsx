@@ -20,7 +20,7 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useAuth } from "@tepisawah/auth";
 import { PERMISSIONS } from "@tepisawah/permissions";
-import { useOrderBoardChannel } from "@tepisawah/database";
+import { orderBoardStatusLabel, useOrderBoardChannel } from "@tepisawah/database";
 import { TerminalChrome } from "../features/terminal/TerminalChrome.js";
 import { OrderQueue, type QueueFilter } from "../features/terminal/OrderQueue.js";
 import { BillInspector } from "../features/terminal/BillInspector.js";
@@ -84,7 +84,7 @@ export function HomePage(): ReactNode {
   // Live: any INSERT/UPDATE on `orders` (a waiter serving is what lands an
   // order on this terminal) triggers a debounced refetch; a slow poll remains
   // as the safety net for dropped sockets (useOrderBoardChannel).
-  useOrderBoardChannel(getSupabaseClient(), refresh);
+  const boardChannel = useOrderBoardChannel(getSupabaseClient(), refresh);
 
   // Keep a valid selection as the live queue changes underneath.
   useEffect(() => {
@@ -176,6 +176,12 @@ export function HomePage(): ReactNode {
               <div className="pos-subbar__title-row">
                 <span className="pos-subbar__title">Kasir Utama #01</span>
                 <span className="pos-subbar__online">Terminal Online</span>
+                <span
+                  className={`live-chip live-chip--${boardChannel.status}`}
+                  title="Koneksi realtime antrean pembayaran"
+                >
+                  {orderBoardStatusLabel(boardChannel.status)}
+                </span>
                 <a className="pos-subbar__queue-link" href="?confirm">
                   Konfirmasi Pesanan →
                 </a>
