@@ -26,9 +26,10 @@ name: CI
 #   pnpm setup:staging   (scripts/setup-staging.mjs; reads the same STAGING_*
 #   names from the environment or a gitignored .env.staging.local)
 
+# main is protected and rejects direct pushes, so every change lands through
+# a pull request. CI therefore validates the pull request itself (or a manual
+# dispatch) rather than re-running after the merge.
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
