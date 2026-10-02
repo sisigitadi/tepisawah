@@ -44,7 +44,12 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # @supabase/supabase-js initialises its Realtime client eagerly, and
+          # the build needs the native WebSocket global that only Node 22+
+          # ships; on Node 20 the smoke step dies in buildClients with "native
+          # WebSocket not found". 22 is the library's stated floor and stays
+          # within engines.node (>=20).
+          node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
 
