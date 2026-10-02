@@ -63,9 +63,22 @@ describe("session helpers", () => {
     });
 
     it("reports the current session without a user when signed out", async () => {
+      // supabase-js throws AuthSessionMissingError locally when there is no
+      // session; that is the normal anonymous state, not an error, so the
+      // login screen must stay clean (no spurious "Terjadi kesalahan").
+      auth.sessionError = { message: "Auth session missing!", code: undefined };
+
       const result = await getCurrentSession();
       expect(result.user).toBeNull();
       expect(result.error).toBeNull();
+    });
+
+    it("maps a real session error to a safe public message", async () => {
+      auth.sessionError = { message: "network request failed", code: undefined };
+
+      const result = await getCurrentSession();
+      expect(result.user).toBeNull();
+      expect(result.error?.message).toBe(AUTH_MESSAGES.network);
     });
   });
 

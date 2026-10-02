@@ -14,10 +14,21 @@ export type SessionResult =
   | { user: null; error: null }
   | { user: null; error: { message: string } };
 
-/** Resolve the current session, mapping to {@link SessionResult}. */
+/**
+ * Resolve the current session, mapping to {@link SessionResult}.
+ *
+ * supabase-js throws `AuthSessionMissingError` ("Auth session missing!") from
+ * `getUser()` when there is no local session — locally, with no network call.
+ * That is the normal not-yet-logged-in state, not a failure: an anonymous user
+ * resolves to `{ user: null, error: null }` (REPOSITORY_STRUCTURE.md §49) so the
+ * login screen renders clean instead of showing a spurious error.
+ */
 export async function getCurrentSession(): Promise<SessionResult> {
   const client = getAuthClient();
   const { data, error } = await client.getUser();
+  if (error && /session missing/i.test(error.message)) {
+    return { user: null, error: null };
+  }
   if (error) return { user: null, error: { message: toAuthMessage(error) } };
   if (!data.user) return { user: null, error: null };
   return { user: toAuthUser(data.user), error: null };
