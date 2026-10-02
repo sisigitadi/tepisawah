@@ -49,6 +49,7 @@ import { env, exit } from "node:process";
 import { fileURLToPath } from "node:url";
 import { join, relative } from "node:path";
 import pg from "pg";
+import { loadEnvFile } from "./env-file.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const MIGRATIONS_DIR = join(ROOT, "supabase", "migrations");
@@ -60,32 +61,9 @@ const MARKER_TABLE = "staging_schema_version";
 // Configuration resolution
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** Minimal KEY=VALUE parser for a gitignored local override file. */
-function parseEnvFile(file) {
-  try {
-    readFileSync(file, "utf8")
-      .split("\n")
-      .forEach((line) => {
-        const trimmed = line.trim();
-        if (!trimmed || trimmed.startsWith("#")) return;
-        const eq = trimmed.indexOf("=");
-        if (eq < 1) return;
-        const key = trimmed.slice(0, eq).trim();
-        let value = trimmed.slice(eq + 1).trim();
-        if (
-          (value.startsWith('"') && value.endsWith('"')) ||
-          (value.startsWith("'") && value.endsWith("'"))
-        ) {
-          value = value.slice(1, -1);
-        }
-        if (!(key in env)) env[key] = value;
-      });
-  } catch {
-    // No override file — process environment only.
-  }
-}
-
-parseEnvFile(ENV_LOCAL);
+// Merge the gitignored override file under the process environment: an exported
+// variable always wins, which is exactly the precedence CI relies on.
+loadEnvFile(ENV_LOCAL);
 
 /** First non-empty variable from a precedence list (explicit overrides first). */
 function resolveEnv(...names) {

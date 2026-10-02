@@ -36,6 +36,7 @@ import { spawn } from "node:child_process";
 import { env, exit } from "node:process";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
+import { loadEnvFile } from "./env-file.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const ENV_LOCAL = join(ROOT, ".env.staging.local");
@@ -55,32 +56,9 @@ const MAPPING = {
 // Configuration resolution
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** Minimal KEY=VALUE parser for a gitignored local override file. */
-function parseEnvFile(file) {
-  try {
-    readFileSync(file, "utf8")
-      .split("\n")
-      .forEach((line) => {
-        const trimmed = line.trim();
-        if (!trimmed || trimmed.startsWith("#")) return;
-        const eq = trimmed.indexOf("=");
-        if (eq < 1) return;
-        const key = trimmed.slice(0, eq).trim();
-        let value = trimmed.slice(eq + 1).trim();
-        if (
-          (value.startsWith('"') && value.endsWith('"')) ||
-          (value.startsWith("'") && value.endsWith("'"))
-        ) {
-          value = value.slice(1, -1);
-        }
-        if (!(key in env)) env[key] = value;
-      });
-  } catch {
-    // No override file — process environment only.
-  }
-}
-
-parseEnvFile(ENV_LOCAL);
+// Merge the gitignored override file under the process environment: an exported
+// variable always wins, which is exactly the precedence CI relies on.
+loadEnvFile(ENV_LOCAL);
 
 /** Resolve a staging variable from the process environment, then the file. */
 function resolveStaging(name) {
