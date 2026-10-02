@@ -1,0 +1,44 @@
+[
+  {
+    "role": "admin",
+    "label": "Admin",
+    "email": "admin@demo.tepisawah.id",
+    "password": "demo1234",
+    "blurb": "Kelola katalog, meja & pengguna di Admin Console"
+  },
+  {
+    "role": "cashier",
+    "label": "Kasir",
+    "email": "kasir@demo.tepisawah.id",
+    "password": "demo1234",
+    "blurb": "Konfirmasi pesanan masuk & proses pembayaran di POS"
+  },
+  {
+    "role": "waiter",
+    "label": "Pelayan",
+    "email": "pelayan@demo.tepisawah.id",
+    "password": "demo1234",
+    "blurb": "Buat pesanan manual & tandai antar di Waiter App"
+  },
+  {
+    "role": "kitchen",
+    "label": "Dapur",
+    "email": "dapur@demo.tepisawah.id",
+    "password": "demo1234",
+    "blurb": "Proses antrian: mulai masak → siap di Kitchen Display"
+  },
+  {
+    "role": "supervisor",
+    "label": "Supervisor",
+    "email": "supervisor@demo.tepisawah.id",
+    "password": "demo1234",
+    "blurb": "Otoritas operasional lintas antrian"
+  },
+  {
+    "role": "owner",
+    "label": "Owner",
+    "email": "owner@demo.tepisawah.id",
+    "password": "demo1234",
+    "blurb": "Akses level bisnis & oversight"
+  }
+]

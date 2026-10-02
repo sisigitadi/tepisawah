@@ -10,6 +10,7 @@
 import {
   ENV_KEYS,
   getSupabasePublicConfig,
+  isDemoMode,
   readEnv,
   resolveEnvironment,
   type EnvRecord,
@@ -24,6 +25,8 @@ export const env = {
   supabaseAnonKey: readEnv(record, ENV_KEYS.supabaseAnonKey),
   environment: resolveEnvironment(record),
   appBaseUrl: readEnv(record, ENV_KEYS.appBaseUrl),
+  /** Demo deployments only: shows the generic role login hints. */
+  demoMode: isDemoMode(record),
 } as const;
 
 /**

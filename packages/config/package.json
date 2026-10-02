@@ -9,7 +9,8 @@
   "scripts": {
     "build": "vite build",
     "typecheck": "tsc --noEmit",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {},
   "devDependencies": {

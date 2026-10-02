@@ -27,6 +27,8 @@ export const ENV_KEYS = {
   /** Application metadata. */
   appEnv: "APP_ENV",
   appBaseUrl: "APP_BASE_URL",
+  /** Public — presentational demo deployments show generic login hints. */
+  demoMode: "VITE_DEMO_MODE",
 } as const;
 
 /** A record shaped like `import.meta.env` or `process.env`. */

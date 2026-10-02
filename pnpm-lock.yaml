@@ -511,6 +511,9 @@ importers:
 
   packages/auth:
     dependencies:
+      '@tepisawah/config':
+        specifier: workspace:*
+        version: link:../config
       '@tepisawah/database':
         specifier: workspace:*
         version: link:../database

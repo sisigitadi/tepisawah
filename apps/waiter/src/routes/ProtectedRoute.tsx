@@ -9,12 +9,23 @@
 import type { ReactNode } from "react";
 
 import { AccessDenied, LoginPanel, useAuth } from "@tepisawah/auth";
+import { DEMO_ACCOUNTS } from "@tepisawah/config";
+
+import { env } from "../lib/env.js";
 
 export function ProtectedRoute({ children }: { children: ReactNode }): ReactNode {
   const { status, isLoading } = useAuth();
 
   if (isLoading) return <div aria-busy="true">Memuat…</div>;
   if (status === "disabled" || status === "unauthorized") return <AccessDenied />;
-  if (status === "unauthenticated") return <LoginPanel title="WAITER — Staff Login" />;
+  if (status === "unauthenticated") {
+    return (
+      <LoginPanel
+        title="WAITER — Staff Login"
+        // Demo deployments only: the generic role accounts with click-to-fill.
+        demoAccounts={env.demoMode ? DEMO_ACCOUNTS : undefined}
+      />
+    );
+  }
   return children;
 }
