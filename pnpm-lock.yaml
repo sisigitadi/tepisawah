@@ -414,6 +414,64 @@ importers:
         specifier: ^3.2.7
         version: 3.2.7(@types/node@22.20.4)(jsdom@25.0.1)
 
+  apps/staff:
+    dependencies:
+      '@tepisawah/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@tepisawah/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@tepisawah/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@tepisawah/permissions':
+        specifier: workspace:*
+        version: link:../../packages/permissions
+      '@tepisawah/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@tepisawah/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      react:
+        specifier: ^19.0.0
+        version: 19.3.0
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.3.0(react@19.3.0)
+    devDependencies:
+      '@testing-library/jest-dom':
+        specifier: ^6.6.3
+        version: 6.10.0(@testing-library/dom@10.4.2)
+      '@testing-library/react':
+        specifier: ^16.3.0
+        version: 16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@testing-library/user-event':
+        specifier: ^14.6.1
+        version: 14.6.7(@testing-library/dom@10.4.2)
+      '@types/react':
+        specifier: ^19.0.10
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.0.4
+        version: 19.3.0(@types/react@19.3.0)
+      '@vitejs/plugin-react':
+        specifier: ^4.3.4
+        version: 4.7.0(vite@6.4.3(@types/node@22.20.4))
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vite:
+        specifier: ^6.2.0
+        version: 6.4.3(@types/node@22.20.4)
+      vitest:
+        specifier: ^3.2.7
+        version: 3.2.7(@types/node@22.20.4)(jsdom@25.0.1)
+
   apps/waiter:
     dependencies:
       '@tepisawah/auth':

@@ -8,8 +8,8 @@ Per-app deployment targets (§53):
 | order    | order.tepisawah.id     |
 | pos      | pos.tepisawah.id       |
 | kitchen  | kitchen.tepisawah.id   |
-| waiter   | waiter.tepisawah.id    |
-| admin    | admin.tepisawah.id     |
+| waiter   | waiter.tepisawah.id    || admin    | admin.tepisawah.id    |
+| staff    | staff.tepisawah.id    |
 
 Each app builds independently via `pnpm --filter @tepisawah/<app> build`.
 

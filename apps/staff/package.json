@@ -1,0 +1,37 @@
+{
+  "name": "@tepisawah/staff",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Staff portal: one staff login and a role-based launcher into the internal apps.",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tepisawah/auth": "workspace:*",
+    "@tepisawah/config": "workspace:*",
+    "@tepisawah/database": "workspace:*",
+    "@tepisawah/permissions": "workspace:*",
+    "@tepisawah/types": "workspace:*",
+    "@tepisawah/ui": "workspace:*"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "jsdom": "^25.0.1",
+    "typescript": "^5.7.3",
+    "vite": "^6.2.0",
+    "vitest": "^3.2.7"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

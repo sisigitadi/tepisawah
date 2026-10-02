@@ -8,6 +8,7 @@ export const DOMAINS = {
   kitchen: "kitchen.tepisawah.id",
   waiter: "waiter.tepisawah.id",
   admin: "admin.tepisawah.id",
+  staff: "staff.tepisawah.id",
 } as const;
 
 export type AppName = keyof typeof DOMAINS;

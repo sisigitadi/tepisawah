@@ -393,6 +393,9 @@ https://waiter.tepisawah.id
 
 ADMIN
 https://admin.tepisawah.id
+
+STAFF
+https://staff.tepisawah.id
 ```
 
 Local development dapat menggunakan port berbeda.
@@ -406,6 +409,7 @@ pos     → localhost:5175
 admin   → localhost:5176
 waiter  → localhost:5177
 kitchen → localhost:5178
+staff   → localhost:5179
 ```
 
 Port tersebut adalah contoh development mapping, bukan requirement absolut.
@@ -425,6 +429,7 @@ VITE_POS_APP_URL=
 VITE_KITCHEN_APP_URL=
 VITE_WAITER_APP_URL=
 VITE_ADMIN_APP_URL=
+VITE_STAFF_APP_URL=
 ```
 
 Gunakan hanya jika aplikasi benar-benar membutuhkan cross-app navigation.
@@ -1080,11 +1085,13 @@ kredensialnya tidak pernah muncul di production.
 
 URL tiap app diambil dari `VITE_DEMO_APP_URLS` (`id=url,id=url`, optional,
 dibaca via `src/lib/env.ts`); kosong → fallback port dev lokal (order 5174,
-pos 5175, admin 5176, waiter 5177, kitchen 5178; beranda pakai route `/`). Set di hosting demo saat staff app
+pos 5175, admin 5176, waiter 5177, kitchen 5178; beranda pakai route `/`).
+Staff portal (port 5179) adalah pintu masuk launcher: login sekisi, lalu
+kartu app yang tampil disesuaikan dengan role staff tersebut. Set di hosting demo saat staff app
 sudah punya domain sendiri:
 
 ```text
-VITE_DEMO_APP_URLS=pos=https://pos-demo.tepisawah.id,admin=https://admin-demo.tepisawah.id
+VITE_DEMO_APP_URLS=pos=https://pos-demo.tepisawah.id,admin=https://admin-demo.tepisawah.id,staff=https://staff-demo.tepisawah.id
 ```
 
 ## Provisioning (staging backend)
@@ -1109,7 +1116,8 @@ memastikan profile aktif + role ter-assign, bukan menduplikasi user.
    `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` staging dan
    `VITE_DEMO_MODE=true`.
 3. Login screen staff app menampilkan kartu "Mode demo" — klik peran yang
-   mau didemokan, form terisi otomatis.
+   mau didemokan, form terisi otomatis. Staff portal (5179) pakai kartu yang
+   sama; setelah login, launcher hanya menampilkan app untuk role tersebut.
 4. Buka `/demo` di web app sebagai pintu masuk presentasi (butuh
    `VITE_DEMO_MODE=true` + `VITE_DEMO_APP_URLS` bila staff app pakai domain
    sendiri).
