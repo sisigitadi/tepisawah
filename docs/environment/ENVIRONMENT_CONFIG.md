@@ -1073,14 +1073,14 @@ owner@demo.tepisawah.id       Owner       demo1234
 ## Hub presentasi (`/demo`)
 
 Web app punya satu pintu masuk presentasi di rute `/demo`
-(`apps/web/src/pages/DemoPage.tsx`): kartu tiap staff app + tabel akun demo
-di satu halaman. Rute ini hanya render saat `VITE_DEMO_MODE=true` —
+(`apps/web/src/pages/DemoPage.tsx`): kartu beranda situs, pemesanan pelanggan
+(QR), tiap staff app, + tabel akun demo di satu halaman. Rute ini hanya render saat `VITE_DEMO_MODE=true` —
 `AppRouter` jatuh ke homepage di build lain, jadi halaman beserta tabel
 kredensialnya tidak pernah muncul di production.
 
 URL tiap app diambil dari `VITE_DEMO_APP_URLS` (`id=url,id=url`, optional,
-dibaca via `src/lib/env.ts`); kosong → fallback port dev lokal (pos 5175,
-admin 5176, waiter 5177, kitchen 5178). Set di hosting demo saat staff app
+dibaca via `src/lib/env.ts`); kosong → fallback port dev lokal (order 5174,
+pos 5175, admin 5176, waiter 5177, kitchen 5178; beranda pakai route `/`). Set di hosting demo saat staff app
 sudah punya domain sendiri:
 
 ```text
