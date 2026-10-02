@@ -13,6 +13,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@tepisawah/config": "workspace:*",
     "@tepisawah/database": "workspace:*",
     "@tepisawah/permissions": "workspace:*",
     "react": "^19.0.0",

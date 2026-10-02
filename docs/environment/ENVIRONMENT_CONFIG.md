@@ -1036,3 +1036,64 @@ Production Environment
 **Status:** READY FOR ENVIRONMENT SETUP.
 
 The actual credential values are intentionally not included in this document.
+
+---
+
+# 37. Demo Mode
+
+Demo mode membuat deployment hosting bisa dipresentasikan tanpa kredensial
+personal: satu akun generic per role staff, dengan UI hint klik-isi di login
+screen. Production tetap siap dari jalur kode yang sama — flag tidak diset,
+maka tidak ada hint dan tidak ada kredensial yang tampil.
+
+## Flag
+
+```text
+VITE_DEMO_MODE=true   # public (browser-safe) — hanya di deployment demo
+```
+
+Dibaca via `packages/config/src/demo.ts` (`isDemoMode`), di-cache sekali di
+`src/lib/env.ts` tiap staff app, dan menyalakan hint di `LoginPanel`
+(`packages/auth`) yang di-wire oleh `ProtectedRoute` masing-masing app.
+
+## Akun demo
+
+Daftar kanonik: `packages/config/src/demo-accounts.json` — dipakai UI login
+dan script seed, jadi keduanya tidak bisa berbeda.
+
+```text
+admin@demo.tepisawah.id       Admin       demo1234
+kasir@demo.tepisawah.id       Kasir       demo1234
+pelayan@demo.tepisawah.id     Pelayan     demo1234
+dapur@demo.tepisawah.id       Dapur       demo1234
+supervisor@demo.tepisawah.id  Supervisor  demo1234
+owner@demo.tepisawah.id       Owner       demo1234
+```
+
+## Provisioning (staging backend)
+
+`auth.users` tidak boleh di-insert via SQL di versi Supabase ini (login akan
+500 — lihat header `scripts/setup-staging.mjs`). Akun dibuat via Auth Admin
+API oleh `scripts/seed-demo-users.mjs`:
+
+```bash
+# Lokal (memakai .env.staging.local) atau via CI workflow "Demo seed"
+# (workflow_dispatch — memakai STAGING_* secrets yang sudah ada).
+pnpm seed:demo
+```
+
+Script ini idempotent: re-run me-reset password demo ke nilai kanonik dan
+memastikan profile aktif + role ter-assign, bukan menduplikasi user.
+
+## Checklist deployment demo
+
+1. Jalankan workflow **Demo seed** di GitHub Actions (staging backend).
+2. Di hosting project (mis. Vercel), set environment:
+   `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` staging dan
+   `VITE_DEMO_MODE=true`.
+3. Login screen staff app menampilkan kartu "Mode demo" — klik peran yang
+   mau didemokan, form terisi otomatis.
+4. Production: flag tidak diset → hint tidak pernah render, dan akun demo
+   tidak ada di backend production.
+
+**Status:** READY — flag, UI hint, seed script, dan CI provisioning siap.

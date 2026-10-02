@@ -1,0 +1,44 @@
+name: Demo seed
+
+# Provisions the generic demo role accounts (one per staff role — admin,
+# cashier, waiter, kitchen, supervisor, owner) on the staging Supabase
+# project, so hosted demo deployments (VITE_DEMO_MODE=true) can hand a
+# presenter or reviewer every workflow without personal credentials.
+#
+# The account list is the canonical packages/config/src/demo-accounts.json —
+# the exact list the staff login panels render — so the UI and the backend
+# cannot drift apart. The script is idempotent: re-runs reset the demo
+# passwords and re-assert profile/role state instead of duplicating users.
+#
+# It never runs automatically: workflow_dispatch only, on an explicitly
+# chosen run. Production databases are never touched — the STAGING_*
+# secrets name the staging project, and the seed script only ever reaches
+# the project its configuration points at.
+#
+# After seeding, enable demo mode on the hosting deployment by setting
+# VITE_DEMO_MODE=true (plus the staging VITE_SUPABASE_URL / ANON_KEY) in the
+# hosting project's environment — see docs/environment/ENVIRONMENT_CONFIG.md
+# ("Demo mode").
+
+on:
+  workflow_dispatch:
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Seed demo accounts on staging
+        env:
+          # The seed script reads DEMO_* first and falls back to these names.
+          STAGING_SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
+          STAGING_SERVICE_ROLE_KEY: ${{ secrets.STAGING_SERVICE_ROLE_KEY }}
+          STAGING_DB_PASSWORD: ${{ secrets.STAGING_DB_PASSWORD }}
+        run: pnpm seed:demo

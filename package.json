@@ -17,6 +17,7 @@
     "smoke:staging": "node scripts/smoke-staging.mjs",
     "build:staging": "node scripts/build-staging-sql.mjs",
     "setup:staging": "node scripts/setup-staging.mjs",
+    "seed:demo": "node scripts/seed-demo-users.mjs",
     "clean": "pnpm -r run clean"
   },
   "devDependencies": {
