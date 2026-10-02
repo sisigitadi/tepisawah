@@ -35,9 +35,9 @@
  *
  * Exits 1 if any step fails, 0 only when the whole chain is verified.
  */
-import { readFileSync } from "node:fs";
 import { argv, env, exit } from "node:process";
 import { randomUUID } from "node:crypto";
+import { parseEnvFile } from "./env-file.mjs";
 
 const ROOT = new URL("../", import.meta.url);
 const DATABASE_BUNDLE = new URL("packages/database/dist/database.js", ROOT);
@@ -91,30 +91,6 @@ const adminPassword = flag("password") ?? undefined;
 // ─────────────────────────────────────────────────────────────────────────────
 // Environment
 // ─────────────────────────────────────────────────────────────────────────────
-
-/** Parse a flat KEY=VALUE env file, tolerating comments, blanks and CRLF. */
-function parseEnvFile(file) {
-  const entries = new Map();
-  let text;
-  try {
-    text = readFileSync(file, "utf8");
-  } catch {
-    return entries;
-  }
-  for (const raw of text.split("\n")) {
-    const line = raw.trim();
-    if (!line || line.startsWith("#")) continue;
-    const equals = line.indexOf("=");
-    if (equals === -1) continue;
-    const key = line.slice(0, equals).trim();
-    const value = line
-      .slice(equals + 1)
-      .trim()
-      .replace(/^["']|["']$/g, "");
-    if (key) entries.set(key, value);
-  }
-  return entries;
-}
 
 /**
  * Resolve a variable in the project's own precedence order: an explicit flag,

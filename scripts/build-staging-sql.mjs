@@ -35,6 +35,7 @@ import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join, relative } from "node:path";
 import { exit } from "node:process";
+import { parseEnvFile } from "./env-file.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const MIGRATIONS_DIR = join(ROOT, "supabase", "migrations");
@@ -48,33 +49,9 @@ const rule = "-".repeat(78);
 // Staging admin credentials (gitignored override file; never logged)
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** Minimal KEY=VALUE parser, mirroring scripts/setup-staging.mjs. */
-function parseEnvFile(file) {
-  const out = {};
-  try {
-    for (const line of readFileSync(file, "utf8").split("\n")) {
-      const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith("#")) continue;
-      const eq = trimmed.indexOf("=");
-      if (eq < 1) continue;
-      const key = trimmed.slice(0, eq).trim();
-      let value = trimmed.slice(eq + 1).trim();
-      if (
-        (value.startsWith('"') && value.endsWith('"')) ||
-        (value.startsWith("'") && value.endsWith("'"))
-      ) {
-        value = value.slice(1, -1);
-      }
-      out[key] = value;
-    }
-  } catch {
-    // No override file — placeholders are emitted below.
-  }
-  return out;
-}
-
-const stagingEnv = parseEnvFile(STAGING_ENV);
-const adminEmail = stagingEnv.STAGING_ADMIN_EMAIL;
+// The admin login comes from the gitignored override file; if it is absent the
+// helper yields an empty Map and the warning below emits a placeholder instead.
+const adminEmail = parseEnvFile(STAGING_ENV).get("STAGING_ADMIN_EMAIL");
 
 if (!adminEmail) {
   console.warn(
