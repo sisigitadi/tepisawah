@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "pnpm --filter @tepisawah/web build",
+  "outputDirectory": "apps/web/dist",
+  "framework": "vite"
+}
