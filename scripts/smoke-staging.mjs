@@ -5,11 +5,12 @@
  * environment-agnostic: it reads `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`
  * and `SMOKE_ADMIN_*` from the process environment first, then from `.env.local`
  * — which on a configured workstation means *development*. The staging
- * credentials therefore live under their own `STAGING_*` names in a gitignored
- * `.env.staging.local`, and this script is the only place they are translated
- * onto the names the smoke test expects. CI makes the same translation from its
- * secrets (`.github/workflows/ci.yml`), so both entry points run identical code
- * against an identical contract.
+ * credentials therefore live under their own `STAGING_*` names — in a
+ * gitignored `.env.staging.local` on a workstation, or as step env in CI — and
+ * this script is the only place they are translated onto the names the smoke
+ * test expects. CI runs this same wrapper (`pnpm smoke:staging` in
+ * `.github/workflows/ci.yml`) with the `STAGING_*` secrets, so both entry
+ * points share one code path and one contract.
  *
  * The mapping is deliberately one-way and staging-scoped: nothing here ever
  * falls back to `.env.local`, so `pnpm smoke:staging` cannot silently target the

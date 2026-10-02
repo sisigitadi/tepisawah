@@ -15,8 +15,12 @@ name: CI
 #                                  it created; without it every build leaves one
 #                                  PAID test order behind in staging
 #
-# The smoke script resolves process.env ahead of any .env file, so these are the
-# only place the staging credentials live — nothing is committed.
+# The step runs the same wrapper as the local `pnpm smoke:staging` command
+# (scripts/smoke-staging.mjs): it reads these STAGING_* names from the
+# environment and maps them onto the names the smoke test expects, so local and
+# CI share one entry point and one contract. No .env file is involved in CI, and
+# the secrets above are the only place the credentials live — nothing is
+# committed.
 #
 # Build the backend these point at once with:
 #   pnpm setup:staging   (scripts/setup-staging.mjs; reads the same STAGING_*
@@ -63,13 +67,15 @@ jobs:
       # ready -> serve -> pay) through the same @tepisawah/database query layer
       # the apps ship. It catches regressions unit tests structurally cannot — a
       # renamed RPC argument, a revoked grant, a broken RLS policy — before they
-      # reach the floor mid-service. The script imports the built ESM barrel,
-      # which the Build step above has already produced in this same workspace.
+      # reach the floor mid-service. Runs the shared `pnpm smoke:staging` wrapper
+      # (scripts/smoke-staging.mjs), which resolves the STAGING_* secrets below;
+      # it imports the built ESM barrel, which the Build step above has already
+      # produced in this same workspace.
       - name: Order chain smoke test
         env:
-          VITE_SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.STAGING_SUPABASE_ANON_KEY }}
-          SMOKE_ADMIN_EMAIL: ${{ secrets.STAGING_ADMIN_EMAIL }}
-          SMOKE_ADMIN_PASSWORD: ${{ secrets.STAGING_ADMIN_PASSWORD }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.STAGING_SERVICE_ROLE_KEY }}
-        run: node scripts/smoke-order-chain.mjs
+          STAGING_SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
+          STAGING_SUPABASE_ANON_KEY: ${{ secrets.STAGING_SUPABASE_ANON_KEY }}
+          STAGING_ADMIN_EMAIL: ${{ secrets.STAGING_ADMIN_EMAIL }}
+          STAGING_ADMIN_PASSWORD: ${{ secrets.STAGING_ADMIN_PASSWORD }}
+          STAGING_SERVICE_ROLE_KEY: ${{ secrets.STAGING_SERVICE_ROLE_KEY }}
+        run: pnpm smoke:staging
