@@ -403,9 +403,9 @@ Contoh:
 web     → localhost:5173
 order   → localhost:5174
 pos     → localhost:5175
-kitchen → localhost:5176
+admin   → localhost:5176
 waiter  → localhost:5177
-admin   → localhost:5178
+kitchen → localhost:5178
 ```
 
 Port tersebut adalah contoh development mapping, bukan requirement absolut.
