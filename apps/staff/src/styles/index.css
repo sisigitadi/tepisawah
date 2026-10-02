@@ -1,0 +1,481 @@
+/*
+ * @tepisawah/staff — staff portal styles.
+ *
+ * The portal is a staff surface, but it is also the front door a manager sees
+ * first, so it carries the public brand language (Master Design System v1.0):
+ * warm-cream canvas, rice-paper panels, deep-moss ink and a golden accent.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: light;
+
+  /* Brand tokens (Master Design System v1.0) */
+  --c-forest: #2e6b34;
+  --c-deepmoss: #183a1d;
+  --c-golden: #dda15e;
+  --c-amberwarm: #f3c644;
+  --c-warmcream: #fefae0;
+  --c-ricepaper: #f8f4db;
+  --c-roastedearth: #3d1f10;
+  --c-coffeebrown: #6f3f24;
+
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: Inter, system-ui, -apple-system, sans-serif;
+
+  --radius-lg: 1.5rem;
+  --radius-md: 1rem;
+  --shadow-soft: 0 4px 20px -8px rgba(24, 58, 29, 0.25);
+  --shadow-lg: 0 18px 48px -18px rgba(24, 58, 29, 0.45);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  color: var(--c-roastedearth);
+  background-color: var(--c-warmcream);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif);
+  line-height: 1.2;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input {
+  font-family: inherit;
+}
+
+/* Shell ------------------------------------------------------------------ */
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+  width: 100%;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3rem) 1.25rem 4rem;
+  min-width: 0;
+}
+
+/* Header ----------------------------------------------------------------- */
+
+.staff-header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  flex-wrap: wrap;
+  min-height: 4.5rem;
+  padding: 0.625rem clamp(1rem, 3vw, 2rem);
+  background: rgba(24, 58, 29, 0.97);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(221, 161, 94, 0.35);
+  box-shadow: 0 6px 24px -18px rgba(0, 0, 0, 0.6);
+}
+
+.staff-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  flex: none;
+}
+
+.staff-brand-mark {
+  height: 2.5rem;
+  width: auto;
+  object-fit: contain;
+  background: var(--c-warmcream);
+  border: 1px solid rgba(221, 161, 94, 0.5);
+  border-radius: 0.625rem;
+  padding: 0.1875rem 0.4375rem;
+}
+
+.staff-brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.staff-brand-name {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  letter-spacing: 0.04em;
+  color: var(--c-warmcream);
+}
+
+.staff-brand-tag {
+  font-size: 0.5625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-golden);
+  font-weight: 600;
+}
+
+.staff-identity {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.staff-identity-user {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  text-align: right;
+  min-width: 0;
+}
+
+.staff-identity-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--c-warmcream);
+  max-width: 18rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.staff-identity-roles {
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-amberwarm);
+}
+
+.staff-signout {
+  padding: 0.5rem 0.9375rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(254, 250, 224, 0.35);
+  background: rgba(254, 250, 224, 0.08);
+  color: var(--c-warmcream);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  transition: background-color 0.15s ease;
+}
+
+.staff-signout:hover {
+  background: rgba(254, 250, 224, 0.18);
+}
+
+/* Login ------------------------------------------------------------------ */
+
+.staff-login {
+  display: flex;
+  justify-content: center;
+  padding-block: clamp(1.5rem, 5vw, 3.5rem);
+}
+
+.staff-login form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+  width: 100%;
+  max-width: 27rem;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  background: linear-gradient(160deg, var(--c-ricepaper), #ffffff 70%);
+  border: 1px solid rgba(111, 63, 36, 0.16);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.staff-login form > h1 {
+  font-size: clamp(1.25rem, 3vw, 1.625rem);
+  font-weight: 700;
+  color: var(--c-deepmoss);
+  text-align: center;
+}
+
+.staff-login label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--c-coffeebrown);
+  text-transform: uppercase;
+}
+
+.staff-login input {
+  padding: 0.75rem 0.875rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(111, 63, 36, 0.28);
+  background: #ffffff;
+  color: var(--c-roastedearth);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  text-transform: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.staff-login input:focus {
+  outline: none;
+  border-color: var(--c-forest);
+  box-shadow: 0 0 0 3px rgba(46, 107, 52, 0.16);
+}
+
+.staff-login button[type="submit"] {
+  padding: 0.8125rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, var(--c-amberwarm), var(--c-golden));
+  color: var(--c-roastedearth);
+  font-size: 0.9375rem;
+  font-weight: 800;
+  box-shadow: 0 8px 22px -12px rgba(221, 161, 94, 0.8);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.staff-login button[type="submit"]:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.staff-login button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.staff-login p[role="alert"] {
+  margin: 0;
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--radius-md);
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  color: #b91c1c;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.staff-login section[data-testid="demo-accounts"] {
+  padding-top: 1.125rem;
+  border-top: 1px dashed rgba(111, 63, 36, 0.28);
+  font-size: 0.875rem;
+  color: rgba(61, 31, 16, 0.8);
+}
+
+.staff-login section[data-testid="demo-accounts"] ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.staff-login section[data-testid="demo-accounts"] li {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.staff-login section[data-testid="demo-accounts"] button {
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(46, 107, 52, 0.3);
+  background: rgba(46, 107, 52, 0.08);
+  color: var(--c-forest);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.staff-login section[data-testid="demo-accounts"] button:hover:not(:disabled) {
+  background: rgba(46, 107, 52, 0.16);
+}
+
+.staff-login section[data-testid="demo-accounts"] small {
+  font-size: 0.75rem;
+  color: rgba(61, 31, 16, 0.68);
+}
+
+/* Access denied (from @tepisawah/auth AccessDenied) ----------------------- */
+
+.staff-login + section,
+.app-main section[role="alert"] {
+  max-width: 34rem;
+  margin-inline: auto;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  background: linear-gradient(160deg, var(--c-ricepaper), #ffffff 70%);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.app-main section[role="alert"] h1 {
+  color: #b91c1c;
+}
+
+.app-main section[role="alert"] p {
+  color: rgba(61, 31, 16, 0.8);
+}
+
+.app-main section[role="alert"] button {
+  margin-top: 1rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  background: rgba(220, 38, 38, 0.08);
+  color: #b91c1c;
+  font-size: 0.875rem;
+  font-weight: 800;
+}
+
+/* Portal launcher -------------------------------------------------------- */
+
+.staff-portal {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+.staff-portal-head {
+  max-width: 40rem;
+}
+
+.staff-eyebrow {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--c-forest);
+  margin-bottom: 0.5rem;
+}
+
+.staff-title {
+  font-size: clamp(1.625rem, 4vw, 2.375rem);
+  font-weight: 700;
+  color: var(--c-deepmoss);
+  letter-spacing: -0.01em;
+}
+
+.staff-sub {
+  margin: 0.625rem 0 0;
+  font-size: 0.9375rem;
+  color: rgba(61, 31, 16, 0.75);
+}
+
+.staff-role-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.staff-role-chip {
+  padding: 0.3125rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(46, 107, 52, 0.09);
+  border: 1px solid rgba(46, 107, 52, 0.22);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-forest);
+}
+
+.staff-app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.125rem;
+}
+
+.staff-app-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  text-decoration: none;
+  color: inherit;
+  background: linear-gradient(160deg, var(--c-ricepaper), #ffffff 70%);
+  border: 1px solid rgba(111, 63, 36, 0.16);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.staff-app-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(46, 107, 52, 0.4);
+}
+
+.staff-app-emoji {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.staff-app-name {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--c-deepmoss);
+}
+
+.staff-app-blurb {
+  font-size: 0.875rem;
+  color: rgba(61, 31, 16, 0.75);
+  line-height: 1.55;
+}
+
+.staff-app-open {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--c-forest);
+}
+
+.staff-empty {
+  margin: 0;
+  padding: 2rem 1.5rem;
+  border-radius: var(--radius-lg);
+  background: var(--c-ricepaper);
+  border: 1px solid rgba(111, 63, 36, 0.16);
+  color: rgba(61, 31, 16, 0.75);
+  text-align: center;
+  font-size: 0.9375rem;
+}
+
+@media (max-width: 40rem) {
+  .staff-app-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .staff-identity-user {
+    text-align: left;
+  }
+}

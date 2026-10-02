@@ -17,7 +17,8 @@
     { "path": "apps/pos" },
     { "path": "apps/kitchen" },
     { "path": "apps/waiter" },
-    { "path": "apps/admin" }
+    { "path": "apps/admin" },
+    { "path": "apps/staff" }
   ],
   "files": []
 }
