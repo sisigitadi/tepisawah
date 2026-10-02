@@ -2,10 +2,11 @@
  * scripts/seed-demo-users.mjs — provision the generic demo role accounts.
  *
  * Creates (or normalizes) one auth user per staff role on the demo backend,
- * so a hosted demo deployment (`VITE_DEMO_MODE=true`) can hand every account
- * to a presenter or reviewer. The account list is the canonical JSON at
- * `packages/config/src/demo-accounts.json` — the exact list the login panel
- * renders — so the UI and the backend can never drift apart.
+ * so a hosted demo deployment (`VITE_DEMO_MODE=true`) can hand a presenter or
+ * reviewer every workflow without personal credentials. The account list is
+ * the canonical JSON at `packages/config/src/demo-accounts.json` — the exact
+ * list the login panel renders — so the UI and the backend can never drift
+ * apart.
  *
  * Per account this script:
  *   1. creates the auth user via the Auth Admin API (never raw SQL inserts
@@ -14,12 +15,17 @@
  *   2. or, when the email already exists, resets its password to the demo
  *      value so re-runs converge instead of diverging,
  *   3. upserts an active `profiles` row and grants the matching role in
- *      `user_roles` over the direct Postgres connection.
+ *      `user_roles` over PostgREST.
+ *
+ * Everything goes over HTTPS — the management REST surface only — so the
+ * script runs from anywhere that can reach the project URL: a workstation
+ * behind a NAT that blocks direct Postgres (port 5432), or CI. It needs no
+ * database password; the service role key bypasses row-level security on the
+ * profile and role tables, which is exactly what seeding requires.
  *
  * Configuration (explicit opt-in only — the script is inert without it):
  *   DEMO_SUPABASE_URL      (falls back to STAGING_SUPABASE_URL)
  *   DEMO_SERVICE_ROLE_KEY  (falls back to STAGING_SERVICE_ROLE_KEY)
- *   DEMO_DB_PASSWORD       (falls back to STAGING_DB_PASSWORD)
  * or a gitignored `.env.staging.local` providing the STAGING_* names, which
  * is how local runs share the CI credentials.
  *
@@ -29,7 +35,6 @@ import { readFileSync } from "node:fs";
 import { env, exit } from "node:process";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
-import pg from "pg";
 import { loadEnvFile } from "./env-file.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -49,12 +54,10 @@ function resolveEnv(...names) {
 
 const projectUrl = resolveEnv("DEMO_SUPABASE_URL", "STAGING_SUPABASE_URL");
 const serviceRoleKey = resolveEnv("DEMO_SERVICE_ROLE_KEY", "STAGING_SERVICE_ROLE_KEY");
-const dbPassword = resolveEnv("DEMO_DB_PASSWORD", "STAGING_DB_PASSWORD");
 
 const missing = [
   ["DEMO_SUPABASE_URL", projectUrl],
   ["DEMO_SERVICE_ROLE_KEY", serviceRoleKey],
-  ["DEMO_DB_PASSWORD", dbPassword],
 ]
   .filter(([, value]) => !value)
   .map(([name]) => name);
@@ -76,13 +79,7 @@ if (!Array.isArray(accounts) || accounts.length === 0) {
   exit(1);
 }
 
-const projectHost = new URL(projectUrl).hostname;
-const connectionUri = `postgresql://postgres:${encodeURIComponent(
-  dbPassword,
-)}@db.${projectHost}:5432/postgres`;
-const client = new pg.Client({ connectionString: connectionUri });
-
-/** Auth Admin API headers. */
+/** Admin/PostgREST headers. The service role key bypasses RLS. */
 function adminHeaders() {
   return {
     apikey: serviceRoleKey,
@@ -91,14 +88,51 @@ function adminHeaders() {
   };
 }
 
+async function restFetch(path, options = {}) {
+  const response = await fetch(`${projectUrl}${path}`, {
+    ...options,
+    headers: { ...adminHeaders(), ...options.headers },
+  });
+  return response;
+}
+
+/**
+ * Load every auth user so an existing demo account can be found by email.
+ * Paginates until the backend stops returning a next page; demo backends hold
+ * a bounded roster, so this stays a couple of round trips.
+ */
+async function loadExistingEmails() {
+  const byEmail = new Map();
+  let page = 1;
+  for (;;) {
+    const response = await restFetch(
+      `/auth/v1/admin/users?page=${page}&per_page=200`,
+    );
+    if (!response.ok) {
+      const detail = await response.text();
+      throw new Error(
+        `listing auth users failed (${response.status}): ${detail}`,
+      );
+    }
+    const payload = await response.json();
+    const users = payload.users ?? [];
+    for (const user of users) {
+      if (user.email) byEmail.set(user.email.toLowerCase(), user.id);
+    }
+    const next = payload.next_page ?? payload.nextPage;
+    if (!next || users.length === 0) break;
+    page = next;
+  }
+  return byEmail;
+}
+
 /**
  * Create the auth user, or normalize an existing one's password.
  * Returns the user's id either way.
  */
-async function ensureAuthUser(account) {
-  const created = await fetch(`${projectUrl}/auth/v1/admin/users`, {
+async function ensureAuthUser(account, existing) {
+  const created = await restFetch("/auth/v1/admin/users", {
     method: "POST",
-    headers: adminHeaders(),
     body: JSON.stringify({
       email: account.email,
       password: account.password,
@@ -113,6 +147,8 @@ async function ensureAuthUser(account) {
     return user.id;
   }
 
+  // 409/422 here means the email is already taken; anything else is a real
+  // failure and must not be swallowed.
   if (created.status !== 409 && created.status !== 422) {
     const detail = await created.text();
     throw new Error(
@@ -120,20 +156,15 @@ async function ensureAuthUser(account) {
     );
   }
 
-  // Already exists from a previous run — look it up and reset the password so
-  // the demo credentials stay true no matter who changed them last.
-  const { rows } = await client.query(
-    "select id from auth.users where email = $1",
-    [account.email],
-  );
-  const userId = rows[0]?.id;
+  const userId = existing.get(account.email.toLowerCase());
   if (!userId) {
-    throw new Error(`${account.email} exists in Auth but not in auth.users`);
+    throw new Error(
+      `${account.email} was reported as existing but is absent from the user list`,
+    );
   }
 
-  const updated = await fetch(`${projectUrl}/auth/v1/admin/users/${userId}`, {
+  const updated = await restFetch(`/auth/v1/admin/users/${userId}`, {
     method: "PUT",
-    headers: adminHeaders(),
     body: JSON.stringify({ password: account.password }),
   });
   if (!updated.ok) {
@@ -146,51 +177,104 @@ async function ensureAuthUser(account) {
   return userId;
 }
 
-/** Upsert the active profile and grant the role over Postgres. */
-async function ensureProfileAndRole(userId, account) {
-  await client.query(
-    `insert into public.profiles (id, display_name, is_active)
-     values ($1, $2, true)
-     on conflict (id) do update set
-       display_name = excluded.display_name,
-       is_active    = true`,
-    [userId, `${account.label} (Demo)`],
+/** Upsert an active profile over PostgREST (select-then-write, schema-agnostic). */
+async function ensureProfile(userId, account) {
+  const label = `${account.label} (Demo)`;
+  const selectResponse = await restFetch(
+    `/rest/v1/profiles?id=eq.${userId}&select=id`,
   );
+  if (!selectResponse.ok) {
+    const detail = await selectResponse.text();
+    throw new Error(`reading profile for ${account.email} failed (${selectResponse.status}): ${detail}`);
+  }
+  const found = await selectResponse.json();
 
-  const { rowCount } = await client.query(
-    `insert into public.user_roles (user_id, role_id)
-     select $1, r.id from public.roles r where r.code = $2
-     on conflict (user_id, role_id) do nothing`,
-    [userId, account.role],
-  );
+  if (found.length > 0) {
+    const updateResponse = await restFetch(
+      `/rest/v1/profiles?id=eq.${userId}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ display_name: label, is_active: true }),
+      },
+    );
+    if (!updateResponse.ok) {
+      const detail = await updateResponse.text();
+      throw new Error(`updating profile for ${account.email} failed (${updateResponse.status}): ${detail}`);
+    }
+  } else {
+    const insertResponse = await restFetch("/rest/v1/profiles", {
+      method: "POST",
+      body: JSON.stringify({ id: userId, display_name: label, is_active: true }),
+    });
+    if (!insertResponse.ok) {
+      const detail = await insertResponse.text();
+      throw new Error(`inserting profile for ${account.email} failed (${insertResponse.status}): ${detail}`);
+    }
+  }
+}
 
-  console.log(
-    rowCount
-      ? `seed-demo-users: role '${account.role}' granted to ${account.email}`
-      : `seed-demo-users: role '${account.role}' already held by ${account.email}`,
+/** Grant the role over PostgREST, idempotently. */
+async function ensureRole(userId, account) {
+  const roleResponse = await restFetch(
+    `/rest/v1/roles?code=eq.${encodeURIComponent(account.role)}&select=id`,
   );
+  if (!roleResponse.ok) {
+    const detail = await roleResponse.text();
+    throw new Error(`looking up role '${account.role}' failed (${roleResponse.status}): ${detail}`);
+  }
+  const roles = await roleResponse.json();
+  if (roles.length === 0) {
+    throw new Error(
+      `role '${account.role}' is not seeded on the target backend — run the schema migrations first`,
+    );
+  }
+  const roleId = roles[0].id;
+
+  const linkResponse = await restFetch(
+    `/rest/v1/user_roles?user_id=eq.${userId}&role_id=eq.${roleId}&select=user_id`,
+  );
+  if (!linkResponse.ok) {
+    const detail = await linkResponse.text();
+    throw new Error(`checking role grant for ${account.email} failed (${linkResponse.status}): ${detail}`);
+  }
+  const linked = await linkResponse.json();
+  if (linked.length > 0) {
+    console.log(
+      `seed-demo-users: role '${account.role}' already held by ${account.email}`,
+    );
+    return;
+  }
+
+  const grantResponse = await restFetch("/rest/v1/user_roles", {
+    method: "POST",
+    body: JSON.stringify({ user_id: userId, role_id: roleId }),
+  });
+  if (!grantResponse.ok) {
+    const detail = await grantResponse.text();
+    throw new Error(`granting role '${account.role}' to ${account.email} failed (${grantResponse.status}): ${detail}`);
+  }
+  console.log(`seed-demo-users: role '${account.role}' granted to ${account.email}`);
 }
 
 let code = 0;
 try {
   console.log(`seed-demo-users: targeting ${projectUrl} (${accounts.length} demo accounts)`);
-  await client.connect();
+  const existing = await loadExistingEmails();
   for (const account of accounts) {
-    const userId = await ensureAuthUser(account);
-    await ensureProfileAndRole(userId, account);
+    const userId = await ensureAuthUser(account, existing);
+    await ensureProfile(userId, account);
+    await ensureRole(userId, account);
   }
   console.log("seed-demo-users: done — demo accounts are ready");
 } catch (error) {
   if (["ENOTFOUND", "ECONNREFUSED", "ETIMEDOUT"].includes(error.code)) {
     console.error(
-      `seed-demo-users: cannot reach the database at db.${projectHost} (${error.code}).\n` +
-        "  Run this from CI (workflow_dispatch) or against a reachable project.",
+      `seed-demo-users: cannot reach ${projectUrl} (${error.code}).\n` +
+        "  Check the project URL and network egress, or run this from CI (workflow_dispatch).",
     );
   } else {
     console.error(`seed-demo-users: FAILED — ${error.message}`);
   }
   code = 1;
-} finally {
-  await client.end().catch(() => {});
 }
 exit(code);

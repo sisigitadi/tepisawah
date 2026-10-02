@@ -38,7 +38,9 @@ jobs:
       - name: Seed demo accounts on staging
         env:
           # The seed script reads DEMO_* first and falls back to these names.
+          # It is REST-only (Auth Admin API + PostgREST), so it needs the
+          # service role key and nothing else — no database password, no
+          # direct-Postgres reachability from the runner.
           STAGING_SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
           STAGING_SERVICE_ROLE_KEY: ${{ secrets.STAGING_SERVICE_ROLE_KEY }}
-          STAGING_DB_PASSWORD: ${{ secrets.STAGING_DB_PASSWORD }}
         run: pnpm seed:demo
