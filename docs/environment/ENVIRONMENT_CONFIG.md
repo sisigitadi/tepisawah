@@ -1070,6 +1070,23 @@ supervisor@demo.tepisawah.id  Supervisor  demo1234
 owner@demo.tepisawah.id       Owner       demo1234
 ```
 
+## Hub presentasi (`/demo`)
+
+Web app punya satu pintu masuk presentasi di rute `/demo`
+(`apps/web/src/pages/DemoPage.tsx`): kartu tiap staff app + tabel akun demo
+di satu halaman. Rute ini hanya render saat `VITE_DEMO_MODE=true` —
+`AppRouter` jatuh ke homepage di build lain, jadi halaman beserta tabel
+kredensialnya tidak pernah muncul di production.
+
+URL tiap app diambil dari `VITE_DEMO_APP_URLS` (`id=url,id=url`, optional,
+dibaca via `src/lib/env.ts`); kosong → fallback port dev lokal (pos 5175,
+admin 5176, waiter 5177, kitchen 5178). Set di hosting demo saat staff app
+sudah punya domain sendiri:
+
+```text
+VITE_DEMO_APP_URLS=pos=https://pos-demo.tepisawah.id,admin=https://admin-demo.tepisawah.id
+```
+
 ## Provisioning (staging backend)
 
 `auth.users` tidak boleh di-insert via SQL di versi Supabase ini (login akan
@@ -1093,7 +1110,11 @@ memastikan profile aktif + role ter-assign, bukan menduplikasi user.
    `VITE_DEMO_MODE=true`.
 3. Login screen staff app menampilkan kartu "Mode demo" — klik peran yang
    mau didemokan, form terisi otomatis.
-4. Production: flag tidak diset → hint tidak pernah render, dan akun demo
+4. Buka `/demo` di web app sebagai pintu masuk presentasi (butuh
+   `VITE_DEMO_MODE=true` + `VITE_DEMO_APP_URLS` bila staff app pakai domain
+   sendiri).
+5. Production: flag tidak diset → hint tidak pernah render, dan akun demo
    tidak ada di backend production.
 
-**Status:** READY — flag, UI hint, seed script, dan CI provisioning siap.
+**Status:** READY — flag, UI hint, seed script, CI provisioning, dan hub
+`/demo` siap.

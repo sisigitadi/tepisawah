@@ -10,6 +10,7 @@
 import {
   ENV_KEYS,
   getSupabasePublicConfig,
+  isDemoMode,
   readEnv,
   resolveEnvironment,
   type EnvRecord,
@@ -24,6 +25,10 @@ export const env = {
   supabaseAnonKey: readEnv(record, ENV_KEYS.supabaseAnonKey),
   environment: resolveEnvironment(record),
   appBaseUrl: readEnv(record, ENV_KEYS.appBaseUrl),
+  /** Demo deployments only: enables the /demo presentation hub. */
+  demoMode: isDemoMode(record),
+  /** Optional per-app demo URLs (`id=url,id=url`) for the /demo hub links. */
+  demoAppUrls: readEnv(record, "VITE_DEMO_APP_URLS"),
 } as const;
 
 /**
