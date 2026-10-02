@@ -1,8 +1,8 @@
 /**
  * @tepisawah/web — demo hub page at `/demo`.
  *
- * A single presentation entry point: every staff app in one place, plus the
- * generic role accounts that walk a presenter or reviewer through each
+ * A single presentation entry point: the public site, customer QR ordering,
+ * and every staff app in one place, plus the generic role accounts that walk a presenter or reviewer through each
  * workflow. The page only renders on demo deployments (`VITE_DEMO_MODE=true`)
  * — AppRouter falls back to the homepage otherwise, so a production build
  * never surfaces demo credentials (ENVIRONMENT_CONFIG.md §37).
@@ -18,16 +18,28 @@ import { DEMO_ACCOUNTS } from "@tepisawah/config";
 
 import { env } from "../lib/env.js";
 
-/** Staff apps a presenter can jump into, in demo order. */
-const STAFF_APPS = [
+/** App cards a presenter can jump into, in demo order. */
+interface DemoAppEntry {
+  readonly id: string;
+  readonly name: string;
+  readonly blurb: string;
+  readonly emoji: string;
+  /** Fixed link (same-app route). When unset, resolved from the app URLs. */
+  readonly href?: string;
+}
+
+const APPS: readonly DemoAppEntry[] = [
+  { id: "web", name: "Beranda Situs", blurb: "Halaman publik restoran: menu, promo, lokasi & reservasi", emoji: "🏠", href: "/" },
+  { id: "order", name: "Customer Ordering", blurb: "Alur pesan-langsung pelanggan dari meja via QR", emoji: "📱" },
   { id: "pos", name: "Cashier POS", blurb: "Konfirmasi pesanan masuk & proses pembayaran", emoji: "🧾" },
   { id: "admin", name: "Admin Console", blurb: "Kelola katalog, meja, sesi & pengguna", emoji: "⚙️" },
   { id: "waiter", name: "Waiter App", blurb: "Buat pesanan manual & tandai antar", emoji: "🍽️" },
   { id: "kitchen", name: "Kitchen Display", blurb: "Antrian masak: mulai → siap saji", emoji: "👨‍🍳" },
-] as const;
+];
 
 /** Local dev port for each app, used when the deployment sets no URL. */
 const LOCAL_PORTS: Record<string, number> = {
+  order: 5174,
   pos: 5175,
   admin: 5176,
   waiter: 5177,
@@ -62,17 +74,19 @@ export function DemoPage(): ReactNode {
           <span className="web-eyebrow">Mode Presentasi</span>
           <h1 className="web-section-title web-section-title-lg">Demo Tepi Sawah</h1>
           <p className="web-head-center-sub">
-            Satu pintu masuk untuk semua aplikasi staf. Klik salah satu untuk
-            membuka layar login — kartu peran di sana mengisi kredensial otomatis.
+            Satu pintu masuk untuk seluruh demo: beranda restoran, pemesanan
+            pelanggan via QR, dan keempat aplikasi staf. Klik kartu app untuk
+            membukanya — di layar login aplikasi staf, kartu peran mengisi
+            kredensial otomatis.
           </p>
         </div>
 
         <div className="demo-app-grid">
-          {STAFF_APPS.map((app) => (
+          {APPS.map((app) => (
             <a
               key={app.id}
               className="demo-app-card web-panel"
-              href={appUrl(app.id, overrides)}
+              href={app.href ?? appUrl(app.id, overrides)}
               target="_blank"
               rel="noopener noreferrer"
             >
