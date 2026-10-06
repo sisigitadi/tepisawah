@@ -11,6 +11,8 @@
  */
 import { useEffect, useState, useCallback } from "react";
 
+import type { Role } from "@tepisawah/permissions";
+
 export type StaffRoom = "portal" | "pos" | "kitchen" | "waiter" | "admin";
 
 export const STAFF_ROOMS: readonly StaffRoom[] = [
@@ -30,11 +32,31 @@ export interface RoomMeta {
 
 export const ROOM_METAS: Record<StaffRoom, RoomMeta> = {
   portal: { id: "portal", label: "Pintu Masuk", path: "/", emoji: "🏠" },
-  pos: { id: "pos", label: "Kasir (POS)", path: "/pos", emoji: "🧾" },
-  kitchen: { id: "kitchen", label: "Dapur (KDS)", path: "/kitchen", emoji: "👨‍🍳" },
-  waiter: { id: "waiter", label: "Pelayan", path: "/waiter", emoji: "🍽️" },
-  admin: { id: "admin", label: "Admin Console", path: "/admin", emoji: "⚙️" },
+  pos: { id: "pos", label: "Meja Kasir", path: "/pos", emoji: "🧾" },
+  kitchen: { id: "kitchen", label: "Layar Dapur", path: "/kitchen", emoji: "👨‍🍳" },
+  waiter: { id: "waiter", label: "Pelayan Meja", path: "/waiter", emoji: "🍽️" },
+  admin: { id: "admin", label: "Panel Pengelola", path: "/admin", emoji: "⚙️" },
 };
+
+/** Rooms that each role may enter in Staff Portal */
+export const ROLE_ROOMS: Record<Role, readonly StaffRoom[]> = {
+  owner: ["pos", "kitchen", "waiter", "admin"],
+  admin: ["pos", "kitchen", "waiter", "admin"],
+  supervisor: ["pos", "kitchen", "waiter", "admin"],
+  cashier: ["pos", "waiter"],
+  waiter: ["pos", "waiter"],
+  kitchen: ["kitchen"],
+};
+
+export function getAllowedRooms(roles: readonly Role[]): Set<StaffRoom> {
+  const allowed = new Set<StaffRoom>(["portal"]);
+  for (const role of roles) {
+    for (const r of ROLE_ROOMS[role] ?? []) {
+      allowed.add(r);
+    }
+  }
+  return allowed;
+}
 
 function resolveCurrentRoom(): StaffRoom {
   if (typeof window === "undefined") return "portal";

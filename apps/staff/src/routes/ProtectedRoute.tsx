@@ -24,7 +24,7 @@ export function ProtectedRoute({ children }: { children: ReactNode }): ReactNode
       // surface without touching the shared `@tepisawah/auth` component.
       <div className="staff-login">
         <LoginPanel
-          title="STAFF PORTAL — Login"
+          title="Portal Staf — Masuk"
           // Demo deployments only: the generic role accounts with click-to-fill.
           demoAccounts={env.demoMode ? DEMO_ACCOUNTS : undefined}
         />

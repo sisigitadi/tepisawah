@@ -29,12 +29,12 @@ interface DemoAppEntry {
 }
 
 const APPS: readonly DemoAppEntry[] = [
-  { id: "web", name: "Beranda Situs", blurb: "Halaman publik restoran: menu, promo, lokasi & reservasi", emoji: "🏠", href: "/" },
-  { id: "order", name: "Customer Ordering", blurb: "Alur pesan-langsung pelanggan dari meja via QR", emoji: "📱" },
-  { id: "pos", name: "Cashier POS", blurb: "Konfirmasi pesanan masuk & proses pembayaran", emoji: "🧾" },
-  { id: "admin", name: "Admin Console", blurb: "Kelola katalog, meja, sesi & pengguna", emoji: "⚙️" },
-  { id: "waiter", name: "Waiter App", blurb: "Buat pesanan manual & tandai antar", emoji: "🍽️" },
-  { id: "kitchen", name: "Kitchen Display", blurb: "Antrian masak: mulai → siap saji", emoji: "👨‍🍳" },
+  { id: "web", name: "Beranda Utama", blurb: "Halaman publik restoran: menu, promo, lokasi & reservasi", emoji: "🏠", href: "/" },
+  { id: "order", name: "Pemesanan Mandiri Meja", blurb: "Alur pesan mandiri pelanggan dari meja saung via QR", emoji: "📱" },
+  { id: "pos", name: "Meja Kasir & Pembayaran", blurb: "Konfirmasi pesanan masuk & proses pembayaran", emoji: "🧾" },
+  { id: "admin", name: "Panel Pengelola Restoran", blurb: "Kelola katalog, meja & QR, staf, serta laporan bisnis", emoji: "⚙️" },
+  { id: "waiter", name: "Layanan Meja & Antar", blurb: "Monitor hidangan siap saji & pesanan meja manual", emoji: "🍽️" },
+  { id: "kitchen", name: "Layar Pesanan Dapur", blurb: "Antrean masak dapur: mulai masak → siap saji", emoji: "👨‍🍳" },
 ];
 
 /** Local dev port for each app, used when the deployment sets no URL. */

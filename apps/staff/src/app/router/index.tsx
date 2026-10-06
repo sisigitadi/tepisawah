@@ -12,14 +12,15 @@
  * and server-enforced RLS.
  */
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
+import { useAuth } from "@tepisawah/auth";
 import { PERMISSIONS } from "@tepisawah/permissions";
 
 import { RootLayout } from "../../layouts/RootLayout.js";
 import { PortalPage } from "../../pages/PortalPage.js";
 import { PermissionRoute, ProtectedRoute } from "../../routes/index.js";
-import { useStaffNavigation, type StaffRoom } from "../../lib/navigation.js";
+import { getAllowedRooms, useStaffNavigation, type StaffRoom } from "../../lib/navigation.js";
 
 // Embedded rooms from workspace apps
 import { PosHomePage, ConfirmQueuePage } from "@tepisawah/pos";
@@ -39,6 +40,24 @@ type WaiterTab = "console" | "manual-order";
 
 export function AppRouter(): ReactNode {
   const { currentRoom, navigateTo } = useStaffNavigation();
+  const { user, roles } = useAuth();
+  const allowedRooms = useMemo(() => getAllowedRooms(roles), [roles]);
+
+  // Auto-reset room to portal whenever user session changes (switch role/login)
+  const prevUserIdRef = useRef<string | undefined>(user?.id);
+  useEffect(() => {
+    if (user?.id && prevUserIdRef.current && prevUserIdRef.current !== user.id) {
+      navigateTo("portal");
+    }
+    prevUserIdRef.current = user?.id;
+  }, [user?.id, navigateTo]);
+
+  // Auto-redirect if current room is not permitted for the active role
+  useEffect(() => {
+    if (user && currentRoom !== "portal" && !allowedRooms.has(currentRoom)) {
+      navigateTo("portal");
+    }
+  }, [user, currentRoom, allowedRooms, navigateTo]);
 
   // Internal sub-tab state for multi-view rooms
   const [posTab, setPosTab] = useState<PosTab>(() =>
@@ -72,7 +91,7 @@ export function AppRouter(): ReactNode {
                 className={`staff-subnav-btn ${posTab === "terminal" ? "staff-subnav-btn--active" : ""}`}
                 onClick={() => setPosTab("terminal")}
               >
-                💳 Terminal Kasir
+                💳 Meja Kasir
               </button>
               <button
                 type="button"
@@ -93,7 +112,7 @@ export function AppRouter(): ReactNode {
                 className={`staff-subnav-btn ${posTab === "manual-order" ? "staff-subnav-btn--active" : ""}`}
                 onClick={() => setPosTab("manual-order")}
               >
-                ✍️ Catat Order Walk-In / Meja
+                ✍️ Catat Pesanan Meja
               </button>
             </div>
 
@@ -149,57 +168,59 @@ export function AppRouter(): ReactNode {
         )}
 
         {currentRoom === "admin" && (
-          <div className="staff-admin-room">
-            <div className="staff-subnav-bar">
-              <button
-                type="button"
-                className={`staff-subnav-btn ${adminTab === "home" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => setAdminTab("home")}
-              >
-                Beranda
-              </button>
-              <button
-                type="button"
-                className={`staff-subnav-btn ${adminTab === "settings" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => setAdminTab("settings")}
-              >
-                Pengaturan
-              </button>
-              <button
-                type="button"
-                className={`staff-subnav-btn ${adminTab === "catalog" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => setAdminTab("catalog")}
-              >
-                Katalog Menu
-              </button>
-              <button
-                type="button"
-                className={`staff-subnav-btn ${adminTab === "tables" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => setAdminTab("tables")}
-              >
-                Meja & QR
-              </button>
-              <button
-                type="button"
-                className={`staff-subnav-btn ${adminTab === "sessions" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => setAdminTab("sessions")}
-              >
-                Sesi Meja
-              </button>
-            </div>
+          <PermissionRoute permission={PERMISSIONS.SETTINGS_READ}>
+            <div className="staff-admin-room">
+              <div className="staff-subnav-bar">
+                <button
+                  type="button"
+                  className={`staff-subnav-btn ${adminTab === "home" ? "staff-subnav-btn--active" : ""}`}
+                  onClick={() => setAdminTab("home")}
+                >
+                  Beranda
+                </button>
+                <button
+                  type="button"
+                  className={`staff-subnav-btn ${adminTab === "settings" ? "staff-subnav-btn--active" : ""}`}
+                  onClick={() => setAdminTab("settings")}
+                >
+                  Pengaturan
+                </button>
+                <button
+                  type="button"
+                  className={`staff-subnav-btn ${adminTab === "catalog" ? "staff-subnav-btn--active" : ""}`}
+                  onClick={() => setAdminTab("catalog")}
+                >
+                  Katalog Menu
+                </button>
+                <button
+                  type="button"
+                  className={`staff-subnav-btn ${adminTab === "tables" ? "staff-subnav-btn--active" : ""}`}
+                  onClick={() => setAdminTab("tables")}
+                >
+                  Meja & QR
+                </button>
+                <button
+                  type="button"
+                  className={`staff-subnav-btn ${adminTab === "sessions" ? "staff-subnav-btn--active" : ""}`}
+                  onClick={() => setAdminTab("sessions")}
+                >
+                  Sesi Meja
+                </button>
+              </div>
 
-            {adminTab === "settings" ? (
-              <SettingsPage />
-            ) : adminTab === "catalog" ? (
-              <CatalogPage />
-            ) : adminTab === "tables" ? (
-              <TablesPage />
-            ) : adminTab === "sessions" ? (
-              <SessionsPage />
-            ) : (
-              <AdminHomePage />
-            )}
-          </div>
+              {adminTab === "settings" ? (
+                <SettingsPage />
+              ) : adminTab === "catalog" ? (
+                <CatalogPage />
+              ) : adminTab === "tables" ? (
+                <TablesPage />
+              ) : adminTab === "sessions" ? (
+                <SessionsPage />
+              ) : (
+                <AdminHomePage />
+              )}
+            </div>
+          </PermissionRoute>
         )}
       </ProtectedRoute>
     </RootLayout>

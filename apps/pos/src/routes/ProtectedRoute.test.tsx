@@ -126,7 +126,7 @@ describe("POS ProtectedRoute", () => {
   it("renders the login panel instead of protected content when unauthenticated", async () => {
     renderGuard(fakeAuth({ user: null }), ACTIVE_ROW);
 
-    await waitFor(() => expect(screen.getByText("POS — Staff Login")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("Kasir Pembayaran — Masuk Staf")).toBeInTheDocument());
     expect(screen.queryByTestId("protected")).not.toBeInTheDocument();
   });
 

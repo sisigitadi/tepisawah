@@ -20,7 +20,7 @@ import { AccessDenied } from "./access-denied.js";
 import { LoginPanel } from "./login-panel.js";
 
 /** Default staff-app login heading. */
-const DEFAULT_TITLE = "Staff Login";
+const DEFAULT_TITLE = "Portal Staf — Masuk";
 
 /**
  * Gate `children` behind one or more permissions.

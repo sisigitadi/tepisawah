@@ -100,7 +100,7 @@ export function PaymentExecution({
                 aria-pressed={split === mode}
                 onClick={() => setSplit(mode)}
               >
-                {mode === "single" ? "Single Bill" : mode === "item" ? "Split Item" : "Custom Pax"}
+                {mode === "single" ? "Satu Tagihan" : mode === "item" ? "Pisah Menu" : "Bagi Rata"}
               </button>
             ))}
           </div>
@@ -128,7 +128,7 @@ export function PaymentExecution({
           <div className="pos-workspace">
             <div className="pos-workspace__head">
               <label className="pos-workspace__label" htmlFor="cashInput">
-                Uang Diterima Pelanggan (Tendered)
+                Nominal Uang Tunai Diterima
               </label>
               <span className="pos-workspace__bill">Tagihan: {formatIDR(grandTotal)}</span>
             </div>

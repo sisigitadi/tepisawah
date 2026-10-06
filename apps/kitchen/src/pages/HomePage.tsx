@@ -120,8 +120,8 @@ export function HomePage(): ReactNode {
       <header className="kds-header">
         <div className="kds-brand">
           <img src="/logo.png" alt="Tepi Sawah" className="kds-logo" />
-          <span className="kds-title">KITCHEN DISPLAY SYSTEM</span>
-          <span className="kds-station">Stasiun: Hot Kitchen & Bakaran</span>
+          <span className="kds-title">LAYAR PESANAN DAPUR</span>
+          <span className="kds-station">Stasiun: Dapur Utama &amp; Bakaran</span>
           <span
             className={`live-chip live-chip--${boardChannel.status}`}
             title="Koneksi realtime papan dapur"

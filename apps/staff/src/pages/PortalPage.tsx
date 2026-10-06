@@ -19,8 +19,10 @@
  * useful on a workstation — the same override contract the `/demo` hub uses.
  */
 import type { ReactNode } from "react";
+import { useState } from "react";
 
 import { useAuth } from "@tepisawah/auth";
+import { DEMO_ACCOUNTS } from "@tepisawah/config";
 import type { Role } from "@tepisawah/permissions";
 
 import { env } from "../lib/env.js";
@@ -37,17 +39,26 @@ interface PortalApp {
 }
 
 const APPS: readonly PortalApp[] = [
-  { id: "pos", name: "Kasir POS & Meja", blurb: "Konfirmasi pesanan masuk, layanan meja & proses pembayaran", emoji: "🧾" },
-  { id: "admin", name: "Owner & Admin Console", blurb: "Kelola katalog, meja & QR, staf, serta laporan bisnis", emoji: "⚙️" },
-  { id: "kitchen", name: "Kitchen Display (KDS)", blurb: "Antrean masak dapur: mulai masak → siap saji", emoji: "👨‍🍳" },
-  { id: "waiter", name: "Layanan Antar Meja", blurb: "Monitor hidangan siap saji & pesanan meja manual", emoji: "🍽️" },
+  { id: "pos", name: "Meja Kasir & Pembayaran", blurb: "Konfirmasi pesanan masuk, layanan meja & proses pembayaran", emoji: "🧾" },
+  { id: "admin", name: "Panel Pengelola Restoran", blurb: "Kelola katalog, meja & QR, staf, serta laporan bisnis", emoji: "⚙️" },
+  { id: "kitchen", name: "Layar Pesanan Dapur", blurb: "Antrean masak dapur: mulai masak → siap saji", emoji: "👨‍🍳" },
+  { id: "waiter", name: "Layanan Meja & Antar", blurb: "Monitor hidangan siap saji & pesanan meja manual", emoji: "🍽️" },
 ];
+
+const ROLE_LABELS: Record<string, string> = {
+  owner: "Pemilik (Owner)",
+  admin: "Pengelola",
+  supervisor: "Pengelola",
+  cashier: "Kasir",
+  waiter: "Pelayan",
+  kitchen: "Dapur",
+};
 
 /**
  * Apps each role may launch:
- * - Owner: Akses penuh (Admin Console, POS, KDS, Layanan Meja)
- * - Kasir: POS Terminal & Layanan Meja
- * - Dapur: Kitchen Display System (KDS)
+ * - Owner: Akses penuh (Panel Pengelola, Meja Kasir, Layar Dapur, Layanan Meja)
+ * - Kasir: Meja Kasir & Layanan Meja
+ * - Dapur: Layar Pesanan Dapur
  */
 const ROLE_APPS: Record<Role, readonly AppId[]> = {
   owner: ["admin", "pos", "kitchen", "waiter"],
@@ -98,10 +109,24 @@ export interface PortalPageProps {
 }
 
 export function PortalPage({ onSelectRoom }: PortalPageProps = {}): ReactNode {
-  const { user, profile, roles } = useAuth();
+  const { user, profile, roles, signIn } = useAuth();
+  const [switching, setSwitching] = useState(false);
   const overrides = parseAppUrls(env.demoAppUrls);
   const apps = visibleApps(roles);
-  const greeting = profile?.display_name || user?.email || "Staff";
+  const greeting = profile?.display_name || user?.email || "Staf";
+
+  const handleDemoSwitch = async (email: string) => {
+    const acc = DEMO_ACCOUNTS.find((a) => a.email === email);
+    if (!acc) return;
+    setSwitching(true);
+    try {
+      await signIn(acc.email, acc.password);
+    } catch (err) {
+      console.error("Gagal berpindah peran demo:", err);
+    } finally {
+      setSwitching(false);
+    }
+  };
 
   return (
     <section className="staff-portal">
@@ -114,9 +139,28 @@ export function PortalPage({ onSelectRoom }: PortalPageProps = {}): ReactNode {
         {roles.length ? (
           <ul className="staff-role-chips" aria-label="Peran Anda">
             {roles.map((role) => (
-              <li key={role} className="staff-role-chip">{role}</li>
+              <li key={role} className="staff-role-chip">{ROLE_LABELS[role] ?? role}</li>
             ))}
           </ul>
+        ) : null}
+
+        {env.demoMode ? (
+          <div className="staff-portal-demo-bar">
+            <span className="staff-portal-demo-label">Ganti Peran Langsung (Demo):</span>
+            <div className="staff-portal-demo-chips">
+              {DEMO_ACCOUNTS.map((acc) => (
+                <button
+                  key={acc.email}
+                  type="button"
+                  disabled={switching}
+                  className={`staff-portal-demo-btn ${user?.email === acc.email ? "staff-portal-demo-btn--active" : ""}`}
+                  onClick={() => void handleDemoSwitch(acc.email)}
+                >
+                  {acc.label}
+                </button>
+              ))}
+            </div>
+          </div>
         ) : null}
       </div>
 

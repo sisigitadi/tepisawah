@@ -11,13 +11,13 @@ export function HomePage(): ReactNode {
     <div className="overview-page">
       <header className="overview-header">
         <div>
-          <h1 className="overview-title">Dashboard Overview</h1>
+          <h1 className="overview-title">Ringkasan Operasional Resto</h1>
           <p className="overview-subtitle">
             Ringkasan performa operasional harian, status meja, dan tata kelola resto.
           </p>
         </div>
         <div className="overview-actions">
-          <span className="badge-live">● Live Operational</span>
+          <span className="badge-live">● Operasional Berjalan</span>
         </div>
       </header>
 
@@ -50,7 +50,7 @@ export function HomePage(): ReactNode {
 
       {/* Operational Pipeline Summary */}
       <section className="pipeline-section">
-        <h2 className="section-title">Status Pipeline Pesanan Realtime</h2>
+        <h2 className="section-title">Alur Proses Pesanan Langsung</h2>
         <div className="pipeline-grid">
           <div className="pipeline-col">
             <div className="pipeline-col-header pending">
@@ -63,7 +63,7 @@ export function HomePage(): ReactNode {
                 <span className="table-badge">Meja A02</span>
               </div>
               <p className="card-desc">2x Nasi Liwet Komplit, 2x Es Kelapa</p>
-              <span className="card-time">3 mnt lalu • QR Customer</span>
+              <span className="card-time">3 mnt lalu • QR Pelanggan</span>
             </div>
             <div className="pipeline-card">
               <div className="card-top">
@@ -71,7 +71,7 @@ export function HomePage(): ReactNode {
                 <span className="table-badge">Meja B05</span>
               </div>
               <p className="card-desc">1x Gurame Bakar Madu, 1x Cah Kangkung</p>
-              <span className="card-time">1 mnt lalu • Waiter</span>
+              <span className="card-time">1 mnt lalu • Pelayan</span>
             </div>
           </div>
 
@@ -86,7 +86,7 @@ export function HomePage(): ReactNode {
                 <span className="table-badge">Meja Gazebo 1</span>
               </div>
               <p className="card-desc">1x Ayam Goreng Lengkuas, 2x Sayur Asem</p>
-              <span className="card-time">9 mnt lalu • KDS Active</span>
+              <span className="card-time">9 mnt lalu • Sedang Dimasak</span>
             </div>
             <div className="pipeline-card">
               <div className="card-top">
@@ -94,7 +94,7 @@ export function HomePage(): ReactNode {
                 <span className="table-badge">Meja C01</span>
               </div>
               <p className="card-desc">4x Sambal Terasi, 4x Nasi Putih</p>
-              <span className="card-time">5 mnt lalu • KDS Active</span>
+              <span className="card-time">5 mnt lalu • Sedang Dimasak</span>
             </div>
           </div>
 
@@ -109,7 +109,7 @@ export function HomePage(): ReactNode {
                 <span className="table-badge">Meja A04</span>
               </div>
               <p className="card-desc">Es Jeruk Kelapa Muda (2)</p>
-              <span className="card-time">Siap di pick-up counter</span>
+              <span className="card-time">Siap di meja pengantaran</span>
             </div>
           </div>
 
@@ -138,7 +138,7 @@ export function HomePage(): ReactNode {
         </div>
         <div className="gov-card">
           <h3>Manajemen Meja & QR Code</h3>
-          <p>Generate QR code meja digital, atur status sesi pelanggan aktif.</p>
+          <p>Buat kode QR meja digital, atur status sesi pelanggan aktif.</p>
         </div>
         <div className="gov-card">
           <h3>Konfigurasi Resto & Audit Log</h3>
