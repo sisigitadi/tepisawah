@@ -55,6 +55,7 @@ alter table public.order_items enable row level security;
 -- nobody else. Authorization lives on `orders`, so this table carries no
 -- independent permission check to drift out of sync.
 -- -----------------------------------------------------------------------------
+drop policy if exists order_items_inherit_order_read on public.order_items;
 create policy order_items_inherit_order_read on public.order_items
   for select to authenticated
   using (

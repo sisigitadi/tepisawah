@@ -8,7 +8,8 @@
 
 BEGIN;
 
--- MIGRATION: supabase/migrations/000_extensions/001_pgcrypto.sql
+
+-- MIGRATION: 000_extensions\001_pgcrypto.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 000: Extensions.
@@ -25,7 +26,7 @@ BEGIN;
 create extension if not exists pgcrypto;
 
 
--- MIGRATION: supabase/migrations/001_extensions/001_extensions.sql
+-- MIGRATION: 001_extensions\001_extensions.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 001: Extensions
@@ -39,7 +40,7 @@ create extension if not exists pgcrypto;
 create extension if not exists "pgcrypto";
 
 
--- MIGRATION: supabase/migrations/002_profiles/001_profiles.sql
+-- MIGRATION: 002_profiles\001_profiles.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 002: Profiles
@@ -156,7 +157,7 @@ revoke update on public.profiles from authenticated;
 grant update (display_name, phone, avatar_url) on public.profiles to authenticated;
 
 
--- MIGRATION: supabase/migrations/003_roles_permissions/001_rbac_tables.sql
+-- MIGRATION: 003_roles_permissions\001_rbac_tables.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 003 (part 1): Roles, Permissions, User Roles,
@@ -273,7 +274,7 @@ create trigger roles_set_updated_at
   execute function public.set_updated_at();
 
 
--- MIGRATION: supabase/migrations/003_roles_permissions/002_rbac_helpers.sql
+-- MIGRATION: 003_roles_permissions\002_rbac_helpers.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 003 (part 2): Authorization helper functions.
@@ -459,7 +460,7 @@ grant execute on function public.is_owner() to authenticated, anon;
 grant execute on function public.is_supervisor() to authenticated, anon;
 
 
--- MIGRATION: supabase/migrations/003_roles_permissions/003_rbac_rls.sql
+-- MIGRATION: 003_roles_permissions\003_rbac_rls.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 003 (part 3): RLS on the RBAC tables.
@@ -655,7 +656,7 @@ create policy "profiles_admin_update"
   );
 
 
--- MIGRATION: supabase/migrations/004_restaurant_settings/001_restaurant_settings.sql
+-- MIGRATION: 004_restaurant_settings\001_restaurant_settings.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 004 (part 1): Restaurant settings.
@@ -791,7 +792,7 @@ grant update (
 ) on public.restaurant_settings to authenticated;
 
 
--- MIGRATION: supabase/migrations/004_restaurant_settings/002_operating_hours.sql
+-- MIGRATION: 004_restaurant_settings\002_operating_hours.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 004 (part 2): Operating hours.
@@ -919,7 +920,7 @@ grant update (is_closed, open_time, close_time) on public.operating_hours to aut
 grant insert (day_of_week, is_closed, open_time, close_time) on public.operating_hours to authenticated;
 
 
--- MIGRATION: supabase/migrations/004_restaurant_settings/003_settings_functions.sql
+-- MIGRATION: 004_restaurant_settings\003_settings_functions.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 004 (part 3): Public settings projection and
@@ -1018,7 +1019,7 @@ grant execute on function public.is_restaurant_open() to authenticated, anon;
 grant execute on function public.public_restaurant_settings() to authenticated, anon;
 
 
--- MIGRATION: supabase/migrations/005_catalog/001_categories.sql
+-- MIGRATION: 005_catalog\001_categories.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 005 (part 1): Menu categories.
@@ -1123,7 +1124,7 @@ grant insert (name, description, sort_order, is_active) on public.categories to 
 grant update (name, description, sort_order, is_active) on public.categories to authenticated;
 
 
--- MIGRATION: supabase/migrations/005_catalog/002_products.sql
+-- MIGRATION: 005_catalog\002_products.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 005 (part 2): Products.
@@ -1242,7 +1243,7 @@ grant update (category_id, name, description, image_url, price, is_active, is_av
   on public.products to authenticated;
 
 
--- MIGRATION: supabase/migrations/005_catalog/003_modifiers.sql
+-- MIGRATION: 005_catalog\003_modifiers.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 005 (part 3): Modifiers.
@@ -1339,7 +1340,7 @@ grant insert (name, description, price_delta, is_active) on public.modifiers to 
 grant update (name, description, price_delta, is_active) on public.modifiers to authenticated;
 
 
--- MIGRATION: supabase/migrations/005_catalog/004_product_modifiers.sql
+-- MIGRATION: 005_catalog\004_product_modifiers.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 005 (part 4): Product ↔ modifier links.
@@ -1450,7 +1451,7 @@ grant update (is_required, min_select, max_select, sort_order)
   on public.product_modifiers to authenticated;
 
 
--- MIGRATION: supabase/migrations/005_catalog/005_catalog_functions.sql
+-- MIGRATION: 005_catalog\005_catalog_functions.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 005 (part 5): Public catalog projection and the
@@ -1704,7 +1705,7 @@ grant execute on function public.public_catalog() to authenticated, anon;
 grant execute on function public.resolve_order_item(uuid, integer, uuid[]) to authenticated, anon;
 
 
--- MIGRATION: supabase/migrations/005_catalog/006_replace_product_modifiers.sql
+-- MIGRATION: 005_catalog\006_replace_product_modifiers.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 005 (part 6): atomic product-modifier replace.
@@ -1847,7 +1848,7 @@ revoke execute on function public.replace_product_modifiers(uuid, jsonb) from an
 grant execute on function public.replace_product_modifiers(uuid, jsonb) to authenticated;
 
 
--- MIGRATION: supabase/migrations/006_tables/001_tables.sql
+-- MIGRATION: 006_tables\001_tables.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 006 (part 1): Dining tables.
@@ -1964,7 +1965,7 @@ grant insert (table_code, name, capacity, status, is_active) on public.tables to
 grant update (table_code, name, capacity, status, is_active) on public.tables to authenticated;
 
 
--- MIGRATION: supabase/migrations/006_tables/002_table_qr.sql
+-- MIGRATION: 006_tables\002_table_qr.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 006 (part 2): Table QR codes.
@@ -2026,7 +2027,7 @@ revoke select, insert, update, delete on public.table_qr from anon;
 revoke select, insert, update, delete on public.table_qr from authenticated;
 
 
--- MIGRATION: supabase/migrations/006_tables/003_tables_functions.sql
+-- MIGRATION: 006_tables\003_tables_functions.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 006 (part 3): Table QR functions.
@@ -2230,7 +2231,7 @@ grant execute on function public.regenerate_table_qr(uuid) to authenticated;
 grant execute on function public.deactivate_table_qr(uuid) to authenticated;
 
 
--- MIGRATION: supabase/migrations/007_table_sessions/001_table_sessions.sql
+-- MIGRATION: 007_table_sessions\001_table_sessions.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 007 (part 1): Table sessions.
@@ -2330,7 +2331,7 @@ comment on table public.table_sessions is
   'A dining visit at one table. One OPEN session per table (partial unique index); multiple orders may belong to it, and closure preserves history.';
 
 
--- MIGRATION: supabase/migrations/007_table_sessions/002_table_session_order_links.sql
+-- MIGRATION: 007_table_sessions\002_table_session_order_links.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 007 (part 2): Table session order links.
@@ -2397,7 +2398,7 @@ comment on table public.table_session_order_links is
   'Links one order into its table session. Unique on order_id; only attach_order_to_session() may insert.';
 
 
--- MIGRATION: supabase/migrations/007_table_sessions/003_table_sessions_functions.sql
+-- MIGRATION: 007_table_sessions\003_table_sessions_functions.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 007 (part 3): Table session commands.
@@ -2661,7 +2662,7 @@ $$;
 grant execute on function public.close_table_session(uuid) to authenticated;
 
 
--- MIGRATION: supabase/migrations/007_table_sessions/004_resolve_qr_session.sql
+-- MIGRATION: 007_table_sessions\004_resolve_qr_session.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 007 (part 4): resolve_table_qr gains the active session.
@@ -2732,7 +2733,7 @@ comment on function public.resolve_table_qr(text, text) is
 grant execute on function public.resolve_table_qr(text, text) to authenticated, anon;
 
 
--- MIGRATION: supabase/migrations/008_orders/001_orders.sql
+-- MIGRATION: 008_orders\001_orders.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 008 (part 1): Orders.
@@ -2843,6 +2844,7 @@ alter table public.orders enable row level security;
 -- owner (AUTH_RBAC_RLS.md §8). Kitchen reads the kitchen projection from a
 -- dedicated function in a later migration, never payment details (§46).
 -- -----------------------------------------------------------------------------
+drop policy if exists orders_staff_read on public.orders;
 create policy orders_staff_read on public.orders
   for select to authenticated
   using (
@@ -2861,7 +2863,7 @@ create policy orders_staff_read on public.orders
 revoke insert, update, delete on public.orders from anon, authenticated;
 
 
--- MIGRATION: supabase/migrations/008_orders/002_submit_idempotency_key.sql
+-- MIGRATION: 008_orders\002_submit_idempotency_key.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 008 (part 2): Submit idempotency key.
@@ -2897,7 +2899,7 @@ create unique index if not exists orders_submit_idempotency_key_unique
   where submit_idempotency_key is not null;
 
 
--- MIGRATION: supabase/migrations/009_order_items/001_order_items.sql
+-- MIGRATION: 009_order_items\001_order_items.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 009 (part 1): Order items.
@@ -2956,6 +2958,7 @@ alter table public.order_items enable row level security;
 -- nobody else. Authorization lives on `orders`, so this table carries no
 -- independent permission check to drift out of sync.
 -- -----------------------------------------------------------------------------
+drop policy if exists order_items_inherit_order_read on public.order_items;
 create policy order_items_inherit_order_read on public.order_items
   for select to authenticated
   using (
@@ -2972,7 +2975,7 @@ create policy order_items_inherit_order_read on public.order_items
 revoke insert, update, delete on public.order_items from anon, authenticated;
 
 
--- MIGRATION: supabase/migrations/009_order_items/002_order_item_modifiers.sql
+-- MIGRATION: 009_order_items\002_order_item_modifiers.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 009 (part 2): Order item modifiers.
@@ -3016,6 +3019,7 @@ alter table public.order_item_modifiers enable row level security;
 -- Same inheritance as order_items (AUTH_RBAC_RLS.md §28): the modifier row is
 -- visible exactly when its parent item is, which is exactly when that item's
 -- order is. No independent authorization to maintain.
+drop policy if exists order_item_modifiers_inherit_item_read on public.order_item_modifiers;
 create policy order_item_modifiers_inherit_item_read on public.order_item_modifiers
   for select to authenticated
   using (
@@ -3032,7 +3036,7 @@ create policy order_item_modifiers_inherit_item_read on public.order_item_modifi
 revoke insert, update, delete on public.order_item_modifiers from anon, authenticated;
 
 
--- MIGRATION: supabase/migrations/010_order_status_history/001_order_status_history.sql
+-- MIGRATION: 010_order_status_history\001_order_status_history.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 010 (part 1): Order status history.
@@ -3073,6 +3077,7 @@ alter table public.order_status_history enable row level security;
 -- Append-oriented reads: staff with `orders.read` may follow an order's trail.
 -- (AUTH_RBAC_RLS.md §46: audit visibility is limited; the customer projection
 -- never includes history — that is §30's "audit details" exclusion.)
+drop policy if exists order_status_history_staff_read on public.order_status_history;
 create policy order_status_history_staff_read on public.order_status_history
   for select to authenticated
   using (
@@ -3087,7 +3092,7 @@ create policy order_status_history_staff_read on public.order_status_history
 revoke insert, update, delete on public.order_status_history from anon, authenticated;
 
 
--- MIGRATION: supabase/migrations/010_order_status_history/002_create_draft_order.sql
+-- MIGRATION: 010_order_status_history\002_create_draft_order.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 010 (part 2): Draft order creation command.
@@ -3566,7 +3571,7 @@ grant execute on function public.create_draft_order(
 ) to anon, authenticated;
 
 
--- MIGRATION: supabase/migrations/010_order_status_history/003_submit_order.sql
+-- MIGRATION: 010_order_status_history\003_submit_order.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 010 (part 3): Submit order command.
@@ -3955,7 +3960,7 @@ grant execute on function public.submit_order(
 ) to anon, authenticated;
 
 
--- MIGRATION: supabase/migrations/010_order_status_history/004_get_customer_order.sql
+-- MIGRATION: 010_order_status_history\004_get_customer_order.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 010 (part 4): Customer order status read.
@@ -4125,7 +4130,7 @@ grant execute on function public.get_customer_order(uuid, uuid, uuid)
   to anon, authenticated;
 
 
--- MIGRATION: supabase/migrations/010_order_status_history/005_order_version.sql
+-- MIGRATION: 010_order_status_history\005_order_version.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 010 (part 5): Order version (optimistic concurrency).
@@ -4157,7 +4162,7 @@ comment on column public.orders.version is
   'Monotonic optimistic-concurrency handle, bumped by every transition_order() call. Clients send the version they rendered as their expectation; a mismatch is a 409 conflict (API_CONTRACT.md §26).';
 
 
--- MIGRATION: supabase/migrations/010_order_status_history/006_transition_order.sql
+-- MIGRATION: 010_order_status_history\006_transition_order.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 010 (part 6): The centralized order state transition
@@ -4483,53 +4488,7 @@ grant execute on function public.order_transition_rule(text, text)
   to authenticated;
 
 
--- MIGRATION: supabase/migrations/011_qr_listing/001_list_table_qrs.sql
-
--- =============================================================================
--- Tepi Sawah — Migration 012: Realtime for the orders table (part 1)
---
--- The staff boards (kitchen KDS, cashier confirmation queue, cashier payment
--- terminal, waiter ready board) subscribe to `orders` through Supabase
--- Realtime's Postgres Changes, replacing their 15-second polling with instant
--- debounced refreshes. Postgres Changes only delivers events for tables in
--- the `supabase_realtime` publication, so this migration adds it.
---
--- Security semantics (Supabase docs, Postgres Changes → Security):
--- - RLS is respected: a subscriber receives an event only when its role's
---   SELECT policies let it read the row. `orders` has no anon policy
---   (migration 008) by design, so anonymous customers receive nothing —
---   their order-status screens already go through get_customer_order() and
---   do NOT need this publication.
--- - A session that cannot read the row at all fails closed (CHANNEL_ERROR),
---   never a data leak.
---
--- The client half (useOrderBoardChannel in @tepisawah/database) treats events
--- as signals only and re-reads through the same RLS-gated queries as before —
--- nothing about the wire contract changes for the apps.
---
--- Idempotent: re-running is a no-op. Run in the Supabase SQL Editor.
--- =============================================================================
-
-do $$
-begin
-  if not exists (
-    select 1
-    from pg_publication_tables
-    where pubname = 'supabase_realtime'
-      and schemaname = 'public'
-      and tablename = 'orders'
-  ) then
-    alter publication supabase_realtime add table public.orders;
-  end if;
-end
-$$;
-
--- =============================================================================
--- Verification. Expected: one row listing public.orders.
--- =============================================================================
-select pubname, schemaname, tablename
-from pg_publication_tables
-where pubname = 'supabase_realtime' and tablename = 'orders';
+-- MIGRATION: 011_qr_listing\001_list_table_qrs.sql
 
 -- =============================================================================
 -- Tepi Sawah — Migration 011: Staff QR listing.
@@ -4587,6 +4546,55 @@ comment on function public.list_table_qrs() is
 
 grant execute on function public.list_table_qrs() to authenticated;
 revoke execute on function public.list_table_qrs() from anon;
+
+
+-- MIGRATION: 012_realtime_orders\001_publication.sql
+
+-- =============================================================================
+-- Tepi Sawah — Migration 012: Realtime for the orders table (part 1)
+--
+-- The staff boards (kitchen KDS, cashier confirmation queue, cashier payment
+-- terminal, waiter ready board) subscribe to `orders` through Supabase
+-- Realtime's Postgres Changes, replacing their 15-second polling with instant
+-- debounced refreshes. Postgres Changes only delivers events for tables in
+-- the `supabase_realtime` publication, so this migration adds it.
+--
+-- Security semantics (Supabase docs, Postgres Changes → Security):
+-- - RLS is respected: a subscriber receives an event only when its role's
+--   SELECT policies let it read the row. `orders` has no anon policy
+--   (migration 008) by design, so anonymous customers receive nothing —
+--   their order-status screens already go through get_customer_order() and
+--   do NOT need this publication.
+-- - A session that cannot read the row at all fails closed (CHANNEL_ERROR),
+--   never a data leak.
+--
+-- The client half (useOrderBoardChannel in @tepisawah/database) treats events
+-- as signals only and re-reads through the same RLS-gated queries as before —
+-- nothing about the wire contract changes for the apps.
+--
+-- Idempotent: re-running is a no-op. Run in the Supabase SQL Editor.
+-- =============================================================================
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'orders'
+  ) then
+    alter publication supabase_realtime add table public.orders;
+  end if;
+end
+$$;
+
+-- =============================================================================
+-- Verification. Expected: one row listing public.orders.
+-- =============================================================================
+select pubname, schemaname, tablename
+from pg_publication_tables
+where pubname = 'supabase_realtime' and tablename = 'orders';
 
 
 -- SEED: supabase/seed/development.sql
@@ -5198,5 +5206,6 @@ values
   ('00000000-0000-4000-8000-f00000000008', '00000000-0000-4000-8000-c00000000005', 'DRAFT',     'SUBMITTED',           null, null, null),
   ('00000000-0000-4000-8000-f00000000009', '00000000-0000-4000-8000-c00000000005', 'SUBMITTED', 'PENDING_CONFIRMATION', null, null, null)
 on conflict (id) do nothing;
+
 
 COMMIT;
