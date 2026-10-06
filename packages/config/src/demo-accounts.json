@@ -1,44 +1,23 @@
 [
   {
-    "role": "admin",
-    "label": "Admin",
-    "email": "admin@demo.tepisawah.id",
+    "role": "owner",
+    "label": "Owner & Manajemen",
+    "email": "owner@demo.tepisawah.id",
     "password": "demo1234",
-    "blurb": "Kelola katalog, meja & pengguna di Admin Console"
+    "blurb": "Akses penuh manajemen: kelola katalog menu, meja & QR, pengaturan resto, staf, dan laporan bisnis"
   },
   {
     "role": "cashier",
-    "label": "Kasir",
+    "label": "Kasir & Layanan Meja",
     "email": "kasir@demo.tepisawah.id",
     "password": "demo1234",
-    "blurb": "Konfirmasi pesanan masuk & proses pembayaran di POS"
-  },
-  {
-    "role": "waiter",
-    "label": "Pelayan",
-    "email": "pelayan@demo.tepisawah.id",
-    "password": "demo1234",
-    "blurb": "Buat pesanan manual & tandai antar di Waiter App"
+    "blurb": "Layanan meja & POS: catat pesanan manual, konfirmasi pesanan QR meja, antar hidangan, dan proses pembayaran"
   },
   {
     "role": "kitchen",
-    "label": "Dapur",
+    "label": "Dapur & KDS",
     "email": "dapur@demo.tepisawah.id",
     "password": "demo1234",
-    "blurb": "Proses antrian: mulai masak → siap di Kitchen Display"
-  },
-  {
-    "role": "supervisor",
-    "label": "Supervisor",
-    "email": "supervisor@demo.tepisawah.id",
-    "password": "demo1234",
-    "blurb": "Otoritas operasional lintas antrian"
-  },
-  {
-    "role": "owner",
-    "label": "Owner",
-    "email": "owner@demo.tepisawah.id",
-    "password": "demo1234",
-    "blurb": "Akses level bisnis & oversight"
+    "blurb": "Kitchen Display System: proses antrean masak (mulai masak → hidangan siap saji)"
   }
 ]

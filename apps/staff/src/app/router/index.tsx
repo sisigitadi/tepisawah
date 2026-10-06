@@ -34,7 +34,7 @@ import {
 } from "@tepisawah/admin";
 
 type AdminTab = "home" | "settings" | "catalog" | "tables" | "sessions";
-type PosTab = "terminal" | "confirm" | "manual-order";
+type PosTab = "terminal" | "confirm" | "waiter-console" | "manual-order";
 type WaiterTab = "console" | "manual-order";
 
 export function AppRouter(): ReactNode {
@@ -83,6 +83,13 @@ export function AppRouter(): ReactNode {
               </button>
               <button
                 type="button"
+                className={`staff-subnav-btn ${posTab === "waiter-console" ? "staff-subnav-btn--active" : ""}`}
+                onClick={() => setPosTab("waiter-console")}
+              >
+                🍽️ Layanan Meja & Saji
+              </button>
+              <button
+                type="button"
                 className={`staff-subnav-btn ${posTab === "manual-order" ? "staff-subnav-btn--active" : ""}`}
                 onClick={() => setPosTab("manual-order")}
               >
@@ -92,6 +99,8 @@ export function AppRouter(): ReactNode {
 
             {posTab === "confirm" ? (
               <ConfirmQueuePage />
+            ) : posTab === "waiter-console" ? (
+              <WaiterHomePage />
             ) : posTab === "manual-order" ? (
               <PermissionRoute permission={PERMISSIONS.ORDERS_CREATE_MANUAL}>
                 <ManualOrderPage />

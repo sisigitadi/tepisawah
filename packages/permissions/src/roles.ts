@@ -44,7 +44,7 @@ const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
     PERMISSIONS.DASHBOARD_READ,
   ],
 
-  // Cashier — confirmation and payment (§9: Confirm/Reject, Payment Create).
+  // Cashier (consolidated with Waiter) — front-of-house table service, order confirmation & payment.
   [ROLES.cashier]: [
     PERMISSIONS.CATALOG_READ,
     PERMISSIONS.TABLES_READ,
@@ -52,7 +52,11 @@ const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
     PERMISSIONS.ORDERS_READ,
     PERMISSIONS.ORDERS_CONFIRM,
     PERMISSIONS.ORDERS_REJECT,
+    PERMISSIONS.ORDERS_SERVE,
     PERMISSIONS.SERVICE_REQUESTS_READ,
+    PERMISSIONS.SERVICE_REQUESTS_CREATE,
+    PERMISSIONS.SERVICE_REQUESTS_ACKNOWLEDGE,
+    PERMISSIONS.SERVICE_REQUESTS_RESOLVE,
     PERMISSIONS.PAYMENTS_READ,
     PERMISSIONS.PAYMENTS_CREATE,
     PERMISSIONS.AUDIT_READ,
