@@ -25,7 +25,7 @@ import type { CartMap } from "../../features/cart/index.js";
 import { CheckoutPage } from "../../features/checkout/index.js";
 import type { CartLine } from "../../features/checkout/index.js";
 import { OrderStatusPage, readLastOrderId, saveLastOrderId } from "../../features/order-status/index.js";
-import { QrEntryPage, resolveQrEntry } from "../../features/qr/index.js";
+import { QrEntryPage, QrGatekeeperPage, resolveQrEntry } from "../../features/qr/index.js";
 
 /**
  * The printed QR points here with `?table=A12&t=...`, so a URL carrying both
@@ -176,12 +176,8 @@ export function AppRouter(): ReactNode {
       {hasQrParams() ? (
         <QrEntryPage onStart={startFromQr} />
       ) : (
-        <HomePage
-          cart={cart}
-          onCartChange={setCart}
-          customerNote={customerNote}
-          onCustomerNoteChange={setCustomerNote}
-          onCheckout={startCheckout}
+        <QrGatekeeperPage
+          onStart={startFromQr}
           onSelectTable={handleSelectTableFromScanner}
         />
       )}
