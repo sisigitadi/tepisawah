@@ -4,6 +4,8 @@
   "private": true,
   "description": "Kitchen display: live order queue, timers, recall, connection status.",
   "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
   "scripts": {
     "build": "vite build",
     "typecheck": "tsc --noEmit",

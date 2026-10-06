@@ -149,9 +149,14 @@ input {
 }
 
 .pos-header__logo {
-  height: 2rem;
-  width: auto;
+  height: 2.25rem;
+  width: 2.25rem;
   object-fit: contain;
+  background: var(--c-warmcream, #fefae0);
+  border: 1px solid rgba(221, 161, 94, 0.4);
+  border-radius: 6px;
+  padding: 2px;
+  flex-shrink: 0;
 }
 
 .pos-header__name {
@@ -921,6 +926,75 @@ input {
 
   .pos-settlement {
     grid-column: auto;
+  }
+}
+
+@media (max-width: 64rem) {
+  .pos-sidebar {
+    display: none;
+  }
+
+  .pos-shell__main {
+    padding-left: 0;
+  }
+
+  .pos-header {
+    position: static;
+    padding: 0.5rem 1rem;
+    height: auto;
+    min-height: 3.5rem;
+    flex-wrap: wrap;
+    box-shadow: none;
+    border-bottom: 1px solid rgba(221, 161, 94, 0.3);
+  }
+
+  .pos-main {
+    padding-top: 0;
+    min-height: auto;
+  }
+
+  .pos-shell {
+    padding: 0.75rem 0.5rem;
+    gap: 0.75rem;
+  }
+
+  .pos-header__context {
+    display: none;
+  }
+
+  .pos-subbar {
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .pos-subbar__metrics {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .pos-metric {
+    flex: 1;
+    min-width: 110px;
+    padding: 0.35rem 0.5rem;
+  }
+
+  .pos-metric__value {
+    font-size: 0.8rem;
+  }
+
+  .pos-empty-bill {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 36rem) {
+  .pos-subbar__metrics {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pos-drawer {
+    justify-content: center;
   }
 }
 

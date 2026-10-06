@@ -149,15 +149,18 @@ export function HomePage(): ReactNode {
     <div className="waiter-handheld">
       {/* Top Bar */}
       <header className="waiter-topbar">
-        <div className="waiter-staff-info">
-          <span className="waiter-badge">Pramusaji: Dimas</span>
-          <span className="waiter-section">Area: Saung & Gazebo</span>
-          <span
-            className={`live-chip live-chip--${boardChannel.status}`}
-            title="Koneksi realtime papan siap saji"
-          >
-            {orderBoardStatusLabel(boardChannel.status)}
-          </span>
+        <div className="waiter-brand-row">
+          <img src="/logo.png" alt="Tepi Sawah" className="waiter-logo" />
+          <div className="waiter-staff-info">
+            <span className="waiter-badge">Pramusaji: Dimas</span>
+            <span className="waiter-section">Area: Saung & Gazebo</span>
+            <span
+              className={`live-chip live-chip--${boardChannel.status}`}
+              title="Koneksi realtime papan siap saji"
+            >
+              {orderBoardStatusLabel(boardChannel.status)}
+            </span>
+          </div>
         </div>
         <a href="?order" className="btn-manual-order">
           ➕ Buat Pesanan Manual

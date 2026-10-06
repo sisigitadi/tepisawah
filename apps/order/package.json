@@ -14,6 +14,7 @@
   "dependencies": {
     "@tepisawah/config": "workspace:*",
     "@tepisawah/database": "workspace:*",
+    "@tepisawah/orders": "workspace:*",
     "@tepisawah/types": "workspace:*",
     "@tepisawah/ui": "workspace:*"
   },

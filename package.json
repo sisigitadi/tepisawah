@@ -9,6 +9,7 @@
   },
   "packageManager": "pnpm@12.4.2",
   "scripts": {
+    "dev": "node scripts/dev.mjs",
     "build": "pnpm -r run build",
     "typecheck": "pnpm -r run typecheck",
     "lint": "pnpm -r run lint",

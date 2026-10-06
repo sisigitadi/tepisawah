@@ -1,60 +1,17 @@
 /**
- * @tepisawah/web — atmosphere gallery.
+ * @tepisawah/web — restaurant atmosphere & documentation gallery.
  *
- * Reference photos are CDN-blocked offline, so the grid uses illustrated
- * gradient tiles themed per subject; copy mirrors the reference exactly.
+ * Displays real photographs of Tepi Sawah (saung lesehan, rooftop senja,
+ * signature dishes, and family gathering spaces).
+ * Synchronized live with the Admin Console via `useGallery()`.
  */
 import type { ReactNode } from "react";
-import { Icon, type IconName } from "../../../components/icons.js";
-
-const PHOTOS: ReadonlyArray<{
-  icon: IconName;
-  kicker: string;
-  title: string;
-  hue: string;
-  tall?: boolean;
-}> = [
-  {
-    icon: "cloud-sun",
-    kicker: "Suasana Luar Ruang",
-    title: "Panorama Sawah Hijau Ciperna",
-    hue: "linear-gradient(150deg,#2E6B34,#183A1D)",
-    tall: true,
-  },
-  {
-    icon: "utensils",
-    kicker: "Hidangan Utama",
-    title: "Chicken Roaster Rempah",
-    hue: "linear-gradient(150deg,#8C5A2B,#3D1F10)",
-  },
-  {
-    icon: "fish",
-    kicker: "Kuliner Nusantara",
-    title: "Gurame Bakar Madu Pedas Manis",
-    hue: "linear-gradient(150deg,#B4531F,#7A2E12)",
-  },
-  {
-    icon: "leaf",
-    kicker: "Sajian Khas",
-    title: "Nasi Liwet Tradisional Santan",
-    hue: "linear-gradient(150deg,#C9A227,#2E6B34)",
-  },
-  {
-    icon: "coffee",
-    kicker: "Coffee Destination",
-    title: "Kopi Senja Sawah Gula Aren",
-    hue: "linear-gradient(150deg,#8B5E3C,#3D1F10)",
-  },
-  {
-    icon: "sun",
-    kicker: "Minuman Segar",
-    title: "Es Kelapa Jeruk Asli",
-    hue: "linear-gradient(150deg,#5DADE2,#1B6E8C)",
-    tall: true,
-  },
-];
+import { Icon } from "../../../components/icons.js";
+import { useGallery } from "../../../hooks/useGallery.js";
 
 export function Gallery(): ReactNode {
+  const photos = useGallery();
+
   return (
     <section id="galeri" className="web-shell web-section">
       <div className="web-menu-head">
@@ -62,7 +19,7 @@ export function Gallery(): ReactNode {
           <span className="web-eyebrow">Dokumentasi Restoran</span>
           <h2 className="web-section-title">Galeri Suasana Tepi Sawah</h2>
           <p className="web-menu-head-sub">
-            Potret sudut asri, panorama persawahan hijau, dan hidangan favorit.
+            Potret sudut asri, panorama persawahan hijau Ciperna, dan hidangan favorit otentik.
           </p>
         </div>
         <span className="web-gallery-where">
@@ -72,23 +29,25 @@ export function Gallery(): ReactNode {
       </div>
 
       <div className="web-gallery">
-        {PHOTOS.map((photo) => (
+        {photos.map((photo) => (
           <figure
-            key={photo.title}
+            key={photo.id || photo.title}
             className="web-gphoto"
             data-tall={photo.tall ? "true" : "false"}
-            style={{ backgroundImage: photo.hue }}
           >
-            <div className="web-gphoto-veil" />
-            <Icon
-              name={photo.icon}
-              size={64}
-              strokeWidth={1.2}
-              className="web-gphoto-glyph"
+            <img
+              src={photo.imageUrl}
+              alt={photo.title}
+              className="web-gphoto-img"
+              loading="lazy"
             />
+            <div className="web-gphoto-veil" />
             <figcaption className="web-gphoto-cap">
               <span className="web-gphoto-kicker">{photo.kicker}</span>
-              <span className="web-gphoto-title">{photo.title}</span>
+              <strong className="web-gphoto-title">{photo.title}</strong>
+              {photo.desc ? (
+                <p className="web-gphoto-desc">{photo.desc}</p>
+              ) : null}
             </figcaption>
           </figure>
         ))}
@@ -100,8 +59,7 @@ export function Gallery(): ReactNode {
             Bagikan Pengalaman Anda di Tepi Sawah
           </h3>
           <p className="web-social-sub">
-            Tag kami dalam foto kebersamaan Anda saat menikmati suasana sawah di
-            Ciperna.
+            Dokumentasikan momen santap hangat dan siluet senja sawah bersama kami di Ciperna.
           </p>
         </div>
         <a
@@ -110,8 +68,8 @@ export function Gallery(): ReactNode {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Icon name="instagram" size={16} />
-          <span>Ikuti di Instagram</span>
+          <Icon name="camera" size={16} />
+          <span>Instagram @tepisawah</span>
         </a>
       </div>
     </section>

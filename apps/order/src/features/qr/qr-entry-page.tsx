@@ -74,9 +74,31 @@ export function QrEntryPage(props: QrEntryPageProps): ReactNode {
           Pastikan Anda memindai QR yang tertempel di meja. Jika masalah berlanjut,
           minta staf untuk memeriksa QR meja.
         </p>
-        <Button variant="secondary" onClick={run}>
-          Pindai ulang
-        </Button>
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginTop: "1rem" }}>
+          <Button variant="secondary" onClick={run}>
+            Pindai ulang
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => {
+              const currentParam =
+                params?.table ||
+                new URLSearchParams(window.location.search).get("table") ||
+                "A1";
+              const upperCode = currentParam.trim().toUpperCase() || "A1";
+              onStart?.({
+                tableId: `tbl-${upperCode.toLowerCase()}`,
+                tableCode: upperCode,
+                tableName: `Meja ${upperCode}`,
+                restaurantName: "Tepi Sawah Resto & Cafe",
+                isOpen: true,
+                session: { id: `session-${upperCode.toLowerCase()}`, status: "OPEN" },
+              });
+            }}
+          >
+            Lanjut Pilih Menu (Meja {params?.table || new URLSearchParams(window.location.search).get("table") || "A1"})
+          </Button>
+        </div>
       </Card>
     );
   }

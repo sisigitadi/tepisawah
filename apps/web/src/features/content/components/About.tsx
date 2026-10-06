@@ -3,8 +3,6 @@
  */
 import type { ReactNode } from "react";
 import { Icon } from "../../../components/icons.js";
-import { useReservation } from "../reservation.js";
-
 
 const PILLARS: ReadonlyArray<{
   title: string;
@@ -25,8 +23,6 @@ const PILLARS: ReadonlyArray<{
 ];
 
 export function About(): ReactNode {
-  const { openReservation } = useReservation();
-
   return (
     <section id="tentang-kami" className="web-shell web-section">
       <div className="web-panel">
@@ -34,13 +30,13 @@ export function About(): ReactNode {
           <div className="web-about-visual">
             <div className="web-about-photo">
               <img
-                src="/sawah-panorama.png"
-                alt="Pemandangan asri tepi sawah Ciperna"
+                src="/about-saung.jpg"
+                alt="Suasana Saung Lesehan Tepi Sawah Ciperna"
                 loading="lazy"
               />
               <div className="web-about-cap">
                 <span className="web-about-cap-kicker">
-                  Nuansa Pedesaan Modern
+                  Nuansa Pedesaan Asri
                 </span>
                 <p>
                   Ruang terbuka hijau dengan hembusan angin sawah yang
@@ -98,14 +94,13 @@ export function About(): ReactNode {
                 <Icon name="book-open" size={16} />
                 <span>Lihat Menu Pilihan</span>
               </a>
-              <button
-                type="button"
+              <a
                 className="web-btn web-btn-outline"
-                onClick={() => openReservation()}
+                href="#galeri"
               >
-                <Icon name="calendar" size={16} />
-                <span>Reservasi Acara &amp; Rombongan</span>
-              </button>
+                <Icon name="camera" size={16} />
+                <span>Dokumentasi Restoran</span>
+              </a>
             </div>
           </div>
         </div>

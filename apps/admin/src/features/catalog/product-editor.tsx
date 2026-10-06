@@ -121,6 +121,46 @@ export function ProductEditor(props: ProductEditorProps): ReactNode {
 
   return (
     <div className="catalog-editor">
+      {/* Top Navigation & Action Header */}
+      <div className="catalog-editor__header">
+        <div className="catalog-editor__header-left">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={onCancel}
+            disabled={phase === "saving"}
+          >
+            ← Kembali ke Katalog
+          </Button>
+          <div className="catalog-editor__title-wrap">
+            <h2 className="catalog-editor__title">
+              {productId !== null ? `Ubah Menu: ${current?.name ?? "..."}` : "Tambah Menu Produk Baru"}
+            </h2>
+            <span className="catalog-editor__subtitle">
+              {productId !== null ? `ID: ${productId}` : "Menu baru akan ditambahkan ke katalog aktif"}
+            </span>
+          </div>
+        </div>
+
+        <div className="catalog-editor__header-actions">
+          <Button
+            variant="ghost"
+            disabled={phase === "saving"}
+            onClick={onCancel}
+          >
+            Batal
+          </Button>
+          <Button
+            variant="primary"
+            loading={phase === "saving"}
+            disabled={!editable}
+            onClick={() => void saveAll()}
+          >
+            Simpan Perubahan
+          </Button>
+        </div>
+      </div>
+
       {message ? (
         <Card elevation="low" title="Gagal menyimpan">
           <p role="alert">{message}</p>
@@ -164,14 +204,22 @@ export function ProductEditor(props: ProductEditorProps): ReactNode {
           onSubmit={() => void saveAll()}
         />
       ) : (
-        <p className="catalog-hint">
-          Simpan produk ini sebelum memasang modifier.
-        </p>
+        <div className="catalog-editor__hint-card">
+          <span>💡 <strong>Catatan:</strong> Simpan produk ini terlebih dahulu untuk mulai menghubungkan opsi modifier.</span>
+        </div>
       )}
 
-      <div className="catalog-actions">
+      <div className="catalog-editor__bottom-actions">
         <Button variant="ghost" disabled={phase === "saving"} onClick={onCancel}>
           Batal
+        </Button>
+        <Button
+          variant="primary"
+          loading={phase === "saving"}
+          disabled={!editable}
+          onClick={() => void saveAll()}
+        >
+          Simpan Produk & Selesai
         </Button>
       </div>
     </div>

@@ -25,6 +25,7 @@ import {
   type DraftOrder,
   type SubmitOrderInput,
 } from "@tepisawah/database";
+import type { CartLine as OrderCartLine } from "@tepisawah/orders";
 
 import { getSupabaseClient } from "../../lib/supabase.js";
 
@@ -38,16 +39,14 @@ export interface CheckoutResult {
 }
 
 /**
- * The cart line the checkout page builds. References and intent only — note the
- * absence of any money field, which is the whole point of this phase. `name` is
- * display-only (the line's catalog label, so the review list is readable); the
- * RPC arg builder whitelists fields, so it never reaches the wire.
+ * The cart line the checkout page builds: the order domain's intent-only
+ * `CartLine` (@tepisawah/orders) plus a display-only catalog label. Note the
+ * absence of any money field, which is the whole point of this phase — the
+ * domain line cannot carry one, so neither can this; `name` never reaches the
+ * wire because the RPC arg builder whitelists fields.
  */
-export interface CartLine {
-  productId: string;
-  quantity: number;
-  modifierIds?: string[];
-  notes?: string | null;
+export interface CartLine extends OrderCartLine {
+  /** Display-only: the line's catalog label, so the review list is readable. */
   name?: string;
 }
 

@@ -83,6 +83,41 @@ export function LoginPanel({
       </button>
       {demoAccounts?.length ? (
         <section aria-label="Akun demo" data-testid="demo-accounts">
+          <div
+            style={{
+              marginBottom: "1rem",
+              padding: "0.75rem",
+              background: "rgba(16, 185, 129, 0.08)",
+              border: "1px solid #10b981",
+              borderRadius: "0.5rem",
+            }}
+          >
+            <p style={{ margin: "0 0 0.5rem 0", fontWeight: 600, color: "#065f46" }}>
+              🔑 Akun Utama Aktif (Database Supabase):
+            </p>
+            <button
+              type="button"
+              disabled={disabled}
+              onClick={() => {
+                setEmail("admin@tepisawah.id");
+                setPassword("TepiSawah#Admin2026");
+              }}
+              style={{
+                background: "#059669",
+                color: "#ffffff",
+                padding: "0.4rem 0.8rem",
+                borderRadius: "0.375rem",
+                border: "none",
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              👑 Isi Admin Utama (admin@tepisawah.id)
+            </button>
+            <small style={{ display: "block", marginTop: "0.35rem", color: "#047857" }}>
+              Password: <code>TepiSawah#Admin2026</code> (Akses Penuh Semua Ruangan)
+            </small>
+          </div>
           <p>
             <strong>Mode demo</strong> — pilih peran untuk mengisi form:
           </p>

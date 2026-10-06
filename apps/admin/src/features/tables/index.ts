@@ -10,3 +10,8 @@
  * (REPOSITORY_STRUCTURE.md §43).
  */
 export { TablesPage } from "./tables-page.js";
+export { QrTablesPage } from "./qr-tables-page.js";
+export { TableQrStickerModal } from "./table-qr-sticker-modal.js";
+export { TableCardBack } from "./table-card-back.js";
+export { QrisStickerFormModal } from "./qris-sticker-form-modal.js";
+export * from "./qris-sticker-settings.js";

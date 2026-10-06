@@ -119,6 +119,7 @@ export function HomePage(): ReactNode {
       {/* KDS Header Bar */}
       <header className="kds-header">
         <div className="kds-brand">
+          <img src="/logo.png" alt="Tepi Sawah" className="kds-logo" />
           <span className="kds-title">KITCHEN DISPLAY SYSTEM</span>
           <span className="kds-station">Stasiun: Hot Kitchen & Bakaran</span>
           <span

@@ -19,7 +19,7 @@
     "verbatimModuleSyntax": false,
     "baseUrl": ".",
     "paths": {
-      "@tepisawah/*": ["packages/*/src"]
+      "@tepisawah/*": ["packages/*/src", "apps/*/src"]
     }
   }
 }

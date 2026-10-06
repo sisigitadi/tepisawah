@@ -68,7 +68,7 @@ export function QrOrder(): ReactNode {
                 <div className="web-qr-phone-head">
                   <div className="web-qr-phone-brand">
                     <span className="web-qr-phone-logo">
-                      <Icon name="utensils" size={16} />
+                      <img src="/logo.png" alt="Logo Tepi Sawah" style={{ width: "1.6rem", height: "1.6rem", objectFit: "contain" }} />
                     </span>
                     <span>
                       <span className="web-qr-phone-name">Tepi Sawah Order</span>

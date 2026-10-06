@@ -278,4 +278,100 @@ describe("CatalogPage", () => {
     render(<CatalogPage />);
     expect(await screen.findByText("Tambahkan kategori pertama untuk mulai menyusun menu.")).toBeInTheDocument();
   });
+
+  it("opens product editor, selects a photo preset, and saves product with image", async () => {
+    const user = userEvent.setup();
+    mockSaveProduct.mockResolvedValue({
+      data: { record: { ...PRODUCT, id: "prod-new", imageUrl: "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=800&q=80" }, audit: null },
+      error: null,
+      fieldErrors: null,
+    });
+    mockSaveProductLinks.mockResolvedValue({ error: null, fieldErrors: null });
+
+    render(<CatalogPage />);
+    await screen.findByText("Makanan");
+    await user.click(screen.getByRole("tab", { name: /Produk/ }));
+    const addBtn = await screen.findByRole("button", { name: /\+ Tambah produk/i });
+    await user.click(addBtn);
+
+    // Verify editor is open
+    expect(await screen.findByText("Tambah Menu Produk Baru")).toBeInTheDocument();
+
+    // Fill product name
+    const nameInput = screen.getByRole("textbox", { name: "Nama Produk" });
+    await user.type(nameInput, "Nasi Timbel Spesial");
+
+    // Switch to Presets tab in image uploader
+    const presetsBtn = screen.getByRole("button", { name: /Galeri Pilihan/i });
+    await user.click(presetsBtn);
+
+    // Pick a preset image
+    const presetCard = screen.getByTitle("Pilih foto Nasi Liwet Sawah");
+    await user.click(presetCard);
+
+    // Verify preview is displayed
+    expect(screen.getByText("✓ Foto Terpasang")).toBeInTheDocument();
+
+    // Submit form
+    const saveBtns = screen.getAllByRole("button", { name: /Simpan Perubahan/i });
+    const saveBtn = saveBtns[0];
+    expect(saveBtn).toBeDefined();
+    if (saveBtn) await user.click(saveBtn);
+
+    await waitFor(() => expect(mockSaveProduct).toHaveBeenCalledTimes(1));
+    expect(mockSaveProduct).toHaveBeenCalledWith(
+      null,
+      expect.objectContaining({
+        name: "Nasi Timbel Spesial",
+        imageUrl: expect.stringContaining("unsplash.com"),
+      }),
+      null,
+    );
+  });
+
+  it("edits an existing product and updates price and photo", async () => {
+    const user = userEvent.setup();
+    mockLoadProductEditor.mockResolvedValue({
+      product: PRODUCT,
+      links: [],
+      error: null,
+    });
+    mockSaveProduct.mockResolvedValue({
+      data: { record: { ...PRODUCT, price: 50000 }, audit: null },
+      error: null,
+      fieldErrors: null,
+    });
+    mockSaveProductLinks.mockResolvedValue({ error: null, fieldErrors: null });
+
+    render(<CatalogPage />);
+    await screen.findByText("Makanan");
+    await user.click(screen.getByRole("tab", { name: /Produk/ }));
+
+    // Find and click Ubah button on product card
+    const editBtn = await screen.findByRole("button", { name: "Ubah" });
+    await user.click(editBtn);
+
+    // Verify editor loaded product details
+    expect(await screen.findByText(/Ubah Menu: Nasi Goreng/)).toBeInTheDocument();
+
+    // Update price
+    const priceInput = screen.getByRole("spinbutton", { name: "Harga Jual (Rp)" });
+    await user.clear(priceInput);
+    await user.type(priceInput, "50000");
+
+    // Save changes
+    const editSaveBtns = screen.getAllByRole("button", { name: /Simpan Perubahan/i });
+    const editSaveBtn = editSaveBtns[0];
+    expect(editSaveBtn).toBeDefined();
+    if (editSaveBtn) await user.click(editSaveBtn);
+
+    await waitFor(() => expect(mockSaveProduct).toHaveBeenCalledTimes(1));
+    expect(mockSaveProduct).toHaveBeenCalledWith(
+      PRODUCT.id,
+      expect.objectContaining({
+        price: 50000,
+      }),
+      PRODUCT,
+    );
+  });
 });

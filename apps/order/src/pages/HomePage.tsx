@@ -12,11 +12,11 @@
  * out-of-stock items never reach a customer. The read fails closed with a
  * retry; there is no second source of truth.
  *
- * The cart is LIVE too: with a resolved table context (the QR entry),
- * "Kirim ke Dapur" hands the cart to the checkout feature, which creates a
- * DRAFT through `create_draft_order()` and sends it via `submit_order()` —
- * references and intent only, never a price (API_CONTRACT.md §10.1, §10.2).
- * Without a table context (the demo landing), the button stays a notice.
+ * The cart is LIVE too: with a resolved table context (the QR entry), the
+ * basket opens in the cart drawer, where the customer tunes quantities and
+ * notes, then hands it to the checkout feature — references and intent only,
+ * never a price (API_CONTRACT.md §10.1, §10.2). Without a table context (the
+ * demo landing), the button stays a notice.
  */
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { formatPrice } from "@tepisawah/ui";
@@ -27,7 +27,23 @@ import {
   type PublicTableResolve,
 } from "@tepisawah/database";
 
+import {
+  CartDrawer,
+  cartItemCount,
+  cartTotalPrice,
+  decrementEntry,
+  incrementEntry,
+  removeEntry,
+  resolveCartEntries,
+  resolveCartLines,
+  setEntryModifiers,
+  setEntryNote,
+  type CartEntry,
+  type CartMap,
+  type CartLineView,
+} from "../features/cart/index.js";
 import type { CartLine } from "../features/checkout/service.js";
+import { QrScannerModal } from "../features/qr/index.js";
 import { getSupabaseClient } from "../lib/supabase.js";
 
 const formatIDR = formatPrice;
@@ -37,51 +53,74 @@ interface CategoryPill {
   name: string;
 }
 
-/** One cart line's mutable state: quantity plus the chosen modifier ids. */
-export interface OrderCartEntry {
-  qty: number;
-  /** Required-modifier choices made on the card; sent with the checkout. */
-  modifierIds: string[];
-}
+/**
+ * One basket line's mutable state, in the order domain's vocabulary: quantity,
+ * chosen modifier ids, and the note attached to the line.
+ */
+export type OrderCartEntry = CartEntry;
 
 export interface HomePageProps {
   /** The table context the QR resolved; null on the demo landing view. */
   table?: PublicTableResolve | null;
   /**
-   * Controlled cart, held by the router so the basket survives the checkout
+   * Controlled basket, held by the router so it survives the checkout
    * round trip ("Ubah pesanan" must not wipe it). Unset on the demo landing.
    */
-  cart?: Record<string, OrderCartEntry>;
-  /** Receives every cart change when controlled (an updater, like setState). */
-  onCartChange?: (
-    update: (prev: Record<string, OrderCartEntry>) => Record<string, OrderCartEntry>,
-  ) => void;
-  /** Called with the cart when the customer sends it to the kitchen. */
+  cart?: CartMap;
+  /** Receives every basket change when controlled (an updater, like setState). */
+  onCartChange?: (update: (prev: CartMap) => CartMap) => void;
+  /** The order-level note, held above the drawer so it survives open/close. */
+  customerNote?: string;
+  /** Receives every order-level note change when controlled. */
+  onCustomerNoteChange?: (note: string) => void;
+  /** Called with the basket when the customer sends it to the kitchen. */
   onCheckout?: (items: CartLine[]) => void;
+  /** Called when the customer scans or selects a table via QR scanner modal. */
+  onSelectTable?: (tableCode: string, token: string) => void;
 }
 
 export function HomePage(props: HomePageProps): ReactNode {
-  const { table = null, cart: controlledCart, onCartChange, onCheckout } = props;
+  const {
+    table = null,
+    cart: controlledCart,
+    onCartChange,
+    customerNote,
+    onCustomerNoteChange,
+    onCheckout,
+    onSelectTable,
+  } = props;
   const [products, setProducts] = useState<PublicCatalogProduct[] | null>(null);
   const [categories, setCategories] = useState<CategoryPill[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("SEMUA");
-  const [internalCart, setInternalCart] = useState<Record<string, OrderCartEntry>>({});
+  const [internalCart, setInternalCart] = useState<CartMap>({});
   const cart = controlledCart ?? internalCart;
+  const [internalNote, setInternalNote] = useState<string>("");
+  const customerNoteValue = customerNote ?? internalNote;
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [scannerOpen, setScannerOpen] = useState<boolean>(false);
   const [serviceNotice, setServiceNotice] = useState<string | null>(null);
 
   /**
-   * Cart writes flow to the router when controlled (basket survives the
+   * Basket writes flow to the router when controlled (basket survives the
    * checkout round trip), otherwise to local state (demo landing). Both paths
    * take a functional updater so rapid taps never race a stale snapshot of
    * the basket — every update applies to the newest cart, whatever it was.
    */
   const applyCart = useCallback(
-    (updater: (prev: Record<string, OrderCartEntry>) => Record<string, OrderCartEntry>) => {
+    (updater: (prev: CartMap) => CartMap) => {
       if (onCartChange) onCartChange(updater);
       else setInternalCart(updater);
     },
     [onCartChange],
+  );
+
+  const applyCustomerNote = useCallback(
+    (note: string) => {
+      if (onCustomerNoteChange) onCustomerNoteChange(note);
+      else setInternalNote(note);
+    },
+    [onCustomerNoteChange],
   );
 
   const load = useCallback(async () => {
@@ -103,22 +142,11 @@ export function HomePage(props: HomePageProps): ReactNode {
   }, [load]);
 
   const addToCart = (id: string) => {
-    applyCart((prev) => ({
-      ...prev,
-      [id]: { qty: (prev[id]?.qty ?? 0) + 1, modifierIds: prev[id]?.modifierIds ?? [] },
-    }));
+    applyCart((prev) => incrementEntry(prev, id));
   };
 
   const removeFromCart = (id: string) => {
-    applyCart((prev) => {
-      const entry = prev[id];
-      if (!entry || entry.qty <= 1) {
-        const next = { ...prev };
-        delete next[id];
-        return next;
-      }
-      return { ...prev, [id]: { ...entry, qty: entry.qty - 1 } };
-    });
+    applyCart((prev) => decrementEntry(prev, id));
   };
 
   /**
@@ -128,11 +156,11 @@ export function HomePage(props: HomePageProps): ReactNode {
    */
   const toggleModifier = (productId: string, modifierId: string) => {
     applyCart((prev) => {
-      const entry = prev[productId] ?? { qty: 0, modifierIds: [] };
-      const modifierIds = entry.modifierIds.includes(modifierId)
+      const entry = prev[productId];
+      const modifierIds = entry?.modifierIds.includes(modifierId)
         ? entry.modifierIds.filter((id) => id !== modifierId)
-        : [...entry.modifierIds, modifierId];
-      return { ...prev, [productId]: { ...entry, modifierIds } };
+        : [...(entry?.modifierIds ?? []), modifierId];
+      return setEntryModifiers(prev, productId, modifierIds);
     });
   };
 
@@ -146,25 +174,39 @@ export function HomePage(props: HomePageProps): ReactNode {
     window.setTimeout(() => setServiceNotice(null), 4000);
   };
 
+  /** Display lines for the drawer: catalog order, money for display only. */
+  const drawerLines: CartLineView[] =
+    products === null ? [] : resolveCartLines(cart, products);
+
+  const totalItems = cartItemCount(cart);
+  const totalPrice = cartTotalPrice(drawerLines);
+
+  const handleOpenCart = () => {
+    setDrawerOpen(true);
+  };
+
+  const handleCloseCart = () => {
+    setDrawerOpen(false);
+  };
+
   /**
-   * Send the cart onward. With a table context the cart becomes CartLine
-   * references — productId + quantity, no money — for the checkout feature to
-   * turn into a DRAFT order server-side. Without one (demo landing), the
-   * button keeps its notice behaviour.
+   * Hand the basket to checkout. With a table context the basket becomes
+   * CartLine references — productId, quantity, modifier ids, notes, no money —
+   * for the checkout feature to turn into a DRAFT order server-side. Without
+   * one (demo landing), the drawer keeps its notice behaviour.
    */
-  const handleSendToKitchen = () => {
+  const handleCheckout = () => {
+    setDrawerOpen(false);
+    if (table === null) {
+      setScannerOpen(true);
+      setServiceNotice("Silakan pilih atau pindai meja Anda terlebih dahulu.");
+      return;
+    }
     if (!onCheckout) {
       setServiceNotice(`Pesanan (${totalItems} menu) berhasil dikirim ke dapur!`);
       return;
     }
-    const lines: CartLine[] = Object.entries(cart)
-      .filter(([, entry]) => entry.qty > 0)
-      .map(([productId, entry]) => ({
-        productId,
-        quantity: entry.qty,
-        modifierIds: entry.modifierIds,
-        name: products?.find((item) => item.productId === productId)?.name,
-      }));
+    const lines = products === null ? [] : resolveCartEntries(cart, products);
     if (lines.length === 0) return;
     onCheckout(lines);
   };
@@ -176,28 +218,70 @@ export function HomePage(props: HomePageProps): ReactNode {
         ? products
         : products.filter((item) => item.categoryId === selectedCategory);
 
-  const totalItems = Object.values(cart).reduce((sum, entry) => sum + entry.qty, 0);
-  const totalPrice = Object.entries(cart).reduce((sum, [id, entry]) => {
-    const item = products?.find((m) => m.productId === id);
-    const modifierDelta = (item?.modifiers ?? [])
-      .filter((m) => entry.modifierIds.includes(m.modifierId))
-      .reduce((d, m) => d + m.priceDelta, 0);
-    return sum + (item ? (item.price + modifierDelta) * entry.qty : 0);
-  }, 0);
-
   return (
     <div className="order-experience">
+      {/* Unassigned Table Notice if directly opened without QR */}
+      {table === null ? (
+        <div className="table-unassigned-notice">
+          <div className="table-unassigned-content">
+            <span className="notice-icon" aria-hidden="true">📱</span>
+            <div>
+              <strong className="notice-title">Belum Terhubung ke Meja</strong>
+              <p className="notice-sub">
+                Pindai stiker QR di meja Anda atau pilih nomor meja untuk memesan langsung ke dapur.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="btn-scan-qr-cta"
+            onClick={() => setScannerOpen(true)}
+          >
+            📷 Pindai QR / Pilih Meja
+          </button>
+        </div>
+      ) : null}
+
       {/* Table Context Banner */}
       <header className="order-table-banner">
-        <div className="table-info">
-          <span className="table-badge">
-            {table !== null
-              ? `${table.tableName} • ${table.tableCode}`
-              : "Meja 04 • Gazebo B"}
-          </span>
-          <h1 className="banner-title">Menu Santap Tepi Sawah</h1>
+        <div className="table-banner-brand">
+          <img src="/logo.png" alt="Logo Tepi Sawah" className="order-header-logo" />
+          <div className="table-info">
+            <div className="table-badge-row">
+              <span
+                className={`table-badge ${table === null ? "table-badge--unassigned" : ""}`}
+                onClick={() => setScannerOpen(true)}
+                role="button"
+                tabIndex={0}
+                title="Klik untuk memilih meja"
+              >
+                {table !== null
+                  ? `${table.tableName} • ${table.tableCode}`
+                  : "⚠️ Belum Ada Meja (Klik untuk scan)"}
+              </span>
+              {table !== null ? (
+                <button
+                  type="button"
+                  className="btn-change-table"
+                  onClick={() => setScannerOpen(true)}
+                  title="Ganti Meja"
+                >
+                  🔄 Ganti
+                </button>
+              ) : null}
+            </div>
+            <h1 className="banner-title">Menu Santap Tepi Sawah</h1>
+          </div>
         </div>
         <div className="table-actions">
+          <button
+            type="button"
+            className="btn-scan-qr-header"
+            onClick={() => setScannerOpen(true)}
+            title="Buka Kamera Scanner QR"
+          >
+            📷 Scan QR
+          </button>
           <button
             type="button"
             className="btn-call-service"
@@ -265,7 +349,7 @@ export function HomePage(props: HomePageProps): ReactNode {
           <main className="order-menu-list">
             {filteredItems.map((item) => {
               const entry = cart[item.productId];
-              const qty = entry?.qty ?? 0;
+              const qty = entry?.quantity ?? 0;
               const requiredModifiers = item.modifiers.filter((m) => m.isRequired);
               const missingRequired = requiredModifiers.filter(
                 (m) => !entry?.modifierIds.includes(m.modifierId),
@@ -385,12 +469,36 @@ export function HomePage(props: HomePageProps): ReactNode {
           <button
             type="button"
             className="btn-checkout"
-            onClick={handleSendToKitchen}
+            onClick={handleOpenCart}
           >
-            Kirim ke Dapur →
+            Lihat Keranjang →
           </button>
         </div>
       ) : null}
+
+      <CartDrawer
+        open={drawerOpen}
+        lines={drawerLines}
+        customerNote={customerNoteValue}
+        onClose={handleCloseCart}
+        onIncrement={(productId) => applyCart((prev) => incrementEntry(prev, productId))}
+        onDecrement={(productId) => applyCart((prev) => decrementEntry(prev, productId))}
+        onRemove={(productId) => applyCart((prev) => removeEntry(prev, productId))}
+        onItemNoteChange={(productId, notes) =>
+          applyCart((prev) => setEntryNote(prev, productId, notes))
+        }
+        onCustomerNoteChange={applyCustomerNote}
+        onCheckout={handleCheckout}
+      />
+
+      <QrScannerModal
+        isOpen={scannerOpen}
+        onClose={() => setScannerOpen(false)}
+        onTableSelected={(tableCode, token) => {
+          setScannerOpen(false);
+          onSelectTable?.(tableCode, token);
+        }}
+      />
     </div>
   );
 }

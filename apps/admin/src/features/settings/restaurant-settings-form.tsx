@@ -14,9 +14,9 @@ import { Card, Input, Select } from "@tepisawah/ui";
 import type { SettingsForm } from "./use-settings.js";
 
 const TIMEZONES = [
-  { label: "WIB — Asia/Makassar (GMT+8)", value: "Asia/Makassar" },
-  { label: "WIB — Asia/Pontianak (GMT+8)", value: "Asia/Pontianak" },
-  { label: "WITA — Asia/Jayapura (GMT+9)", value: "Asia/Jayapura" },
+  { label: "WIB — Asia/Jakarta (UTC+7)", value: "Asia/Jakarta" },
+  { label: "WITA — Asia/Makassar (UTC+8)", value: "Asia/Makassar" },
+  { label: "WIT — Asia/Jayapura (UTC+9)", value: "Asia/Jayapura" },
 ];
 
 const CURRENCIES = [{ label: "IDR — Rupiah", value: "IDR" }];

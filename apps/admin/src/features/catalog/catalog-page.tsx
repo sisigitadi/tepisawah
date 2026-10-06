@@ -425,6 +425,9 @@ interface ProductsSectionProps extends SectionProps {
 
 function ProductsSection(props: ProductsSectionProps): ReactNode {
   const { rows, categories, editable, onStart, onArchive } = props;
+  const [search, setSearch] = useState("");
+  const [selectedCat, setSelectedCat] = useState("ALL");
+
   const categoryName = (id: string): string =>
     categories.find((category) => category.id === id)?.name ?? "—";
 
@@ -436,79 +439,137 @@ function ProductsSection(props: ProductsSectionProps): ReactNode {
     );
   }
 
+  const filteredRows = rows.filter((item) => {
+    const matchesCat = selectedCat === "ALL" || item.categoryId === selectedCat;
+    const matchesSearch =
+      search.trim() === "" ||
+      item.name.toLowerCase().includes(search.toLowerCase()) ||
+      (item.description && item.description.toLowerCase().includes(search.toLowerCase()));
+    return matchesCat && matchesSearch;
+  });
+
   return (
     <div>
-      {editable ? (
-        <div className="catalog-actions">
+      <div className="catalog-actions">
+        <div className="catalog-filters">
+          <input
+            type="text"
+            className="catalog-search-input"
+            placeholder="🔍 Cari nama atau deskripsi menu..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <select
+            className="catalog-filter-select"
+            value={selectedCat}
+            onChange={(e) => setSelectedCat(e.target.value)}
+          >
+            <option value="ALL">Semua Kategori ({rows.length})</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name} ({rows.filter((r) => r.categoryId === c.id).length})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {editable ? (
           <Button
             variant="primary"
             onClick={() => onStart({ kind: "product", id: null })}
           >
-            Tambah produk
+            + Tambah produk
           </Button>
-        </div>
-      ) : (
-        <p className="catalog-hint">Hanya baca</p>
-      )}
+        ) : (
+          <p className="catalog-hint">Hanya baca</p>
+        )}
+      </div>
 
       {rows.length === 0 ? (
         <Card elevation="low" title="Belum ada produk">
           <p>Tambahkan produk pertama ke kategori menu.</p>
         </Card>
+      ) : filteredRows.length === 0 ? (
+        <Card elevation="low" title="Produk tidak ditemukan">
+          <p>Tidak ada produk yang cocok dengan pencarian "{search}".</p>
+          <div style={{ marginTop: "0.5rem" }}>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                setSearch("");
+                setSelectedCat("ALL");
+              }}
+            >
+              Reset Filter
+            </Button>
+          </div>
+        </Card>
       ) : (
         <div className="catalog-list">
-          {rows.map((row) => (
-            <Card
-              key={row.id}
-              elevation="low"
-              title={row.name}
-              actions={
-                <>
+          {filteredRows.map((row) => (
+            <div key={row.id} className="product-card">
+              <div className="product-card__media">
+                {row.imageUrl ? (
+                  <img
+                    className="product-card__img"
+                    src={row.imageUrl}
+                    alt={row.name}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <div className="product-card__media--fallback" aria-hidden="true">
+                    🍲
+                  </div>
+                )}
+                <div className="product-card__badges">
                   <StatusBadge
                     status={row.isActive ? "active" : "inactive"}
                     label={row.isActive ? "Aktif" : "Diarsipkan"}
                   />
                   {row.isActive ? (
                     <StatusBadge
-                      status={row.isAvailable ? "active" : "inactive"}
+                      status={row.isAvailable ? "available" : "cancelled"}
                       label={row.isAvailable ? "Tersedia" : "Habis"}
                     />
                   ) : null}
-                  {editable ? (
-                    <>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => onStart({ kind: "product", id: row.id })}
-                      >
-                        Ubah
-                      </Button>
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={() => onArchive("product", row.id)}
-                      >
-                        {row.isActive ? "Arsipkan" : "Pulihkan"}
-                      </Button>
-                    </>
-                  ) : null}
-                </>
-              }
-            >
-              {row.imageUrl ? (
-                <img
-                  className="catalog-thumb"
-                  src={row.imageUrl}
-                  alt={row.name}
-                  loading="lazy"
-                  decoding="async"
-                />
+                </div>
+              </div>
+
+              <div className="product-card__body">
+                <span className="product-card__category">{categoryName(row.categoryId)}</span>
+                <h3 className="product-card__name">{row.name}</h3>
+                <p className="product-card__desc">
+                  {row.description || "Tidak ada deskripsi"}
+                </p>
+                <div className="product-card__price-row">
+                  <span className="product-card__price">
+                    Rp{row.price.toLocaleString("id-ID")}
+                  </span>
+                  <span className="product-card__order">Urutan: {row.sortOrder}</span>
+                </div>
+              </div>
+
+              {editable ? (
+                <div className="product-card__footer">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => onStart({ kind: "product", id: row.id })}
+                  >
+                    Ubah
+                  </Button>
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => onArchive("product", row.id)}
+                  >
+                    {row.isActive ? "Arsipkan" : "Pulihkan"}
+                  </Button>
+                </div>
               ) : null}
-              <p>
-                {categoryName(row.categoryId)} · Rp{row.price.toLocaleString("id-ID")}
-              </p>
-              {row.description ? <p>{row.description}</p> : null}
-            </Card>
+            </div>
           ))}
         </div>
       )}

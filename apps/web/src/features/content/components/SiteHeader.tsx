@@ -7,7 +7,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Icon } from "../../../components/icons.js";
 import { useOpenStatus } from "../../../hooks/index.js";
-import { useReservation } from "../reservation.js";
 
 export const MAPS_URL =
   "https://www.google.com/maps/place/6%C2%B046'16.3%22S+108%C2%B030'45.4%22E/@-6.7711837,108.5119553,19z";
@@ -49,7 +48,6 @@ function StatusBadge(): ReactNode {
 }
 
 export function SiteHeader(): ReactNode {
-  const { openReservation } = useReservation();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Close the drawer with Escape so keyboard users aren't trapped.
@@ -116,25 +114,23 @@ export function SiteHeader(): ReactNode {
           </nav>
 
           <div className="web-nav-actions">
-            <button
-              type="button"
+            <a
+              href="#reservasi"
               className="web-btn web-btn-gold web-btn-pill"
-              onClick={() => openReservation()}
             >
               <Icon name="calendar" size={16} />
-              <span>Reservasi Meja</span>
-            </button>
+              <span>Reservasi Meja &amp; Acara</span>
+            </a>
           </div>
 
           <div className="web-nav-mobile">
-            <button
-              type="button"
+            <a
+              href="#reservasi"
               className="web-btn web-btn-gold web-btn-pill web-btn-xs"
-              onClick={() => openReservation()}
             >
               <Icon name="calendar" size={14} />
               <span>Reservasi</span>
-            </button>
+            </a>
             <button
               type="button"
               className="web-burger"
@@ -161,28 +157,14 @@ export function SiteHeader(): ReactNode {
               ))}
             </nav>
             <div className="web-drawer-actions">
-              <button
-                type="button"
+              <a
+                href="#reservasi"
                 className="web-btn web-btn-gold"
-                onClick={() => {
-                  setDrawerOpen(false);
-                  openReservation();
-                }}
+                onClick={() => setDrawerOpen(false)}
               >
                 <Icon name="calendar" size={16} />
-                <span>Reservasi Meja / Rombongan</span>
-              </button>
-              <button
-                type="button"
-                className="web-btn web-btn-outline-light"
-                onClick={() => {
-                  setDrawerOpen(false);
-                  openReservation();
-                }}
-              >
-                <Icon name="calendar" size={16} />
-                <span>Reservasi Meja / Rombongan</span>
-              </button>
+                <span>Reservasi Meja &amp; Acara</span>
+              </a>
             </div>
           </div>
         ) : null}

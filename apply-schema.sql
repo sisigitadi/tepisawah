@@ -4890,7 +4890,7 @@ insert into public.restaurant_settings (
   'Jl. Raya Sawah Indah, Ubud, Bali',
   '+62 361 000 000',
   'halo@tepisawah.id',
-  'Asia/Makassar',
+  'Asia/Jakarta',
   'IDR',
   null,
   null

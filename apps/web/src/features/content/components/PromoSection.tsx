@@ -6,7 +6,6 @@
  */
 import type { ReactNode } from "react";
 import { Icon } from "../../../components/icons.js";
-import { useReservation } from "../reservation.js";
 
 const PROMOS: ReadonlyArray<{
   accent: string;
@@ -17,7 +16,6 @@ const PROMOS: ReadonlyArray<{
   desc: string;
   foot: string;
   cta: "menu" | "reserve";
-  reserveNote?: string;
 }> = [
   {
     accent: "golden",
@@ -48,13 +46,10 @@ const PROMOS: ReadonlyArray<{
     desc: "Alokasi area saung lesehan prioritas untuk gathering kantor, arisan keluarga, maupun rombongan wisata tanpa biaya reservasi tambahan.",
     foot: "Kapasitas Fleksibel",
     cta: "reserve",
-    reserveNote: "Paket Reservasi Rombongan",
   },
 ];
 
 export function PromoSection(): ReactNode {
-  const { openReservation } = useReservation();
-
   return (
     <section id="promo-paket" className="web-shell web-section">
       <div className="web-head-center">
@@ -90,13 +85,12 @@ export function PromoSection(): ReactNode {
                   Lihat Menu Pilihan
                 </a>
               ) : (
-                <button
-                  type="button"
+                <a
                   className="web-btn web-btn-forest web-btn-sm"
-                  onClick={() => openReservation(promo.reserveNote)}
+                  href="#reservasi"
                 >
-                  Reservasi Meja
-                </button>
+                  Layanan Meja &amp; Acara
+                </a>
               )}
             </div>
           </article>
@@ -118,14 +112,13 @@ export function PromoSection(): ReactNode {
             sebelum berkunjung.
           </p>
         </div>
-        <button
-          type="button"
+        <a
           className="web-btn web-btn-amber web-btn-lg"
-          onClick={() => openReservation()}
+          href="#menu-pilihan"
         >
-          <Icon name="calendar" size={16} />
-          <span>Reservasi Meja Sekarang</span>
-        </button>
+          <Icon name="utensils" size={16} />
+          <span>Jelajahi Menu Pilihan</span>
+        </a>
       </div>
     </section>
   );

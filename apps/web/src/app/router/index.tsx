@@ -21,6 +21,22 @@ import { HomePage } from "../../pages/HomePage.js";
  * code path (ENVIRONMENT_CONFIG.md §37).
  */
 export function AppRouter(): ReactNode {
+  // Jika pengunjung membuka link dari scan QR meja (contoh: tepisawah.id/?table=A1&t=...),
+  // alihkan secara langsung dan mulus ke portal order pelanggan
+  if (typeof window !== "undefined") {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.has("table")) {
+      const isLocal =
+        window.location.origin.includes("localhost") ||
+        window.location.origin.includes("127.0.0.1");
+      const orderHost = isLocal
+        ? "http://localhost:5174"
+        : "https://order.tepisawah.id";
+      window.location.replace(`${orderHost}/${window.location.search}`);
+      return null;
+    }
+  }
+
   if (env.demoMode && window.location.pathname === "/demo") {
     return <DemoPage />;
   }

@@ -4,6 +4,8 @@
   "private": true,
   "description": "Staff point of sale: orders, payments, tables, shifts, dashboard.",
   "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
   "scripts": {
     "build": "vite build",
     "typecheck": "tsc --noEmit",
