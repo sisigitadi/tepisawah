@@ -5026,6 +5026,22 @@ on conflict (id) do update set
 
 -- One active QR per table (migration 006 part 2 enforces the invariant). The
 -- retired A2 row demonstrates roll-over: its token no longer resolves.
+-- Clean up any existing QRs for the seeded tables so re-runs never collide
+-- on the partial unique index `table_qr_active_table_key`.
+delete from public.table_qr
+where table_id in (
+  '00000000-0000-4000-8000-700000000001',
+  '00000000-0000-4000-8000-700000000002',
+  '00000000-0000-4000-8000-700000000003',
+  '00000000-0000-4000-8000-700000000004'
+) or token in (
+  'dev-qr-a1-000000000000000000000001',
+  'dev-qr-a2-retired-00000000000000000',
+  'dev-qr-a2-000000000000000000000002',
+  'dev-qr-a3-000000000000000000000003',
+  'dev-qr-b1-000000000000000000000004'
+);
+
 insert into public.table_qr (id, table_id, token, is_active, expires_at)
 values
   ('00000000-0000-4000-8000-800000000001', '00000000-0000-4000-8000-700000000001', 'dev-qr-a1-000000000000000000000001', true,  null),
@@ -5050,6 +5066,14 @@ on conflict (id) do update set
 -- (migration 008) and will carry its own `table_session_id` foreign key. These
 -- links exist so the multi-order attach/read path can be exercised now.
 -- =============================================================================
+
+-- Ensure idempotent seed: close any existing open session on B1 so the seed
+-- never collides with table_sessions_one_open_per_table.
+update public.table_sessions
+   set status = 'CLOSED', closed_at = coalesce(closed_at, now())
+ where table_id = '00000000-0000-4000-8000-700000000004'
+   and status = 'OPEN'
+   and id <> '00000000-0000-4000-8000-900000000002';
 
 insert into public.table_sessions (id, table_id, status, opened_at, closed_at, opened_by, closed_by)
 values
