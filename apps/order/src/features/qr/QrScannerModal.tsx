@@ -44,21 +44,29 @@ export const DEMO_TABLES: readonly DemoTableOption[] = [
 
 export interface QrScannerModalProps {
   readonly isOpen: boolean;
+  readonly initialTab?: "camera" | "picker";
   readonly onClose: () => void;
   readonly onTableSelected: (tableCode: string, token: string) => void;
 }
 
 export function QrScannerModal({
   isOpen,
+  initialTab = "camera",
   onClose,
   onTableSelected,
 }: QrScannerModalProps): ReactNode {
-  const [activeTab, setActiveTab] = useState<"camera" | "picker">("camera");
+  const [activeTab, setActiveTab] = useState<"camera" | "picker">(initialTab);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [scanning, setScanning] = useState<boolean>(false);
   const [manualCode, setManualCode] = useState<string>("");
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab(initialTab);
+    }
+  }, [isOpen, initialTab]);
 
   // Stop camera stream cleanly
   const stopCamera = () => {

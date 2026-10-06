@@ -5,15 +5,33 @@
  * @tepisawah/ui.
  */
 import type { ReactNode } from "react";
-import { DOMAINS, type AppName } from "@tepisawah/config";
+import { appOrigin } from "@tepisawah/config";
 
 export function AppHeader(): ReactNode {
-  const name: AppName = "order";
   return (
-    <header>
-      <a href={DOMAINS[name]}>
-        <strong>Tepi Sawah — Customer Ordering</strong>
-      </a>
+    <header className="order-global-header">
+      <div className="order-global-header-inner">
+        <a
+          href={appOrigin("web")}
+          className="order-global-brand"
+          title="Ke Halaman Utama Tepi Sawah"
+        >
+          <span className="order-brand-icon" aria-hidden="true">🌾</span>
+          <div className="order-brand-text">
+            <span className="order-brand-name">Tepi Sawah</span>
+            <span className="order-brand-tag">Pemesanan Mandiri</span>
+          </div>
+        </a>
+        <div className="order-global-nav">
+          <a
+            href={appOrigin("web")}
+            className="order-global-link"
+            title="Buka Website Utama Tepi Sawah"
+          >
+            Web Utama ↗
+          </a>
+        </div>
+      </div>
     </header>
   );
 }

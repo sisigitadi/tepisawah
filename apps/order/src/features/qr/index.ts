@@ -10,6 +10,7 @@
  * (REPOSITORY_STRUCTURE.md §43).
  */
 export { QrEntryPage } from "./qr-entry-page.js";
+export { QrGatekeeperPage } from "./QrGatekeeperPage.js";
 export { QrScannerModal } from "./QrScannerModal.js";
 export { resolveQrEntry } from "./service.js";
 export type { QrEntryError, QrEntryResult } from "./service.js";
