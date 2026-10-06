@@ -1150,6 +1150,14 @@ body {
   line-height: 1;
 }
 
+.qr-gatekeeper-logo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 50%;
+  filter: drop-shadow(0 2px 6px rgba(24, 58, 29, 0.2));
+}
+
 .qr-gatekeeper-badge {
   font-size: 0.78rem;
   font-weight: 600;
@@ -1242,5 +1250,91 @@ body {
   color: var(--color-forest, #2E6B34);
   text-decoration: underline;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Order Global Header (Chrome)
+ * ───────────────────────────────────────────────────────────────────────────── */
+.order-global-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(24, 58, 29, 0.97);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(221, 161, 94, 0.35);
+  box-shadow: 0 4px 20px -8px rgba(0, 0, 0, 0.5);
+}
+
+.order-global-header-inner {
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 0.625rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.order-global-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: var(--color-warmcream, #fefae0);
+}
+
+.order-brand-logo {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: var(--color-warmcream, #fefae0);
+  border: 1px solid rgba(221, 161, 94, 0.4);
+  padding: 2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  flex-shrink: 0;
+}
+
+.order-brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.order-brand-name {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.15;
+  color: var(--color-warmcream, #fefae0);
+  letter-spacing: -0.01em;
+}
+
+.order-brand-tag {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--color-golden, #dda15e);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.order-global-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-warmcream, #fefae0);
+  background: rgba(221, 161, 94, 0.18);
+  border: 1px solid rgba(221, 161, 94, 0.4);
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.order-global-link:hover {
+  background: rgba(221, 161, 94, 0.3);
+  border-color: var(--color-golden, #dda15e);
+  color: #ffffff;
+}
+
 
 

@@ -12,7 +12,7 @@ export function AppHeader(): ReactNode {
   return (
     <header>
       <a href={DOMAINS[name]}>
-        <strong>Tepi Sawah — Kitchen Display System</strong>
+        <strong>Tepi Sawah — Layar Pesanan Dapur</strong>
       </a>
     </header>
   );

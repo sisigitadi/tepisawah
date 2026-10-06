@@ -33,22 +33,22 @@ export function BillInspector({ order, onPrint }: BillInspectorProps): ReactNode
         <div className="pos-inspector__banner-glow" aria-hidden="true" />
         <div className="pos-inspector__banner-main">
           <div className="pos-inspector__eyebrow">
-            <span className="pos-inspector__badge">Active Bill Inspector</span>
-            <span className="pos-inspector__ticket">Ticket {order.ticket}</span>
+            <span className="pos-inspector__badge">Pemeriksaan Tagihan Aktif</span>
+            <span className="pos-inspector__ticket">Tiket {order.ticket}</span>
           </div>
           <h2 className="pos-inspector__title">
             {order.table} <span className="pos-inspector__area">• {order.area}</span>
           </h2>
           <div className="pos-inspector__meta">
-            <span><UserIcon aria-hidden="true" /> Tamu {order.table} (Family {order.pax} Pax)</span>
-            <span className="pos-inspector__verified"><VerifiedIcon aria-hidden="true" /> QR Auto-Validated</span>
+            <span><UserIcon aria-hidden="true" /> Tamu {order.table} ({order.pax} Orang)</span>
+            <span className="pos-inspector__verified"><VerifiedIcon aria-hidden="true" /> QR Terverifikasi Otomatis</span>
           </div>
         </div>
         <div className="pos-inspector__aside">
           <span className="pos-inspector__aside-label">Waktu Pesanan</span>
           <span className="pos-inspector__aside-time">{order.time}</span>
           <div className="pos-inspector__pills">
-            <span className="pos-inspector__pill">Pax: {order.pax}</span>
+            <span className="pos-inspector__pill">Tamu: {order.pax} Orang</span>
             <span className="pos-inspector__pill pos-inspector__pill--ghost">Pajak PB1: Aktif</span>
           </div>
         </div>
@@ -94,12 +94,12 @@ export function BillInspector({ order, onPrint }: BillInspectorProps): ReactNode
           <div className="pos-ledger__row">
             {/* A live bill carries the server's own tax (0 until the real PB1
                 rule lands); the fixture ledger still shows the 10% sample. */}
-            <span>{order.bill ? "Pajak Resto (sesuai sistem)" : "Resto Tax / Pajak PB1 (10%)"}</span>
+            <span>{order.bill ? "Pajak Restoran (sesuai sistem)" : "Pajak Restoran PB1 (10%)"}</span>
             <span className="pos-ledger__value">{formatIDR(taxOf(order))}</span>
           </div>
           {order.bill && serviceOf(order) === 0 ? null : (
             <div className="pos-ledger__row">
-              <span>Service Charge Hospitality (5%)</span>
+              <span>Biaya Layanan Restoran (5%)</span>
               <span className="pos-ledger__value">{formatIDR(serviceOf(order))}</span>
             </div>
           )}
@@ -108,7 +108,7 @@ export function BillInspector({ order, onPrint }: BillInspectorProps): ReactNode
             <div>
               <span className="pos-ledger__grand-label">Total Tagihan Final</span>
               <p className="pos-ledger__grand-note">
-                {order.bill ? "Sesuai catatan sistem" : "Sudah termasuk PB1 & Service Charge"}
+                {order.bill ? "Sesuai catatan sistem" : "Sudah termasuk PB1 & Biaya Layanan"}
               </p>
             </div>
             <span className="pos-ledger__grand-value" id="inspectorTotalValue">

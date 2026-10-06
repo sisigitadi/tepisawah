@@ -16,14 +16,14 @@
   --c-roastedearth: #3d1f10;
   --c-coffeebrown: #6f3f24;
 
-  /* Neutrals & Borders */
-  --c-bg: #f9f9f8;
+  /* Neutrals & Borders (Warm Tepi Sawah Palette) */
+  --c-bg: #faf7ee;
   --c-surface: #ffffff;
-  --c-border: #e7e5e4;
-  --c-border-subtle: #f5f5f4;
-  --c-text-main: #1c1917;
-  --c-text-muted: #78716c;
-  --c-text-light: #a8a29e;
+  --c-border: #e6dec7;
+  --c-border-subtle: #f4efe2;
+  --c-text-main: #2b1f17;
+  --c-text-muted: #786f63;
+  --c-text-light: #a89f92;
 
   /* Semantics */
   --c-success: #16a34a;

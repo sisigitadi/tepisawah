@@ -47,7 +47,7 @@ function timeLabel(iso: string | null): string {
 
 const CHANNEL_LABELS: Record<StaffOrder["source"], string> = {
   CUSTOMER_QR: "QR Meja",
-  WAITER: "Waiter",
+  WAITER: "Pelayan",
   POS: "Kasir",
 };
 

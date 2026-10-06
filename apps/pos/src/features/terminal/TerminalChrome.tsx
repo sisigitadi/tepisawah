@@ -27,13 +27,13 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "Payment Terminal", icon: <TerminalIcon />, active: true },
-  { label: "Orders Pipeline", icon: <ReceiptLongIcon /> },
-  { label: "Table Layout", icon: <TableIcon /> },
-  { label: "Dashboard", icon: <ChartIcon /> },
-  { label: "Transaction History", icon: <HistoryIcon /> },
-  { label: "Daily Reports", icon: <ReportIcon /> },
-  { label: "Shift & Cash", icon: <BadgeIcon /> },
+  { label: "Kasir Pembayaran", icon: <TerminalIcon />, active: true },
+  { label: "Alur Pesanan", icon: <ReceiptLongIcon /> },
+  { label: "Tata Letak Meja", icon: <TableIcon /> },
+  { label: "Ringkasan", icon: <ChartIcon /> },
+  { label: "Riwayat Transaksi", icon: <HistoryIcon /> },
+  { label: "Laporan Harian", icon: <ReportIcon /> },
+  { label: "Kas & Giliran Kerja", icon: <BadgeIcon /> },
 ];
 
 interface TerminalChromeProps {
@@ -48,7 +48,7 @@ export function TerminalChrome({ children, now }: TerminalChromeProps): ReactNod
         <div className="pos-header__brand">
           <img src="/logo.png" alt="Logo Tepi Sawah" className="pos-header__logo" />
           <span className="pos-header__name">Tepi Sawah</span>
-          <span className="pos-header__division">Cashier POS</span>
+          <span className="pos-header__division">Meja Kasir</span>
         </div>
 
         <div className="pos-header__context">
@@ -60,15 +60,15 @@ export function TerminalChrome({ children, now }: TerminalChromeProps): ReactNod
             <span className="pos-cashier__dot" aria-hidden="true" />
             <span className="pos-cashier__name">Kasir: Sigit</span>
             <span className="pos-cashier__sep" aria-hidden="true">•</span>
-            <span className="pos-cashier__shift">Shift 1 Pagi — Active</span>
+            <span className="pos-cashier__shift">Giliran 1 Pagi — Aktif</span>
           </div>
           <div className="pos-live">
             <span className="pos-live__dot" aria-hidden="true" />
-            <span>Kitchen: Live</span>
+            <span>Dapur: Terhubung</span>
           </div>
           <div className="pos-live">
             <span className="pos-live__dot" aria-hidden="true" />
-            <span>Tables: Sync</span>
+            <span>Meja: Sinkron</span>
           </div>
         </div>
 
@@ -99,17 +99,17 @@ export function TerminalChrome({ children, now }: TerminalChromeProps): ReactNod
         </nav>
 
         <div className="pos-hotkeys">
-          <div className="pos-hotkeys__title">Quick Hotkeys</div>
+          <div className="pos-hotkeys__title">Pintasan Tombol</div>
           <div className="pos-hotkeys__grid">
             <span><strong className="pos-kbd pos-kbd--go">F1</strong> Cari</span>
             <span><strong className="pos-kbd pos-kbd--go">F2</strong> Baru</span>
             <span><strong className="pos-kbd pos-kbd--go">F3</strong> Bayar</span>
-            <span><strong className="pos-kbd pos-kbd--go">F4</strong> Refresh</span>
+            <span><strong className="pos-kbd pos-kbd--go">F4</strong> Segarkan</span>
             <span className="pos-hotkeys__wide"><strong className="pos-kbd pos-kbd--stop">ESC</strong> Batal</span>
           </div>
           <button type="button" className="pos-shift-close">
             <LogoutIcon />
-            <span>Tutup Shift</span>
+            <span>Tutup Giliran Kerja</span>
           </button>
         </div>
       </aside>

@@ -80,7 +80,7 @@ export function OrderQueue({
           <span>Antrean Pembayaran Kasir</span>
           <span className="pos-queue__live">
             <span className="pos-queue__live-dot" aria-hidden="true" />
-            Real-time
+            Langsung
           </span>
         </div>
       </div>
@@ -103,7 +103,7 @@ export function OrderQueue({
       <div className="pos-queue__summary">
         <span className="pos-queue__summary-label">
           <InsightsIcon aria-hidden="true" />
-          Total Unpaid:
+          Total Belum Dibayar:
         </span>
         <span className="pos-queue__summary-value">{formatIDR(unpaidTotal)} ({orders.length})</span>
       </div>

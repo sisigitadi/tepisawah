@@ -2,6 +2,41 @@
 
 Semua perubahan penting pada proyek **Tepi Sawah Resto & POS Platform** didokumentasikan di sini mengikuti pedoman [Keep a Changelog](https://keepachangelog.com/id/1.0.0/) dan [Semantic Versioning](https://semver.org/).
 
+## [0.2.1] - 2026-10-06 (Audit Branding, Role Refresh & Indonesian Localization)
+
+### 🖼️ Open Graph Preview & Media Canonical
+- **Resolusi Preview WhatsApp/Telegram pada `tepisawah.id`**:
+  - Memperbarui `og:url`, `og:image`, `og:image:secure_url`, dan `twitter:image` pada [`apps/web/index.html`](apps/web/index.html) mengarah langsung ke domain kanonikal `https://www.tepisawah.id` dan `https://www.tepisawah.id/og-image.jpg`.
+  - Mengeliminasi *308 Permanent Redirect hop* yang sebelumnya memutus crawler media sosial (WhatsApp/Telegram/Facebook) saat mengunduh gambar pratinjau.
+  - Menambahkan tag kanonikal `<link rel="canonical" />` di seluruh aplikasi web, staf, dan order.
+
+### 🌾 Integrasi Logo Resmi pada Customer Ordering (`order.tepisawah.id`)
+- **Logo Resmi Menggantikan Emoji Generik**:
+  - Mengganti emoji `🌾` pada [`apps/order/src/components/AppHeader.tsx`](apps/order/src/components/AppHeader.tsx) dengan logo resmi otentik Tepi Sawah (`<img src="/logo.png" className="order-brand-logo" />`).
+  - Mengganti ikon kamera `📷` pada gerbang pemindai QR meja ([`apps/order/src/features/qr/QrGatekeeperPage.tsx`](apps/order/src/features/qr/QrGatekeeperPage.tsx)) dengan emblem logo resmi Tepi Sawah dengan cincin pulsa animasi.
+  - Menambahkan styling lengkap header chrome global dan emblem logo pada [`apps/order/src/styles/index.css`](apps/order/src/styles/index.css).
+
+### 🔄 Penyegaran Peran Staf & Penghapusan Stale View
+- **Auto-Redirect & Room Permission Enforcement**:
+  - Menambahkan logika proteksi rute di [`apps/staff/src/app/router/index.tsx`](apps/staff/src/app/router/index.tsx): jika staf berganti peran (misal dari Owner ke Kasir), sistem mendeteksi daftar ruangan yang diizinkan dan langsung me-redirect rute ke `"portal"` (`/`) tanpa menampilkan halaman peran sebelumnya.
+  - Menambahkan pendeteksian pergantian `user.id` untuk mereset tampilan secara otomatis saat login dengan kredensial berbeda.
+  - Membungkus ruangan admin dengan `PermissionRoute` agar peran tanpa izin pengaturan tidak dapat membuka panel pengelola meskipun mengakses URL `/admin`.
+- **Reset URL saat Keluar (Sign Out)**:
+  - Tombol "Keluar" pada [`apps/staff/src/components/AppHeader.tsx`](apps/staff/src/components/AppHeader.tsx) seketika me-reset rute ke `/` sebelum memanggil `signOut()`, menjamin pengguna berikutnya masuk dari pintu utama portal.
+- **Quick Role Switcher Mode Demo**:
+  - Menambahkan dropdown ganti peran cepat pada header staf dan kartu beranda portal untuk beralih instan antara **Owner**, **Kasir**, dan **Dapur** tanpa kendala stale view.
+
+### 🇮🇩 Lokalisasi Penuh Bahasa Indonesia yang Natural
+- Mengganti seluruh istilah bahasa Inggris pada antarmuka pengguna dengan bahasa Indonesia yang umum dan mudah dipahami:
+  - **Portal Staf**: "Staff Portal" → "Portal Staf", "Admin Console" → "Panel Pengelola", "Kitchen Display (KDS)" → "Layar Pesanan Dapur", "Cashier POS" → "Meja Kasir", "Waiter" → "Pelayan".
+  - **Panel Pengelola**: "Dashboard Overview" → "Ringkasan Operasional Resto", "Live Operational" → "Operasional Berjalan", "Status Pipeline Pesanan Realtime" → "Alur Proses Pesanan Langsung", "QR Customer" → "QR Pelanggan", "pick-up counter" → "meja pengantaran".
+  - **Terminal Kasir**: "Payment Terminal" → "Kasir Pembayaran", "Orders Pipeline" → "Alur Pesanan", "Table Layout" → "Tata Letak Meja", "Dashboard" → "Ringkasan", "Transaction History" → "Riwayat Transaksi", "Daily Reports" → "Laporan Harian", "Shift & Cash" → "Kas & Giliran Kerja", "Single Bill / Split Item / Custom Pax" → "Satu Tagihan / Pisah Menu / Bagi Rata", "Tendered" → "Nominal Uang Tunai Diterima", "Total Unpaid" → "Total Belum Dibayar", "Real-time" → "Langsung", "Quick Hotkeys" → "Pintasan Tombol".
+  - **Layar Dapur**: "KITCHEN DISPLAY SYSTEM" → "LAYAR PESANAN DAPUR", "Hot Kitchen" → "Dapur Utama".
+
+### 🎨 Penyelarasan Tema Warna Tepi Sawah
+- Menyesuaikan variabel palet netral di [`apps/admin/src/styles/index.css`](apps/admin/src/styles/index.css) dari abu-abu dingin (`#f9f9f8`, `#e7e5e4`) ke palet krim hangat dan kertas beras khas Tepi Sawah (`--c-bg: #faf7ee`, `--c-border: #e6dec7`).
+- Menyelaraskan seluruh kartu, bilah tab, dan formulir dengan nuansa hijau daun tua (`#183a1d`), aksen emas padi (`#dda15e`), dan latar belakang hangat nan nyaman.
+
 ---
 
 ## [0.2.0] - 2026-10-06 (Pre-Production Hardening & Consolidation)

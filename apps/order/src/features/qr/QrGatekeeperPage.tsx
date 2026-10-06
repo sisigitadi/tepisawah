@@ -46,7 +46,7 @@ export function QrGatekeeperPage({
         <div className="qr-gatekeeper-visual">
           <div className="qr-gatekeeper-icon-wrapper" aria-hidden="true">
             <span className="qr-pulse-ring"></span>
-            <span className="qr-icon-display">📷</span>
+            <img src="/logo.png" alt="Logo Tepi Sawah" className="qr-gatekeeper-logo" />
           </div>
           <span className="qr-gatekeeper-badge">
             Akses Khusus Pelanggan di Meja

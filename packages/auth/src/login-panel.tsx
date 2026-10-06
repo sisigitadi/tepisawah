@@ -20,7 +20,7 @@ import { useAuth } from "./auth-context.js";
 
 /** Email + password staff login form. */
 export function LoginPanel({
-  title = "Staff Login",
+  title = "Portal Staf — Masuk",
   demoAccounts,
 }: {
   title?: string;

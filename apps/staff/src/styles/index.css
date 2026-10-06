@@ -186,6 +186,92 @@ input {
   background: rgba(254, 250, 224, 0.18);
 }
 
+/* Quick Demo Role Switcher */
+.staff-demo-role-select {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(221, 161, 94, 0.15);
+  border: 1px solid rgba(221, 161, 94, 0.4);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-md);
+}
+
+.staff-demo-role-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--c-amberwarm);
+  white-space: nowrap;
+}
+
+.staff-demo-role-dropdown {
+  background: var(--c-deepmoss);
+  color: var(--c-warmcream);
+  border: 1px solid rgba(221, 161, 94, 0.5);
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+
+.staff-demo-role-dropdown:hover,
+.staff-demo-role-dropdown:focus {
+  border-color: var(--c-golden);
+  background: #1e4524;
+}
+
+/* Portal Launcher Demo Bar */
+.staff-portal-demo-bar {
+  margin-top: 1.25rem;
+  padding: 0.85rem 1.15rem;
+  background: rgba(248, 244, 219, 0.8);
+  border: 1px dashed rgba(221, 161, 94, 0.6);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.staff-portal-demo-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--c-deepmoss);
+}
+
+.staff-portal-demo-chips {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.staff-portal-demo-btn {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--c-deepmoss);
+  background: #ffffff;
+  border: 1px solid rgba(221, 161, 94, 0.5);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.staff-portal-demo-btn:hover {
+  background: var(--c-ricepaper);
+  border-color: var(--c-forest);
+  transform: translateY(-1px);
+}
+
+.staff-portal-demo-btn--active {
+  background: var(--c-forest);
+  color: #ffffff;
+  border-color: var(--c-forest);
+  box-shadow: 0 2px 6px rgba(46, 107, 52, 0.3);
+}
+
 /* Login ------------------------------------------------------------------ */
 
 .staff-login {

@@ -16,7 +16,7 @@ export function AppHeader(): ReactNode {
           className="order-global-brand"
           title="Ke Halaman Utama Tepi Sawah"
         >
-          <span className="order-brand-icon" aria-hidden="true">🌾</span>
+          <img src="/logo.png" alt="Tepi Sawah" className="order-brand-logo" />
           <div className="order-brand-text">
             <span className="order-brand-name">Tepi Sawah</span>
             <span className="order-brand-tag">Pemesanan Mandiri</span>
@@ -28,7 +28,7 @@ export function AppHeader(): ReactNode {
             className="order-global-link"
             title="Buka Website Utama Tepi Sawah"
           >
-            Web Utama ↗
+            Website Utama ↗
           </a>
         </div>
       </div>

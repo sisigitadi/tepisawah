@@ -21,7 +21,7 @@ export function ProtectedRoute({ children }: { children: ReactNode }): ReactNode
   if (status === "unauthenticated") {
     return (
       <LoginPanel
-        title="ADMIN — Staff Login"
+        title="Panel Pengelola — Masuk Staf"
         // Demo deployments only: the generic role accounts with click-to-fill.
         demoAccounts={env.demoMode ? DEMO_ACCOUNTS : undefined}
       />
