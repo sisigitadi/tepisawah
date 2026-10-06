@@ -41,7 +41,7 @@ export const DEFAULT_QRIS_STICKER_CONFIG: QrisStickerConfig = {
   showQrisCode: true,
   showWifi: true,
   wifiSsid: "TepiSawah_Guest",
-  wifiPassword: "tepisawahresto",
+  wifiPassword: "silakan tanya staf",
   paymentGuide: "BCA, Mandiri, BRI, BNI, GoPay, OVO, ShopeePay, DANA",
   operationalHours: "Buka Setiap Hari: 10.00 – 22.00 WIB",
   instagram: "@tepisawah.resto",
