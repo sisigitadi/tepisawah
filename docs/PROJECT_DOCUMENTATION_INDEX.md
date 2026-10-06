@@ -1082,8 +1082,21 @@ docs/
 │   ├── MASTER_CLINE_PROMPT.md
 │   └── GIT_WORKFLOW.md
 │
+├── decisions/
+│   ├── ADR-001-monorepo.md
+│   ├── ADR-002-supabase.md
+│   ├── ADR-003-order-state-machine.md
+│   ├── ADR-004-public-customer-ordering.md
+│   ├── ADR-005-payment-provider.md
+│   ├── ADR-006-role-consolidation.md
+│   └── ADR-007-audit-branding-og-dan-lokalisasi.md
+│
+├── deployment/
+│   └── PRE_DEPLOYMENT_CHECKLIST.md
+│
 ├── operations/
-│   └── ORDER_STATE.md
+│   ├── ORDER_STATE.md
+│   └── PRE_PRODUCTION_CONTROLS.md
 │
 ├── prompts/
 │   ├── 01-homepage.md
