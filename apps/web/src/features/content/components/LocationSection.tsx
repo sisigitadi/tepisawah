@@ -7,12 +7,10 @@
 import type { ReactNode } from "react";
 import { Icon } from "../../../components/icons.js";
 import { useOpenStatus } from "../../../hooks/index.js";
-import { useReservation } from "../reservation.js";
 import { MAPS_URL } from "./SiteHeader.js";
 
 export function LocationSection(): ReactNode {
   const { isOpen } = useOpenStatus();
-  const { openReservation } = useReservation();
 
   return (
     <section id="lokasi" className="web-shell web-section">
@@ -117,16 +115,8 @@ export function LocationSection(): ReactNode {
                 rel="noopener noreferrer"
               >
                 <Icon name="navigation" size={16} />
-                <span>Petunjuk Rute</span>
+                <span>Buka Petunjuk Arah &amp; Navigasi Google Maps</span>
               </a>
-              <button
-                type="button"
-                className="web-btn web-btn-amber web-btn-flex"
-                onClick={() => openReservation()}
-              >
-                <Icon name="calendar" size={16} />
-                <span>Reservasi Meja</span>
-              </button>
             </div>
           </div>
         </div>

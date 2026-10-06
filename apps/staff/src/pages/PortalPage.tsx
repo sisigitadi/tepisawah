@@ -91,7 +91,11 @@ function visibleApps(roles: readonly Role[]): readonly PortalApp[] {
   return APPS.filter((app) => granted.has(app.id));
 }
 
-export function PortalPage(): ReactNode {
+export interface PortalPageProps {
+  readonly onSelectRoom?: (appId: AppId) => void;
+}
+
+export function PortalPage({ onSelectRoom }: PortalPageProps = {}): ReactNode {
   const { user, profile, roles } = useAuth();
   const overrides = parseAppUrls(env.demoAppUrls);
   const apps = visibleApps(roles);
@@ -120,9 +124,15 @@ export function PortalPage(): ReactNode {
             <a
               key={app.id}
               className="staff-app-card"
-              href={appUrl(app.id, overrides)}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={onSelectRoom ? `/${app.id}` : appUrl(app.id, overrides)}
+              target={onSelectRoom ? undefined : "_blank"}
+              rel={onSelectRoom ? undefined : "noopener noreferrer"}
+              onClick={(e) => {
+                if (onSelectRoom) {
+                  e.preventDefault();
+                  onSelectRoom(app.id);
+                }
+              }}
             >
               <span className="staff-app-emoji" aria-hidden="true">{app.emoji}</span>
               <span className="staff-app-name">{app.name}</span>

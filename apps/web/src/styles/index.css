@@ -407,7 +407,8 @@ h4 {
 
 .web-brand-mark {
   height: 2.75rem;
-  padding: 0.25rem 0.625rem;
+  width: 2.75rem;
+  padding: 0.15rem;
   background: var(--c-warmcream);
   border: 1px solid rgba(221, 161, 94, 0.5);
   border-radius: 0.75rem;
@@ -418,8 +419,8 @@ h4 {
 }
 
 .web-brand-mark img {
-  height: 2rem;
-  width: auto;
+  height: 2.35rem;
+  width: 2.35rem;
   object-fit: contain;
 }
 
@@ -740,59 +741,41 @@ h4 {
   gap: 1rem;
 }
 
-.web-snapshot-photo {
-  position: relative;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  aspect-ratio: 16 / 10;
-}
-
-.web-snapshot-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.web-snapshot-veil {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(24, 58, 29, 0.92), transparent 62%);
-}
-
-.web-snapshot-cap {
-  position: absolute;
-  left: 0.75rem;
-  right: 0.75rem;
-  bottom: 0.75rem;
+.web-snapshot-header {
   display: flex;
   flex-direction: column;
+  gap: 0.4rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(221, 161, 94, 0.25);
 }
 
-.web-snapshot-name {
-  font-family: var(--font-serif);
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--c-warmcream);
-}
-
-.web-snapshot-sub {
-  font-size: 0.6875rem;
-  color: rgba(254, 250, 224, 0.82);
-}
-
-.web-snapshot-badge {
-  position: absolute;
-  top: 0.625rem;
-  right: 0.625rem;
+.web-snapshot-header .web-snapshot-badge {
+  align-self: flex-start;
+  position: static;
   background: rgba(46, 107, 52, 0.94);
   color: var(--c-amberwarm);
-  font-size: 0.5625rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0.25rem 0.5625rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.25rem 0.65rem;
   border-radius: 9999px;
   border: 1px solid rgba(221, 161, 94, 0.4);
+}
+
+.web-snapshot-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--c-warmcream);
+  line-height: 1.25;
+}
+
+.web-snapshot-subtitle {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: rgba(254, 250, 224, 0.82);
+  line-height: 1.4;
 }
 
 .web-snapshot-grid {
@@ -1754,8 +1737,9 @@ h4 {
   width: 2rem;
   height: 2rem;
   border-radius: 0.5625rem;
-  background: var(--c-forest);
-  color: var(--c-warmcream);
+  background: var(--c-warmcream);
+  border: 1px solid rgba(221, 161, 94, 0.4);
+  padding: 1px;
   flex: none;
 }
 
@@ -1844,124 +1828,212 @@ h4 {
   }
 }
 
-/* Reservation ----------------------------------------------------------- */
-.web-res-grid {
+/* Layanan Meja & Acara (Reservation) ----------------------------------- */
+.web-res-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  gap: clamp(1.5rem, 3.5vw, 2.75rem);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.95fr);
+  gap: clamp(1.5rem, 3.5vw, 3rem);
   align-items: start;
 }
 
-.web-res-copy {
+.web-res-info {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
   min-width: 0;
 }
 
-.web-res-tags {
+.web-res-area-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.web-res-area-card {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(221, 161, 94, 0.35);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.web-res-area-card:hover {
+  border-color: var(--c-forest);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.web-res-area-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
 }
 
-.web-res-tag {
+.web-res-area-title {
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  color: var(--c-deepmoss);
+  font-weight: 700;
+}
+
+.web-res-area-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  background: rgba(46, 107, 52, 0.1);
+  color: var(--c-forest);
+}
+
+.web-res-area-cap {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--c-coffeebrown);
   display: inline-flex;
   align-items: center;
-  gap: 0.3125rem;
-  padding: 0.375rem 0.75rem;
-  border-radius: 9999px;
-  background: rgba(46, 107, 52, 0.09);
-  border: 1px solid rgba(46, 107, 52, 0.2);
-  font-size: 0.75rem;
+  gap: 0.35rem;
+}
+
+.web-res-area-desc {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: rgba(61, 31, 16, 0.76);
+  line-height: 1.45;
+}
+
+.web-res-perks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed rgba(221, 161, 94, 0.4);
+}
+
+.web-res-perk {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--c-deepmoss);
+  font-weight: 500;
+}
+
+/* Reservation Form Card */
+.web-res-form-card {
+  background: #ffffff;
+  border: 1px solid rgba(221, 161, 94, 0.4);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.web-res-form-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(221, 161, 94, 0.25);
+}
+
+.web-res-form-badge {
+  align-self: flex-start;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-forest);
+  background: var(--c-ricepaper);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.web-res-form-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  color: var(--c-deepmoss);
+  font-weight: 700;
+}
+
+.web-res-form-sub {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: rgba(61, 31, 16, 0.7);
+  line-height: 1.4;
+}
+
+.web-res-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.web-res-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.web-res-field label {
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--c-deepmoss);
 }
 
-.web-res-tag svg {
-  color: var(--c-forest);
+.web-res-field input,
+.web-res-field select {
+  font-family: inherit;
+  font-size: 0.875rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #d6d3d1;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  color: var(--c-deepmoss);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.web-res-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.625rem;
+.web-res-field input:focus,
+.web-res-field select:focus {
+  border-color: var(--c-forest);
+  box-shadow: 0 0 0 3px rgba(46, 107, 52, 0.15);
 }
 
-.web-res-card {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1.5rem;
-  border-radius: var(--radius-lg);
-  background: linear-gradient(160deg, #ffffff, var(--c-ricepaper));
-  border: 1px solid rgba(221, 161, 94, 0.45);
-  box-shadow: var(--shadow-lg);
-  min-width: 0;
-}
-
-.web-res-card-head {
-  display: flex;
-  align-items: center;
+.web-res-field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.75rem;
 }
 
-.web-res-card-ico {
-  display: inline-flex;
+.web-res-btn-submit {
+  width: 100%;
+  margin-top: 0.5rem;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 0.875rem;
-  background: rgba(46, 107, 52, 0.12);
-  color: var(--c-forest);
-  flex: none;
+  gap: 0.6rem;
+  cursor: pointer;
 }
 
-.web-res-card-title {
-  font-size: 1.0625rem;
-  font-weight: 700;
-  color: var(--c-deepmoss);
-}
-
-.web-res-card-sub {
-  display: block;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--c-forest);
-}
-
-.web-res-card-desc {
+.web-res-form-footer {
   margin: 0;
-  font-size: 0.8125rem;
-  line-height: 1.6;
-  color: rgba(61, 31, 16, 0.76);
-}
-
-.web-res-card-facts {
-  display: grid;
-  gap: 0.5rem;
-}
-
-.web-res-card-fact {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem;
   font-size: 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px dashed rgba(111, 63, 36, 0.2);
-}
-
-.web-res-card-fact span {
-  color: rgba(61, 31, 16, 0.66);
-}
-
-.web-res-card-fact strong {
-  color: var(--c-deepmoss);
-  text-align: right;
+  color: rgba(61, 31, 16, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
 }
 
 /* Gallery --------------------------------------------------------------- */
@@ -1989,9 +2061,7 @@ h4 {
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-lg);
-  min-height: 13rem;
-  background-size: cover;
-  background-position: center;
+  min-height: 14rem;
   display: flex;
   align-items: flex-end;
   margin: 0;
@@ -2001,47 +2071,60 @@ h4 {
 
 .web-gphoto[data-tall="true"] {
   grid-row: span 2;
-  min-height: 28rem;
+  min-height: 29rem;
+}
+
+.web-gphoto-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s ease;
+}
+
+.web-gphoto:hover .web-gphoto-img {
+  transform: scale(1.06);
 }
 
 .web-gphoto-veil {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(24, 58, 29, 0.94) 6%, rgba(24, 58, 29, 0.18) 62%, rgba(24, 58, 29, 0));
-}
-
-.web-gphoto-glyph {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -62%);
-  color: rgba(255, 255, 255, 0.85);
-  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.45));
+  background: linear-gradient(to top, rgba(24, 58, 29, 0.95) 5%, rgba(24, 58, 29, 0.35) 55%, rgba(24, 58, 29, 0) 100%);
+  pointer-events: none;
 }
 
 .web-gphoto-cap {
   position: relative;
   z-index: 1;
-  padding: 0.9375rem;
+  padding: 1.15rem;
   display: flex;
   flex-direction: column;
-  gap: 0.1875rem;
+  gap: 0.25rem;
+  pointer-events: none;
 }
 
 .web-gphoto-kicker {
-  font-size: 0.625rem;
+  font-size: 0.65rem;
   font-weight: 800;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--c-amberwarm);
 }
 
 .web-gphoto-title {
   font-family: var(--font-serif);
-  font-size: 0.9375rem;
+  font-size: 1.0625rem;
   font-weight: 700;
   color: var(--c-warmcream);
   line-height: 1.25;
+}
+
+.web-gphoto-desc {
+  margin: 0;
+  font-size: 0.75rem;
+  color: rgba(254, 250, 224, 0.85);
+  line-height: 1.35;
 }
 
 .web-social {
@@ -2306,17 +2389,19 @@ h4 {
 
 .web-footer-logo {
   height: 3rem;
-  padding: 0.3125rem 0.6875rem;
+  width: 3rem;
+  padding: 0.1875rem;
   background: var(--c-warmcream);
   border-radius: 0.75rem;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   flex: none;
 }
 
 .web-footer-logo img {
-  height: 2.25rem;
-  width: auto;
+  height: 2.5rem;
+  width: 2.5rem;
   object-fit: contain;
 }
 
@@ -2461,7 +2546,7 @@ h4 {
   .web-loc-grid {
     grid-template-columns: minmax(0, 1fr);
   }
-  .web-res-grid {
+  .web-res-layout {
     grid-template-columns: minmax(0, 1fr);
   }
 }
@@ -2469,6 +2554,9 @@ h4 {
 @media (max-width: 48rem) {
   .web-section {
     padding-block: 3rem;
+  }
+  .web-res-field-row {
+    grid-template-columns: minmax(0, 1fr);
   }
   .web-footer-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -2508,6 +2596,24 @@ h4 {
     border: 1px solid rgba(254, 250, 224, 0.3);
     color: var(--c-amberwarm);
     text-decoration: none;
+  }
+
+  @media (max-width: 28rem) {
+    .web-cta-bar {
+      padding: 0.5rem 0.5rem;
+      padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+    }
+    .web-cta-bar-inner {
+      gap: 0.35rem;
+    }
+    .web-cta-bar .web-btn {
+      padding: 0.55rem 0.45rem;
+      font-size: 0.75rem;
+      gap: 0.25rem;
+    }
+    .web-cta-bar-map {
+      width: 2.35rem;
+    }
   }
 
   .web-footer {
@@ -2698,6 +2804,25 @@ h4 {
 
 /* Small-screen tweaks ---------------------------------------------------- */
 @media (max-width: 36rem) {
+  .web-shell {
+    padding-inline: 1rem;
+  }
+  .web-topbar-inner {
+    justify-content: center;
+    text-align: center;
+    padding-block: 0.35rem;
+  }
+  .web-topbar-status {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .web-topbar-sep {
+    display: none;
+  }
+  .web-topbar-hours {
+    font-size: 0.72rem;
+  }
   .web-topbar-loc {
     display: none;
   }
@@ -2706,13 +2831,16 @@ h4 {
   }
   .web-brand-mark {
     height: 2.5rem;
+    width: 2.5rem;
   }
   .web-brand-mark img {
-    height: 1.75rem;
+    height: 2.15rem;
+    width: 2.15rem;
   }
   .web-hero-actions .web-btn {
     flex: 1 1 100%;
-  }  .web-quick {
+  }
+  .web-quick {
     margin-top: -1.25rem;
   }
   .web-promo-banner .web-btn {

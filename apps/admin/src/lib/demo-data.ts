@@ -255,10 +255,19 @@ export const demoTables: RestaurantTable[] = TABLE_SEED.map((seed) => ({
   updatedAt: NOW,
 }));
 
+const REAL_TOKENS_BY_CODE: Record<string, string> = {
+  A1: "dev-qr-a1-000000000000000000000001",
+  A2: "10a573dea4fc5ab109773a84473eb316d296d0de5a436fae",
+  A3: "dev-qr-a3-000000000000000000000003",
+  B1: "4b12140f98e0c39cbe54c5c50ab087f93a4bc7d2d41f6a24",
+  B2: "134aba84d57f258448d9cb28fd3b0888683e57c8710b31f3",
+  C1: "17c0f9b9f4b4b04d4c491b1fbc8d8d836c157c2ff9683798",
+};
+
 export const demoQrs: TableQr[] = TABLE_SEED.map((seed, index) => ({
   id: `qr-${seed.id}`,
   tableId: seed.id,
-  token: `demo-token-${index + 1}-TepiSawah`,
+  token: REAL_TOKENS_BY_CODE[seed.tableCode] ?? `demo-token-${index + 1}-TepiSawah`,
   isActive: true,
   createdAt: NOW,
   expiresAt: null,

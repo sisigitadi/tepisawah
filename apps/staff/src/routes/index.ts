@@ -5,3 +5,4 @@
  * enforced by the backend + RLS.
  */
 export { ProtectedRoute } from "./ProtectedRoute.js";
+export { PermissionRoute } from "./PermissionRoute.js";

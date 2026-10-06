@@ -109,12 +109,12 @@ input {
 
 .staff-brand-mark {
   height: 2.5rem;
-  width: auto;
+  width: 2.5rem;
   object-fit: contain;
   background: var(--c-warmcream);
   border: 1px solid rgba(221, 161, 94, 0.5);
   border-radius: 0.625rem;
-  padding: 0.1875rem 0.4375rem;
+  padding: 0.15rem;
 }
 
 .staff-brand-text {
@@ -470,12 +470,202 @@ input {
   font-size: 0.9375rem;
 }
 
-@media (max-width: 40rem) {
-  .staff-app-grid {
-    grid-template-columns: minmax(0, 1fr);
+@media (max-width: 48rem) {
+  .staff-header {
+    padding: 0.5rem 0.75rem;
+    gap: 0.5rem;
+    min-height: auto;
+  }
+
+  .staff-brand-mark {
+    height: 2rem;
+    width: 2rem;
+  }
+
+  .staff-brand-name {
+    font-size: 0.9375rem;
+  }
+
+  .staff-nav-rooms {
+    width: 100%;
+    order: 3;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.25rem;
+    margin-top: 0.15rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .staff-nav-rooms::-webkit-scrollbar {
+    display: none;
+  }
+
+  .staff-identity {
+    gap: 0.5rem;
   }
 
   .staff-identity-user {
-    text-align: left;
+    text-align: right;
+  }
+
+  .staff-identity-name {
+    max-width: 7.5rem;
+    font-size: 0.75rem;
+  }
+
+  .staff-identity-roles {
+    font-size: 0.625rem;
+  }
+
+  .staff-signout {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+  }
+
+  .app-main {
+    padding: 1rem 0.75rem 2.5rem;
+  }
+
+  .app-main--fullwidth {
+    padding-left: 0.35rem;
+    padding-right: 0.35rem;
+    padding-top: 0.5rem;
+  }
+
+  .staff-app-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
+
+@media (max-width: 24rem) {
+  .staff-identity-name {
+    display: none;
+  }
+}
+
+/* Room Switcher Nav (Header) --------------------------------------------- */
+
+.staff-nav-rooms {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.staff-nav-room-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(221, 161, 94, 0.28);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--c-warmcream);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.staff-nav-room-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: var(--c-golden);
+}
+
+.staff-nav-room-btn--active {
+  background: var(--c-forest);
+  border-color: var(--c-golden);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.staff-nav-room-emoji {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* Sub-Navigation Bar (Inside multi-view rooms) ---------------------------- */
+
+.staff-subnav-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 1.25rem;
+  background: var(--c-ricepaper);
+  border: 1px solid rgba(111, 63, 36, 0.16);
+  border-radius: 0.75rem;
+  overflow-x: auto;
+}
+
+.staff-subnav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--c-deepmoss);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.12s ease;
+}
+
+.staff-subnav-btn:hover {
+  background: rgba(46, 107, 52, 0.08);
+}
+
+.staff-subnav-btn--active {
+  background: var(--c-forest);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(46, 107, 52, 0.3);
+}
+
+/* Room Layout Helpers ---------------------------------------------------- */
+
+.app-main--fullwidth {
+  max-width: 100%;
+  padding-left: clamp(1rem, 2.5vw, 2rem);
+  padding-right: clamp(1rem, 2.5vw, 2rem);
+}
+
+.staff-room-kitchen {
+  width: 100%;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.staff-admin-room {
+  width: 100%;
+}
+
+/* POS inside Staff Portal chrome */
+.app-shell--room-pos .pos-header {
+  position: static;
+  border-radius: 0.75rem;
+  margin-bottom: 0.75rem;
+  box-shadow: none;
+}
+
+.app-shell--room-pos .pos-sidebar {
+  display: none;
+}
+
+.app-shell--room-pos .pos-shell__main {
+  padding-left: 0;
+}
+
+.app-shell--room-pos .pos-main {
+  padding-top: 0;
+  min-height: auto;
+  background: transparent;
+}
+
+.app-shell--room-pos .pos-shell {
+  padding: 0;
+}
+

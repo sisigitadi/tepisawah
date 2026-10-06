@@ -14,6 +14,7 @@ import type { ReactNode } from "react";
 import type { Category } from "@tepisawah/database";
 
 import type { ProductForm } from "./use-catalog.js";
+import { ImageUploader } from "./image-uploader.js";
 
 export interface ProductFormProps {
   form: ProductForm;
@@ -31,22 +32,24 @@ export function ProductForm(props: ProductFormProps): ReactNode {
   return (
     <Card
       elevation="low"
-      title="Detail produk"
-      description="Harga disimpan ke katalog dan di-snapshot saat pelanggan memesan."
+      title="Detail Produk Menu"
+      description="Kelola informasi menu, harga, ketersediaan, serta foto produk yang tampil pada QR pelanggan."
       footer={
-        <Button
-          variant="primary"
-          loading={saving}
-          disabled={!editable}
-          onClick={onSubmit}
-        >
-          Simpan produk
-        </Button>
+        <div className="product-form-footer">
+          <Button
+            variant="primary"
+            loading={saving}
+            disabled={!editable}
+            onClick={onSubmit}
+          >
+            Simpan Perubahan Produk
+          </Button>
+        </div>
       }
     >
       <div className="catalog-form">
         <Select
-          label="Kategori"
+          label="Kategori Menu"
           name="categoryId"
           value={form.categoryId}
           disabled={!editable}
@@ -59,50 +62,40 @@ export function ProductForm(props: ProductFormProps): ReactNode {
           onChange={(event) => onChange({ categoryId: event.target.value })}
         />
         <Input
-          label="Nama produk"
+          label="Nama Produk"
           name="name"
+          placeholder="Contoh: Nasi Liwet Komplit"
           value={form.name}
           disabled={!editable}
           error={errors?.name}
           onChange={(event) => onChange({ name: event.target.value })}
         />
-        <Input
-          label="Deskripsi"
-          name="description"
-          value={form.description}
-          disabled={!editable}
-          error={errors?.description}
-          onChange={(event) => onChange({ description: event.target.value })}
-        />
-        <Input
-          label="URL gambar"
-          name="imageUrl"
-          value={form.imageUrl}
-          disabled={!editable}
-          error={errors?.imageUrl}
-          hint="Disimpan sebagai referensi; Storage bucket diatur terpisah."
-          onChange={(event) => onChange({ imageUrl: event.target.value })}
-        />
-        {form.imageUrl ? (
-          <img
-            className="catalog-thumb"
-            src={form.imageUrl}
-            alt="Pratinjau gambar produk"
-            decoding="async"
+        <div className="catalog-form__full">
+          <Input
+            label="Deskripsi Menu"
+            name="description"
+            placeholder="Deskripsi singkat hidangan untuk menggugah selera pelanggan..."
+            value={form.description}
+            disabled={!editable}
+            error={errors?.description}
+            onChange={(event) => onChange({ description: event.target.value })}
           />
-        ) : null}
+        </div>
+
         <Input
-          label="Harga (rupiah)"
+          label="Harga Jual (Rp)"
           name="price"
           type="number"
           min={0}
+          step={500}
+          placeholder="Contoh: 35000"
           value={form.price}
           disabled={!editable}
           error={errors?.price}
           onChange={(event) => onChange({ price: event.target.value })}
         />
         <Input
-          label="Urutan tampil"
+          label="Urutan Tampil (Sort Order)"
           name="sortOrder"
           type="number"
           min={0}
@@ -113,24 +106,45 @@ export function ProductForm(props: ProductFormProps): ReactNode {
             onChange({ sortOrder: Number.parseInt(event.target.value, 10) || 0 })
           }
         />
-        <label className="catalog-toggle">
-          <input
-            type="checkbox"
-            checked={form.isActive}
+
+        {/* Image Uploader & Preview */}
+        <div className="catalog-form__full">
+          <ImageUploader
+            imageUrl={form.imageUrl}
             disabled={!editable}
-            onChange={(event) => onChange({ isActive: event.target.checked })}
+            error={errors?.imageUrl}
+            onChange={(url) => onChange({ imageUrl: url })}
           />
-          <span>Produk aktif (tampil di menu pelanggan)</span>
-        </label>
-        <label className="catalog-toggle">
-          <input
-            type="checkbox"
-            checked={form.isAvailable}
-            disabled={!editable}
-            onChange={(event) => onChange({ isAvailable: event.target.checked })}
-          />
-          <span>Tersedia hari ini (nonaktif = habis, tetap tampil)</span>
-        </label>
+        </div>
+
+        {/* Status & Availability Toggles */}
+        <div className="catalog-form__full catalog-toggles-row">
+          <label className={`catalog-toggle-card ${form.isActive ? "active" : ""}`}>
+            <input
+              type="checkbox"
+              checked={form.isActive}
+              disabled={!editable}
+              onChange={(event) => onChange({ isActive: event.target.checked })}
+            />
+            <div className="catalog-toggle-info">
+              <strong>Produk Aktif</strong>
+              <p>Menu tampil di daftar katalog resto. Jika nonaktif, menu diarsipkan.</p>
+            </div>
+          </label>
+
+          <label className={`catalog-toggle-card ${form.isAvailable ? "active" : ""}`}>
+            <input
+              type="checkbox"
+              checked={form.isAvailable}
+              disabled={!editable}
+              onChange={(event) => onChange({ isAvailable: event.target.checked })}
+            />
+            <div className="catalog-toggle-info">
+              <strong>Tersedia Hari Ini</strong>
+              <p>Jika dimatikan, produk berstatus "Habis" tetapi tetap terlihat pelanggan.</p>
+            </div>
+          </label>
+        </div>
       </div>
     </Card>
   );

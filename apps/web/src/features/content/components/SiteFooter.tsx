@@ -3,7 +3,6 @@
  */
 import type { ReactNode } from "react";
 import { Icon } from "../../../components/icons.js";
-import { useReservation } from "../reservation.js";
 import { MAPS_URL } from "./SiteHeader.js";
 
 const FOOTER_LINKS: ReadonlyArray<{ label: string; href: string }> = [
@@ -18,8 +17,6 @@ const FOOTER_LINKS: ReadonlyArray<{ label: string; href: string }> = [
 ];
 
 export function SiteFooter(): ReactNode {
-  const { openReservation } = useReservation();
-
   return (
     <>
       {/* Fixed mobile conversion bar */}
@@ -32,14 +29,13 @@ export function SiteFooter(): ReactNode {
             <Icon name="book-open" size={16} />
             <span>Lihat Menu</span>
           </a>
-          <button
-            type="button"
+          <a
             className="web-btn web-btn-forest-line"
-            onClick={() => openReservation()}
+            href="#reservasi"
           >
             <Icon name="calendar" size={16} />
-            <span>Reservasi</span>
-          </button>
+            <span>Layanan Meja</span>
+          </a>
           <a
             className="web-cta-bar-map"
             href={MAPS_URL}
@@ -106,14 +102,13 @@ export function SiteFooter(): ReactNode {
                 <Icon name="qr-code" size={12} />
                 <span>Scan QR di meja • Kasir • Pramusaji</span>
               </span>
-              <button
-                type="button"
+              <a
                 className="web-btn web-btn-forest web-btn-flex"
-                onClick={() => openReservation()}
+                href="#reservasi"
               >
                 <Icon name="calendar" size={14} />
-                <span>Reservasi Meja</span>
-              </button>
+                <span>Layanan Meja &amp; Acara</span>
+              </a>
               <a
                 className="web-btn web-btn-outline-light web-btn-flex"
                 href={MAPS_URL}

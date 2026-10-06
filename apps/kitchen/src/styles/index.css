@@ -20,8 +20,9 @@
   --color-alert-green: #4a9a56;
 }
 
-body {
-  margin: 0;
+body:has(.kds-screen),
+.kds-screen,
+.staff-room-kitchen {
   font-family: Inter, system-ui, -apple-system, sans-serif;
   background-color: var(--color-dark-bg);
   color: var(--color-text-bright);
@@ -46,8 +47,18 @@ body {
 
 .kds-brand {
   display: flex;
-  align-items: baseline;
-  gap: 1.25rem;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.kds-logo {
+  height: 2rem;
+  width: 2rem;
+  object-fit: contain;
+  background: #fefae0;
+  border-radius: 6px;
+  padding: 2px;
+  flex-shrink: 0;
 }
 
 .kds-title {
@@ -93,7 +104,7 @@ body {
 
 .kds-tickets-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   gap: 1.25rem;
 }
 
@@ -289,4 +300,40 @@ body {
 .live-chip--connecting {
   background: rgba(180, 83, 9, 0.1);
   color: #b45309;
+}
+
+@media (max-width: 48rem) {
+  .kds-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .kds-stats {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.25rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .kds-stats::-webkit-scrollbar {
+    display: none;
+  }
+
+  .kds-stat-btn {
+    white-space: nowrap;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .kds-main {
+    padding: 0.75rem;
+  }
+
+  .kds-tickets-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 0.85rem;
+  }
 }

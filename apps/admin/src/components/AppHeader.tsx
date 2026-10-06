@@ -17,6 +17,7 @@ export function AppHeader({ nav }: AppHeaderProps): ReactNode {
   return (
     <header className="app-header">
       <a href={DOMAINS[name]} className="app-header__brand">
+        <img src="/logo.png" alt="Tepi Sawah" className="app-header__logo" />
         <strong>Tepi Sawah — Admin Console</strong>
       </a>
       {nav ? <nav className="app-nav">{nav}</nav> : null}

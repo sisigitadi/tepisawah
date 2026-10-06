@@ -1,0 +1,58 @@
+name: Supabase Maintenance & Backup
+
+on:
+  schedule:
+    # Runs everyday at 19:00 UTC (02:00 WIB midnight)
+    - cron: '0 19 * * *'
+  workflow_dispatch: # Allows manual trigger anytime from GitHub Actions tab
+
+jobs:
+  keep-alive:
+    name: Supabase Anti-Pause Keep-Alive
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ]; then
+            echo "::warning ::SUPABASE_URL secret is not configured. Skipping keep-alive ping."
+            exit 0
+          fi
+          echo "Sending keep-alive ping to Supabase..."
+          curl -s -f -o /dev/null -H "apikey: $SUPABASE_ANON_KEY" "$SUPABASE_URL/rest/v1/" || true
+          echo "Keep-alive ping sent successfully."
+
+  daily-backup:
+    name: Daily Database Backup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set current date
+        id: date
+        run: echo "date=$(date +'%Y%m%d_%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Install PostgreSQL Client Tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y postgresql-client
+
+      - name: Dump Database via pg_dump
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::warning ::DATABASE_URL secret is not set. Skipping automated pg_dump."
+            exit 0
+          fi
+          mkdir -p backups
+          echo "Dumping database..."
+          pg_dump "$DATABASE_URL" --no-owner --no-acl --clean | gzip > "backups/tepisawah_db_${{ steps.date.outputs.date }}.sql.gz"
+          ls -lh backups/
+
+      - name: Upload Backup Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tepisawah-backup-${{ steps.date.outputs.date }}
+          path: backups/*.sql.gz
+          retention-days: 90

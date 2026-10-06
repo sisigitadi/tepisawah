@@ -47,3 +47,5 @@ coverage/
 # Test artifacts
 test-results/
 playwright-report/
+.freebuff/
+

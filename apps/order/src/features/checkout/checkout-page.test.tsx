@@ -191,6 +191,38 @@ describe("CheckoutPage", () => {
     ).toBeDisabled();
   });
 
+  it("forwards the customer note to the draft and shows it in the review", async () => {
+    const user = userEvent.setup();
+    render(
+      <CheckoutPage
+        table={TABLE}
+        items={CART}
+        customerNote="  Untuk dibungkus, terima kasih  "
+      />,
+    );
+
+    // The review prints the trimmed note the customer typed in the basket.
+    expect(screen.getByText("Untuk dibungkus, terima kasih")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Kirim pesanan" }));
+
+    await screen.findByText("TS-0001");
+    expect(createCalls).toHaveLength(1);
+    // The note is normalized before it reaches the RPC: trimmed, and dropped
+    // to null when empty rather than travelling as whitespace.
+    expect(createCalls[0]?.customerNote).toBe("Untuk dibungkus, terima kasih");
+  });
+
+  it("drops an empty customer note to null on the way to the RPC", async () => {
+    const user = userEvent.setup();
+    render(<CheckoutPage table={TABLE} items={CART} customerNote="   " />);
+
+    await user.click(screen.getByRole("button", { name: "Kirim pesanan" }));
+
+    await screen.findByText("TS-0001");
+    expect(createCalls[0]?.customerNote).toBe(null);
+  });
+
   it("tells the customer the price is computed by the system", () => {
     render(<CheckoutPage table={TABLE} items={CART} />);
 

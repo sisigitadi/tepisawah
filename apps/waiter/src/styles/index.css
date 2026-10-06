@@ -27,6 +27,8 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  max-width: 56rem;
+  margin: 0 auto;
 }
 
 /* Topbar */
@@ -37,6 +39,23 @@ body {
   background-color: var(--color-deepmoss);
   color: white;
   padding: 0.85rem 1.25rem;
+}
+
+.waiter-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.waiter-logo {
+  height: 2.25rem;
+  width: 2.25rem;
+  object-fit: contain;
+  background: var(--color-warmcream, #fefae0);
+  border: 1px solid rgba(221, 161, 94, 0.4);
+  border-radius: 6px;
+  padding: 2px;
+  flex-shrink: 0;
 }
 
 .waiter-staff-info {
@@ -266,8 +285,8 @@ body {
 /* Tables Grid */
 .waiter-tables-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 140px), 1fr));
+  gap: 0.85rem;
 }
 
 .waiter-tbl-card {

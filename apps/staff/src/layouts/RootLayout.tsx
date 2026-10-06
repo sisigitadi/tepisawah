@@ -1,16 +1,33 @@
 /**
  * @tepisawah/staff — root layout.
  *
- * Chrome + outlet wrapper; page composition only.
+ * Unified staff chrome + room navigation.
  */
 import type { ReactNode } from "react";
 import { AppHeader } from "../components/AppHeader.js";
+import type { StaffRoom } from "../lib/navigation.js";
 
-export function RootLayout({ children }: { children: ReactNode }): ReactNode {
+export interface RootLayoutProps {
+  children: ReactNode;
+  currentRoom?: StaffRoom;
+  onNavigate?: (room: StaffRoom) => void;
+}
+
+export function RootLayout({
+  children,
+  currentRoom = "portal",
+  onNavigate,
+}: RootLayoutProps): ReactNode {
+  const isFullWidth = currentRoom !== "portal";
+
   return (
-    <div className="app-shell">
-      <AppHeader />
-      <main className="app-main">{children}</main>
+    <div className={`app-shell app-shell--room-${currentRoom}`}>
+      <AppHeader currentRoom={currentRoom} onNavigate={onNavigate} />
+      <main
+        className={`app-main ${isFullWidth ? "app-main--fullwidth" : ""}`}
+      >
+        {children}
+      </main>
     </div>
   );
 }

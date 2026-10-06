@@ -26,6 +26,7 @@ import type { ReactNode } from "react";
 
 import { OperatingHoursForm } from "./operating-hours-form.js";
 import { RestaurantSettingsForm } from "./restaurant-settings-form.js";
+import { OrderFlowForm } from "./order-flow-form.js";
 import {
   loadSettings,
   saveHours,
@@ -45,9 +46,9 @@ import {
   type SettingsForm,
 } from "./use-settings.js";
 
-const SUPPORTED_TIMEZONES = ["Asia/Makassar", "Asia/Pontianak", "Asia/Jayapura"];
+const SUPPORTED_TIMEZONES = ["Asia/Jakarta", "Asia/Makassar", "Asia/Jayapura"];
 
-type TabId = "profile" | "hours";
+type TabId = "profile" | "hours" | "orderFlow";
 
 /**
  * Loading placeholder. Deliberately renders no real heading: the page heading
@@ -93,7 +94,7 @@ export function SettingsPage(): ReactNode {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const settingsId = state.settings?.id ?? null;
-  const timezone = state.settings?.timezone ?? null;
+  const timezone = state.settings?.timezone || settingsForm.timezone || "Asia/Jakarta";
 
   // Hydrate the editable copies whenever a fresh server snapshot arrives.
   useEffect(() => {
@@ -269,6 +270,16 @@ export function SettingsPage(): ReactNode {
                 saving={state.saving}
                 onChange={onHoursChange}
                 onSubmit={handleHoursSubmit}
+              />
+            ),
+          },
+          {
+            id: "orderFlow",
+            label: "Alur Pemesanan & Kasir",
+            content: (
+              <OrderFlowForm
+                editable={canManage}
+                onSavedToast={(msg) => pushToast("success", "Tersimpan", msg)}
               />
             ),
           },

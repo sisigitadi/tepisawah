@@ -6,7 +6,6 @@
  */
 import type { ReactNode } from "react";
 import { Icon } from "../../../components/icons.js";
-import { useReservation } from "../reservation.js";
 import { MAPS_URL } from "./SiteHeader.js";
 
 const QUICK_ACTIONS: ReadonlyArray<{
@@ -47,8 +46,6 @@ const QUICK_ACTIONS: ReadonlyArray<{
 ];
 
 export function Hero(): ReactNode {
-  const { openReservation } = useReservation();
-
   return (
     <>
       <section id="home" className="web-hero">
@@ -111,44 +108,30 @@ export function Hero(): ReactNode {
                 <Icon name="utensils" size={16} />
                 <span>Lihat Menu Pilihan</span>
               </a>
-              <button
-                type="button"
-                className="web-btn web-btn-ghost-light"
-                onClick={() => openReservation()}
-              >
-                <Icon name="calendar" size={16} />
-                <span>Reservasi Meja</span>
-              </button>
+              <a className="web-btn web-btn-ghost-light" href="#tentang-kami">
+                <Icon name="navigation" size={16} />
+                <span>Jelajahi Suasana</span>
+              </a>
             </div>
           </div>
 
           <div className="web-hero-aside">
             <div className="web-snapshot">
-              <div className="web-snapshot-photo">
-                <img
-                  src="/sawah-panorama.png"
-                  alt="Tampak Atas Area Saung dan Rooftop Tepi Sawah"
-                  loading="lazy"
-                />
-                <div className="web-snapshot-veil" />
-                <div className="web-snapshot-cap">
-                  <span className="web-snapshot-name">
-                    Saung Lesehan &amp; Rooftop Deck
-                  </span>
-                  <span className="web-snapshot-sub">
-                    Pemandangan 360° Sawah Hijau
-                  </span>
-                </div>
-                <span className="web-snapshot-badge">Buka Sekarang</span>
+              <div className="web-snapshot-header">
+                <span className="web-snapshot-badge">● Buka Setiap Hari (09:00 - 22:00)</span>
+                <h3 className="web-snapshot-title">Destinasi Kuliner Pedesaan</h3>
+                <p className="web-snapshot-subtitle">
+                  Suasana santap asri di tengah panorama persawahan dengan fasilitas lengkap dan ramah keluarga.
+                </p>
               </div>
 
               <div className="web-snapshot-grid">
                 {(
                   [
-                    ["utensils", "Kuliner Nusantara", "Rempah Tradisional"],
-                    ["coffee", "Coffee & Beverage", "Kopi Senja Sawah"],
-                    ["sun", "Saung & Rooftop", "Sunset Panorama"],
-                    ["users", "Family Friendly", "Parkir Bus & Mobil"],
+                    ["utensils", "Kuliner Nusantara", "Olahan Rempah Tradisional"],
+                    ["coffee", "Coffee & Beverage", "Kopi Senja Sawah Asli"],
+                    ["sun", "Saung & Rooftop", "Pemandangan Sunset 360°"],
+                    ["users", "Family Friendly", "Parkir Bus & Mobil Luas"],
                   ] as const
                 ).map(([icon, title, sub]) => (
                   <div key={title} className="web-snapshot-cell">
@@ -168,8 +151,7 @@ export function Hero(): ReactNode {
               <div className="web-snapshot-loc">
                 <p className="web-snapshot-addr">
                   <Icon name="navigation" size={14} className="web-ico-amber" />
-                  Jl. Raya Ciperna (Hanya 3 Menit dari Gerbang Tol Ciperna),
-                  Kec. Talun, Kab. Cirebon
+                  Jl. Raya Ciperna (3 Menit dari Gerbang Tol Ciperna), Cirebon
                 </p>
                 <a
                   className="web-btn web-btn-forest web-btn-sm"
@@ -178,7 +160,7 @@ export function Hero(): ReactNode {
                   rel="noopener noreferrer"
                 >
                   <Icon name="map" size={14} />
-                  <span>Buka Petunjuk Arah Google Maps</span>
+                  <span>Petunjuk Arah Google Maps</span>
                 </a>
               </div>
             </div>

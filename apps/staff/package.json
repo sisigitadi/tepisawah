@@ -11,12 +11,16 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@tepisawah/admin": "workspace:*",
     "@tepisawah/auth": "workspace:*",
     "@tepisawah/config": "workspace:*",
     "@tepisawah/database": "workspace:*",
+    "@tepisawah/kitchen": "workspace:*",
     "@tepisawah/permissions": "workspace:*",
+    "@tepisawah/pos": "workspace:*",
     "@tepisawah/types": "workspace:*",
-    "@tepisawah/ui": "workspace:*"
+    "@tepisawah/ui": "workspace:*",
+    "@tepisawah/waiter": "workspace:*"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",

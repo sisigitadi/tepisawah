@@ -39,6 +39,12 @@ import {
   type TableForm,
 } from "./use-tables.js";
 import { TableFormFields } from "./table-form.js";
+import { TableQrStickerModal } from "./table-qr-sticker-modal.js";
+import {
+  type QrisStickerConfig,
+  loadQrisStickerConfig,
+} from "./qris-sticker-settings.js";
+import { QrisStickerFormModal } from "./qris-sticker-form-modal.js";
 
 function toLoaderResult(snapshot: TablesSnapshot & { error: string | null }): LoaderResult {
   return {
@@ -67,6 +73,10 @@ export function TablesPage(): ReactNode {
   const [draft, setDraft] = useState<TableForm>(EMPTY_TABLE_FORM);
   const [errors, setErrors] = useState<Record<string, string> | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [stickerModalOpen, setStickerModalOpen] = useState<boolean>(false);
+  const [selectedStickerTableId, setSelectedStickerTableId] = useState<string | null>(null);
+  const [qrisConfig, setQrisConfig] = useState<QrisStickerConfig>(loadQrisStickerConfig);
+  const [qrisConfigModalOpen, setQrisConfigModalOpen] = useState<boolean>(false);
 
   if (!canRead) {
     return <AccessDenied />;
@@ -201,11 +211,33 @@ export function TablesPage(): ReactNode {
     <div className="tables-page">
       <div className="toolbar">
         <h2 className="toolbar__title">Meja</h2>
-        {canCreate ? (
-          <Button variant="secondary" onClick={startCreate}>
-            Tambah meja
-          </Button>
-        ) : null}
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center" }}>
+          {canManageQr ? (
+            <>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  setSelectedStickerTableId(null);
+                  setStickerModalOpen(true);
+                }}
+              >
+                🖨️ Desain &amp; Cetak Stiker Meja
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => setQrisConfigModalOpen(true)}
+                title="Atur data QRIS, NMID, WiFi, dan fasilitas untuk Halaman 2 stiker meja"
+              >
+                ⚙️ Isian Halaman 2 (Stiker QRIS)
+              </Button>
+            </>
+          ) : null}
+          {canCreate ? (
+            <Button variant="secondary" onClick={startCreate}>
+              Tambah meja
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       {!canCreate && !canUpdate ? (
@@ -274,6 +306,18 @@ export function TablesPage(): ReactNode {
                   )}
                 </div>
                 <div className="list__actions">
+                  {canManageQr && qr !== null ? (
+                    <Button
+                      size="sm"
+                      variant="primary"
+                      onClick={() => {
+                        setSelectedStickerTableId(table.id);
+                        setStickerModalOpen(true);
+                      }}
+                    >
+                      🖨️ Cetak Stiker
+                    </Button>
+                  ) : null}
                   {canUpdate ? (
                     <Button size="sm" variant="ghost" onClick={() => startEdit(table.id)}>
                       Edit
@@ -314,6 +358,21 @@ export function TablesPage(): ReactNode {
           })}
         </ul>
       )}
+
+      <TableQrStickerModal
+        isOpen={stickerModalOpen}
+        onClose={() => setStickerModalOpen(false)}
+        tables={state.tables}
+        qrs={state.qrs}
+        selectedTableId={selectedStickerTableId}
+      />
+
+      <QrisStickerFormModal
+        isOpen={qrisConfigModalOpen}
+        onClose={() => setQrisConfigModalOpen(false)}
+        config={qrisConfig}
+        onSaved={(newCfg) => setQrisConfig(newCfg)}
+      />
     </div>
   );
 }

@@ -16,11 +16,11 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
-  const port = Number(env.STAFF_PORT ?? 5179);
+  const port = Number(env.STAFF_PORT ?? 5175);
 
   return {
     plugins: [react()],
-    base: "./",
+    base: "/",
     server: { port, strictPort: true },
     build: {
       outDir: "dist",

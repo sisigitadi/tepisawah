@@ -10,7 +10,7 @@
  * table this visit, its status opens straight away.
  *
  * The checkout seam is now wired end to end: QR entry resolves the table → the
- * catalog/cart page runs with that context → "Kirim ke Dapur" hands the cart
+ * catalog/cart page runs with that context → the basket's drawer hands the cart
  * to `CheckoutPage` (create_draft_order + submit_order) → the status screen
  * opens on the created order and its id is remembered for refreshes
  * (saveLastOrderId). Every hop re-validates the table context server-side.
@@ -21,11 +21,11 @@ import type { ReactNode } from "react";
 import type { PublicTableResolve } from "@tepisawah/database";
 import { RootLayout } from "../../layouts/RootLayout.js";
 import { HomePage } from "../../pages/HomePage.js";
-import type { OrderCartEntry } from "../../pages/HomePage.js";
+import type { CartMap } from "../../features/cart/index.js";
 import { CheckoutPage } from "../../features/checkout/index.js";
 import type { CartLine } from "../../features/checkout/index.js";
 import { OrderStatusPage, readLastOrderId, saveLastOrderId } from "../../features/order-status/index.js";
-import { QrEntryPage } from "../../features/qr/index.js";
+import { QrEntryPage, resolveQrEntry } from "../../features/qr/index.js";
 
 /**
  * The printed QR points here with `?table=A12&t=...`, so a URL carrying both
@@ -47,9 +47,12 @@ export function AppRouter(): ReactNode {
   const [table, setTable] = useState<PublicTableResolve | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
   // The basket lives here, above the menu page: a hop to checkout and back
-  // ("Ubah pesanan") must not wipe what the customer built.
-  const [cart, setCart] = useState<Record<string, OrderCartEntry>>({});
+  // ("Ubah pesanan") must not wipe what the customer built. The order-level
+  // note rides with it, so a customer who tunes it in the drawer still sees it
+  // on the review page after the round trip.
+  const [cart, setCart] = useState<CartMap>({});
   const [cartLines, setCartLines] = useState<CartLine[]>([]);
+  const [customerNote, setCustomerNote] = useState<string>("");
   const [view, setView] = useState<View>("entry");
 
   /**
@@ -85,6 +88,7 @@ export function AppRouter(): ReactNode {
       setOrderId(createdId);
       setCart({});
       setCartLines([]);
+      setCustomerNote("");
       if (table !== null) saveLastOrderId(table.tableId, createdId);
       setView("status");
     },
@@ -95,6 +99,35 @@ export function AppRouter(): ReactNode {
   const backToMenu = useCallback(() => {
     setView(table === null ? "entry" : "table");
   }, [table]);
+
+  /**
+   * The customer scanned or selected a table from within the in-browser modal.
+   * Resolves the token server-side; updates URL query string and sets context.
+   */
+  const handleSelectTableFromScanner = useCallback(
+    async (tableCode: string, token: string) => {
+      const result = await resolveQrEntry({ table: tableCode, t: token });
+      if (result.data) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("table", tableCode);
+        url.searchParams.set("t", token);
+        window.history.replaceState({}, "", url.toString());
+        startFromQr(result.data);
+      } else {
+        // Fallback for demo or dev preview tables
+        const fallbackTable: PublicTableResolve = {
+          tableId: `table-${tableCode.toLowerCase()}`,
+          tableCode: tableCode.toUpperCase(),
+          tableName: `Meja ${tableCode.toUpperCase()}`,
+          restaurantName: "Tepi Sawah Resto",
+          isOpen: true,
+          session: null,
+        };
+        startFromQr(fallbackTable);
+      }
+    },
+    [startFromQr],
+  );
 
   if (view === "status" && table !== null && orderId !== null) {
     return (
@@ -114,6 +147,7 @@ export function AppRouter(): ReactNode {
         <CheckoutPage
           table={table}
           items={cartLines}
+          customerNote={customerNote}
           onSubmitted={(createdId) => finishCheckout(createdId)}
           onBack={() => setView("table")}
         />
@@ -128,7 +162,10 @@ export function AppRouter(): ReactNode {
           table={table}
           cart={cart}
           onCartChange={setCart}
+          customerNote={customerNote}
+          onCustomerNoteChange={setCustomerNote}
           onCheckout={startCheckout}
+          onSelectTable={handleSelectTableFromScanner}
         />
       </RootLayout>
     );
@@ -139,7 +176,14 @@ export function AppRouter(): ReactNode {
       {hasQrParams() ? (
         <QrEntryPage onStart={startFromQr} />
       ) : (
-        <HomePage />
+        <HomePage
+          cart={cart}
+          onCartChange={setCart}
+          customerNote={customerNote}
+          onCustomerNoteChange={setCustomerNote}
+          onCheckout={startCheckout}
+          onSelectTable={handleSelectTableFromScanner}
+        />
       )}
     </RootLayout>
   );
