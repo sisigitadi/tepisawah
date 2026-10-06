@@ -40,6 +40,7 @@ alter table public.order_item_modifiers enable row level security;
 -- Same inheritance as order_items (AUTH_RBAC_RLS.md §28): the modifier row is
 -- visible exactly when its parent item is, which is exactly when that item's
 -- order is. No independent authorization to maintain.
+drop policy if exists order_item_modifiers_inherit_item_read on public.order_item_modifiers;
 create policy order_item_modifiers_inherit_item_read on public.order_item_modifiers
   for select to authenticated
   using (

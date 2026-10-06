@@ -37,6 +37,7 @@ alter table public.order_status_history enable row level security;
 -- Append-oriented reads: staff with `orders.read` may follow an order's trail.
 -- (AUTH_RBAC_RLS.md §46: audit visibility is limited; the customer projection
 -- never includes history — that is §30's "audit details" exclusion.)
+drop policy if exists order_status_history_staff_read on public.order_status_history;
 create policy order_status_history_staff_read on public.order_status_history
   for select to authenticated
   using (

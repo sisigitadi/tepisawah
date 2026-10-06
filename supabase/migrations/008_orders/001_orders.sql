@@ -107,6 +107,7 @@ alter table public.orders enable row level security;
 -- owner (AUTH_RBAC_RLS.md §8). Kitchen reads the kitchen projection from a
 -- dedicated function in a later migration, never payment details (§46).
 -- -----------------------------------------------------------------------------
+drop policy if exists orders_staff_read on public.orders;
 create policy orders_staff_read on public.orders
   for select to authenticated
   using (
