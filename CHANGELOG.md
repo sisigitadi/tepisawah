@@ -7,12 +7,12 @@ Semua perubahan penting pada proyek **Tepi Sawah Resto & POS Platform** didokume
 ## [0.2.0] - 2026-10-06 (Pre-Production Hardening & Consolidation)
 
 ### 🎨 Brand Identity, Media & Assets
-- **Logo & Favicon**:
-  - Dibuat logo resmi beresolusi tinggi dengan identitas bulir padi emas (*golden rice stalk*), ornamen lingkaran elegan, dan teks "TEPI SAWAH Resto & Cafe — Est. 2024".
-  - Diterapkan favicon vektor SVG (`favicon.svg`) dan resolusi multi-device PNG (`favicon.png`, `apple-touch-icon.png`) pada seluruh aplikasi (`web`, `order`, `staff`).
-- **Open Graph & Social Media Preview**:
-  - Dibuat banner Open Graph 16:9 (`og-image.jpg`, 1200×630, ~140KB) berformat optimal untuk WhatsApp, Telegram, Facebook, Twitter, dan LinkedIn.
-  - Ditambahkan meta tags `og:title`, `og:description`, `og:image`, `og:image:width`, `og:image:height`, `twitter:card` (*summary_large_image*), serta `theme-color` `#2c5e3b` pada `index.html` ketiga aplikasi.
+- **Logo Resmi & Favicon Klien**:
+  - Diintegrasikan logo resmi otentik Tepi Sawah dengan identitas bulir padi emas melingkar (*golden rice stalk*) dan cangkir kopi mengepul beraksen cokelat hangat serta tipografi kaligrafi "Tepi Sawah".
+  - Diterapkan favicon vektor SVG (`favicon.svg`) dan multi-size PNG (`favicon.png`, `apple-touch-icon.png`) berlatar hijau zamrud `#14301c` dengan cincin emas pada seluruh aplikasi.
+- **Open Graph & Social Media Preview Banner**:
+  - Dibuat banner Open Graph 16:9 (`og-image.jpg`, 1200×630, ~148KB) berlatar pemandangan sawah terasering asri, kartu logo resmi otentik, tipografi elegan (Georgia & Segoe UI), serta rincian fitur resto.
+  - Kompatibel dan tajam di WhatsApp, Telegram, Facebook, Twitter, dan LinkedIn tanpa distorsi atau karakter terpotong.
 - **Responsivitas Multi-Device Display**:
   - Perbaikan layout mobile (320px–414px), tablet (768px), hingga desktop ultra-wide (1440px+).
   - Dipasang batasan `max-width: 100vw`, `overflow-x: hidden`, dan `box-sizing: border-box` untuk mencegah teks/elemen terpotong, bertumpuk, atau melebar keluar viewport.

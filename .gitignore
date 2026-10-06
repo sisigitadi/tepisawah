@@ -6,6 +6,7 @@ node_modules/
 dist/
 build/
 *.tsbuildinfo
+scripts/generated_assets/
 
 # Vite / TypeScript
 .vite/
