@@ -1,70 +1,76 @@
-# Tepi Sawah — MASTER PROJECT PACK v1.0
+# Tepi Sawah Resto & Cafe — Digital Platform
 
-## Purpose
+Platform digital terintegrasi untuk **Tepi Sawah Resto & Cafe** (Ciperna, Cirebon). Menggabungkan website publik, pemesanan mandiri pelanggan via QR meja, serta portal terpadu staf operasional (Kasir POS, Layanan Meja, Layanan Dapur, dan Panel Pengelola Bisnis).
 
-This package is the consolidated project baseline for the Tepi Sawah Resto & Cafe digital platform. It combines product requirements, brand/design rules, architecture, database, API, security, realtime, environment, QA, implementation, Google Stitch prompts, and the existing pre-opening prototype.
+---
 
-## Current technical baseline
+## 🌐 Lingkungan & Domain Produksi (Pre-Production)
 
-- Frontend: React + TypeScript + Vite
-- Backend platform: Supabase
-- Database: PostgreSQL
-- Authentication: Supabase Auth
-- Authorization: RBAC + PostgreSQL RLS
-- Realtime: Supabase Realtime
-- Storage: Supabase Storage where required
-- Deployment: Vercel
-- Source control: GitHub
-- Coding workflow: VS Code + Cline
-- Repository: monorepo
+| Aplikasi | Domain | Deskripsi Fungsional |
+|---|---|---|
+| **Website Utama** | [https://tepisawah.id](https://tepisawah.id) (Kanonikal: `www.tepisawah.id`) | Profil restoran, galeri saung/alam, daftar menu, kontak, dan panduan reservasi/QR. |
+| **Pemesanan Pelanggan** | [https://order.tepisawah.id](https://order.tepisawah.id) | Pemesanan mandiri tamu di meja berbasis QR code terproteksi token aktif. |
+| **Portal Staf Terpadu** | [https://staff.tepisawah.id](https://staff.tepisawah.id) | Portal operasional terpadu: Kasir POS, Layanan Meja & Antar, Layanan Dapur, dan Panel Pengelola. |
 
-## Production surfaces
+---
 
-- `tepisawah.id` — public website
-- `order.tepisawah.id` — customer QR ordering
-- `pos.tepisawah.id` — cashier POS
-- `kitchen.tepisawah.id` — kitchen display
-- `waiter.tepisawah.id` — waiter/service
-- `admin.tepisawah.id` — administration
+## 👥 Konsolidasi Peran Pengguna (Canonical Roles)
 
-## Authority order
+Berdasarkan keputusan arsitektur [ADR-006](docs/decisions/ADR-006-role-consolidation.md), sistem menyederhanakan hak akses menjadi 3 peran operasional utama:
 
-1. Explicit business decisions
-2. DESIGN_FREEZE
-3. PROJECT_RULES
-4. TECHNICAL_ARCHITECTURE
-5. DATABASE_SCHEMA
-6. DATABASE_MIGRATION_PLAN
-7. API_CONTRACT
-8. AUTH_RBAC_RLS
-9. REALTIME_SPEC
-10. REPOSITORY_STRUCTURE
-11. TESTING_STRATEGY
-12. ENVIRONMENT_CONFIG
-13. CLINE_IMPLEMENTATION_PLAN
-14. Existing prototype/code
+1. **Owner / Pemilik** (`owner`):
+   - Akses penuh: Panel Pengelola (`/admin`), pengaturan katalog & harga, konfigurasi meja, pembatalan pesanan, laporan omzet, otorisasi kasir, dan pengawasan dapur.
+   - Akun Demo: `owner@demo.tepisawah.id` (Sandi: `demo1234`).
+2. **Kasir** (`cashier`):
+   - Akses terintegrasi: Meja Kasir & Pembayaran (`/pos`), konfirmasi pesanan QR meja, pemantauan hidangan siap saji dapur, pencatatan pesanan manual pelanggan walk-in.
+   - Akun Demo: `kasir@demo.tepisawah.id` (Sandi: `demo1234`).
+3. **Dapur** (`kitchen`):
+   - Akses khusus: Layanan Pesanan Dapur (`/kitchen`) untuk memantau tiket masuk, waktu masak, dan menandai hidangan siap saji.
+   - Akun Demo: `dapur@demo.tepisawah.id` (Sandi: `demo1234`).
 
-If documents conflict, follow the higher-level source of truth and record the decision before implementation.
+---
 
-## Recommended execution order
+## 🛠️ Tumpukan Teknologi (Tech Stack)
 
-1. Read `docs/PROJECT_DOCUMENTATION_INDEX.md`.
-2. Read `docs/implementation/MASTER_CLINE_PROMPT.md`.
-3. Create/clone the GitHub repository.
-4. Bootstrap the monorepo.
-5. Create Supabase project(s) for the correct environment.
-6. Configure environment variables without committing secrets.
-7. Run database migrations in the documented order.
-8. Implement Auth → RBAC/RLS → Catalog → Tables/QR → Table Sessions → Orders.
-9. Implement customer ordering → cashier → kitchen → waiter → payments → service requests.
-10. Add realtime, admin, audit, dashboard, production hardening.
-11. Run QA/security/E2E gates.
-12. Deploy each production surface to its mapped domain/subdomain.
+- **Frontend**: React 18, TypeScript, Vite, Vanilla CSS terstandarisasi.
+- **Backend & Database**: Supabase (PostgreSQL 15, Supabase Auth, PostgreSQL RLS, Realtime Channel).
+- **Deployment**: Vercel (3 proyek monorepo: `tepisawah`, `tepisawah-order`, `tepisawah-staff`).
+- **Pengujian**: Vitest + Testing Library (474 unit & integration tests lulus).
+- **Manajemen Repositori**: pnpm workspace monorepo.
 
-## Important boundary
+---
 
-The existing `docs/prototype/pre-opening/index.html` is a visual/interaction reference and prototype. It is not the production backend, source of truth, authentication layer, payment system, or database implementation.
+## 📚 Indeks Dokumentasi & Kontrol Rilis
 
-## Package contents
+Seluruh pengembangan wajib mematuhi standar kontrol mutu dan arsitektur resmi:
 
-See `MANIFEST.txt` for the complete inventory.
+- 📋 [Standar Kontrol Pre-Production](docs/operations/PRE_PRODUCTION_CONTROLS.md) — Aturan git branching, PR mandatori, dan manajemen rilis.
+- ✅ [Checklist Pra-Deployment](docs/deployment/PRE_DEPLOYMENT_CHECKLIST.md) — 8 gerbang mutu wajib sebelum rilis ke production.
+- 📜 [Changelog Lengkap](CHANGELOG.md) — Riwayat perubahan versi terperinci.
+- 🌾 [Brand Direction & Design System](docs/brand/BRAND_DIRECTION.md) — Spesifikasi logo, favicon, Open Graph, dan palet warna.
+- 📐 [Keputusan Arsitektur (ADRs)](docs/decisions/):
+  - [ADR-001: Arsitektur Monorepo](docs/decisions/ADR-001-monorepo.md)
+  - [ADR-002: Supabase sebagai Backend Primer](docs/decisions/ADR-002-supabase.md)
+  - [ADR-003: Mesin Status Siklus Pesanan](docs/decisions/ADR-003-order-state-machine.md)
+  - [ADR-004: Pemesanan Publik Pelanggan via QR](docs/decisions/ADR-004-public-customer-ordering.md)
+  - [ADR-005: Penanganan Pembayaran](docs/decisions/ADR-005-payment-provider.md)
+  - [ADR-006: Konsolidasi Peran Pengguna](docs/decisions/ADR-006-role-consolidation.md)
+  - [ADR-007: Audit Merek, Open Graph Kanonikal, & Lokalisasi](docs/decisions/ADR-007-audit-branding-og-dan-lokalisasi.md)
+
+---
+
+## 🚀 Perintah Cepat Pengembang (Developer Quickstart)
+
+```bash
+# 1. Pasang dependensi
+pnpm install
+
+# 2. Jalankan pemeriksaan tipe data
+pnpm -r run typecheck
+
+# 3. Jalankan pengujian otomatis
+pnpm run test
+
+# 4. Jalankan server lokal
+pnpm run dev
+```

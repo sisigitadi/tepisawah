@@ -37,6 +37,12 @@ Semua perubahan penting pada proyek **Tepi Sawah Resto & POS Platform** didokume
 - Menyesuaikan variabel palet netral di [`apps/admin/src/styles/index.css`](apps/admin/src/styles/index.css) dari abu-abu dingin (`#f9f9f8`, `#e7e5e4`) ke palet krim hangat dan kertas beras khas Tepi Sawah (`--c-bg: #faf7ee`, `--c-border: #e6dec7`).
 - Menyelaraskan seluruh kartu, bilah tab, dan formulir dengan nuansa hijau daun tua (`#183a1d`), aksen emas padi (`#dda15e`), dan latar belakang hangat nan nyaman.
 
+### 📑 Pembaruan Dokumentasi, Tata Kelola & Keputusan Arsitektur
+- **ADR-007**: Dokumentasi arsitektur resmi audit merek, kanonikal Open Graph langsung, pencegahan stale view staf, dan standardisasi Bahasa Indonesia 100% ([`docs/decisions/ADR-007-audit-branding-og-dan-lokalisasi.md`](docs/decisions/ADR-007-audit-branding-og-dan-lokalisasi.md)).
+- **Brand Direction v2.0**: Panduan identitas visual lengkap mencakup logo resmi, favicon multi-resolusi, banner Open Graph 16:9, palet warna, dan etika komunikasi bahasa ([`docs/brand/BRAND_DIRECTION.md`](docs/brand/BRAND_DIRECTION.md)).
+- **Checklist Pra-Deployment**: Pembaruan 8 gerbang kendali mutu sebelum rilis ke production ([`docs/deployment/PRE_DEPLOYMENT_CHECKLIST.md`](docs/deployment/PRE_DEPLOYMENT_CHECKLIST.md)).
+- **Dokumentasi Utama & Indeks Proyek**: Pembaruan [`README.md`](README.md) dan [`docs/PROJECT_DOCUMENTATION_INDEX.md`](docs/PROJECT_DOCUMENTATION_INDEX.md) memetakan seluruh domain aktif dan arsitektur peran kanonikal.
+
 ---
 
 ## [0.2.0] - 2026-10-06 (Pre-Production Hardening & Consolidation)
