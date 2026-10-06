@@ -41,10 +41,8 @@ describe("isDemoMode", () => {
 describe("DEMO_ACCOUNTS", () => {
   it("covers every seeded staff role exactly once", () => {
     const roles = DEMO_ACCOUNTS.map((account) => account.role).sort();
-    // The six baseline roles from the RBAC seed (supabase/seed/development.sql).
-    expect(roles).toEqual(
-      ["admin", "cashier", "kitchen", "owner", "supervisor", "waiter"],
-    );
+    // The 3 consolidated roles: owner (admin+supervisor+owner), cashier (cashier+waiter), kitchen
+    expect(roles).toEqual(["cashier", "kitchen", "owner"]);
   });
 
   it("uses the generic demo email domain and a shared password", () => {

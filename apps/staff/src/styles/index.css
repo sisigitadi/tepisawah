@@ -669,3 +669,83 @@ input {
   padding: 0;
 }
 
+/* Staff Subnav Tab Bar (Multi-View Rooms) */
+.staff-subnav-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.25rem 0.85rem;
+  margin-bottom: 1.25rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  border-bottom: 1px solid rgba(221, 161, 94, 0.35);
+  white-space: nowrap;
+}
+
+.staff-subnav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.05rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--c-deepmoss);
+  background: var(--c-ricepaper);
+  border: 1px solid rgba(221, 161, 94, 0.4);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.staff-subnav-btn:hover {
+  background: #f4edd0;
+  border-color: var(--c-golden);
+}
+
+.staff-subnav-btn--active {
+  background: var(--c-deepmoss);
+  color: var(--c-warmcream);
+  border-color: var(--c-deepmoss);
+  box-shadow: 0 2px 8px rgba(24, 58, 29, 0.25);
+}
+
+/* Device Responsiveness Enhancements */
+@media (max-width: 640px) {
+  .staff-header {
+    min-height: auto;
+    padding: 0.625rem 1rem;
+    gap: 0.75rem;
+  }
+
+  .staff-header-brand-name {
+    font-size: 1.15rem;
+  }
+
+  .staff-header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .staff-app-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .app-main {
+    padding-left: 0.875rem;
+    padding-right: 0.875rem;
+  }
+
+  .staff-portal-head h1 {
+    font-size: 1.65rem;
+  }
+
+  .staff-login form {
+    padding: 1.5rem 1.125rem;
+  }
+}
+
+

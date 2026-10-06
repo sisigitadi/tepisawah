@@ -101,70 +101,70 @@ describe("Staff portal launcher", () => {
     expect(screen.getByText("cashier")).toBeInTheDocument();
   });
 
-  it("shows only POS for a cashier", async () => {
+  it("shows POS and Layanan Meja for cashier", async () => {
     renderPortal(["cashier"]);
 
     await waitFor(() =>
-      expect(screen.getByText("Cashier POS")).toBeInTheDocument(),
+      expect(screen.getByText("Kasir POS & Meja")).toBeInTheDocument(),
     );
-    expect(screen.queryByText("Admin Console")).not.toBeInTheDocument();
-    expect(screen.queryByText("Waiter App")).not.toBeInTheDocument();
-    expect(screen.queryByText("Kitchen Display")).not.toBeInTheDocument();
+    expect(screen.getByText("Layanan Antar Meja")).toBeInTheDocument();
+    expect(screen.queryByText("Owner & Admin Console")).not.toBeInTheDocument();
+    expect(screen.queryByText("Kitchen Display (KDS)")).not.toBeInTheDocument();
   });
 
-  it("shows only the Waiter app for a waiter", async () => {
+  it("shows POS and Layanan Meja for waiter (backward-compat alias to cashier role group)", async () => {
     renderPortal(["waiter"]);
 
     await waitFor(() =>
-      expect(screen.getByText("Waiter App")).toBeInTheDocument(),
+      expect(screen.getByText("Kasir POS & Meja")).toBeInTheDocument(),
     );
-    expect(screen.queryByText("Cashier POS")).not.toBeInTheDocument();
-    expect(screen.queryByText("Admin Console")).not.toBeInTheDocument();
+    expect(screen.getByText("Layanan Antar Meja")).toBeInTheDocument();
+    expect(screen.queryByText("Owner & Admin Console")).not.toBeInTheDocument();
   });
 
-  it("shows only the Kitchen display for kitchen staff", async () => {
+  it("shows only Kitchen display for kitchen staff", async () => {
     renderPortal(["kitchen"]);
 
     await waitFor(() =>
-      expect(screen.getByText("Kitchen Display")).toBeInTheDocument(),
+      expect(screen.getByText("Kitchen Display (KDS)")).toBeInTheDocument(),
     );
-    expect(screen.queryByText("Cashier POS")).not.toBeInTheDocument();
+    expect(screen.queryByText("Kasir POS & Meja")).not.toBeInTheDocument();
   });
 
-  it("shows POS and Admin for supervisor, admin and owner", async () => {
-    for (const role of ["supervisor", "admin", "owner"] as const) {
+  it("shows all operational apps for owner, admin, and supervisor", async () => {
+    for (const role of ["owner", "admin", "supervisor"] as const) {
       renderPortal([role]);
       await waitFor(() =>
-        expect(screen.getByText("Cashier POS")).toBeInTheDocument(),
+        expect(screen.getByText("Kasir POS & Meja")).toBeInTheDocument(),
       );
-      expect(screen.getByText("Admin Console")).toBeInTheDocument();
-      expect(screen.queryByText("Waiter App")).not.toBeInTheDocument();
-      expect(screen.queryByText("Kitchen Display")).not.toBeInTheDocument();
+      expect(screen.getByText("Owner & Admin Console")).toBeInTheDocument();
+      expect(screen.getByText("Kitchen Display (KDS)")).toBeInTheDocument();
+      expect(screen.getByText("Layanan Antar Meja")).toBeInTheDocument();
       cleanup();
     }
   });
 
   it("unions apps across multiple roles in canonical order", async () => {
-    renderPortal(["waiter", "supervisor"]);
+    renderPortal(["kitchen", "cashier"]);
 
     await waitFor(() =>
-      expect(screen.getByText("Cashier POS")).toBeInTheDocument(),
+      expect(screen.getByText("Kasir POS & Meja")).toBeInTheDocument(),
     );
-    expect(screen.getByText("Admin Console")).toBeInTheDocument();
-    expect(screen.getByText("Waiter App")).toBeInTheDocument();
-    // Canonical order: POS, Admin, Waiter, Kitchen.
+    expect(screen.getByText("Kitchen Display (KDS)")).toBeInTheDocument();
+    expect(screen.getByText("Layanan Antar Meja")).toBeInTheDocument();
+    // Canonical order in APPS: pos, kitchen, waiter.
     const names = screen.getAllByRole("link").map((link) => {
       const name = link.querySelector(".staff-app-name");
       return name?.textContent?.trim();
     });
-    expect(names).toEqual(["Cashier POS", "Admin Console", "Waiter App"]);
+    expect(names).toEqual(["Kasir POS & Meja", "Kitchen Display (KDS)", "Layanan Antar Meja"]);
   });
 
   it("links to the local dev ports when no deployment override is set", async () => {
     renderPortal(["cashier"]);
 
     const pos = await waitFor(() =>
-      screen.getByRole("link", { name: /Cashier POS/ }),
+      screen.getByRole("link", { name: /Kasir POS & Meja/ }),
     );
     expect(pos).toHaveAttribute("href", "http://127.0.0.1:5175");
   });

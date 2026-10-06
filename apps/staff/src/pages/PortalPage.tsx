@@ -37,23 +37,25 @@ interface PortalApp {
 }
 
 const APPS: readonly PortalApp[] = [
-  { id: "pos", name: "Cashier POS", blurb: "Konfirmasi pesanan masuk & proses pembayaran", emoji: "🧾" },
-  { id: "admin", name: "Admin Console", blurb: "Kelola katalog, meja, sesi & pengguna", emoji: "⚙️" },
-  { id: "waiter", name: "Waiter App", blurb: "Buat pesanan manual & tandai antar", emoji: "🍽️" },
-  { id: "kitchen", name: "Kitchen Display", blurb: "Antrian masak: mulai → siap saji", emoji: "👨‍🍳" },
+  { id: "pos", name: "Kasir POS & Meja", blurb: "Konfirmasi pesanan masuk, layanan meja & proses pembayaran", emoji: "🧾" },
+  { id: "admin", name: "Owner & Admin Console", blurb: "Kelola katalog, meja & QR, staf, serta laporan bisnis", emoji: "⚙️" },
+  { id: "kitchen", name: "Kitchen Display (KDS)", blurb: "Antrean masak dapur: mulai masak → siap saji", emoji: "👨‍🍳" },
+  { id: "waiter", name: "Layanan Antar Meja", blurb: "Monitor hidangan siap saji & pesanan meja manual", emoji: "🍽️" },
 ];
 
 /**
- * Apps each role may launch (Fase 1). Supervisors, admins and owners get the
- * operational pair; front-of-house and kitchen roles get their own app.
+ * Apps each role may launch:
+ * - Owner: Akses penuh (Admin Console, POS, KDS, Layanan Meja)
+ * - Kasir: POS Terminal & Layanan Meja
+ * - Dapur: Kitchen Display System (KDS)
  */
 const ROLE_APPS: Record<Role, readonly AppId[]> = {
-  waiter: ["waiter"],
+  owner: ["admin", "pos", "kitchen", "waiter"],
+  admin: ["admin", "pos", "kitchen", "waiter"],
+  supervisor: ["admin", "pos", "kitchen", "waiter"],
+  cashier: ["pos", "waiter"],
+  waiter: ["pos", "waiter"],
   kitchen: ["kitchen"],
-  cashier: ["pos"],
-  supervisor: ["pos", "admin"],
-  admin: ["pos", "admin"],
-  owner: ["pos", "admin"],
 };
 
 /** Local dev port for each app, used when the deployment sets no URL. */
