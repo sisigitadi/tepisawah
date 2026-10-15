@@ -6,11 +6,14 @@
  */
 import type { ReactNode } from "react";
 import { Icon } from "../../../components/icons.js";
-import { useOpenStatus } from "../../../hooks/index.js";
+import { useLandingContent, useOpenStatus } from "../../../hooks/index.js";
 import { MAPS_URL } from "./SiteHeader.js";
 
 export function LocationSection(): ReactNode {
   const { isOpen } = useOpenStatus();
+  const { content } = useLandingContent();
+  const loc = content.location;
+  const targetMapsUrl = loc.mapsUrl || MAPS_URL;
 
   return (
     <section id="lokasi" className="web-shell web-section">
@@ -19,7 +22,7 @@ export function LocationSection(): ReactNode {
           <div>
             <span className="web-eyebrow">Aksesibilitas Mudah &amp; Cepat</span>
             <h2 className="web-section-title">
-              Lokasi Strategis — Dekat Gerbang Tol Ciperna
+              Lokasi Strategis: Dekat Gerbang Tol Ciperna
             </h2>
             <p className="web-prose">
               Hanya berjarak sekitar <strong>3 menit</strong> dari Pintu Keluar
@@ -30,7 +33,7 @@ export function LocationSection(): ReactNode {
           </div>
           <a
             className="web-btn web-btn-forest"
-            href={MAPS_URL}
+            href={targetMapsUrl}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -50,7 +53,7 @@ export function LocationSection(): ReactNode {
             </div>
             <div className="web-loc-map-frame">
               <iframe
-                src="https://maps.google.com/maps?q=-6.771185,108.512599&hl=id&z=17&output=embed"
+                src={loc.mapsEmbedUrl || "https://maps.google.com/maps?q=-6.771185,108.512599&hl=id&z=17&output=embed"}
                 title="Peta Lokasi Tepi Sawah Ciperna"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -66,11 +69,15 @@ export function LocationSection(): ReactNode {
                   Tepi Sawah Restaurant &amp; Coffee
                 </h3>
                 <p className="web-loc-card-addr">
-                  <strong>Jl. Raya Ciperna</strong>, Kec. Talun, Kab. Cirebon,
-                  Jawa Barat 45171.<br />
-                  (Tepat di tepi hamparan persawahan asri, 3 menit dari Exit Tol
-                  Ciperna).
+                  <strong>{loc.address || "Jl. Raya Ciperna, Kec. Talun, Kab. Cirebon, Jawa Barat 45171."}</strong>
+                  <br />
+                  ({loc.directions || "Tepat di tepi hamparan persawahan asri, 3 menit dari Exit Tol Ciperna"}).
                 </p>
+                {loc.phoneWhatsapp && (
+                  <p style={{ marginTop: "0.5rem", fontSize: "0.85rem", color: "#475569" }}>
+                    WhatsApp Reservasi: <strong>{loc.phoneWhatsapp}</strong>
+                  </p>
+                )}
               </div>
               <div className="web-loc-facts">
                 <div className="web-loc-fact">
@@ -79,7 +86,7 @@ export function LocationSection(): ReactNode {
                 </div>
                 <div className="web-loc-fact">
                   <span>Jam Buka:</span>
-                  <strong className="web-ico-forest">09:00 – 22:00 WIB</strong>
+                  <strong className="web-ico-forest">09:00 - 22:00 WIB</strong>
                 </div>
                 <div className="web-loc-fact">
                   <span>Status Hari Ini:</span>
@@ -89,7 +96,7 @@ export function LocationSection(): ReactNode {
                     }
                   >
                     <span className="web-loc-dot" />
-                    {isOpen ? "Buka Sekarang" : "Tutup • Buka Kembali 09:00"}
+                    {isOpen ? "Buka Sekarang" : "Tutup : Buka Kembali 09:00"}
                   </strong>
                 </div>
               </div>
@@ -110,7 +117,7 @@ export function LocationSection(): ReactNode {
             <div className="web-loc-actions">
               <a
                 className="web-btn web-btn-forest web-btn-flex"
-                href={MAPS_URL}
+                href={targetMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >

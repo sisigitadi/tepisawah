@@ -251,7 +251,7 @@ export function HomePage(): ReactNode {
             </div>
           ) : (
             <>
-              <BillInspector order={selectedOrder} onPrint={() => undefined} />
+              <BillInspector order={selectedOrder} onPrint={() => window.print()} />
 
               <PaymentExecution
                 order={selectedOrder}

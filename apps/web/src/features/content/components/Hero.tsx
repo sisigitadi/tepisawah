@@ -6,6 +6,7 @@
  */
 import type { ReactNode } from "react";
 import { Icon } from "../../../components/icons.js";
+import { useLandingContent } from "../../../hooks/index.js";
 import { MAPS_URL } from "./SiteHeader.js";
 
 const QUICK_ACTIONS: ReadonlyArray<{
@@ -46,15 +47,21 @@ const QUICK_ACTIONS: ReadonlyArray<{
 ];
 
 export function Hero(): ReactNode {
+  const { content } = useLandingContent();
+  const hero = content.hero;
+
   return (
     <>
       <section id="home" className="web-hero">
         <div className="web-hero-bg" aria-hidden="true">
-          <img
-            src="/sawah-panorama.png"
-            alt="Panorama hamparan sawah Tepi Sawah Ciperna Cirebon"
-            loading="eager"
-          />
+          <picture>
+            <source srcSet={hero.bgImage || "/sawah-panorama.webp"} type="image/webp" />
+            <img
+              src={hero.bgImage || "/sawah-panorama.png"}
+              alt="Panorama hamparan sawah Tepi Sawah Ciperna Cirebon"
+              loading="eager"
+            />
+          </picture>
           <div className="web-hero-veil" />
         </div>
 
@@ -63,7 +70,7 @@ export function Hero(): ReactNode {
             <div className="web-hero-pills">
               <span className="web-pill-live">
                 <span className="web-pill-dot" />
-                <span>SUDAH BUKA &amp; SIAP MELAYANI</span>
+                <span>{hero.badge || "SUDAH BUKA & SIAP MELAYANI"}</span>
               </span>
               <span className="web-pill-place">
                 <Icon name="map-pin" size={14} className="web-ico-amber" />{" "}
@@ -76,19 +83,17 @@ export function Hero(): ReactNode {
                 Authentic Rural Dining Destination
               </span>
               <h1 className="web-hero-title">
-                TEPI SAWAH
+                {hero.title || "TEPI SAWAH"}
                 <br />
                 <span className="web-hero-title-sub">
-                  Restaurant &amp; Coffee
+                  {hero.subtitle || "Restaurant & Coffee"}
                 </span>
               </h1>
             </div>
 
             <p className="web-hero-desc">
-              Nikmati kuliner Nusantara otentik, racikan kopi segar, dan
-              hembusan semilir angin pedesaan di tengah hamparan sawah hijau
-              Ciperna, Cirebon. Hadir dengan saung lesehan asri, dek rooftop
-              360°, serta suasana hangat ramah keluarga.
+              {hero.description ||
+                "Nikmati kuliner Nusantara otentik, racikan kopi segar, dan hembusan semilir angin pedesaan di tengah hamparan sawah hijau Ciperna, Cirebon."}
             </p>
 
             <div className="web-hero-schedule">
@@ -98,7 +103,7 @@ export function Hero(): ReactNode {
               <span>
                 <span className="web-hero-schedule-label">Jadwal Kunjungan</span>
                 <span className="web-hero-schedule-value">
-                  Buka Setiap Hari: 09:00 – 22:00 WIB
+                  {hero.hours || "Buka Setiap Hari: 09:00 - 22:00 WIB"}
                 </span>
               </span>
             </div>

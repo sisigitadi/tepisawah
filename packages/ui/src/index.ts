@@ -15,3 +15,5 @@ export * from "./primitives/index.js";
 export * from "./icons/index.js";
 export * from "./menu/index.js";
 export * from "./components/index.js";
+export * from "./utils/image-compression.js";
+export * from "./utils/audio-chime.js";

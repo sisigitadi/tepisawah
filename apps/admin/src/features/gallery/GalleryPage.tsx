@@ -21,32 +21,32 @@ const STORAGE_KEY_GALLERY = "tepisawah_restaurant_gallery";
 const PRESET_REAL_PHOTOS = [
   {
     name: "Saung Lesehan Sisi Pematang",
-    url: "/gallery/saung-lesehan.jpg",
+    url: "/gallery/saung-lesehan.webp",
     kicker: "Suasana Luar Ruang",
   },
   {
     name: "Dek Rooftop Senja 360°",
-    url: "/gallery/rooftop-senja.jpg",
+    url: "/gallery/rooftop-senja.webp",
     kicker: "Panorama 360°",
   },
   {
     name: "Chicken Roaster Rempah",
-    url: "/gallery/ayam-roaster.jpg",
+    url: "/gallery/ayam-roaster.webp",
     kicker: "Signature Dish",
   },
   {
     name: "Gurame Bakar Madu Pedas Manis",
-    url: "/gallery/gurame-bakar.jpg",
+    url: "/gallery/gurame-bakar.webp",
     kicker: "Favorit Keluarga",
   },
   {
     name: "Kopi Senja Sawah & Kudapan",
-    url: "/gallery/kopi-senja.jpg",
+    url: "/gallery/kopi-senja.webp",
     kicker: "Coffee & Beverage",
   },
   {
     name: "Gazebo Rombongan & Gathering",
-    url: "/gallery/rombongan-gathering.jpg",
+    url: "/gallery/rombongan-gathering.webp",
     kicker: "Ruang Acara & Rombongan",
   },
 ];
@@ -54,7 +54,7 @@ const PRESET_REAL_PHOTOS = [
 const DEFAULT_ITEMS: AdminGalleryItem[] = [
   {
     id: "gal-1",
-    imageUrl: "/gallery/saung-lesehan.jpg",
+    imageUrl: "/gallery/saung-lesehan.webp",
     kicker: "Suasana Luar Ruang",
     title: "Saung Lesehan Sisi Pematang",
     desc: "Santap santai beratap rumbia alami tepat di sisi hamparan sawah hijau yang asri dan sejuk.",
@@ -62,35 +62,35 @@ const DEFAULT_ITEMS: AdminGalleryItem[] = [
   },
   {
     id: "gal-2",
-    imageUrl: "/gallery/ayam-roaster.jpg",
+    imageUrl: "/gallery/ayam-roaster.webp",
     kicker: "Signature Dish",
     title: "Chicken Roaster Rempah",
     desc: "Ayam panggang oven empuk berbumbu rempah rahasia Nusantara, disajikan dengan sambal terasi segar.",
   },
   {
     id: "gal-3",
-    imageUrl: "/gallery/gurame-bakar.jpg",
+    imageUrl: "/gallery/gurame-bakar.webp",
     kicker: "Favorit Keluarga",
     title: "Gurame Bakar Madu Pedas Manis",
     desc: "Gurame segar berlapis kecap madu karamel dengan lalapan segar dan sambal kecap cabai rawit.",
   },
   {
     id: "gal-4",
-    imageUrl: "/gallery/kopi-senja.jpg",
+    imageUrl: "/gallery/kopi-senja.webp",
     kicker: "Coffee & Beverage",
     title: "Kopi Senja Sawah & Kudapan",
     desc: "Racikan kopi Nusantara hangat berdampingan dengan kudapan singkong goreng bertabur keju.",
   },
   {
     id: "gal-5",
-    imageUrl: "/gallery/rombongan-gathering.jpg",
+    imageUrl: "/gallery/rombongan-gathering.webp",
     kicker: "Ruang Acara & Rombongan",
     title: "Gazebo Keluarga & Acara",
     desc: "Area makan luas dan nyaman untuk gathering keluarga besar, reuni, dan rombongan wisata.",
   },
   {
     id: "gal-6",
-    imageUrl: "/gallery/rooftop-senja.jpg",
+    imageUrl: "/gallery/rooftop-senja.webp",
     kicker: "Panorama 360°",
     title: "Dek Rooftop Senja Ciperna",
     desc: "Pemandangan matahari terbenam spektakuler di atas bentangan persawahan hijau Ciperna.",
@@ -137,7 +137,7 @@ export function GalleryPage(): ReactNode {
     const nextId = `gal-${Date.now()}`;
     const newItem: AdminGalleryItem = {
       id: nextId,
-      imageUrl: "/gallery/saung-lesehan.jpg",
+      imageUrl: "/gallery/saung-lesehan.webp",
       kicker: "Dokumentasi Baru",
       title: "Sudut Favorit Tepi Sawah",
       desc: "Suasana nyaman di hamparan sawah hijau Ciperna.",

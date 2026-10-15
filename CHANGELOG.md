@@ -2,6 +2,33 @@
 
 Semua perubahan penting pada proyek **Tepi Sawah Resto & POS Platform** didokumentasikan di sini mengikuti pedoman [Keep a Changelog](https://keepachangelog.com/id/1.0.0/) dan [Semantic Versioning](https://semver.org/).
 
+## [1.0.0] - 2026-10-16 (Production Release: Dynamic Landing CMS, Multi-Slot WebP Customization, Real Maps & Staff Ecosystem)
+
+### 🌾 Pengelola Konten Web (CMS) 8 Seksi Dinamis
+- **Panel CMS Terintegrasi pada Portal Staf (`apps/admin/src/features/cms/CmsPage.tsx`)**:
+  - Disediakan 8 tab pengelolaan konten: Beranda (Hero), Menu Pilihan, Promo & Paket, Tentang Kami, Cara Pesan, Galeri Suasana, Reservasi Meja, serta Lokasi & Jam Operasional.
+  - Setiap seksi dilengkapi switch aktif/nonaktif, edit teks judul & deskripsi, dan live preview.
+- **Kustomisasi Multi-Slot WebP Otomatis (< 80 KB)**:
+  - **Menu Pilihan**: Hingga 6 slot mandiri dengan foto hidangan, nama, harga, kategori, badge signature/favorit, dan tombol switch aktif.
+  - **Promo & Paket**: Hingga 6 slot mandiri paket hemat dengan foto paket, diskon, harga coret, daftar inklusi, dan tombol switch aktif.
+  - **Galeri Suasana**: Hingga 6 slot foto atmosfer saung dan sawah dengan judul dan kategori.
+  - **Kompresi Klien Otomatis (`packages/ui/src/utils/image-compression.ts`)**: Konversi instan berkas gambar kamera ke WebP terkompresi tanpa membebani server backend.
+- **Peta Google Maps Real-time Ciperna**:
+  - Mengintegrasikan embed Iframe resmi Google Maps lokasi Tepi Sawah Resto & Cafe Ciperna Cirebon.
+- **Kustomisasi Tema, Latar Belakang & Warna Dinamis (`ThemeInjector.tsx`)**:
+  - Pengaturan fleksibel warna primer, warna aksen, warna latar belakang, dan warna kartu dengan validasi kontras otomatis (WCAG).
+- **Zero-Breakage Graceful Fallback**:
+  - Hook `useLandingContent` secara otomatis beralih ke `landing-content.json` dan nilai bawaan jika data jaringan kosong atau rusak.
+
+### 🛡️ Kesiapan Operasional Produksi & Manajemen Staf Bersih
+- **Pembersihan Peran Demo**:
+  - Menghapus ketergantungan pada akun demo acak; menyelaraskan seluruh sistem ke peran produksi resmi (*Owner*, *Store Manager*, *Cashier*, *Kitchen*, *Waiter*).
+- **Pengujian & Kualitas (100% Pass)**:
+  - 482 unit dan integration test lulus 100%.
+  - 18 paket dan aplikasi lulus typecheck dan build produksi.
+
+---
+
 ## [0.2.1] - 2026-10-06 (Audit Branding, Role Refresh & Indonesian Localization)
 
 ### 🖼️ Open Graph Preview & Media Canonical

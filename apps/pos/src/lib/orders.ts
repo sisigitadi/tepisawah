@@ -25,10 +25,10 @@ import { getSupabaseClient } from "./supabase.js";
 
 export type { OrdersQueryError, OrdersQueryResult };
 
-/** The only status a cashier acts on: SERVED waits for money, nothing else. */
-const QUEUE_STATUSES = ["SERVED"] as const;
+/** The active statuses a cashier can act on: orders ready for payment in hybrid flow. */
+const QUEUE_STATUSES = ["CONFIRMED", "PREPARING", "READY", "SERVED"] as const;
 
-/** The cashier's queue: every SERVED order, oldest first, ready to settle. */
+/** The cashier's queue: active orders, oldest first, ready to settle. */
 export async function loadPayQueue(): Promise<{
   orders: QueueOrder[];
   error: string | null;
@@ -55,7 +55,7 @@ export async function loadPayQueue(): Promise<{
   };
 }
 
-/** SERVED -> PAID (`payments.create`), guarded server-side. */
+/** Transition order to PAID (`payments.create`), guarded server-side. */
 export function settleOrder(
   order: QueueOrder,
 ): Promise<OrdersQueryResult<{ order: DraftOrder }>> {
@@ -80,6 +80,20 @@ function categoryFor(
   return /minuman/i.test(name) ? "MINUMAN" : "MAKANAN";
 }
 
+function stationForStatus(status: StaffOrder["status"]): string {
+  switch (status) {
+    case "CONFIRMED":
+      return "Terkonfirmasi";
+    case "PREPARING":
+      return "Sedang dimasak";
+    case "READY":
+      return "Siap saji";
+    case "SERVED":
+    default:
+      return "Sudah disajikan";
+  }
+}
+
 function toQueueOrder(
   order: StaffOrder,
   categoryOf: Map<string, string>,
@@ -102,8 +116,7 @@ function toQueueOrder(
       qty: item.quantity,
       price: item.unitPrice,
       note: item.notes ?? undefined,
-      // A SERVED order's lines are with the guest by definition.
-      station: "Sudah disajikan",
+      station: stationForStatus(order.status),
     })),
     // The receipt of record is the server's frozen snapshot (§27).
     bill: {

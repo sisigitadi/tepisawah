@@ -8,18 +8,22 @@
 import type { ReactNode } from "react";
 import { Icon } from "../../../components/icons.js";
 import { useGallery } from "../../../hooks/useGallery.js";
+import { useLandingContent } from "../../../hooks/index.js";
 
 export function Gallery(): ReactNode {
-  const photos = useGallery();
+  const fallbackPhotos = useGallery();
+  const { content } = useLandingContent();
+  const gal = content.gallery;
+  const photos = gal.items && gal.items.length > 0 ? gal.items : fallbackPhotos;
 
   return (
     <section id="galeri" className="web-shell web-section">
       <div className="web-menu-head">
         <div>
-          <span className="web-eyebrow">Dokumentasi Restoran</span>
-          <h2 className="web-section-title">Galeri Suasana Tepi Sawah</h2>
+          <span className="web-eyebrow">{gal.eyebrow || "Dokumentasi Restoran"}</span>
+          <h2 className="web-section-title">{gal.title || "Galeri Suasana Tepi Sawah"}</h2>
           <p className="web-menu-head-sub">
-            Potret sudut asri, panorama persawahan hijau Ciperna, dan hidangan favorit otentik.
+            {gal.description || "Potret sudut asri, panorama persawahan hijau Ciperna, dan hidangan favorit otentik."}
           </p>
         </div>
         <span className="web-gallery-where">

@@ -32,9 +32,11 @@ import {
   CatalogPage,
   TablesPage,
   SessionsPage,
+  ReservationsPage,
+  CmsPage,
 } from "@tepisawah/admin";
 
-type AdminTab = "home" | "settings" | "catalog" | "tables" | "sessions";
+type AdminTab = "home" | "reservations" | "cms" | "settings" | "catalog" | "tables" | "sessions";
 type PosTab = "terminal" | "confirm" | "waiter-console" | "manual-order";
 type WaiterTab = "console" | "manual-order";
 
@@ -180,6 +182,20 @@ export function AppRouter(): ReactNode {
                 </button>
                 <button
                   type="button"
+                  className={`staff-subnav-btn ${adminTab === "reservations" ? "staff-subnav-btn--active" : ""}`}
+                  onClick={() => setAdminTab("reservations")}
+                >
+                  📅 Reservasi Meja
+                </button>
+                <button
+                  type="button"
+                  className={`staff-subnav-btn ${adminTab === "cms" ? "staff-subnav-btn--active" : ""}`}
+                  onClick={() => setAdminTab("cms")}
+                >
+                  🌐 Konten Web
+                </button>
+                <button
+                  type="button"
                   className={`staff-subnav-btn ${adminTab === "settings" ? "staff-subnav-btn--active" : ""}`}
                   onClick={() => setAdminTab("settings")}
                 >
@@ -197,7 +213,7 @@ export function AppRouter(): ReactNode {
                   className={`staff-subnav-btn ${adminTab === "tables" ? "staff-subnav-btn--active" : ""}`}
                   onClick={() => setAdminTab("tables")}
                 >
-                  Meja & QR
+                  Meja &amp; QR
                 </button>
                 <button
                   type="button"
@@ -208,7 +224,11 @@ export function AppRouter(): ReactNode {
                 </button>
               </div>
 
-              {adminTab === "settings" ? (
+              {adminTab === "reservations" ? (
+                <ReservationsPage />
+              ) : adminTab === "cms" ? (
+                <CmsPage />
+              ) : adminTab === "settings" ? (
                 <SettingsPage />
               ) : adminTab === "catalog" ? (
                 <CatalogPage />
@@ -217,7 +237,7 @@ export function AppRouter(): ReactNode {
               ) : adminTab === "sessions" ? (
                 <SessionsPage />
               ) : (
-                <AdminHomePage />
+                <AdminHomePage onNavigate={(tab) => setAdminTab(tab as AdminTab)} />
               )}
             </div>
           </PermissionRoute>

@@ -2469,3 +2469,133 @@ input {
   background: rgba(180, 83, 9, 0.1);
   color: #b45309;
 }
+
+/* ===================== THERMAL PRINT STYLES (58mm & 80mm) ===================== */
+@media print {
+  @page {
+    margin: 0;
+    size: auto;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .pos-header,
+  .pos-sidebar,
+  .pos-subbar,
+  .pos-queue,
+  .pos-inspector,
+  .pos-settlement__card,
+  .pos-thermal__head,
+  .staff-header,
+  .staff-subnav-bar {
+    display: none !important;
+  }
+
+  .pos-shell,
+  .pos-grid,
+  .pos-settlement,
+  .pos-thermal {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .pos-thermal__paper {
+    display: block !important;
+    position: relative !important;
+    margin: 0 auto !important;
+    width: 76mm !important;
+    max-width: 80mm !important;
+    padding: 3mm 4mm !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    color: #000 !important;
+    font-family: 'Courier New', Courier, monospace !important;
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+  }
+
+  .pos-thermal__brand {
+    font-size: 14px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    margin-bottom: 2px !important;
+  }
+
+  .pos-thermal__address {
+    font-size: 9px !important;
+    text-align: center !important;
+    margin-bottom: 6px !important;
+  }
+
+  .pos-thermal__line {
+    display: flex !important;
+    justify-content: space-between !important;
+    font-size: 10px !important;
+    border-bottom: 1px dashed #000 !important;
+    padding-bottom: 3px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .pos-thermal__item {
+    display: flex !important;
+    justify-content: space-between !important;
+    font-size: 10px !important;
+    font-weight: bold !important;
+  }
+
+  .pos-thermal__item-note {
+    font-size: 9px !important;
+    font-style: italic !important;
+  }
+
+  .pos-thermal__totals {
+    border-top: 1px dashed #000 !important;
+    margin-top: 5px !important;
+    padding-top: 5px !important;
+  }
+
+  .pos-thermal__total-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    font-size: 10px !important;
+  }
+
+  .pos-thermal__grand {
+    display: flex !important;
+    justify-content: space-between !important;
+    font-size: 13px !important;
+    font-weight: bold !important;
+    border-top: 1px solid #000 !important;
+    border-bottom: 1px solid #000 !important;
+    padding: 3px 0 !important;
+    margin: 4px 0 !important;
+  }
+
+  .pos-thermal__change {
+    display: flex !important;
+    justify-content: space-between !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+  }
+
+  .pos-thermal__footer {
+    text-align: center !important;
+    font-size: 9px !important;
+    margin-top: 8px !important;
+    padding-top: 4px !important;
+    border-top: 1px dashed #000 !important;
+  }
+}
+

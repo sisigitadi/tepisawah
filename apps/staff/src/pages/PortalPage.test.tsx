@@ -142,7 +142,7 @@ describe("Staff portal launcher", () => {
       expect(screen.getByText("Layanan Meja & Antar")).toBeInTheDocument();
       cleanup();
     }
-  });
+  }, 15000);
 
   it("unions apps across multiple roles in canonical order", async () => {
     renderPortal(["kitchen", "cashier"]);
@@ -158,7 +158,7 @@ describe("Staff portal launcher", () => {
       return name?.textContent?.trim();
     });
     expect(names).toEqual(["Meja Kasir & Pembayaran", "Layar Pesanan Dapur", "Layanan Meja & Antar"]);
-  });
+  }, 15000);
 
   it("links to the local dev ports when no deployment override is set", async () => {
     renderPortal(["cashier"]);

@@ -1,8 +1,6 @@
-/**
- * @tepisawah/web — "Tentang Kami" editorial experience section.
- */
 import type { ReactNode } from "react";
 import { Icon } from "../../../components/icons.js";
+import { useLandingContent } from "../../../hooks/index.js";
 
 const PILLARS: ReadonlyArray<{
   title: string;
@@ -23,20 +21,26 @@ const PILLARS: ReadonlyArray<{
 ];
 
 export function About(): ReactNode {
+  const { content } = useLandingContent();
+  const about = content.about;
+
   return (
     <section id="tentang-kami" className="web-shell web-section">
       <div className="web-panel">
         <div className="web-about-grid">
           <div className="web-about-visual">
             <div className="web-about-photo">
-              <img
-                src="/about-saung.jpg"
-                alt="Suasana Saung Lesehan Tepi Sawah Ciperna"
-                loading="lazy"
-              />
+              <picture>
+                <source srcSet={about.photo || "/about-saung.webp"} type="image/webp" />
+                <img
+                  src={about.photo || "/about-saung.jpg"}
+                  alt="Suasana Saung Lesehan Tepi Sawah Ciperna"
+                  loading="lazy"
+                />
+              </picture>
               <div className="web-about-cap">
                 <span className="web-about-cap-kicker">
-                  Nuansa Pedesaan Asri
+                  {about.kicker || "Nuansa Pedesaan Asri"}
                 </span>
                 <p>
                   Ruang terbuka hijau dengan hembusan angin sawah yang
@@ -46,12 +50,12 @@ export function About(): ReactNode {
             </div>
             <div className="web-about-highlights">
               <div className="web-about-hl">
-                <span className="web-about-hl-title">Saung Lesehan</span>
-                <p>Santap lesehan privat beratap rumbia alami tepat di sisi pematang.</p>
+                <span className="web-about-hl-title">{about.highlight1Title || "Saung Lesehan"}</span>
+                <p>{about.highlight1Desc || "Santap lesehan privat beratap rumbia alami tepat di sisi pematang."}</p>
               </div>
               <div className="web-about-hl">
-                <span className="web-about-hl-title">Dek Rooftop 360°</span>
-                <p>Spot senja terbaik menikmati siluet matahari terbenam dengan secangkir kopi.</p>
+                <span className="web-about-hl-title">{about.highlight2Title || "Dek Rooftop 360°"}</span>
+                <p>{about.highlight2Desc || "Spot senja terbaik menikmati siluet matahari terbenam dengan secangkir kopi."}</p>
               </div>
             </div>
           </div>
@@ -60,16 +64,14 @@ export function About(): ReactNode {
             <div>
               <span className="web-eyebrow">Pengalaman Bersantap</span>
               <h2 className="web-section-title web-section-title-lg">
-                Lebih dari Sekadar Makan —
-                <span className="web-title-italic">Sebuah Ruang Kebersamaan</span>
+                Lebih dari Sekadar Makan:{" "}
+                <span className="web-title-italic">{about.title || "Sebuah Ruang Kebersamaan"}</span>
               </h2>
             </div>
 
             <p className="web-prose">
-              Tepi Sawah menghadirkan pengalaman bersantap dengan suasana
-              pedesaan yang nyaman di Ciperna, Cirebon. Nikmati hidangan
-              Nusantara beraroma rempah segar, kopi nikmat, udara terbuka, dan
-              waktu berkualitas bersama keluarga, rekan, atau teman tersayang.
+              {about.story ||
+                "Tepi Sawah menghadirkan pengalaman bersantap dengan suasana pedesaan yang nyaman di Ciperna, Cirebon. Nikmati hidangan Nusantara beraroma rempah segar, kopi nikmat, udara terbuka, dan waktu berkualitas bersama keluarga, rekan, atau teman tersayang."}
             </p>
 
             <div className="web-pillars">

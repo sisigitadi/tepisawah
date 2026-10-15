@@ -13,8 +13,19 @@ import { GalleryPage } from "../../features/gallery/GalleryPage.js";
 import { CatalogPage } from "../../features/catalog/index.js";
 import { TablesPage, QrTablesPage } from "../../features/tables/index.js";
 import { SessionsPage } from "../../features/sessions/index.js";
+import { ReservationsPage } from "../../features/reservations/index.js";
+import { CmsPage } from "../../features/cms/index.js";
 
-export type AdminPage = "home" | "settings" | "gallery" | "catalog" | "tables" | "sessions" | "qr-tables";
+export type AdminPage =
+  | "home"
+  | "cms"
+  | "settings"
+  | "gallery"
+  | "catalog"
+  | "tables"
+  | "sessions"
+  | "qr-tables"
+  | "reservations";
 
 export function AppRouter(): ReactNode {
   const [page, setPage] = useState<AdminPage>("home");
@@ -30,6 +41,22 @@ export function AppRouter(): ReactNode {
             onClick={() => setPage("home")}
           >
             Beranda
+          </button>
+          <button
+            type="button"
+            className="app-nav-link"
+            aria-current={page === "reservations" ? "page" : undefined}
+            onClick={() => setPage("reservations")}
+          >
+            📅 Reservasi Meja
+          </button>
+          <button
+            type="button"
+            className="app-nav-link"
+            aria-current={page === "cms" ? "page" : undefined}
+            onClick={() => setPage("cms")}
+          >
+            🌐 Konten Web
           </button>
           <button
             type="button"
@@ -82,7 +109,11 @@ export function AppRouter(): ReactNode {
         </>
       }
     >
-      {page === "qr-tables" ? (
+      {page === "reservations" ? (
+        <ReservationsPage />
+      ) : page === "cms" ? (
+        <CmsPage />
+      ) : page === "qr-tables" ? (
         <QrTablesPage />
       ) : page === "settings" ? (
         <SettingsPage />
@@ -95,7 +126,7 @@ export function AppRouter(): ReactNode {
       ) : page === "sessions" ? (
         <SessionsPage />
       ) : (
-        <HomePage />
+        <HomePage onNavigate={(tab) => setPage(tab as AdminPage)} />
       )}
     </RootLayout>
   );

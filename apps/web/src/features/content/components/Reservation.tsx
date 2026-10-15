@@ -5,36 +5,38 @@
  * Visitors arriving via the header's "Reservasi Meja & Acara" button land directly
  * here to explore seating areas and submit instant reservations via WhatsApp.
  */
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { Icon } from "../../../components/icons.js";
+import { getSupabaseClient } from "../../../lib/supabase.js";
+import { useLandingContent } from "../../../hooks/index.js";
 
 const SEATING_AREAS = [
   {
     id: "saung",
     title: "Saung Lesehan Sawah",
-    capacity: "4 – 8 Orang per Saung",
+    capacity: "4 - 8 Orang per Saung",
     desc: "Suasana santai bersila beralas bambu alami tepat di samping pematang sawah hijau yang sejuk.",
     badge: "Favorit Keluarga",
   },
   {
     id: "rooftop",
     title: "Dek Rooftop 360° Senja",
-    capacity: "2 – 20 Orang",
+    capacity: "2 - 20 Orang",
     desc: "Meja santap elevated dengan pemandangan sunset dan semilir angin sawah tanpa batas.",
     badge: "Spot Senja",
   },
   {
     id: "gazebo",
     title: "Gazebo Rombongan & Acara",
-    capacity: "15 – 50+ Orang",
+    capacity: "15 - 50+ Orang",
     desc: "Meja panjang semi-outdoor untuk gathering kantor, arisan keluarga besar, dan rombongan bus.",
     badge: "Kapasitas Besar",
   },
 ];
 
-const RESTAURANT_WA = "6281234567890";
-
 export function Reservation(): ReactNode {
+  const { content } = useLandingContent();
+  const resConfig = content.reservation;
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [date, setDate] = useState("");
@@ -42,14 +44,62 @@ export function Reservation(): ReactNode {
   const [guests, setGuests] = useState("4");
   const [area, setArea] = useState("Saung Lesehan Sawah");
   const [note, setNote] = useState("");
+  const [waNumber, setWaNumber] = useState(resConfig.whatsappNumber || "6281234567890");
+  const [submitted, setSubmitted] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  function handleSubmit(e: FormEvent) {
+  useEffect(() => {
+    async function loadPhone() {
+      try {
+        const client = getSupabaseClient() as any;
+        const { data, error } = await client
+          .from("restaurant_settings")
+          .select("phone")
+          .limit(1)
+          .maybeSingle();
+
+        const row = data as { phone?: string | null } | null;
+        if (!error && row?.phone) {
+          const raw = row.phone.replace(/[^0-9]/g, "");
+          const clean = raw.startsWith("0") ? `62${raw.slice(1)}` : raw.startsWith("62") ? raw : `62${raw}`;
+          setWaNumber(clean);
+        }
+      } catch {
+        // fallback to default
+      }
+    }
+    void loadPhone();
+  }, []);
+
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    setSaving(true);
     const cleanName = name.trim() || "Tamu Tepi Sawah";
     const cleanPhone = phone.trim() || "-";
-    const cleanDate = date || "Hari Ini / Segera";
-    const cleanGuests = guests || "4";
-    const cleanNote = note.trim() ? `\n• Catatan: ${note.trim()}` : "";
+    const cleanDate = date || new Date().toISOString().slice(0, 10);
+    const cleanGuests = Number.parseInt(guests, 10) || 4;
+    const cleanNote = note.trim();
+
+    try {
+      const client = getSupabaseClient() as any;
+      await client.from("reservations").insert([
+        {
+          customer_name: cleanName,
+          phone: cleanPhone,
+          reservation_date: cleanDate,
+          reservation_time: time,
+          guests_count: cleanGuests,
+          seating_area: area,
+          notes: cleanNote || null,
+          status: "PENDING",
+        },
+      ]);
+      setSubmitted(true);
+    } catch (err) {
+      console.warn("Could not record reservation in database:", err);
+    } finally {
+      setSaving(false);
+    }
 
     const message = encodeURIComponent(
       `Halo Tepi Sawah Restaurant & Coffee, saya ingin reservasi meja/acara:\n\n` +
@@ -58,11 +108,11 @@ export function Reservation(): ReactNode {
       `• Tanggal: ${cleanDate}\n` +
       `• Waktu Kunjungan: ${time} WIB\n` +
       `• Jumlah Tamu: ${cleanGuests} Orang\n` +
-      `• Pilihan Area: ${area}${cleanNote}\n\n` +
+      `• Pilihan Area: ${area}${cleanNote ? `\n• Catatan: ${cleanNote}` : ""}\n\n` +
       `Mohon info ketersediaan meja. Terima kasih!`
     );
 
-    window.open(`https://wa.me/${RESTAURANT_WA}?text=${message}`, "_blank", "noopener,noreferrer");
+    window.open(`https://wa.me/${waNumber}?text=${message}`, "_blank", "noopener,noreferrer");
   }
 
   return (
@@ -71,14 +121,13 @@ export function Reservation(): ReactNode {
         <div className="web-res-layout">
           {/* Left Column: Context & Seating Areas */}
           <div className="web-res-info">
-            <span className="web-eyebrow">Layanan Meja &amp; Acara</span>
+            <span className="web-eyebrow">{resConfig.eyebrow || "Layanan Meja & Acara"}</span>
             <h2 className="web-section-title web-section-title-lg">
-              Alokasi Meja Prioritas &amp; Reservasi Rombongan
+              {resConfig.title || "Alokasi Meja Prioritas & Reservasi Rombongan"}
             </h2>
             <p className="web-prose">
-              Kunjungi Tepi Sawah bersama keluarga, rekan kerja, maupun komunitas
-              tanpa khawatir kehabisan tempat. Kami siap mengalokasikan area
-              terbaik dengan layanan hangat dan tanpa biaya sewa saung.
+              {resConfig.description ||
+                "Kunjungi Tepi Sawah bersama keluarga, rekan kerja, maupun komunitas tanpa khawatir kehabisan tempat. Kami siap mengalokasikan area terbaik dengan layanan hangat dan tanpa biaya sewa saung."}
             </p>
 
             <div className="web-res-area-list">
@@ -209,16 +258,24 @@ export function Reservation(): ReactNode {
                 />
               </div>
 
+              {submitted ? (
+                <div style={{ padding: "10px 14px", background: "rgba(46, 107, 52, 0.15)", border: "1px solid #2e6b34", borderRadius: "8px", color: "#183a1d", fontSize: "13px", marginBottom: "12px", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span>✓</span>
+                  <span>Data reservasi telah tercatat di sistem resto dan diarahkan ke WhatsApp resmi.</span>
+                </div>
+              ) : null}
+
               <button
                 type="submit"
+                disabled={saving}
                 className="web-btn web-btn-gold web-btn-lg web-res-btn-submit"
               >
                 <Icon name="phone-call" size={18} />
-                <span>Kirim Reservasi via WhatsApp</span>
+                <span>{saving ? "Mencatat Reservasi..." : "Kirim Reservasi via WhatsApp"}</span>
               </button>
 
               <p className="web-res-form-footer">
-                <Icon name="clock" size={14} /> Jam Layanan Reservasi: Setiap Hari 09:00 – 22:00 WIB
+                <Icon name="clock" size={14} /> Jam Layanan Reservasi: Setiap Hari 09:00 - 22:00 WIB
               </p>
             </form>
           </div>

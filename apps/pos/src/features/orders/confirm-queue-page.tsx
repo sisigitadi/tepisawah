@@ -11,10 +11,11 @@
  * Opened with the `?confirm` search param (no router library yet — the same
  * pattern the waiter app uses for manual order entry).
  */
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useAuth } from "@tepisawah/auth";
 import { PERMISSIONS } from "@tepisawah/permissions";
 import { orderBoardStatusLabel, useOrderBoardChannel } from "@tepisawah/database";
+import { playOrderIncomingChime } from "@tepisawah/ui";
 
 import {
   confirmOrder,
@@ -83,6 +84,17 @@ export function ConfirmQueuePage(): ReactNode {
     const clock = window.setInterval(() => setNow(Date.now()), 30_000);
     return () => window.clearInterval(clock);
   }, []);
+
+  // Alert cashier with an audible chime when new customer orders wait for confirmation
+  const prevOrdersCountRef = useRef<number>(0);
+  useEffect(() => {
+    if (phase === "ready" && orders.length > prevOrdersCountRef.current && prevOrdersCountRef.current > 0) {
+      playOrderIncomingChime();
+    }
+    if (phase === "ready") {
+      prevOrdersCountRef.current = orders.length;
+    }
+  }, [phase, orders.length]);
 
   /** One guarded server-side hop; the queue refetches to match the database. */
   const runAction = useCallback(

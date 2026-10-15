@@ -6,6 +6,7 @@
  * Section markup lives in the `content` feature; this page only composes.
  */
 import type { ReactNode } from "react";
+import { useLandingContent } from "../hooks/index.js";
 import {
   About,
   FeaturedMenu,
@@ -18,21 +19,25 @@ import {
   ReservationProvider,
   SiteFooter,
   SiteHeader,
+  ThemeInjector,
 } from "../features/content/index.js";
 
 export function HomePage(): ReactNode {
+  const { content } = useLandingContent();
+
   return (
     <ReservationProvider>
+      <ThemeInjector />
       <SiteHeader />
       <main className="web-main">
-        <Hero />
-        <About />
-        <FeaturedMenu />
-        <PromoSection />
-        <QrOrder />
-        <Reservation />
-        <Gallery />
-        <LocationSection />
+        {content.hero.isActive !== false && <Hero />}
+        {content.about.isActive !== false && <About />}
+        {content.menu.isActive !== false && <FeaturedMenu />}
+        {content.promo.isActive !== false && <PromoSection />}
+        {content.qrOrder.isActive !== false && <QrOrder />}
+        {content.reservation.isActive !== false && <Reservation />}
+        {content.gallery.isActive !== false && <Gallery />}
+        {content.location.isActive !== false && <LocationSection />}
       </main>
       <SiteFooter />
     </ReservationProvider>

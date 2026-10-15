@@ -39,8 +39,8 @@ interface PortalApp {
 }
 
 const APPS: readonly PortalApp[] = [
-  { id: "pos", name: "Meja Kasir & Pembayaran", blurb: "Konfirmasi pesanan masuk, layanan meja & proses pembayaran", emoji: "🧾" },
-  { id: "admin", name: "Panel Pengelola Restoran", blurb: "Kelola katalog, meja & QR, staf, serta laporan bisnis", emoji: "⚙️" },
+  { id: "pos", name: "Meja Kasir & Pembayaran", blurb: "Konfirmasi pesanan masuk, layanan meja & proses pembayaran struk", emoji: "🧾" },
+  { id: "admin", name: "Panel Pengelola Restoran", blurb: "Kelola reservasi meja website, katalog menu, meja & QR, dan pengaturan", emoji: "⚙️" },
   { id: "kitchen", name: "Layar Pesanan Dapur", blurb: "Antrean masak dapur: mulai masak → siap saji", emoji: "👨‍🍳" },
   { id: "waiter", name: "Layanan Meja & Antar", blurb: "Monitor hidangan siap saji & pesanan meja manual", emoji: "🍽️" },
 ];
@@ -113,7 +113,13 @@ export function PortalPage({ onSelectRoom }: PortalPageProps = {}): ReactNode {
   const [switching, setSwitching] = useState(false);
   const overrides = parseAppUrls(env.demoAppUrls);
   const apps = visibleApps(roles);
-  const greeting = profile?.display_name || user?.email || "Staf";
+  const greeting = (profile?.display_name || user?.email || "Staf")
+    .replace(/\s*\(Demo\)/gi, "")
+    .trim();
+
+  const uniqueRoleLabels = Array.from(
+    new Set(roles.map((role) => ROLE_LABELS[role] ?? role))
+  );
 
   const handleDemoSwitch = async (email: string) => {
     const acc = DEMO_ACCOUNTS.find((a) => a.email === email);
@@ -134,12 +140,12 @@ export function PortalPage({ onSelectRoom }: PortalPageProps = {}): ReactNode {
         <span className="staff-eyebrow">Pintu Masuk Staf</span>
         <h1 className="staff-title">Selamat datang, {greeting}</h1>
         <p className="staff-sub">
-          Pilih aplikasi yang kamu butuhkan — aksesnya diatur oleh peranmu.
+          Pilih aplikasi yang Anda butuhkan, akses menu diatur sesuai peran tugas Anda.
         </p>
-        {roles.length ? (
+        {uniqueRoleLabels.length ? (
           <ul className="staff-role-chips" aria-label="Peran Anda">
-            {roles.map((role) => (
-              <li key={role} className="staff-role-chip">{ROLE_LABELS[role] ?? role}</li>
+            {uniqueRoleLabels.map((label) => (
+              <li key={label} className="staff-role-chip">{label}</li>
             ))}
           </ul>
         ) : null}

@@ -6,92 +6,67 @@
  */
 import type { ReactNode } from "react";
 import { Icon } from "../../../components/icons.js";
-
-const PROMOS: ReadonlyArray<{
-  accent: string;
-  pillClass: string;
-  pill: string;
-  title: string;
-  sub: string;
-  desc: string;
-  foot: string;
-  cta: "menu" | "reserve";
-}> = [
-  {
-    accent: "golden",
-    pillClass: "web-promo-pill-forest",
-    pill: "Paket Santap",
-    title: "Paket Nasi Liwet Komplit",
-    sub: "Porsi Keluarga (4 Orang)",
-    desc: "Kombinasi nasi liwet kastrol harum, ayam goreng bumbu kuning, sambal terasi daun pisang, tahu, tempe, lalapan segar sawah, dan teh manis hangat.",
-    foot: "Paket Hemat Meja",
-    cta: "menu",
-  },
-  {
-    accent: "forest",
-    pillClass: "web-promo-pill-amber",
-    pill: "Sore & Senja",
-    title: "Paket Ngopi Sunset Sawah",
-    sub: "Mulai Pukul 15:30 WIB",
-    desc: "Nikmati hembusan angin senja di dek rooftop dengan racikan Kopi Senja Sawah atau teh poci gula batu berpadu aneka kudapan hangat pedesaan.",
-    foot: "Spot Rooftop 360°",
-    cta: "menu",
-  },
-  {
-    accent: "golden",
-    pillClass: "web-promo-pill-deep",
-    pill: "Rombongan & Gathering",
-    title: "Paket Reservasi Rombongan",
-    sub: "Keluarga & Acara Khusus",
-    desc: "Alokasi area saung lesehan prioritas untuk gathering kantor, arisan keluarga, maupun rombongan wisata tanpa biaya reservasi tambahan.",
-    foot: "Kapasitas Fleksibel",
-    cta: "reserve",
-  },
-];
+import { useLandingContent, DEFAULT_PROMO_ITEMS } from "../../../hooks/index.js";
 
 export function PromoSection(): ReactNode {
+  const { content } = useLandingContent();
+  const promo = content.promo;
+
+  if (promo.isActive === false) {
+    return null;
+  }
+
+  const items = (promo.items && promo.items.length > 0 ? promo.items : DEFAULT_PROMO_ITEMS).filter(
+    (item) => item.isActive !== false
+  );
+
   return (
     <section id="promo-paket" className="web-shell web-section">
       <div className="web-head-center">
-        <span className="web-eyebrow">Penawaran Spesial</span>
-        <h2 className="web-section-title web-section-title-lg">Promo &amp; Paket</h2>
+        <span className="web-eyebrow">{promo.eyebrow || "Penawaran Spesial"}</span>
+        <h2 className="web-section-title web-section-title-lg">{promo.title || "Promo & Paket"}</h2>
         <p className="web-head-center-sub">
-          Temukan promo dan paket yang sedang tersedia di Tepi Sawah Ciperna.
+          {promo.subtitle || "Temukan promo dan paket yang sedang tersedia di Tepi Sawah Ciperna."}
         </p>
       </div>
 
       <div className="web-promo-grid">
-        {PROMOS.map((promo) => (
+        {items.map((item) => (
           <article
-            key={promo.title}
+            key={item.id || item.title}
             className="web-promo-card"
-            data-accent={promo.accent}
+            data-accent={item.accent || "golden"}
           >
-            <span className={`web-promo-pill ${promo.pillClass}`}>
-              {promo.pill}
-            </span>
+            {item.imageUrl ? (
+              <div className="web-promo-media">
+                <img
+                  src={item.imageUrl}
+                  alt={item.title}
+                  className="web-promo-img"
+                  loading="lazy"
+                />
+                <span className={`web-promo-pill ${item.pillClass || "web-promo-pill-forest"}`}>
+                  {item.pill}
+                </span>
+              </div>
+            ) : (
+              <span className={`web-promo-pill ${item.pillClass || "web-promo-pill-forest"}`}>
+                {item.pill}
+              </span>
+            )}
             <div className="web-promo-head">
-              <h3 className="web-promo-title">{promo.title}</h3>
-              <p className="web-promo-sub">{promo.sub}</p>
+              <h3 className="web-promo-title">{item.title}</h3>
+              <p className="web-promo-sub">{item.sub}</p>
             </div>
-            <p className="web-promo-desc">{promo.desc}</p>
+            <p className="web-promo-desc">{item.desc}</p>
             <div className="web-promo-foot">
-              <span className="web-promo-foot-label">{promo.foot}</span>
-              {promo.cta === "menu" ? (
-                <a
-                  className="web-btn web-btn-forest web-btn-sm"
-                  href="#menu-pilihan"
-                >
-                  Lihat Menu Pilihan
-                </a>
-              ) : (
-                <a
-                  className="web-btn web-btn-forest web-btn-sm"
-                  href="#reservasi"
-                >
-                  Layanan Meja &amp; Acara
-                </a>
-              )}
+              <span className="web-promo-foot-label">{item.foot}</span>
+              <a
+                className="web-btn web-btn-forest web-btn-sm"
+                href={item.ctaLink || "#menu-pilihan"}
+              >
+                {item.ctaText || "Lihat Menu Pilihan"}
+              </a>
             </div>
           </article>
         ))}
@@ -101,23 +76,23 @@ export function PromoSection(): ReactNode {
         <div className="web-promo-banner-copy">
           <span className="web-promo-banner-kicker">
             <Icon name="tag" size={14} />
-            PROMO AKTIF RESTORAN
+            {promo.badge || "PROMO AKTIF RESTORAN"}
           </span>
           <h3 className="web-promo-banner-title">
-            Informasi Menu &amp; Promo Selalu Terkini
+            {promo.bannerTitle || promo.title || "Informasi Menu & Promo Selalu Terkini"}
           </h3>
           <p className="web-promo-banner-desc">
-            Informasi promo harian, paket musiman, dan ketersediaan porsi selalu
-            diperbarui secara real-time di etalase menu kami — cek kapan saja
-            sebelum berkunjung.
+            {promo.bannerDesc ||
+              promo.description ||
+              "Informasi promo harian, paket musiman, dan ketersediaan porsi selalu diperbarui secara real-time di etalase menu kami: cek kapan saja sebelum berkunjung."}
           </p>
         </div>
         <a
           className="web-btn web-btn-amber web-btn-lg"
-          href="#menu-pilihan"
+          href={promo.bannerCtaLink || "#menu-pilihan"}
         >
           <Icon name="utensils" size={16} />
-          <span>Jelajahi Menu Pilihan</span>
+          <span>{promo.bannerCtaText || "Jelajahi Menu Pilihan"}</span>
         </a>
       </div>
     </section>

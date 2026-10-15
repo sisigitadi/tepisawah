@@ -11,3 +11,6 @@ export { SettingsPage } from "./features/settings/index.js";
 export { CatalogPage } from "./features/catalog/index.js";
 export { TablesPage } from "./features/tables/index.js";
 export { SessionsPage } from "./features/sessions/index.js";
+export { ReservationsPage } from "./features/reservations/index.js";
+export { CmsPage } from "./features/cms/index.js";
+
