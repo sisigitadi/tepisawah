@@ -136,11 +136,20 @@ export function AppHeader({
 
           <div className="staff-identity-user">
             <span className="staff-identity-name">
-              {profile?.display_name || user.email}
+              {(profile?.display_name || user.email || "Staf").replace(/\s*\(Demo\)/gi, "").trim()}
             </span>
             <span className="staff-identity-roles">
-              {roles.map((role) => ROLE_LABELS[role] ?? role).join(" · ") ||
-                "Staf"}
+              {roles.includes("owner")
+                ? "Pemilik Restoran"
+                : roles.includes("admin") || roles.includes("supervisor")
+                ? "Pengelola Restoran"
+                : roles.includes("cashier")
+                ? "Kasir Utama"
+                : roles.includes("kitchen")
+                ? "Dapur"
+                : roles.includes("waiter")
+                ? "Pramusaji"
+                : "Staf Operasional"}
             </span>
           </div>
           <button

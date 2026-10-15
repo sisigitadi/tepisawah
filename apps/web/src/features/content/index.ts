@@ -16,4 +16,5 @@ export {
   Gallery,
   LocationSection,
   SiteFooter,
+  ThemeInjector,
 } from "./components/index.js";

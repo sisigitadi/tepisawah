@@ -16,10 +16,11 @@
  * §13, §26); the buttons are disabled without those permissions, because the
  * guard is UX-only — the backend is the authority.
  */
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { useAuth } from "@tepisawah/auth";
 import { PERMISSIONS } from "@tepisawah/permissions";
 import { orderBoardStatusLabel, useOrderBoardChannel } from "@tepisawah/database";
+import { playKitchenTicketChime } from "@tepisawah/ui";
 
 import {
   loadBoard,
@@ -71,6 +72,17 @@ export function HomePage(): ReactNode {
     const clock = window.setInterval(() => setNow(Date.now()), CLOCK_TICK_MS);
     return () => window.clearInterval(clock);
   }, []);
+
+  // Alert kitchen staff with an audible chime when new cooking tickets arrive
+  const prevCountRef = useRef<number>(0);
+  useEffect(() => {
+    if (loaded && orders.length > prevCountRef.current && prevCountRef.current > 0) {
+      playKitchenTicketChime();
+    }
+    if (loaded) {
+      prevCountRef.current = orders.length;
+    }
+  }, [loaded, orders.length]);
 
   /**
    * One guarded server-side hop. The command re-validates the permission and

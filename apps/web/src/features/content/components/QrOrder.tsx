@@ -6,6 +6,7 @@
  */
 import type { ReactNode } from "react";
 import { Icon } from "../../../components/icons.js";
+import { useLandingContent } from "../../../hooks/index.js";
 
 const STEPS: ReadonlyArray<{
   n: string;
@@ -25,6 +26,9 @@ const MOCK_ITEMS: ReadonlyArray<{ qty: string; name: string; price: string }> =
   ];
 
 export function QrOrder(): ReactNode {
+  const { content } = useLandingContent();
+  const qr = content.qrOrder;
+
   return (
     <section id="qr-order" className="web-shell web-section">
       <div className="web-qr">
@@ -32,16 +36,14 @@ export function QrOrder(): ReactNode {
         <div className="web-qr-grid">
           <div className="web-qr-copy">
             <span className="web-promo-pill web-promo-pill-amber">
-              <Icon name="smartphone" size={14} /> Digital Dining Experience
+              <Icon name="smartphone" size={14} /> {qr.eyebrow || "Digital Dining Experience"}
             </span>
             <h2 className="web-section-title web-section-title-cream web-section-title-lg">
-              Pesan Langsung dari Meja Anda
+              {qr.title || "Pesan Langsung dari Meja Anda"}
             </h2>
             <p className="web-prose web-prose-cream">
-              Pemesanan online tidak tersedia. Saat berkunjung, cukup scan kode
-              QR yang tertera di meja Anda, pilih hidangan Nusantara dan
-              minuman favorit, lalu kirim pesanan langsung dari smartphone —
-              atau pesan langsung di kasir / melalui pramusaji kami.
+              {qr.description ||
+                "Pemesanan online tidak tersedia. Saat berkunjung, cukup scan kode QR yang tertera di meja Anda, pilih hidangan Nusantara dan minuman favorit, lalu kirim pesanan langsung dari smartphone: atau pesan langsung di kasir / melalui pramusaji kami."}
             </p>
 
             <div className="web-qr-steps">
@@ -56,7 +58,7 @@ export function QrOrder(): ReactNode {
 
             <div className="web-qr-actions">
               <span className="web-qr-note">
-                <Icon name="info" size={14} /> Tersedia saat Anda berkunjung —
+                <Icon name="info" size={14} /> Tersedia saat Anda berkunjung:
                 tanpa aplikasi, tanpa instal, tanpa antre
               </span>
             </div>

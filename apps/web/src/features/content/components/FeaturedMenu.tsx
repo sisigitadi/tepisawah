@@ -8,16 +8,10 @@
  * surface. The read fails closed with a retry; the marketing category cards
  * below stay static copy.
  */
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Icon, type IconName } from "../../../components/icons.js";
 import { formatPrice } from "../../../data/menu.js";
-import {
-  fetchPublicCatalog,
-  groupCatalogByCategory,
-  type PublicCatalogProduct,
-} from "@tepisawah/database";
-
-import { getSupabaseClient } from "../../../lib/supabase.js";
+import { useLandingContent } from "../../../hooks/index.js";
 
 const CATEGORY_CARDS: ReadonlyArray<{
   icon: IconName;
@@ -51,54 +45,48 @@ const CATEGORY_CARDS: ReadonlyArray<{
   },
 ];
 
-interface CategoryPill {
-  id: string;
-  name: string;
+
+function formatMenuPrice(val: string | number): string {
+  if (typeof val === "number") return formatPrice(val);
+  if (!val) return "";
+  const trimmed = String(val).trim();
+  if (trimmed.startsWith("Rp")) return trimmed;
+  const num = parseInt(trimmed.replace(/[^0-9]/g, ""), 10);
+  if (!isNaN(num) && num > 0) return formatPrice(num);
+  return trimmed;
 }
 
 export function FeaturedMenu(): ReactNode {
-  const [products, setProducts] = useState<PublicCatalogProduct[] | null>(null);
-  const [categories, setCategories] = useState<CategoryPill[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const { content } = useLandingContent();
+  const menuConfig = content.menu;
   const [active, setActive] = useState<string>("SEMUA");
 
-  const load = useCallback(async () => {
-    setError(null);
-    const result = await fetchPublicCatalog(getSupabaseClient());
-    if (result.error) {
-      setProducts(null);
-      setError(result.error.message);
-      return;
-    }
-    const rows = result.data ?? [];
-    const grouped = groupCatalogByCategory(rows);
-    setProducts(rows);
-    setCategories(grouped.map((group) => ({ id: group.id, name: group.name })));
-  }, []);
+  const configuredItems =
+    menuConfig.items && menuConfig.items.length > 0
+      ? menuConfig.items.filter((item) => item.isActive !== false)
+      : [];
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+  const dynamicCategories: string[] = Array.from(
+    new Set(configuredItems.map((item) => item.category.trim()).filter(Boolean))
+  );
 
   const items =
-    products === null
-      ? []
-      : active === "SEMUA"
-        ? products
-        : products.filter((item) => item.categoryId === active);
+    active === "SEMUA"
+      ? configuredItems
+      : configuredItems.filter((item) => item.category.trim() === active);
 
   return (
     <>
       <section id="menu-pilihan" className="web-shell web-section">
         <div className="web-menu-head">
           <div>
-            <span className="web-eyebrow">Katalog Kuliner Otentik</span>
-            <h2 className="web-section-title">Menu Pilihan</h2>
+            <span className="web-eyebrow">{menuConfig.eyebrow || "Katalog Kuliner Otentik"}</span>
+            <h2 className="web-section-title">{menuConfig.title || "Menu Pilihan"}</h2>
             <p className="web-menu-head-sub">
-              Hidangan favorit untuk menemani waktu Anda di Tepi Sawah.
+              {menuConfig.description || "Hidangan favorit untuk menemani waktu Anda di Tepi Sawah."}
             </p>
           </div>
-          {products !== null && categories.length > 0 ? (
+          {dynamicCategories.length > 0 ? (
             <div className="web-filter" role="group" aria-label="Filter menu">
               <button
                 type="button"
@@ -108,86 +96,64 @@ export function FeaturedMenu(): ReactNode {
               >
                 Semua
               </button>
-              {categories.map((category) => (
+              {dynamicCategories.map((cat) => (
                 <button
-                  key={category.id}
+                  key={cat}
                   type="button"
                   className="web-filter-btn"
-                  data-active={active === category.id}
-                  onClick={() => setActive(category.id)}
+                  data-active={active === cat}
+                  onClick={() => setActive(cat)}
                 >
-                  {category.name}
+                  {cat}
                 </button>
               ))}
             </div>
           ) : null}
         </div>
 
-        {error !== null ? (
-          <div className="web-menu-grid" role="alert">
-            <article className="web-dish">
+        <div className="web-menu-grid">
+          {items.map((item) => (
+            <article key={item.id} className="web-dish">
+              <div className="web-dish-photo">
+                {item.imageUrl ? (
+                  <img
+                    className="web-dish-art"
+                    src={item.imageUrl}
+                    alt={`Foto ${item.name}`}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <div className="web-dish-art web-dish-art--fallback" aria-hidden="true" />
+                )}
+                <div className="web-dish-veil" />
+                <span className="web-dish-cat">{item.category}</span>
+                {item.badge ? (
+                  <span className="web-dish-badge">{item.badge}</span>
+                ) : null}
+              </div>
               <div className="web-dish-body">
-                <h3 className="web-dish-name">Tidak dapat memuat menu</h3>
-                <p className="web-dish-desc">{error}</p>
-                <div className="web-dish-foot">
-                  <button
-                    type="button"
-                    className="web-filter-btn"
-                    onClick={() => void load()}
-                  >
-                    Coba lagi
-                  </button>
+                <div className="web-dish-top">
+                  <h3 className="web-dish-name">{item.name}</h3>
+                  <span className="web-dish-price">
+                    {formatMenuPrice(item.price)}
+                  </span>
                 </div>
+                <p className="web-dish-desc">{item.desc}</p>
+              </div>
+              <div className="web-dish-foot">
+                <span className="web-dish-avail">
+                  <Icon name="check" size={14} />
+                  Tersedia Hari Ini
+                </span>
+                <span className="web-dish-order">
+                  <Icon name="info" size={14} />
+                  Pesan di tempat (QR / kasir)
+                </span>
               </div>
             </article>
-          </div>
-        ) : products === null ? (
-          <p aria-live="polite">Memuat menu…</p>
-        ) : (
-          <div className="web-menu-grid">
-            {items.map((item) => (
-              <article key={item.productId} className="web-dish">
-                <div className="web-dish-photo">
-                  {item.imageUrl ? (
-                    <img
-                      className="web-dish-art"
-                      src={item.imageUrl}
-                      alt={`Foto ${item.name}`}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  ) : (
-                    <div className="web-dish-art web-dish-art--fallback" aria-hidden="true" />
-                  )}
-                  <div className="web-dish-veil" />
-                  <span className="web-dish-cat">{item.categoryName}</span>
-                  {item.isAvailable ? null : (
-                    <span className="web-dish-badge">Habis</span>
-                  )}
-                </div>
-                <div className="web-dish-body">
-                  <div className="web-dish-top">
-                    <h3 className="web-dish-name">{item.name}</h3>
-                    <span className="web-dish-price">
-                      {formatPrice(item.price)}
-                    </span>
-                  </div>
-                  <p className="web-dish-desc">{item.description}</p>
-                </div>
-                <div className="web-dish-foot">
-                  <span className="web-dish-avail">
-                    <Icon name="check" size={14} />
-                    {item.isAvailable ? "Tersedia Hari Ini" : "Habis hari ini"}
-                  </span>
-                  <span className="web-dish-order">
-                    <Icon name="info" size={14} />
-                    Pesan di tempat (QR / kasir)
-                  </span>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
+          ))}
+        </div>
 
         <div className="web-menu-cta web-menu-notice">
           <span className="web-menu-notice-ico">

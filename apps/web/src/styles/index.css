@@ -1467,6 +1467,36 @@ h4 {
   filter: blur(1.5rem);
 }
 
+.web-promo-media {
+  position: relative;
+  width: 100%;
+  height: 155px;
+  border-radius: calc(var(--radius-lg) - 4px);
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.05);
+  margin-bottom: 0.125rem;
+}
+
+.web-promo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.web-promo-card:hover .web-promo-img {
+  transform: scale(1.05);
+}
+
+.web-promo-media .web-promo-pill {
+  position: absolute;
+  top: 0.625rem;
+  left: 0.625rem;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+}
+
 .web-promo-pill {
   display: inline-flex;
   align-items: center;

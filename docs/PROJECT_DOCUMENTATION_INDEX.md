@@ -1089,14 +1089,17 @@ docs/
 │   ├── ADR-004-public-customer-ordering.md
 │   ├── ADR-005-payment-provider.md
 │   ├── ADR-006-role-consolidation.md
-│   └── ADR-007-audit-branding-og-dan-lokalisasi.md
+│   ├── ADR-007-audit-branding-og-dan-lokalisasi.md
+│   └── ADR-008-cms-landing-customization.md
 │
 ├── deployment/
-│   └── PRE_DEPLOYMENT_CHECKLIST.md
+│   ├── PRE_DEPLOYMENT_CHECKLIST.md
+│   └── DEPLOYMENT_PRODUCTION_GUIDE.md
 │
 ├── operations/
 │   ├── ORDER_STATE.md
-│   └── PRE_PRODUCTION_CONTROLS.md
+│   ├── PRE_PRODUCTION_CONTROLS.md
+│   └── PANDUAN_CMS_DAN_OPERASIONAL.md
 │
 ├── prompts/
 │   ├── 01-homepage.md

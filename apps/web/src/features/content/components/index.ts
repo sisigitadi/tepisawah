@@ -8,3 +8,4 @@ export { Reservation } from "./Reservation.js";
 export { Gallery } from "./Gallery.js";
 export { LocationSection } from "./LocationSection.js";
 export { SiteFooter } from "./SiteFooter.js";
+export { ThemeInjector } from "./ThemeInjector.js";

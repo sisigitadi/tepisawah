@@ -6,21 +6,10 @@
  */
 import { useEffect, useState, type ReactNode } from "react";
 import { Icon } from "../../../components/icons.js";
-import { useOpenStatus } from "../../../hooks/index.js";
+import { useLandingContent, useOpenStatus } from "../../../hooks/index.js";
 
 export const MAPS_URL =
   "https://www.google.com/maps/place/6%C2%B046'16.3%22S+108%C2%B030'45.4%22E/@-6.7711837,108.5119553,19z";
-
-const NAV_LINKS: ReadonlyArray<{ label: string; href: string }> = [
-  { label: "Beranda", href: "#home" },
-  { label: "Menu", href: "#menu-pilihan" },
-  { label: "Promo & Paket", href: "#promo-paket" },
-  { label: "Tentang Kami", href: "#tentang-kami" },
-  { label: "Cara Pesan", href: "#qr-order" },
-  { label: "Galeri Suasana", href: "#galeri" },
-  { label: "Reservasi", href: "#reservasi" },
-  { label: "Lokasi", href: "#lokasi" },
-];
 
 function StatusBadge(): ReactNode {
   const { isOpen, loading } = useOpenStatus();
@@ -42,13 +31,25 @@ function StatusBadge(): ReactNode {
   ) : (
     <span className="web-status-badge web-status-closed">
       <span className="web-status-dot" />
-      <span>SEDANG TUTUP • BUKA KEMBALI 09:00 WIB</span>
+      <span>SEDANG TUTUP : BUKA KEMBALI 09:00 WIB</span>
     </span>
   );
 }
 
 export function SiteHeader(): ReactNode {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { content } = useLandingContent();
+
+  const navLinks = [
+    { label: "Beranda", href: "#home", active: content.hero.isActive !== false },
+    { label: "Menu", href: "#menu-pilihan", active: content.menu.isActive !== false },
+    { label: "Promo & Paket", href: "#promo-paket", active: content.promo.isActive !== false },
+    { label: "Tentang Kami", href: "#tentang-kami", active: content.about.isActive !== false },
+    { label: "Cara Pesan", href: "#qr-order", active: content.qrOrder.isActive !== false },
+    { label: "Galeri Suasana", href: "#galeri", active: content.gallery.isActive !== false },
+    { label: "Reservasi", href: "#reservasi", active: content.reservation.isActive !== false },
+    { label: "Lokasi", href: "#lokasi", active: content.location.isActive !== false },
+  ].filter((item) => item.active);
 
   // Close the drawer with Escape so keyboard users aren't trapped.
   useEffect(() => {
@@ -72,7 +73,7 @@ export function SiteHeader(): ReactNode {
             </span>
             <span className="web-topbar-hours">
               <Icon name="clock" size={14} className="web-ico-amber" />
-              Buka Setiap Hari: <strong>09:00 – 22:00 WIB</strong>
+              {content.hero.hours || "Buka Setiap Hari: 09:00 - 22:00 WIB"}
             </span>
           </div>
           <div className="web-topbar-loc">
@@ -106,7 +107,7 @@ export function SiteHeader(): ReactNode {
           </a>
 
           <nav className="web-nav-desktop" aria-label="Navigasi utama">
-            {NAV_LINKS.map((link) => (
+            {navLinks.map((link) => (
               <a key={link.href} href={link.href} className="web-nav-link">
                 {link.label}
               </a>
@@ -114,23 +115,43 @@ export function SiteHeader(): ReactNode {
           </nav>
 
           <div className="web-nav-actions">
-            <a
-              href="#reservasi"
-              className="web-btn web-btn-gold web-btn-pill"
-            >
-              <Icon name="calendar" size={16} />
-              <span>Reservasi Meja &amp; Acara</span>
-            </a>
+            {content.reservation.isActive !== false ? (
+              <a
+                href="#reservasi"
+                className="web-btn web-btn-gold web-btn-pill"
+              >
+                <Icon name="calendar" size={16} />
+                <span>Reservasi Meja &amp; Acara</span>
+              </a>
+            ) : (
+              <a
+                href="#menu-pilihan"
+                className="web-btn web-btn-gold web-btn-pill"
+              >
+                <Icon name="book-open" size={16} />
+                <span>Lihat Menu Pilihan</span>
+              </a>
+            )}
           </div>
 
           <div className="web-nav-mobile">
-            <a
-              href="#reservasi"
-              className="web-btn web-btn-gold web-btn-pill web-btn-xs"
-            >
-              <Icon name="calendar" size={14} />
-              <span>Reservasi</span>
-            </a>
+            {content.reservation.isActive !== false ? (
+              <a
+                href="#reservasi"
+                className="web-btn web-btn-gold web-btn-pill web-btn-xs"
+              >
+                <Icon name="calendar" size={14} />
+                <span>Reservasi</span>
+              </a>
+            ) : (
+              <a
+                href="#menu-pilihan"
+                className="web-btn web-btn-gold web-btn-pill web-btn-xs"
+              >
+                <Icon name="book-open" size={14} />
+                <span>Menu</span>
+              </a>
+            )}
             <button
               type="button"
               className="web-burger"
@@ -146,7 +167,7 @@ export function SiteHeader(): ReactNode {
         {drawerOpen ? (
           <div className="web-drawer">
             <nav className="web-drawer-nav" aria-label="Navigasi seluler">
-              {NAV_LINKS.map((link) => (
+              {navLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
@@ -157,14 +178,25 @@ export function SiteHeader(): ReactNode {
               ))}
             </nav>
             <div className="web-drawer-actions">
-              <a
-                href="#reservasi"
-                className="web-btn web-btn-gold"
-                onClick={() => setDrawerOpen(false)}
-              >
-                <Icon name="calendar" size={16} />
-                <span>Reservasi Meja &amp; Acara</span>
-              </a>
+              {content.reservation.isActive !== false ? (
+                <a
+                  href="#reservasi"
+                  className="web-btn web-btn-gold"
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  <Icon name="calendar" size={16} />
+                  <span>Reservasi Meja &amp; Acara</span>
+                </a>
+              ) : (
+                <a
+                  href="#menu-pilihan"
+                  className="web-btn web-btn-gold"
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  <Icon name="book-open" size={16} />
+                  <span>Lihat Menu Pilihan</span>
+                </a>
+              )}
             </div>
           </div>
         ) : null}

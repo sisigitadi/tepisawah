@@ -118,6 +118,14 @@ as $$
     ('PREPARING',           'READY',                'kitchen.ready',     false),
     ('READY',               'SERVED',               'orders.serve',      false),
     ('SERVED',              'PAID',                 'payments.create',   false),
+    -- Hybrid payment: allow pre-pay at counter (CONFIRMED/PREPARING/READY -> PAID)
+    -- and allow post-pay completion (SERVED -> PAID -> COMPLETED).
+    ('CONFIRMED',           'PAID',                 'payments.create',   false),
+    ('PREPARING',           'PAID',                 'payments.create',   false),
+    ('READY',               'PAID',                 'payments.create',   false),
+    ('PAID',                'PREPARING',            'kitchen.start',     false),
+    ('PAID',                'READY',                'kitchen.ready',     false),
+    ('PAID',                'SERVED',               'orders.serve',      false),
     ('PAID',                'COMPLETED',            'payments.create',   false),
     -- Exceptional flow: reason + audit are mandatory for each of these
     -- (API_CONTRACT.md §13 "Exceptional").

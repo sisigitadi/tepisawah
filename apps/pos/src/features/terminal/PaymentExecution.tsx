@@ -295,18 +295,26 @@ function ThermalSlip({ order, method, tenderedNumber, change }: ThermalSlipProps
   return (
     <div className="pos-thermal">
       <div className="pos-thermal__head">
-        <span className="pos-thermal__label"><PrintIcon aria-hidden="true" /> Thermal 80mm Output</span>
-        <span className="pos-thermal__status">Printer EPSON: READY</span>
+        <span className="pos-thermal__label"><PrintIcon aria-hidden="true" /> Struk Thermal (58mm / 80mm)</span>
+        <button
+          type="button"
+          className="pos-btn pos-btn--sm pos-btn--outline"
+          onClick={() => window.print()}
+          title="Kirim ke printer thermal"
+          style={{ padding: "4px 10px", fontSize: "11px", height: "auto" }}
+        >
+          <PrintIcon aria-hidden="true" /> Cetak Struk
+        </button>
       </div>
 
       <div className="pos-thermal__paper">
-        <div className="pos-thermal__brand">Warung Tepi Sawah</div>
+        <div className="pos-thermal__brand">Tepi Sawah Resto &amp; Cafe</div>
         <div className="pos-thermal__address">
-          Jl. Raya Ciperna No. 88, Cirebon<br />Telp: (0231) 882910
+          Kawasan Wisata Sawah, Ciperna, Kec. Talun, Cirebon<br />WA: 0812-3456-7890
         </div>
         <div className="pos-thermal__line">
-          <span>27/09/26 11:32 WIB</span>
-          <span>Kasir: Sigit</span>
+          <span>{new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" }).format(new Date())} WIB</span>
+          <span>Kasir: Meja Kasir #01</span>
         </div>
         <div className="pos-thermal__line">
           <span>No: {order.ticket}</span>
@@ -357,7 +365,7 @@ function ThermalSlip({ order, method, tenderedNumber, change }: ThermalSlipProps
         </div>
 
         <div className="pos-thermal__footer">
-          Maturnuwun — Hatur Nuhun.<br />Instagram: @tepisawah.ciperna
+          Matur Kesuwun, Hatur Nuhun.<br />Instagram: @tepisawah.id
         </div>
       </div>
     </div>

@@ -5,8 +5,63 @@
  * phases per docs/architecture/REPOSITORY_STRUCTURE.md.
  */
 
-import { defineConfig, loadEnv } from "vite";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
+
+function cmsSyncPlugin(): Plugin {
+  const filePath = join(process.cwd(), "public", "landing-content.json");
+  return {
+    name: "cms-sync-plugin",
+    configureServer(server) {
+      server.middlewares.use("/api/landing-content", (req, res) => {
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+        if (req.method === "OPTIONS") {
+          res.statusCode = 204;
+          res.end();
+          return;
+        }
+
+        if (req.method === "GET") {
+          res.setHeader("Content-Type", "application/json");
+          if (existsSync(filePath)) {
+            res.end(readFileSync(filePath, "utf8"));
+          } else {
+            res.end(JSON.stringify({}));
+          }
+          return;
+        }
+
+        if (req.method === "POST") {
+          let body = "";
+          req.on("data", (chunk: Buffer) => {
+            body += chunk.toString();
+          });
+          req.on("end", () => {
+            try {
+              if (body) {
+                writeFileSync(filePath, body, "utf8");
+              }
+              res.setHeader("Content-Type", "application/json");
+              res.end(JSON.stringify({ success: true }));
+            } catch (err) {
+              res.statusCode = 500;
+              res.end(JSON.stringify({ error: String(err) }));
+            }
+          });
+          return;
+        }
+
+        res.statusCode = 405;
+        res.end();
+      });
+    },
+  };
+}
 
 /**
  * Each workspace app builds independently:
@@ -23,7 +78,7 @@ export default defineConfig(({ mode }) => {
   const port = Number(env.WEB_PORT ?? 5173);
 
   return {
-    plugins: [react()],
+    plugins: [react(), cmsSyncPlugin()],
     base: "/",
     server: { port, strictPort: true },
     build: {
