@@ -4,7 +4,7 @@
  * Portal chrome: brand on the left, active room navigation in center, and
  * staff identity with sign-out on the right. 100% clean production mode.
  */
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 import { useAuth } from "@tepisawah/auth";
 
@@ -22,6 +22,7 @@ export function AppHeader({
 }: AppHeaderProps): ReactNode {
   const { user, profile, roles, signOut } = useAuth();
   const { canInstall, isInstalled, triggerInstall } = usePwaInstall();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Compute allowed rooms for this staff member
   const allowedRooms = new Set<StaffRoom>(["portal"]);
@@ -62,26 +63,83 @@ export function AppHeader({
       </a>
 
       {user && navItems.length > 1 ? (
-        <nav className="staff-nav-rooms" aria-label="Menu Ruangan">
-          {navItems.map((room) => {
-            const meta = ROOM_METAS[room];
-            const isActive = currentRoom === room;
-            return (
-              <button
-                key={room}
-                type="button"
-                className={`staff-nav-room-btn ${isActive ? "staff-nav-room-btn--active" : ""}`}
-                aria-current={isActive ? "page" : undefined}
-                onClick={() => onNavigate?.(room)}
-              >
-                <span className="staff-nav-room-emoji" aria-hidden="true">
-                  {meta.emoji}
-                </span>
-                <span className="staff-nav-room-label">{meta.label}</span>
-              </button>
-            );
-          })}
-        </nav>
+        <>
+          {/* Desktop Room Navigation */}
+          <nav className="staff-nav-rooms" aria-label="Menu Ruangan">
+            {navItems.map((room) => {
+              const meta = ROOM_METAS[room];
+              const isActive = currentRoom === room;
+              return (
+                <button
+                  key={room}
+                  type="button"
+                  className={`staff-nav-room-btn ${isActive ? "staff-nav-room-btn--active" : ""}`}
+                  aria-current={isActive ? "page" : undefined}
+                  onClick={() => onNavigate?.(room)}
+                >
+                  <span className="staff-nav-room-emoji" aria-hidden="true">
+                    {meta.emoji}
+                  </span>
+                  <span className="staff-nav-room-label">{meta.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* Mobile Room Selector Dropdown */}
+          <div className="staff-mobile-room-selector">
+            <button
+              type="button"
+              className="staff-mobile-room-trigger"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-expanded={mobileMenuOpen}
+              aria-label="Pilih Ruangan Staf"
+            >
+              <span className="staff-mobile-room-emoji" aria-hidden="true">
+                {ROOM_METAS[currentRoom].emoji}
+              </span>
+              <span className="staff-mobile-room-label">
+                {ROOM_METAS[currentRoom].label}
+              </span>
+              <span className="staff-mobile-room-arrow" aria-hidden="true">
+                {mobileMenuOpen ? "▴" : "▾"}
+              </span>
+            </button>
+
+            {mobileMenuOpen && (
+              <>
+                <div
+                  className="staff-mobile-room-backdrop"
+                  onClick={() => setMobileMenuOpen(false)}
+                  aria-hidden="true"
+                />
+                <div className="staff-mobile-room-menu" role="menu">
+                  <div className="staff-mobile-room-menu-title">Pilih Ruangan Kerja</div>
+                  {navItems.map((room) => {
+                    const meta = ROOM_METAS[room];
+                    const isActive = currentRoom === room;
+                    return (
+                      <button
+                        key={room}
+                        type="button"
+                        role="menuitem"
+                        className={`staff-mobile-room-item ${isActive ? "staff-mobile-room-item--active" : ""}`}
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          onNavigate?.(room);
+                        }}
+                      >
+                        <span className="staff-mobile-room-item-emoji">{meta.emoji}</span>
+                        <span className="staff-mobile-room-item-text">{meta.label}</span>
+                        {isActive && <span className="staff-mobile-room-item-check">✓</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+          </div>
+        </>
       ) : null}
 
       {user ? (

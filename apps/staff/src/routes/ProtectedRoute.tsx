@@ -8,50 +8,19 @@
  * If the database has 0 staff profiles (clean slate/first-time), it renders
  * the FirstTimeSetup component allowing the Owner to register the first account.
  */
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { AccessDenied, LoginPanel, useAuth } from "@tepisawah/auth";
+import { DEMO_ACCOUNTS, isDemoMode } from "@tepisawah/config";
 import { FirstTimeSetup } from "../components/FirstTimeSetup.js";
-import { getSupabaseClient } from "../lib/supabase.js";
 
 export function ProtectedRoute({ children }: { children: ReactNode }): ReactNode {
   const { status, isLoading } = useAuth();
-  const [needsSetup, setNeedsSetup] = useState(false);
-  const [checkingSetup, setCheckingSetup] = useState(false);
+  const [showSetup, setShowSetup] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return new URLSearchParams(window.location.search).has("setup");
+  });
 
-  useEffect(() => {
-    let isMounted = true;
-    async function checkSetupNeeded() {
-      if (status !== "unauthenticated") {
-        setNeedsSetup(false);
-        return;
-      }
-
-      setCheckingSetup(true);
-      try {
-        const client = getSupabaseClient() as any;
-        const { count, error } = await client
-          .from("profiles")
-          .select("id", { count: "exact", head: true });
-
-        if (isMounted && !error && count === 0) {
-          setNeedsSetup(true);
-        } else if (isMounted) {
-          setNeedsSetup(false);
-        }
-      } catch {
-        if (isMounted) setNeedsSetup(false);
-      } finally {
-        if (isMounted) setCheckingSetup(false);
-      }
-    }
-
-    void checkSetupNeeded();
-    return () => {
-      isMounted = false;
-    };
-  }, [status]);
-
-  if (isLoading || checkingSetup) {
+  if (isLoading) {
     return (
       <div
         aria-busy="true"
@@ -73,12 +42,29 @@ export function ProtectedRoute({ children }: { children: ReactNode }): ReactNode
   if (status === "disabled" || status === "unauthorized") return <AccessDenied />;
 
   if (status === "unauthenticated") {
-    if (needsSetup) {
-      return <FirstTimeSetup onSetupComplete={() => setNeedsSetup(false)} />;
+    if (showSetup) {
+      return (
+        <FirstTimeSetup
+          onSetupComplete={() => setShowSetup(false)}
+          onBackToLogin={() => setShowSetup(false)}
+        />
+      );
     }
     return (
       <div className="staff-login">
-        <LoginPanel title="Portal Staf — Masuk" />
+        <LoginPanel
+          title="Portal Staf — Masuk"
+          demoAccounts={isDemoMode(import.meta.env as unknown as Record<string, string | undefined>) ? DEMO_ACCOUNTS : undefined}
+        />
+        <div className="staff-login__switch">
+          <button
+            type="button"
+            className="staff-link-btn"
+            onClick={() => setShowSetup(true)}
+          >
+            Belum punya akun? Inisialisasi Akun Pemilik Resto →
+          </button>
+        </div>
       </div>
     );
   }

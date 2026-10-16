@@ -11,9 +11,10 @@ import { getSupabaseClient } from "../lib/supabase.js";
 
 interface FirstTimeSetupProps {
   onSetupComplete: () => void;
+  onBackToLogin?: () => void;
 }
 
-export function FirstTimeSetup({ onSetupComplete }: FirstTimeSetupProps): ReactNode {
+export function FirstTimeSetup({ onSetupComplete, onBackToLogin }: FirstTimeSetupProps): ReactNode {
   const { signIn } = useAuth();
 
   const [name, setName] = useState("");
@@ -114,27 +115,8 @@ export function FirstTimeSetup({ onSetupComplete }: FirstTimeSetupProps): ReactN
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "1.5rem",
-        background: "radial-gradient(ellipse at top, #fbfbf9 0%, #fefae0 100%)",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "32rem",
-          background: "#ffffff",
-          borderRadius: "16px",
-          border: "1px solid var(--c-border, #e7e5e4)",
-          padding: "clamp(1.5rem, 5vw, 2.25rem)",
-          boxShadow: "0 20px 40px -15px rgba(24, 58, 29, 0.15)",
-        }}
-      >
+    <div className="first-time-setup-container">
+      <div className="first-time-setup-card">
         {/* Brand Header */}
         <div style={{ textAlign: "center", marginBottom: "1.75rem" }}>
           <span
@@ -397,6 +379,27 @@ export function FirstTimeSetup({ onSetupComplete }: FirstTimeSetupProps): ReactN
           >
             {loading ? "Mendaftarkan & Menginisialisasi…" : "Daftarkan Owner & Buka Portal"}
           </button>
+
+          {onBackToLogin && (
+            <div style={{ textAlign: "center", marginTop: "1.25rem" }}>
+              <button
+                type="button"
+                onClick={onBackToLogin}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "var(--c-forest, #2e6b34)",
+                  fontSize: "0.875rem",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  padding: "0.5rem",
+                  textDecoration: "underline",
+                }}
+              >
+                Sudah punya akun staf? Masuk di sini →
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>
