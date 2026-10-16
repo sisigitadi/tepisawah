@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 import { AppProviders } from "./providers/index.js";
 import { AppRouter } from "./router/index.js";
 import { bootstrap } from "./bootstrap/index.js";
+import { PwaInstallPrompt } from "../components/PwaInstallPrompt.js";
 
 /**
  * Initialise global configuration before first render. Bootstrap injects the
@@ -19,6 +20,7 @@ export function App(): ReactNode {
   return (
     <AppProviders>
       <AppRouter />
+      <PwaInstallPrompt />
     </AppProviders>
   );
 }

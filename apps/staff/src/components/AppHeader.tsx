@@ -9,6 +9,7 @@ import type { ReactNode } from "react";
 import { useAuth } from "@tepisawah/auth";
 
 import { ROLE_ROOMS, ROOM_METAS, type StaffRoom } from "../lib/navigation.js";
+import { usePwaInstall } from "../lib/pwa.js";
 
 export interface AppHeaderProps {
   readonly currentRoom?: StaffRoom;
@@ -20,6 +21,7 @@ export function AppHeader({
   onNavigate,
 }: AppHeaderProps): ReactNode {
   const { user, profile, roles, signOut } = useAuth();
+  const { canInstall, isInstalled, triggerInstall } = usePwaInstall();
 
   // Compute allowed rooms for this staff member
   const allowedRooms = new Set<StaffRoom>(["portal"]);
@@ -100,6 +102,21 @@ export function AppHeader({
                 : "Staf Operasional"}
             </span>
           </div>
+          {canInstall ? (
+            <button
+              type="button"
+              className="staff-header-install-btn"
+              onClick={() => void triggerInstall()}
+              title="Pasang aplikasi di layar utama perangkat ini"
+            >
+              <span aria-hidden="true">📲</span>
+              <span>Pasang App</span>
+            </button>
+          ) : isInstalled ? (
+            <span className="staff-header-pwa-badge" title="Berjalan dalam mode aplikasi terpasang">
+              ✓ App
+            </span>
+          ) : null}
           <button
             type="button"
             className="staff-signout"
