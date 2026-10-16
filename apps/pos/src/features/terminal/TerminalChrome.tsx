@@ -6,13 +6,15 @@
  * the Stitch POS reference.
  */
 
-import type { ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import {
   BadgeIcon,
   BellIcon,
   ChartIcon,
+  CloseIcon,
   HistoryIcon,
   LogoutIcon,
+  MenuIcon,
   ReceiptLongIcon,
   ReportIcon,
   TableIcon,
@@ -42,10 +44,31 @@ interface TerminalChromeProps {
 }
 
 export function TerminalChrome({ children, now }: TerminalChromeProps): ReactNode {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Close sidebar on Escape key
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSidebarOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [sidebarOpen]);
+
   return (
     <>
       <header className="pos-header">
         <div className="pos-header__brand">
+          <button
+            type="button"
+            className="pos-menu-btn"
+            aria-label={sidebarOpen ? "Tutup Menu Terminal" : "Buka Menu Terminal"}
+            aria-expanded={sidebarOpen}
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+          >
+            {sidebarOpen ? <CloseIcon /> : <MenuIcon />}
+          </button>
           <img src="/logo.png" alt="Logo Tepi Sawah" className="pos-header__logo" />
           <span className="pos-header__name">Tepi Sawah</span>
           <span className="pos-header__division">Meja Kasir</span>
@@ -60,7 +83,7 @@ export function TerminalChrome({ children, now }: TerminalChromeProps): ReactNod
             <span className="pos-cashier__dot" aria-hidden="true" />
             <span className="pos-cashier__name">Kasir: Sigit</span>
             <span className="pos-cashier__sep" aria-hidden="true">•</span>
-            <span className="pos-cashier__shift">Giliran 1 Pagi — Aktif</span>
+            <span className="pos-cashier__shift">Giliran 1 Pagi: Aktif</span>
           </div>
           <div className="pos-live">
             <span className="pos-live__dot" aria-hidden="true" />
@@ -83,18 +106,32 @@ export function TerminalChrome({ children, now }: TerminalChromeProps): ReactNod
         </div>
       </header>
 
-      <aside className="pos-sidebar" aria-label="Navigasi terminal">
+      {sidebarOpen ? (
+        <div
+          className="pos-sidebar__backdrop"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      ) : null}
+
+      <aside
+        className={`pos-sidebar ${sidebarOpen ? "pos-sidebar--open" : ""}`}
+        aria-label="Navigasi terminal"
+      >
         <nav className="pos-sidebar__nav">
           {NAV_ITEMS.map((item) => (
-            <a
+            <button
               key={item.label}
-              href="#"
+              type="button"
               className={`pos-nav-item ${item.active ? "pos-nav-item--active" : ""}`}
               aria-current={item.active ? "page" : undefined}
+              onClick={() => {
+                if (window.innerWidth <= 1024) setSidebarOpen(false);
+              }}
             >
               <span className="pos-nav-item__icon" aria-hidden="true">{item.icon}</span>
               <span className="pos-nav-item__label">{item.label}</span>
-            </a>
+            </button>
           ))}
         </nav>
 

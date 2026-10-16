@@ -32,6 +32,8 @@ body:has(.kds-screen),
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
+  min-height: 100dvh;
   overflow: hidden;
 }
 
@@ -288,8 +290,8 @@ body:has(.kds-screen),
 }
 
 .live-chip--live {
-  background: rgba(46, 107, 52, 0.14);
-  color: #2e6b34;
+  background: rgba(74, 222, 128, 0.16);
+  color: #4ade80;
 }
 
 .live-chip--offline {

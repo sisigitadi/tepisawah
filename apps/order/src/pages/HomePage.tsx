@@ -321,7 +321,21 @@ export function HomePage(props: HomePageProps): ReactNode {
           </div>
         </div>
       ) : products === null ? (
-        <p aria-live="polite">Memuat menu…</p>
+        <div className="order-menu-list" aria-live="polite" aria-busy="true">
+          {[1, 2, 3].map((n) => (
+            <div key={n} className="menu-dish-card menu-dish-card--skeleton" aria-hidden="true">
+              <div className="dish-img dish-img--skeleton" />
+              <div className="dish-details">
+                <div className="dish-skeleton-line dish-skeleton-line--title" />
+                <div className="dish-skeleton-line dish-skeleton-line--desc" />
+                <div className="dish-bottom">
+                  <div className="dish-skeleton-line dish-skeleton-line--price" />
+                  <div className="dish-skeleton-line dish-skeleton-line--btn" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
         <>
           {/* Category Pills — live categories, in server order */}
@@ -471,7 +485,7 @@ export function HomePage(props: HomePageProps): ReactNode {
             className="btn-checkout"
             onClick={handleOpenCart}
           >
-            Lihat Keranjang →
+            Lihat Keranjang
           </button>
         </div>
       ) : null}

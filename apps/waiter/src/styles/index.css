@@ -34,11 +34,13 @@ body {
 /* Topbar */
 .waiter-topbar {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: 0.75rem;
   background-color: var(--color-deepmoss);
   color: white;
-  padding: 0.85rem 1.25rem;
+  padding: 0.75rem 1.25rem;
 }
 
 .waiter-brand-row {
@@ -81,9 +83,18 @@ body {
   text-decoration: none;
   font-size: 0.85rem;
   font-weight: 600;
-  padding: 0.5rem 0.85rem;
+  padding: 0.45rem 0.9rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: background-color 0.15s ease;
+}
+
+.btn-manual-order:hover {
+  background-color: var(--color-deepmoss);
 }
 
 /* Handheld Tabs */
@@ -99,6 +110,7 @@ body {
 .waiter-tab-btn {
   flex: 1;
   padding: 0.85rem 0.5rem;
+  min-height: 44px;
   border: none;
   background: transparent;
   font-size: 0.9rem;
@@ -271,11 +283,16 @@ body {
   background: #fdf3d0;
   color: #6f3f24;
   border: 1px solid #f3c644;
-  padding: 0.5rem 0.85rem;
+  padding: 0.5rem 1rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 6px;
   font-weight: 700;
   font-size: 0.85rem;
   cursor: pointer;
+  transition: background-color 0.15s ease;
 }
 
 .btn-resolve-call:hover {
@@ -397,4 +414,43 @@ body {
 .live-chip--connecting {
   background: rgba(180, 83, 9, 0.1);
   color: #b45309;
+}
+
+/* ===================== RESPONSIVE BREAKPOINTS ===================== */
+@media (min-width: 48rem) {
+  .waiter-tables-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 175px), 1fr));
+    gap: 1.15rem;
+  }
+
+  .ready-orders-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.15rem;
+  }
+}
+
+@media (max-width: 24rem) {
+  .waiter-topbar {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .waiter-logo {
+    height: 1.85rem;
+    width: 1.85rem;
+  }
+
+  .waiter-badge {
+    font-size: 0.85rem;
+  }
+
+  .call-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .btn-resolve-call {
+    width: 100%;
+  }
 }

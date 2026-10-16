@@ -152,7 +152,7 @@ export function PortalPage({ onSelectRoom }: PortalPageProps = {}): ReactNode {
               <span className="staff-app-emoji" aria-hidden="true">{app.emoji}</span>
               <span className="staff-app-name">{app.name}</span>
               <span className="staff-app-blurb">{app.blurb}</span>
-              <span className="staff-app-open">Buka Ruangan →</span>
+              <span className="staff-app-open">Buka Ruangan</span>
             </a>
           ))}
         </div>

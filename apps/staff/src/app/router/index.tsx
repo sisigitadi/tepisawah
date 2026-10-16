@@ -33,9 +33,10 @@ import {
   SessionsPage,
   ReservationsPage,
   CmsPage,
+  StaffPage,
 } from "@tepisawah/admin";
 
-type AdminTab = "home" | "reservations" | "cms" | "settings" | "catalog" | "tables" | "sessions";
+type AdminTab = "home" | "staff" | "reservations" | "cms" | "settings" | "catalog" | "tables" | "sessions";
 export type FrontOfHouseTab = "confirm" | "serve" | "manual-order" | "terminal";
 
 export function AppRouter(): ReactNode {
@@ -186,17 +187,24 @@ export function AppRouter(): ReactNode {
                 </button>
                 <button
                   type="button"
+                  className={`staff-subnav-btn ${adminTab === "staff" ? "staff-subnav-btn--active" : ""}`}
+                  onClick={() => setAdminTab("staff")}
+                >
+                  Kelola Staf
+                </button>
+                <button
+                  type="button"
                   className={`staff-subnav-btn ${adminTab === "reservations" ? "staff-subnav-btn--active" : ""}`}
                   onClick={() => setAdminTab("reservations")}
                 >
-                  📅 Reservasi Meja
+                  Reservasi Meja
                 </button>
                 <button
                   type="button"
                   className={`staff-subnav-btn ${adminTab === "cms" ? "staff-subnav-btn--active" : ""}`}
                   onClick={() => setAdminTab("cms")}
                 >
-                  🌐 Konten Web
+                  Konten Web
                 </button>
                 <button
                   type="button"
@@ -228,7 +236,9 @@ export function AppRouter(): ReactNode {
                 </button>
               </div>
 
-              {adminTab === "reservations" ? (
+              {adminTab === "staff" ? (
+                <StaffPage />
+              ) : adminTab === "reservations" ? (
                 <ReservationsPage />
               ) : adminTab === "cms" ? (
                 <CmsPage />

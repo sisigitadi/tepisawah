@@ -93,7 +93,7 @@ export function DemoPage(): ReactNode {
               <span className="demo-app-emoji" aria-hidden="true">{app.emoji}</span>
               <span className="demo-app-name">{app.name}</span>
               <span className="demo-app-blurb">{app.blurb}</span>
-              <span className="demo-app-open">Buka →</span>
+              <span className="demo-app-open">Buka Aplikasi</span>
             </a>
           ))}
         </div>
@@ -105,7 +105,7 @@ export function DemoPage(): ReactNode {
               <h2 className="web-section-title">Akun Demo per Role</h2>
               <p className="web-menu-head-sub">
                 Email ini hanya ada di backend demo (staging). Klik kartu peran
-                di layar login aplikasi — form terisi otomatis.
+                di layar login aplikasi: form terisi otomatis.
               </p>
             </div>
           </div>

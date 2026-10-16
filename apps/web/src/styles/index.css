@@ -259,7 +259,6 @@ h4 {
   background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
   border-color: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(4px);
 }
 
 .web-btn-ghost-light:hover {
@@ -611,11 +610,10 @@ h4 {
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  backdrop-filter: blur(4px);
 }
 
 .web-pill-live {
-  background: rgba(46, 107, 52, 0.9);
+  background: rgba(46, 107, 52, 0.95);
   color: var(--c-amberwarm);
   border: 1px solid rgba(221, 161, 94, 0.4);
 }
@@ -630,7 +628,7 @@ h4 {
 }
 
 .web-pill-place {
-  background: rgba(24, 58, 29, 0.8);
+  background: rgba(24, 58, 29, 0.9);
   color: var(--c-warmcream);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -669,11 +667,10 @@ h4 {
   font-size: 0.9375rem;
   line-height: 1.7;
   color: rgba(254, 250, 224, 0.94);
-  background: rgba(24, 58, 29, 0.62);
+  background: rgba(24, 58, 29, 0.88);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: var(--radius-md);
   padding: 1rem 1.125rem;
-  backdrop-filter: blur(6px);
 }
 
 .web-hero-schedule {
@@ -2042,7 +2039,7 @@ h4 {
 
 .web-res-field-row {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
   gap: 0.75rem;
 }
 

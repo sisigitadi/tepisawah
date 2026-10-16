@@ -50,7 +50,7 @@ export function AppRouter(): ReactNode {
             aria-current={page === "staff" ? "page" : undefined}
             onClick={() => setPage("staff")}
           >
-            👥 Kelola Staf
+            Kelola Staf
           </button>
           <button
             type="button"

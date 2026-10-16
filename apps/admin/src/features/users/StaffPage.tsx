@@ -3,8 +3,18 @@
  *
  * Manages staff profiles, assigned operational roles (Owner, Cashier/Waiter,
  * Kitchen, Supervisor, Admin), and account active status connected to Supabase.
+ *
+ * Enforces RBAC permissions via `@tepisawah/permissions`:
+ *   - users.read: view staff list and metrics
+ *   - users.update: edit staff display name
+ *   - users.roles_manage: assign operational role
+ *   - users.disable: toggle active/inactive status
+ *   - users.create: register new staff account
  */
-import { useEffect, useState, useMemo, type ReactNode } from "react";
+import { AccessDenied, useAuth } from "@tepisawah/auth";
+import { PERMISSIONS } from "@tepisawah/permissions";
+import { Skeleton } from "@tepisawah/ui";
+import { useEffect, useState, useMemo, useCallback, type FormEvent, type ReactNode } from "react";
 import { getSupabaseClient } from "../../lib/supabase.js";
 
 export interface StaffItem {
@@ -25,15 +35,22 @@ export interface AvailableRole {
 }
 
 const ROLE_BADGES: Record<string, { label: string; bg: string; color: string; border: string }> = {
-  owner: { label: "👑 Owner / Pemilik", bg: "#faf5ff", color: "#6b21a8", border: "#e9d5ff" },
-  admin: { label: "🛡️ Administrator", bg: "#f0fdf4", color: "#166534", border: "#bbf7d0" },
-  supervisor: { label: "⭐ Supervisor", bg: "#eff6ff", color: "#1e40af", border: "#bfdbfe" },
-  cashier: { label: "💳 Kasir & Layanan Meja", bg: "#e0f2fe", color: "#0369a1", border: "#bae6fd" },
-  waiter: { label: "🍽️ Pelayan Meja", bg: "#f0fdfa", color: "#0f766e", border: "#99f6e4" },
-  kitchen: { label: "👨‍🍳 Dapur & KDS", bg: "#fff7ed", color: "#c2410c", border: "#fed7aa" },
+  owner: { label: "Owner / Pemilik", bg: "var(--c-ricepaper)", color: "var(--c-roastedearth)", border: "var(--c-border)" },
+  admin: { label: "Administrator", bg: "var(--c-forest-light)", color: "var(--c-forest)", border: "#bbf7d0" },
+  supervisor: { label: "Supervisor", bg: "var(--c-info-bg)", color: "var(--c-info)", border: "#bae6fd" },
+  cashier: { label: "Kasir & Layanan Meja", bg: "var(--c-warmcream)", color: "var(--c-coffeebrown)", border: "var(--c-golden)" },
+  waiter: { label: "Pelayan Meja", bg: "#f0fdfa", color: "#0f766e", border: "#99f6e4" },
+  kitchen: { label: "Dapur & KDS", bg: "#fff7ed", color: "#c2410c", border: "#fed7aa" },
 };
 
 export function StaffPage(): ReactNode {
+  const { can } = useAuth();
+  const canRead = can(PERMISSIONS.USERS_READ);
+  const canManageRoles = can(PERMISSIONS.USERS_ROLES_MANAGE);
+  const canUpdateUser = can(PERMISSIONS.USERS_UPDATE);
+  const canDisableUser = can(PERMISSIONS.USERS_DISABLE);
+  const canCreateUser = can(PERMISSIONS.USERS_CREATE);
+
   const [staffList, setStaffList] = useState<StaffItem[]>([]);
   const [availableRoles, setAvailableRoles] = useState<AvailableRole[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,7 +69,7 @@ export function StaffPage(): ReactNode {
   const [newPassword, setNewPassword] = useState("TepiSawah2026!");
   const [creating, setCreating] = useState(false);
 
-  async function loadData() {
+  const loadData = useCallback(async () => {
     setLoading(true);
     setFeedback(null);
     try {
@@ -97,13 +114,35 @@ export function StaffPage(): ReactNode {
     } finally {
       setLoading(false);
     }
-  }
-
-  useEffect(() => {
-    void loadData();
   }, []);
 
+  useEffect(() => {
+    if (canRead) {
+      void loadData();
+    }
+  }, [canRead, loadData]);
+
+  // Handle Escape key to close open dialogs
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        if (editingStaff) setEditingStaff(null);
+        if (showAddModal) setShowAddModal(false);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [editingStaff, showAddModal]);
+
+  if (!canRead) {
+    return <AccessDenied />;
+  }
+
   async function handleToggleActive(staff: StaffItem) {
+    if (!canDisableUser) {
+      setFeedback({ message: "Anda tidak memiliki wewenang untuk menonaktifkan akun staf.", type: "error" });
+      return;
+    }
     setSavingId(staff.id);
     setFeedback(null);
     try {
@@ -132,6 +171,10 @@ export function StaffPage(): ReactNode {
   }
 
   async function handleChangeRole(staff: StaffItem, nextRoleCode: string) {
+    if (!canManageRoles) {
+      setFeedback({ message: "Anda tidak memiliki wewenang untuk mengubah peran staf.", type: "error" });
+      return;
+    }
     const selectedRole = availableRoles.find((r) => r.code === nextRoleCode);
     if (!selectedRole) return;
 
@@ -168,6 +211,10 @@ export function StaffPage(): ReactNode {
   }
 
   async function handleSaveName() {
+    if (!canUpdateUser) {
+      setFeedback({ message: "Anda tidak memiliki wewenang untuk mengubah nama staf.", type: "error" });
+      return;
+    }
     if (!editingStaff || !editName.trim()) return;
     setSavingId(editingStaff.id);
     setFeedback(null);
@@ -194,6 +241,70 @@ export function StaffPage(): ReactNode {
     }
   }
 
+  async function handleCreateStaff(e: FormEvent) {
+    e.preventDefault();
+    if (!canCreateUser) {
+      setFeedback({ message: "Anda tidak memiliki wewenang untuk mendaftarkan akun staf baru.", type: "error" });
+      return;
+    }
+    if (!newName.trim() || !newEmail.trim() || !newPassword.trim()) {
+      setFeedback({ message: "Semua isian formulir staf wajib diisi lengkap.", type: "error" });
+      return;
+    }
+
+    setCreating(true);
+    setFeedback(null);
+    try {
+      const client = getSupabaseClient() as any;
+
+      // 1. Sign up user through Supabase Auth
+      const { data: authData, error: authError } = await client.auth.signUp({
+        email: newEmail.trim(),
+        password: newPassword,
+        options: {
+          data: {
+            display_name: newName.trim(),
+          },
+        },
+      });
+
+      if (authError) throw authError;
+
+      const newUserId = authData.user?.id;
+      const selectedRole = availableRoles.find((r) => r.code === newRole);
+
+      if (newUserId && selectedRole) {
+        // 2. Assign initial role in user_roles
+        const { error: roleError } = await client.from("user_roles").insert({
+          user_id: newUserId,
+          role_id: selectedRole.id,
+        });
+        if (roleError) {
+          console.warn("User dibuat, namun penugasan peran memerlukan sinkronisasi:", roleError);
+        }
+      }
+
+      setFeedback({
+        message: `Akun staf ${newName.trim()} (${newEmail.trim()}) berhasil didaftarkan dengan peran ${selectedRole?.name || newRole}.`,
+        type: "success",
+      });
+
+      setShowAddModal(false);
+      setNewName("");
+      setNewEmail("");
+      setNewPassword("TepiSawah2026!");
+      await loadData();
+    } catch (err: any) {
+      console.error("Gagal menambah staf:", err);
+      setFeedback({
+        message: `Gagal mendaftarkan staf: ${err.message || err}. Pastikan email unik dan format sesuai.`,
+        type: "error",
+      });
+    } finally {
+      setCreating(false);
+    }
+  }
+
   // Summary counts
   const stats = useMemo(() => {
     const total = staffList.length;
@@ -217,7 +328,7 @@ export function StaffPage(): ReactNode {
       if (roleFilter === "ALL") return true;
       if (roleFilter === "FOH") return s.role_code === "cashier" || s.role_code === "waiter";
       if (roleFilter === "KITCHEN") return s.role_code === "kitchen";
-      if (roleFilter === "MGMT") return s.role_code === "owner" || s.role_code === "admin";
+      if (roleFilter === "MGMT") return s.role_code === "owner" || s.role_code === "admin" || s.role_code === "supervisor";
       if (roleFilter === "ACTIVE") return s.is_active;
       if (roleFilter === "INACTIVE") return !s.is_active;
       return true;
@@ -225,92 +336,50 @@ export function StaffPage(): ReactNode {
   }, [staffList, searchTerm, roleFilter]);
 
   return (
-    <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "1.5rem 1rem" }}>
+    <div className="staff-page-container">
       {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          flexWrap: "wrap",
-          gap: "1rem",
-          marginBottom: "1.5rem",
-        }}
-      >
-        <div>
-          <h1 style={{ fontSize: "1.6rem", fontWeight: 700, color: "#0f172a", margin: "0 0 0.25rem 0" }}>
-            👥 Kelola Staf Restoran
-          </h1>
-          <p style={{ color: "#64748b", margin: 0, fontSize: "0.95rem" }}>
-            Kelola profil staf operasional, penugasan peran (Owner, Kasir &amp; Waiter, Dapur KDS, Admin), dan status hak akses.
+      <div className="staff-header-row">
+        <div className="staff-header-titles">
+          <h1>Kelola Staf Restoran</h1>
+          <p className="staff-header-sub">
+            Atur profil staf operasional, penugasan peran (Owner, Kasir, Waiter, Dapur KDS, Supervisor, Admin), serta status hak akses akun sistem.
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+        <div className="staff-header-actions">
           <button
             type="button"
+            className="staff-btn staff-btn-secondary"
             onClick={() => void loadData()}
             disabled={loading}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              padding: "0.5rem 1rem",
-              borderRadius: "8px",
-              border: "1px solid #cbd5e1",
-              background: "#ffffff",
-              cursor: "pointer",
-              fontWeight: 500,
-              fontSize: "0.9rem",
-            }}
           >
-            🔄 {loading ? "Memuat..." : "Segarkan"}
+            {loading ? "Memuat…" : "Segarkan"}
           </button>
 
-          <button
-            type="button"
-            onClick={() => setShowAddModal(true)}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              padding: "0.5rem 1.15rem",
-              borderRadius: "8px",
-              border: "none",
-              background: "#15803d",
-              color: "#ffffff",
-              cursor: "pointer",
-              fontWeight: 600,
-              fontSize: "0.9rem",
-              boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
-            }}
-          >
-            ➕ Tambah Staf Baru
-          </button>
+          {canCreateUser && (
+            <button
+              type="button"
+              className="staff-btn staff-btn-primary"
+              onClick={() => setShowAddModal(true)}
+            >
+              Tambah Staf Baru
+            </button>
+          )}
         </div>
       </div>
 
       {/* Feedback Banner */}
       {feedback && (
         <div
-          style={{
-            padding: "0.85rem 1.25rem",
-            borderRadius: "8px",
-            marginBottom: "1.5rem",
-            background: feedback.type === "success" ? "#f0fdf4" : "#fef2f2",
-            border: `1px solid ${feedback.type === "success" ? "#bbf7d0" : "#fecaca"}`,
-            color: feedback.type === "success" ? "#166534" : "#991b1b",
-            fontSize: "0.9rem",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
+          role="alert"
+          className={`staff-alert ${feedback.type === "success" ? "staff-alert--success" : "staff-alert--error"}`}
         >
           <span>{feedback.message}</span>
           <button
             type="button"
+            className="staff-alert-close"
             onClick={() => setFeedback(null)}
-            style={{ background: "none", border: "none", cursor: "pointer", color: "inherit", fontWeight: 700 }}
+            aria-label="Tutup notifikasi"
           >
             ✕
           </button>
@@ -318,209 +387,264 @@ export function StaffPage(): ReactNode {
       )}
 
       {/* Metrics Row */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-          gap: "1rem",
-          marginBottom: "1.5rem",
-        }}
-      >
-        <div style={{ background: "#ffffff", padding: "1rem", borderRadius: "10px", border: "1px solid #e2e8f0" }}>
-          <div style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500 }}>Total Staf Terdaftar</div>
-          <div style={{ fontSize: "1.75rem", fontWeight: 700, color: "#0f172a", marginTop: "0.25rem" }}>
-            {stats.total}
-          </div>
+      <div className="staff-metrics-grid">
+        <div className="staff-metric-card">
+          <div className="staff-metric-label">Total Staf Terdaftar</div>
+          <div className="staff-metric-value">{stats.total}</div>
         </div>
 
-        <div style={{ background: "#f0fdf4", padding: "1rem", borderRadius: "10px", border: "1px solid #bbf7d0" }}>
-          <div style={{ fontSize: "0.85rem", color: "#166534", fontWeight: 600 }}>Staf Aktif</div>
-          <div style={{ fontSize: "1.75rem", fontWeight: 700, color: "#15803d", marginTop: "0.25rem" }}>
-            {stats.active}
-          </div>
+        <div className="staff-metric-card staff-metric-card--active">
+          <div className="staff-metric-label">Staf Aktif</div>
+          <div className="staff-metric-value">{stats.active}</div>
         </div>
 
-        <div style={{ background: "#f0f9ff", padding: "1rem", borderRadius: "10px", border: "1px solid #bae6fd" }}>
-          <div style={{ fontSize: "0.85rem", color: "#0369a1", fontWeight: 600 }}>Kasir &amp; Pelayan (FOH)</div>
-          <div style={{ fontSize: "1.75rem", fontWeight: 700, color: "#0284c7", marginTop: "0.25rem" }}>
-            {stats.foh}
-          </div>
+        <div className="staff-metric-card staff-metric-card--foh">
+          <div className="staff-metric-label">Kasir &amp; Pelayan (FOH)</div>
+          <div className="staff-metric-value">{stats.foh}</div>
         </div>
 
-        <div style={{ background: "#fff7ed", padding: "1rem", borderRadius: "10px", border: "1px solid #fed7aa" }}>
-          <div style={{ fontSize: "0.85rem", color: "#9a3412", fontWeight: 600 }}>Dapur &amp; KDS</div>
-          <div style={{ fontSize: "1.75rem", fontWeight: 700, color: "#ea580c", marginTop: "0.25rem" }}>
-            {stats.kitchen}
-          </div>
+        <div className="staff-metric-card staff-metric-card--kitchen">
+          <div className="staff-metric-label">Dapur &amp; KDS</div>
+          <div className="staff-metric-value">{stats.kitchen}</div>
         </div>
 
-        <div style={{ background: "#faf5ff", padding: "1rem", borderRadius: "10px", border: "1px solid #e9d5ff" }}>
-          <div style={{ fontSize: "0.85rem", color: "#6b21a8", fontWeight: 600 }}>Owner &amp; Manajemen</div>
-          <div style={{ fontSize: "1.75rem", fontWeight: 700, color: "#7e22ce", marginTop: "0.25rem" }}>
-            {stats.mgmt}
-          </div>
+        <div className="staff-metric-card staff-metric-card--mgmt">
+          <div className="staff-metric-label">Owner &amp; Manajemen</div>
+          <div className="staff-metric-value">{stats.mgmt}</div>
         </div>
       </div>
 
       {/* Filter & Search Bar */}
-      <div
-        style={{
-          background: "#ffffff",
-          padding: "1rem",
-          borderRadius: "10px",
-          border: "1px solid #e2e8f0",
-          marginBottom: "1.5rem",
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "1rem",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+      <div className="staff-toolbar">
+        <div className="staff-filter-tabs">
           {[
             { key: "ALL", label: "Semua Staf" },
             { key: "FOH", label: "Kasir & Pelayan" },
             { key: "KITCHEN", label: "Dapur KDS" },
-            { key: "MGMT", label: "Manajemen / Owner" },
+            { key: "MGMT", label: "Manajemen" },
             { key: "ACTIVE", label: "Aktif" },
             { key: "INACTIVE", label: "Nonaktif" },
           ].map((tab) => (
             <button
               key={tab.key}
               type="button"
+              className={`staff-filter-btn ${roleFilter === tab.key ? "staff-filter-btn--active" : ""}`}
               onClick={() => setRoleFilter(tab.key)}
-              style={{
-                padding: "0.4rem 0.85rem",
-                borderRadius: "6px",
-                border: "1px solid",
-                borderColor: roleFilter === tab.key ? "#15803d" : "#e2e8f0",
-                background: roleFilter === tab.key ? "#15803d" : "#f8fafc",
-                color: roleFilter === tab.key ? "#ffffff" : "#475569",
-                fontWeight: roleFilter === tab.key ? 600 : 500,
-                fontSize: "0.85rem",
-                cursor: "pointer",
-              }}
             >
               {tab.label}
             </button>
           ))}
         </div>
 
-        <div style={{ minWidth: "260px" }}>
+        <div className="staff-search-wrap">
           <input
             type="text"
-            placeholder="Cari nama staf atau peran..."
+            className="staff-search-input"
+            placeholder="Cari nama staf atau peran operasional…"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "0.5rem 0.85rem",
-              borderRadius: "6px",
-              border: "1px solid #cbd5e1",
-              fontSize: "0.9rem",
-              outline: "none",
-            }}
           />
         </div>
       </div>
 
-      {/* Staff Table */}
+      {/* Staff Content */}
       {loading ? (
-        <div style={{ padding: "3rem", textAlign: "center", color: "#64748b" }}>Memuat daftar staf...</div>
+        <div className="staff-table-wrap" style={{ padding: "1.5rem" }} aria-busy="true">
+          <Skeleton height="3.5rem" width="100%" />
+          <div style={{ marginTop: "0.75rem" }}>
+            <Skeleton height="3rem" width="100%" />
+          </div>
+          <div style={{ marginTop: "0.75rem" }}>
+            <Skeleton height="3rem" width="100%" />
+          </div>
+        </div>
       ) : filteredStaff.length === 0 ? (
         <div
           style={{
-            padding: "3rem",
+            padding: "3rem 1.5rem",
             textAlign: "center",
-            background: "#ffffff",
+            background: "var(--c-surface)",
             borderRadius: "10px",
-            border: "1px dashed #cbd5e1",
+            border: "1px dashed var(--c-border)",
           }}
         >
-          <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>👥</div>
-          <div style={{ fontWeight: 600, color: "#1e293b" }}>Tidak ada staf yang sesuai filter</div>
-          <div style={{ fontSize: "0.85rem", color: "#64748b", marginTop: "0.25rem" }}>
-            Silakan ubah kata kunci pencarian atau bersihkan filter.
+          <div style={{ fontWeight: 700, color: "var(--c-deepmoss)", fontSize: "1.1rem" }}>
+            Tidak ada staf yang sesuai filter
+          </div>
+          <div style={{ fontSize: "0.875rem", color: "var(--c-text-muted)", marginTop: "0.35rem" }}>
+            Ubah kata kunci pencarian atau bersihkan filter di atas.
           </div>
         </div>
       ) : (
-        <div style={{ background: "#ffffff", borderRadius: "10px", border: "1px solid #e2e8f0", overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "0.9rem" }}>
-            <thead>
-              <tr style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", color: "#475569" }}>
-                <th style={{ padding: "0.85rem 1rem", fontWeight: 600 }}>Staf</th>
-                <th style={{ padding: "0.85rem 1rem", fontWeight: 600 }}>Peran Operasional</th>
-                <th style={{ padding: "0.85rem 1rem", fontWeight: 600 }}>Status</th>
-                <th style={{ padding: "0.85rem 1rem", fontWeight: 600, textAlign: "right" }}>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredStaff.map((staff) => {
-                const badge = ROLE_BADGES[staff.role_code] || {
-                  label: staff.role_name,
-                  bg: "#f1f5f9",
-                  color: "#334155",
-                  border: "#cbd5e1",
-                };
-                const isSaving = savingId === staff.id;
+        <>
+          {/* Desktop & Tablet Table View */}
+          <div className="staff-table-wrap">
+            <table className="staff-table">
+              <thead>
+                <tr>
+                  <th scope="col">Profil Staf</th>
+                  <th scope="col">Peran Operasional</th>
+                  <th scope="col">Status Akun</th>
+                  <th scope="col" style={{ textAlign: "right" }}>Tindakan</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredStaff.map((staff) => {
+                  const badge = ROLE_BADGES[staff.role_code] || {
+                    label: staff.role_name,
+                    bg: "var(--c-surface)",
+                    color: "var(--c-text-main)",
+                    border: "var(--c-border)",
+                  };
+                  const isSaving = savingId === staff.id;
 
-                return (
-                  <tr
-                    key={staff.id}
-                    style={{
-                      borderBottom: "1px solid #f1f5f9",
-                      background: staff.is_active ? "#ffffff" : "#fbfbfc",
-                      opacity: staff.is_active ? 1 : 0.75,
-                    }}
-                  >
-                    {/* Name column */}
-                    <td style={{ padding: "1rem" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                        <div
+                  return (
+                    <tr
+                      key={staff.id}
+                      className={staff.is_active ? undefined : "staff-table tr--inactive"}
+                    >
+                      <td>
+                        <div className="staff-user-cell">
+                          <div
+                            className="staff-avatar"
+                            style={{
+                              background: badge.bg,
+                              color: badge.color,
+                              borderColor: badge.border,
+                            }}
+                          >
+                            {staff.display_name.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <div className="staff-name">{staff.display_name}</div>
+                            <div className="staff-id">ID: {staff.id.slice(0, 8)}…</div>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td>
+                        <select
+                          className="staff-role-select"
+                          value={staff.role_code}
+                          disabled={isSaving || !canManageRoles}
+                          onChange={(e) => void handleChangeRole(staff, e.target.value)}
                           style={{
-                            width: "38px",
-                            height: "38px",
-                            borderRadius: "50%",
                             background: badge.bg,
                             color: badge.color,
-                            border: `1px solid ${badge.border}`,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontWeight: 700,
-                            fontSize: "1rem",
-                            flexShrink: 0,
+                            borderColor: badge.border,
                           }}
                         >
-                          {staff.display_name.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <div style={{ fontWeight: 600, color: "#0f172a", fontSize: "0.95rem" }}>
-                            {staff.display_name}
-                          </div>
-                          <div style={{ fontSize: "0.75rem", color: "#94a3b8" }}>
-                            ID: {staff.id.slice(0, 8)}...
-                          </div>
-                        </div>
-                      </div>
-                    </td>
+                          {availableRoles.map((r) => (
+                            <option key={r.id} value={r.code}>
+                              {ROLE_BADGES[r.code]?.label || r.name}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
 
-                    {/* Role dropdown column */}
-                    <td style={{ padding: "1rem" }}>
-                      <select
-                        value={staff.role_code}
-                        disabled={isSaving}
-                        onChange={(e) => void handleChangeRole(staff, e.target.value)}
+                      <td>
+                        <span
+                          className={`staff-status-chip ${
+                            staff.is_active ? "staff-status-chip--active" : "staff-status-chip--inactive"
+                          }`}
+                        >
+                          <span className="staff-status-dot" />
+                          {staff.is_active ? "Aktif" : "Nonaktif"}
+                        </span>
+                      </td>
+
+                      <td style={{ textAlign: "right" }}>
+                        <div className="staff-action-group">
+                          {canUpdateUser && (
+                            <button
+                              type="button"
+                              className="staff-action-btn staff-action-btn--edit"
+                              disabled={isSaving}
+                              onClick={() => {
+                                setEditingStaff(staff);
+                                setEditName(staff.display_name);
+                              }}
+                            >
+                              Edit Nama
+                            </button>
+                          )}
+
+                          {canDisableUser && (
+                            <button
+                              type="button"
+                              className={`staff-action-btn ${
+                                staff.is_active
+                                  ? "staff-action-btn--toggle-off"
+                                  : "staff-action-btn--toggle-on"
+                              }`}
+                              disabled={isSaving}
+                              onClick={() => void handleToggleActive(staff)}
+                            >
+                              {staff.is_active ? "Nonaktifkan" : "Aktifkan"}
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Stacked Cards View (< 48rem) */}
+          <div className="staff-cards-view">
+            {filteredStaff.map((staff) => {
+              const badge = ROLE_BADGES[staff.role_code] || {
+                label: staff.role_name,
+                bg: "var(--c-surface)",
+                color: "var(--c-text-main)",
+                border: "var(--c-border)",
+              };
+              const isSaving = savingId === staff.id;
+
+              return (
+                <div key={staff.id} className="staff-card-item">
+                  <div className="staff-card-head">
+                    <div className="staff-user-cell">
+                      <div
+                        className="staff-avatar"
                         style={{
-                          padding: "0.4rem 0.65rem",
-                          borderRadius: "6px",
-                          border: `1px solid ${badge.border}`,
                           background: badge.bg,
                           color: badge.color,
-                          fontWeight: 600,
-                          fontSize: "0.85rem",
-                          cursor: isSaving ? "not-allowed" : "pointer",
+                          borderColor: badge.border,
+                        }}
+                      >
+                        {staff.display_name.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <div className="staff-name">{staff.display_name}</div>
+                        <div className="staff-id">ID: {staff.id.slice(0, 8)}…</div>
+                      </div>
+                    </div>
+
+                    <span
+                      className={`staff-status-chip ${
+                        staff.is_active ? "staff-status-chip--active" : "staff-status-chip--inactive"
+                      }`}
+                    >
+                      <span className="staff-status-dot" />
+                      {staff.is_active ? "Aktif" : "Nonaktif"}
+                    </span>
+                  </div>
+
+                  <div className="staff-card-details">
+                    <div className="staff-form-group" style={{ marginBottom: 0 }}>
+                      <label className="staff-form-label">Peran Operasional</label>
+                      <select
+                        className="staff-role-select"
+                        value={staff.role_code}
+                        disabled={isSaving || !canManageRoles}
+                        onChange={(e) => void handleChangeRole(staff, e.target.value)}
+                        style={{
+                          background: badge.bg,
+                          color: badge.color,
+                          borderColor: badge.border,
                         }}
                       >
                         {availableRoles.map((r) => (
@@ -529,244 +653,224 @@ export function StaffPage(): ReactNode {
                           </option>
                         ))}
                       </select>
-                    </td>
+                    </div>
 
-                    {/* Status column */}
-                    <td style={{ padding: "1rem" }}>
-                      <span
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "0.35rem",
-                          padding: "0.25rem 0.65rem",
-                          borderRadius: "12px",
-                          fontSize: "0.8rem",
-                          fontWeight: 600,
-                          background: staff.is_active ? "#f0fdf4" : "#fef2f2",
-                          color: staff.is_active ? "#16a34a" : "#dc2626",
-                          border: `1px solid ${staff.is_active ? "#bbf7d0" : "#fecaca"}`,
-                        }}
-                      >
-                        <span
-                          style={{
-                            width: "6px",
-                            height: "6px",
-                            borderRadius: "50%",
-                            background: staff.is_active ? "#16a34a" : "#dc2626",
-                          }}
-                        />
-                        {staff.is_active ? "Aktif" : "Nonaktif"}
-                      </span>
-                    </td>
-
-                    {/* Action buttons column */}
-                    <td style={{ padding: "1rem", textAlign: "right" }}>
-                      <div style={{ display: "inline-flex", gap: "0.5rem" }}>
+                    <div className="staff-card-actions">
+                      {canUpdateUser && (
                         <button
                           type="button"
+                          className="staff-action-btn staff-action-btn--edit"
                           disabled={isSaving}
                           onClick={() => {
                             setEditingStaff(staff);
                             setEditName(staff.display_name);
                           }}
-                          style={{
-                            padding: "0.35rem 0.75rem",
-                            borderRadius: "6px",
-                            border: "1px solid #cbd5e1",
-                            background: "#ffffff",
-                            fontSize: "0.8rem",
-                            cursor: isSaving ? "not-allowed" : "pointer",
-                            fontWeight: 500,
-                          }}
                         >
-                          ✏️ Edit Nama
+                          Edit Nama
                         </button>
+                      )}
 
+                      {canDisableUser && (
                         <button
                           type="button"
+                          className={`staff-action-btn ${
+                            staff.is_active
+                              ? "staff-action-btn--toggle-off"
+                              : "staff-action-btn--toggle-on"
+                          }`}
                           disabled={isSaving}
                           onClick={() => void handleToggleActive(staff)}
-                          style={{
-                            padding: "0.35rem 0.75rem",
-                            borderRadius: "6px",
-                            border: `1px solid ${staff.is_active ? "#fed7aa" : "#bbf7d0"}`,
-                            background: staff.is_active ? "#fff7ed" : "#f0fdf4",
-                            color: staff.is_active ? "#c2410c" : "#15803d",
-                            fontSize: "0.8rem",
-                            cursor: isSaving ? "not-allowed" : "pointer",
-                            fontWeight: 600,
-                          }}
                         >
                           {staff.is_active ? "Nonaktifkan" : "Aktifkan"}
                         </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
       )}
 
-      {/* Edit Name Modal */}
+      {/* Edit Name Modal Dialog */}
       {editingStaff && (
         <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-            padding: "1rem",
-          }}
+          className="staff-modal-backdrop"
+          onClick={() => setEditingStaff(null)}
+          role="presentation"
         >
           <div
-            style={{
-              background: "#ffffff",
-              borderRadius: "12px",
-              padding: "1.5rem",
-              width: "100%",
-              maxWidth: "420px",
-              boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)",
-            }}
+            className="staff-modal-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="edit-name-title"
+            onClick={(e) => e.stopPropagation()}
           >
-            <h3 style={{ margin: "0 0 1rem 0", fontSize: "1.15rem", fontWeight: 700, color: "#0f172a" }}>
-              Ubah Nama Staf
-            </h3>
+            <div className="staff-modal-header">
+              <h2 id="edit-name-title" className="staff-modal-title">
+                Ubah Nama Staf
+              </h2>
+              <button
+                type="button"
+                className="staff-modal-close"
+                onClick={() => setEditingStaff(null)}
+                aria-label="Tutup dialog"
+              >
+                ✕
+              </button>
+            </div>
 
-            <div style={{ marginBottom: "1rem" }}>
-              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#475569", marginBottom: "0.4rem" }}>
+            <div className="staff-form-group">
+              <label htmlFor="staff-display-name" className="staff-form-label">
                 Nama Tampilan Staf
               </label>
               <input
+                id="staff-display-name"
                 type="text"
+                className="staff-form-input"
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
                 placeholder="Contoh: Siti Rahma (Kasir)"
-                style={{
-                  width: "100%",
-                  padding: "0.6rem 0.85rem",
-                  borderRadius: "6px",
-                  border: "1px solid #cbd5e1",
-                  fontSize: "0.95rem",
-                  boxSizing: "border-box",
-                }}
+                autoFocus
               />
             </div>
 
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem" }}>
+            <div className="staff-modal-footer">
               <button
                 type="button"
+                className="staff-btn staff-btn-secondary"
                 onClick={() => setEditingStaff(null)}
-                style={{
-                  padding: "0.5rem 1rem",
-                  borderRadius: "6px",
-                  border: "1px solid #cbd5e1",
-                  background: "#f8fafc",
-                  cursor: "pointer",
-                  fontWeight: 500,
-                }}
               >
                 Batal
               </button>
               <button
                 type="button"
-                disabled={savingId === editingStaff.id}
+                className="staff-btn staff-btn-primary"
+                disabled={savingId === editingStaff.id || !editName.trim()}
                 onClick={() => void handleSaveName()}
-                style={{
-                  padding: "0.5rem 1.25rem",
-                  borderRadius: "6px",
-                  border: "none",
-                  background: "#15803d",
-                  color: "#ffffff",
-                  cursor: "pointer",
-                  fontWeight: 600,
-                }}
               >
-                {savingId === editingStaff.id ? "Menyimpan..." : "Simpan Nama"}
+                {savingId === editingStaff.id ? "Menyimpan…" : "Simpan Perubahan"}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Add Staff Guide Modal */}
+      {/* Add Staff Modal Dialog */}
       {showAddModal && (
         <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-            padding: "1rem",
-          }}
+          className="staff-modal-backdrop"
+          onClick={() => setShowAddModal(false)}
+          role="presentation"
         >
           <div
-            style={{
-              background: "#ffffff",
-              borderRadius: "12px",
-              padding: "1.75rem",
-              width: "100%",
-              maxWidth: "560px",
-              boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)",
-              maxHeight: "90vh",
-              overflowY: "auto",
-            }}
+            className="staff-modal-card staff-modal-card--lg"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="add-staff-title"
+            onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-              <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 700, color: "#0f172a" }}>
-                ➕ Panduan Menambah Akun Staf Baru
-              </h3>
+            <div className="staff-modal-header">
+              <h2 id="add-staff-title" className="staff-modal-title">
+                Pendaftaran Akun Staf Baru
+              </h2>
               <button
                 type="button"
+                className="staff-modal-close"
                 onClick={() => setShowAddModal(false)}
-                style={{ background: "none", border: "none", fontSize: "1.25rem", cursor: "pointer", color: "#64748b" }}
+                aria-label="Tutup dialog"
               >
                 ✕
               </button>
             </div>
 
-            <p style={{ color: "#475569", fontSize: "0.9rem", lineHeight: 1.6, margin: "0 0 1rem 0" }}>
-              Untuk keamanan operasional restoran pada sistem produksi, akun login staf didaftarkan resmi melalui Supabase Auth agar data transaksi kasir dan audit keuangan terlindungi.
-            </p>
-
-            <div style={{ background: "#f8fafc", padding: "1rem", borderRadius: "8px", border: "1px solid #e2e8f0", marginBottom: "1.25rem" }}>
-              <div style={{ fontWeight: 700, color: "#0f172a", marginBottom: "0.5rem", fontSize: "0.9rem" }}>
-                Langkah Cepat (1 Menit):
+            <form onSubmit={(e) => void handleCreateStaff(e)}>
+              <div className="staff-form-group">
+                <label htmlFor="new-staff-name" className="staff-form-label">
+                  Nama Lengkap Staf
+                </label>
+                <input
+                  id="new-staff-name"
+                  type="text"
+                  required
+                  className="staff-form-input"
+                  placeholder="Contoh: Siti Rahma"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  autoFocus
+                />
               </div>
-              <ol style={{ margin: 0, paddingLeft: "1.25rem", color: "#334155", fontSize: "0.85rem", lineHeight: 1.7 }}>
-                <li>Buka <strong>Supabase Dashboard</strong> ➔ menu <strong>Authentication &gt; Users</strong>.</li>
-                <li>Klik tombol <strong>"Add user"</strong> ➔ masukkan email resmi staf (contoh: <code>kasir@tepisawah.id</code>).</li>
-                <li>Masukkan kata sandi staf &amp; pastikan <strong>"Auto Confirm User" ON</strong>.</li>
-                <li>Jalankan skrip yang telah disiapkan di repositori: <code>provision-official-staff.sql</code> di menu <strong>SQL Editor</strong>.</li>
-                <li>Staf baru akan langsung muncul di daftar halaman ini dan siap bertugas di portal staf!</li>
-              </ol>
-            </div>
 
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <button
-                type="button"
-                onClick={() => setShowAddModal(false)}
-                style={{
-                  padding: "0.55rem 1.25rem",
-                  borderRadius: "6px",
-                  border: "none",
-                  background: "#15803d",
-                  color: "#ffffff",
-                  cursor: "pointer",
-                  fontWeight: 600,
-                  fontSize: "0.9rem",
-                }}
-              >
-                Saya Mengerti
-              </button>
-            </div>
+              <div className="staff-form-group">
+                <label htmlFor="new-staff-email" className="staff-form-label">
+                  Email Akun Staf
+                </label>
+                <input
+                  id="new-staff-email"
+                  type="email"
+                  required
+                  className="staff-form-input"
+                  placeholder="Contoh: sitirahma@tepisawah.id"
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                />
+              </div>
+
+              <div className="staff-form-group">
+                <label htmlFor="new-staff-role" className="staff-form-label">
+                  Peran Operasional Awal
+                </label>
+                <select
+                  id="new-staff-role"
+                  className="staff-form-select"
+                  value={newRole}
+                  onChange={(e) => setNewRole(e.target.value)}
+                >
+                  {availableRoles.map((r) => (
+                    <option key={r.id} value={r.code}>
+                      {ROLE_BADGES[r.code]?.label || r.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="staff-form-group">
+                <label htmlFor="new-staff-password" className="staff-form-label">
+                  Password Sementara
+                </label>
+                <input
+                  id="new-staff-password"
+                  type="text"
+                  required
+                  minLength={8}
+                  className="staff-form-input"
+                  placeholder="Minimal 8 karakter"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+                <small style={{ color: "var(--c-text-muted)", fontSize: "0.75rem", marginTop: "0.25rem" }}>
+                  Staf dapat memperbarui kata sandi setelah berhasil login ke portal staf.
+                </small>
+              </div>
+
+              <div className="staff-modal-footer">
+                <button
+                  type="button"
+                  className="staff-btn staff-btn-secondary"
+                  onClick={() => setShowAddModal(false)}
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="staff-btn staff-btn-primary"
+                  disabled={creating}
+                >
+                  {creating ? "Mendaftarkan…" : "Daftarkan Staf"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
