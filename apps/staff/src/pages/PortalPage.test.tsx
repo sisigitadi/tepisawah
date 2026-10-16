@@ -87,7 +87,7 @@ function renderPortal(roles: readonly string[]) {
   );
 }
 
-describe("Staff portal launcher", () => {
+describe("Staff portal launcher (Soft Opening Consolidation)", () => {
   afterEach(() => {
     cleanup();
   });
@@ -98,28 +98,27 @@ describe("Staff portal launcher", () => {
     await waitFor(() =>
       expect(screen.getByText(/Selamat datang, Siti/)).toBeInTheDocument(),
     );
-    expect(screen.getByText("Kasir")).toBeInTheDocument();
+    expect(screen.getByText("Kasir & Layanan Meja")).toBeInTheDocument();
   });
 
-  it("shows POS and Layanan Meja for cashier", async () => {
+  it("shows unified Kasir & Layanan Meja for cashier", async () => {
     renderPortal(["cashier"]);
 
     await waitFor(() =>
-      expect(screen.getByText("Meja Kasir & Pembayaran")).toBeInTheDocument(),
+      expect(screen.getByText("Kasir & Layanan Meja")).toBeInTheDocument(),
     );
-    expect(screen.getByText("Layanan Meja & Antar")).toBeInTheDocument();
     expect(screen.queryByText("Panel Pengelola Restoran")).not.toBeInTheDocument();
     expect(screen.queryByText("Layar Pesanan Dapur")).not.toBeInTheDocument();
   });
 
-  it("shows POS and Layanan Meja for waiter (backward-compat alias to cashier role group)", async () => {
+  it("shows unified Kasir & Layanan Meja for waiter", async () => {
     renderPortal(["waiter"]);
 
     await waitFor(() =>
-      expect(screen.getByText("Meja Kasir & Pembayaran")).toBeInTheDocument(),
+      expect(screen.getByText("Kasir & Layanan Meja")).toBeInTheDocument(),
     );
-    expect(screen.getByText("Layanan Meja & Antar")).toBeInTheDocument();
     expect(screen.queryByText("Panel Pengelola Restoran")).not.toBeInTheDocument();
+    expect(screen.queryByText("Layar Pesanan Dapur")).not.toBeInTheDocument();
   });
 
   it("shows only Kitchen display for kitchen staff", async () => {
@@ -128,18 +127,18 @@ describe("Staff portal launcher", () => {
     await waitFor(() =>
       expect(screen.getByText("Layar Pesanan Dapur")).toBeInTheDocument(),
     );
-    expect(screen.queryByText("Meja Kasir & Pembayaran")).not.toBeInTheDocument();
+    expect(screen.queryByText("Kasir & Layanan Meja")).not.toBeInTheDocument();
+    expect(screen.queryByText("Panel Pengelola Restoran")).not.toBeInTheDocument();
   });
 
-  it("shows all operational apps for owner, admin, and supervisor", async () => {
+  it("shows all operational doors for owner, admin, and supervisor", async () => {
     for (const role of ["owner", "admin", "supervisor"] as const) {
       renderPortal([role]);
       await waitFor(() =>
-        expect(screen.getByText("Meja Kasir & Pembayaran")).toBeInTheDocument(),
+        expect(screen.getByText("Kasir & Layanan Meja")).toBeInTheDocument(),
       );
       expect(screen.getByText("Panel Pengelola Restoran")).toBeInTheDocument();
       expect(screen.getByText("Layar Pesanan Dapur")).toBeInTheDocument();
-      expect(screen.getByText("Layanan Meja & Antar")).toBeInTheDocument();
       cleanup();
     }
   }, 15000);
@@ -148,23 +147,21 @@ describe("Staff portal launcher", () => {
     renderPortal(["kitchen", "cashier"]);
 
     await waitFor(() =>
-      expect(screen.getByText("Meja Kasir & Pembayaran")).toBeInTheDocument(),
+      expect(screen.getByText("Kasir & Layanan Meja")).toBeInTheDocument(),
     );
     expect(screen.getByText("Layar Pesanan Dapur")).toBeInTheDocument();
-    expect(screen.getByText("Layanan Meja & Antar")).toBeInTheDocument();
-    // Canonical order in APPS: pos, kitchen, waiter.
     const names = screen.getAllByRole("link").map((link) => {
       const name = link.querySelector(".staff-app-name");
       return name?.textContent?.trim();
     });
-    expect(names).toEqual(["Meja Kasir & Pembayaran", "Layar Pesanan Dapur", "Layanan Meja & Antar"]);
+    expect(names).toEqual(["Kasir & Layanan Meja", "Layar Pesanan Dapur"]);
   }, 15000);
 
   it("links to the local dev ports when no deployment override is set", async () => {
     renderPortal(["cashier"]);
 
     const pos = await waitFor(() =>
-      screen.getByRole("link", { name: /Meja Kasir & Pembayaran/ }),
+      screen.getByRole("link", { name: /Kasir & Layanan Meja/ }),
     );
     expect(pos).toHaveAttribute("href", "http://127.0.0.1:5175");
   });

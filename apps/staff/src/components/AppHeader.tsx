@@ -1,27 +1,14 @@
 /**
- * @tepisawah/staff — application header.
+ * @tepisawah/staff — application header (Production Soft Opening).
  *
- * Portal chrome: brand on the left, the resolved staff identity on the right.
- * The identity block only renders for a signed-in user, so the login screen
- * shows brand chrome without a dangling sign-out button.
+ * Portal chrome: brand on the left, active room navigation in center, and
+ * staff identity with sign-out on the right. 100% clean production mode.
  */
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { useAuth } from "@tepisawah/auth";
-import { DEMO_ACCOUNTS } from "@tepisawah/config";
 
-import { env } from "../lib/env.js";
 import { ROLE_ROOMS, ROOM_METAS, type StaffRoom } from "../lib/navigation.js";
-
-/** Indonesian label for a role code, shown as a chip next to the identity. */
-const ROLE_LABELS: Record<string, string> = {
-  owner: "Pemilik (Owner)",
-  admin: "Pengelola",
-  supervisor: "Pengelola",
-  cashier: "Kasir",
-  waiter: "Pelayan",
-  kitchen: "Dapur",
-};
 
 export interface AppHeaderProps {
   readonly currentRoom?: StaffRoom;
@@ -32,8 +19,7 @@ export function AppHeader({
   currentRoom = "portal",
   onNavigate,
 }: AppHeaderProps): ReactNode {
-  const { user, profile, roles, signIn, signOut } = useAuth();
-  const [switchingRole, setSwitchingRole] = useState(false);
+  const { user, profile, roles, signOut } = useAuth();
 
   // Compute allowed rooms for this staff member
   const allowedRooms = new Set<StaffRoom>(["portal"]);
@@ -42,7 +28,7 @@ export function AppHeader({
   }
 
   const navItems: readonly StaffRoom[] = (
-    ["portal", "pos", "kitchen", "waiter", "admin"] as const
+    ["portal", "pos", "kitchen", "admin"] as const
   ).filter((r) => allowedRooms.has(r));
 
   const handleSignOut = async () => {
@@ -52,23 +38,6 @@ export function AppHeader({
       window.history.pushState({}, "", "/");
     }
     await signOut();
-  };
-
-  const handleSwitchDemoRole = async (targetEmail: string) => {
-    const account = DEMO_ACCOUNTS.find((a) => a.email === targetEmail);
-    if (!account) return;
-    setSwitchingRole(true);
-    try {
-      if (onNavigate) {
-        onNavigate("portal");
-      }
-      window.history.pushState({}, "", "/");
-      await signIn(account.email, account.password);
-    } catch (err) {
-      console.error("Gagal berpindah peran demo:", err);
-    } finally {
-      setSwitchingRole(false);
-    }
   };
 
   return (
@@ -115,25 +84,6 @@ export function AppHeader({
 
       {user ? (
         <div className="staff-identity">
-          {env.demoMode ? (
-            <div className="staff-demo-role-select" title="Ganti Peran Cepat (Mode Demo)">
-              <span className="staff-demo-role-label">Peran Demo:</span>
-              <select
-                className="staff-demo-role-dropdown"
-                value={user.email ?? ""}
-                disabled={switchingRole}
-                onChange={(e) => void handleSwitchDemoRole(e.target.value)}
-                aria-label="Pilih Peran Demo"
-              >
-                {DEMO_ACCOUNTS.map((acc) => (
-                  <option key={acc.email} value={acc.email}>
-                    {acc.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ) : null}
-
           <div className="staff-identity-user">
             <span className="staff-identity-name">
               {(profile?.display_name || user.email || "Staf").replace(/\s*\(Demo\)/gi, "").trim()}
@@ -143,12 +93,10 @@ export function AppHeader({
                 ? "Pemilik Restoran"
                 : roles.includes("admin") || roles.includes("supervisor")
                 ? "Pengelola Restoran"
-                : roles.includes("cashier")
-                ? "Kasir Utama"
+                : roles.includes("cashier") || roles.includes("waiter")
+                ? "Kasir & Layanan Meja"
                 : roles.includes("kitchen")
-                ? "Dapur"
-                : roles.includes("waiter")
-                ? "Pramusaji"
+                ? "Dapur (KDS)"
                 : "Staf Operasional"}
             </span>
           </div>
@@ -164,4 +112,3 @@ export function AppHeader({
     </header>
   );
 }
-

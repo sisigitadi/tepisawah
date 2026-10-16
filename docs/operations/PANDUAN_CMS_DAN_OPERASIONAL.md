@@ -126,27 +126,39 @@ Modul CMS dirancang dengan prinsip *zero-code* dan antarmuka ramah pengguna. Set
 
 ---
 
-## 3. Manajemen Staf Produksi Bersih
+## 3. Manajemen Staf & Operasional Soft Opening (Front of House Terpadu)
 
-Pada lingkungan produksi aktif, **seluruh akun demo telah dinonaktifkan** demi keamanan data transaksi restoran.
+Untuk memaksimalkan efisiensi tenaga kerja dan menekan biaya operasional selama periode **Soft Opening**, portal staf telah disederhanakan menjadi **3 Pintu Operasional Utama** dengan penyatuan peran Kasir dan Pramusaji (*Waiter*) ke dalam satu meja kerja Front of House (FOH):
 
-### Daftar Peran Resmi (*Canonical Roles*):
-1. **Owner / Pemilik Resto (`owner`)**:
-   - Hak Akses: Seluruh fitur sistem (Laporan Keuangan, Pengaturan Meja, Pengaturan Harga, CMS Web, Otorisasi Kasir, dan Hak Batalkan Transaksi).
-2. **Store Manager / Manajer Toko (`manager`)**:
-   - Hak Akses: Pengawasan operasional harian, kelola stok menu, kelola CMS web publik, dan laporan kasir harian.
-3. **Kasir (`cashier`)**:
-   - Hak Akses: Meja Kasir POS (`/pos`), konfirmasi pesanan QR meja, cetak struk pembayaran, terima tunai/QRIS/kartu, dan buka/tutup giliran kerja (*shift*).
-4. **Dapur (`kitchen`)**:
-   - Hak Akses: Layar Dapur KDS (`/kitchen`), pemantauan antrean masak, dan konfirmasi hidangan siap antar.
-5. **Pelayan / Pramusaji (`waiter`)**:
-   - Hak Akses: Layanan Meja & Antar (`/waiter`), melihat nomor meja, mengantar makanan siap saji ke pelanggan, dan bantuan pesanan tamu.
+### 3 Pintu Operasional Utama:
+1. **Kasir & Layanan Meja (Front of House — `/pos`)**:
+   - **Peran Pengguna**: Kasir (`cashier`) dan Pramusaji (`waiter`).
+   - **Tujuan**: Memungkinkan 1 atau 2 orang staf menangani seluruh alur lantai depan secara simultan tanpa berpindah aplikasi.
+   - **4 Sub-Aksi Terpadu (Akses Cepat & Ramah Jempol Ponsel)**:
+     1. **📥 Antrean Konfirmasi QR (`/pos?tab=confirm`)**: Memvalidasi dan menyetujui pesanan yang dikirim pelanggan dari meja lewat scan QR.
+     2. **🍽️ Siap Antar ke Meja (`/pos?tab=serve`)**: Memantau hidangan matang dari dapur dan mencentang pesanan yang telah disajikan ke saung/meja pelanggan.
+     3. **✍️ Catat Pesanan Meja (`/pos?tab=manual-order`)**: Membantu tamu yang ingin memesan langsung lewat pelayan di meja atau tamu tanpa smartphone.
+     4. **💳 Meja Kasir & Bayar Tagihan (`/pos?tab=terminal`)**: Terminal kasir utama untuk memilih meja, melihat rincian tagihan, menerima pembayaran tunai/QRIS/kartu, dan mencetak struk resmi.
+   - **Navigasi Ponsel (Bottom Navigation Bar)**: Pada layar HP atau tablet vertikal (< 768px), navigasi otomatis berpindah ke bilah bawah (*bottom bar*) ramah sentuhan jempol dengan target sentuh min 48px.
+
+2. **Dapur & Bar Minuman (Back of House / KDS — `/kitchen`)**:
+   - **Peran Pengguna**: Koki Dapur (`kitchen`).
+   - **Tujuan**: Layar sentuh dapur untuk melihat tiket pesanan masuk secara real-time, timer durasi memasak, dan tombol "Selesai Masak" untuk memberi sinyal ke pelayan FOH.
+
+3. **Panel Pengelola & Pemilik (Admin / Owner — `/admin`)**:
+   - **Peran Pengguna**: Pemilik Resto (`owner`) dan Manajer Toko (`manager`).
+   - **Tujuan**: Laporan ringkasan penjualan, analitik omset, kelola katalog & harga menu, kelola QR meja & denah saung, pengelolaan reservasi acara, dan Pengelola Konten Web (CMS).
+
+### Kesiapan Lingkungan Produksi Penuh (*Production-Ready*):
+- **Bebas Mode Demo**: Seluruh pemilih peran demo (*role switcher*), pengisi kredensial otomatis demo, dan tombol cepat demo telah dibersihkan secara permanen dari antarmuka login dan header.
+- **Login Resmi**: Seluruh staf masuk menggunakan email dan kata sandi resmi yang telah didaftarkan oleh Admin/Owner di menu `/admin/staff`.
 
 ### Prosedur Tambah Staf Baru:
 1. Masuk ke Panel Pengelola Restoran (`/admin`).
 2. Buka menu **"Kelola Staf"** (`/admin/staff`).
-3. Klik **"Tambah Staf Baru"**, masukkan nama lengkap, email resmi, peran yang ditugaskan, dan PIN operasional kasir.
-4. Simpan. Staf yang bersangkutan dapat langsung masuk menggunakan kredensial tersebut.
+3. Klik **"Tambah Staf Baru"**, masukkan nama lengkap, email resmi, peran yang ditugaskan (`cashier`, `waiter`, `kitchen`, `manager`, atau `owner`), dan PIN operasional kasir.
+4. Simpan. Staf yang bersangkutan dapat langsung masuk menggunakan kredensial tersebut di ponsel maupun perangkat POS resto.
+
 
 ---
 

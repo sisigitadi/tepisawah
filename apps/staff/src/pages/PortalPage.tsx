@@ -1,34 +1,21 @@
 /**
- * @tepisawah/staff — post-login launcher.
+ * @tepisawah/staff — post-login launcher (Production Soft Opening).
  *
  * One screen per signed-in staff member: the internal apps their roles grant,
- * as cards. The portal is navigation only — every linked app re-runs its own
- * `ProtectedRoute` + `PermissionRoute` on arrival, and the backend enforces the
- * real authorization under RLS, so this map hiding an app never protects it
- * (AUTH_RBAC_RLS.md §2.2). It exists so a staff member sees the one door they
- * actually use instead of four URLs to remember.
- *
- * Which app a role can reach follows the Fase 1 matrix (docs/product/
- * USER_ROLES.md): cashier → POS, waiter → Waiter, kitchen → Kitchen, and the
- * operational roles (supervisor/admin/owner) → POS + Admin. A user holding
- * several roles gets the union.
- *
- * App links come from `VITE_DEMO_APP_URLS` (read via `lib/env.ts`) when the
- * deployment sets them (e.g. `pos=https://pos.tepisawah.id,admin=...`).
- * Unset links fall back to the local dev ports, which is how the portal stays
- * useful on a workstation — the same override contract the `/demo` hub uses.
+ * as cards. Consolidated into 3 primary operational surfaces:
+ * 1. Kasir & Layanan Meja (pos) — Front of House: confirmation, serving, POS payment, manual order
+ * 2. Layar Pesanan Dapur (kitchen) — Back of House: KDS tickets & ready actions
+ * 3. Panel Pengelola Restoran (admin) — Management: summary, catalog, tables, CMS, settings
  */
 import type { ReactNode } from "react";
-import { useState } from "react";
 
 import { useAuth } from "@tepisawah/auth";
-import { DEMO_ACCOUNTS } from "@tepisawah/config";
 import type { Role } from "@tepisawah/permissions";
 
 import { env } from "../lib/env.js";
 
-/** The internal apps the portal can launch. */
-type AppId = "pos" | "admin" | "waiter" | "kitchen";
+/** The 3 canonical operational apps the portal launches. */
+type AppId = "pos" | "admin" | "kitchen";
 
 /** One launchable app, in canonical display order. */
 interface PortalApp {
@@ -39,10 +26,24 @@ interface PortalApp {
 }
 
 const APPS: readonly PortalApp[] = [
-  { id: "pos", name: "Meja Kasir & Pembayaran", blurb: "Konfirmasi pesanan masuk, layanan meja & proses pembayaran struk", emoji: "🧾" },
-  { id: "admin", name: "Panel Pengelola Restoran", blurb: "Kelola reservasi meja website, katalog menu, meja & QR, dan pengaturan", emoji: "⚙️" },
-  { id: "kitchen", name: "Layar Pesanan Dapur", blurb: "Antrean masak dapur: mulai masak → siap saji", emoji: "👨‍🍳" },
-  { id: "waiter", name: "Layanan Meja & Antar", blurb: "Monitor hidangan siap saji & pesanan meja manual", emoji: "🍽️" },
+  {
+    id: "pos",
+    name: "Kasir & Layanan Meja",
+    blurb: "Konfirmasi pesanan QR meja, catat pesanan manual, hidangan siap saji, dan bayar tagihan",
+    emoji: "🧾",
+  },
+  {
+    id: "kitchen",
+    name: "Layar Pesanan Dapur",
+    blurb: "Antrean masak koki: tiket pesanan masuk → mulai masak → siap saji ke pelayan",
+    emoji: "👨‍🍳",
+  },
+  {
+    id: "admin",
+    name: "Panel Pengelola Restoran",
+    blurb: "Ringkasan operasional, reservasi online, CMS web publik, katalog menu & harga, dan pengaturan",
+    emoji: "⚙️",
+  },
 ];
 
 const ROLE_LABELS: Record<string, string> = {
@@ -50,22 +51,22 @@ const ROLE_LABELS: Record<string, string> = {
   admin: "Pengelola",
   supervisor: "Pengelola",
   cashier: "Kasir",
-  waiter: "Pelayan",
+  waiter: "Pelayan Meja",
   kitchen: "Dapur",
 };
 
 /**
- * Apps each role may launch:
- * - Owner: Akses penuh (Panel Pengelola, Meja Kasir, Layar Dapur, Layanan Meja)
- * - Kasir: Meja Kasir & Layanan Meja
- * - Dapur: Layar Pesanan Dapur
+ * Consolidated role access for Soft Opening:
+ * - Owner / Admin / Supervisor: Akses penuh (Panel Pengelola, Kasir & Meja, Layar Dapur)
+ * - Kasir & Waiter (Front of House): Kasir & Layanan Meja terpadu
+ * - Dapur (Back of House): Layar Pesanan Dapur
  */
 const ROLE_APPS: Record<Role, readonly AppId[]> = {
-  owner: ["admin", "pos", "kitchen", "waiter"],
-  admin: ["admin", "pos", "kitchen", "waiter"],
-  supervisor: ["admin", "pos", "kitchen", "waiter"],
-  cashier: ["pos", "waiter"],
-  waiter: ["pos", "waiter"],
+  owner: ["admin", "pos", "kitchen"],
+  admin: ["admin", "pos", "kitchen"],
+  supervisor: ["admin", "pos", "kitchen"],
+  cashier: ["pos"],
+  waiter: ["pos"],
   kitchen: ["kitchen"],
 };
 
@@ -73,14 +74,9 @@ const ROLE_APPS: Record<Role, readonly AppId[]> = {
 const LOCAL_PORTS: Record<AppId, number> = {
   pos: 5175,
   admin: 5176,
-  waiter: 5177,
   kitchen: 5178,
 };
 
-/**
- * Per-app override URLs, `id=url,id=url`. Optional: a hosted deployment sets
- * the deployed addresses; a workstation leaves it empty for the local ports.
- */
 function parseAppUrls(raw: string): Record<string, string> {
   if (!raw) return {};
   const map: Record<string, string> = {};
@@ -109,8 +105,7 @@ export interface PortalPageProps {
 }
 
 export function PortalPage({ onSelectRoom }: PortalPageProps = {}): ReactNode {
-  const { user, profile, roles, signIn } = useAuth();
-  const [switching, setSwitching] = useState(false);
+  const { user, profile, roles } = useAuth();
   const overrides = parseAppUrls(env.demoAppUrls);
   const apps = visibleApps(roles);
   const greeting = (profile?.display_name || user?.email || "Staf")
@@ -121,26 +116,13 @@ export function PortalPage({ onSelectRoom }: PortalPageProps = {}): ReactNode {
     new Set(roles.map((role) => ROLE_LABELS[role] ?? role))
   );
 
-  const handleDemoSwitch = async (email: string) => {
-    const acc = DEMO_ACCOUNTS.find((a) => a.email === email);
-    if (!acc) return;
-    setSwitching(true);
-    try {
-      await signIn(acc.email, acc.password);
-    } catch (err) {
-      console.error("Gagal berpindah peran demo:", err);
-    } finally {
-      setSwitching(false);
-    }
-  };
-
   return (
     <section className="staff-portal">
       <div className="staff-portal-head">
-        <span className="staff-eyebrow">Pintu Masuk Staf</span>
+        <span className="staff-eyebrow">Pintu Masuk Operasional</span>
         <h1 className="staff-title">Selamat datang, {greeting}</h1>
         <p className="staff-sub">
-          Pilih aplikasi yang Anda butuhkan, akses menu diatur sesuai peran tugas Anda.
+          Akses operasional restoran aktif. Pilih pintu kerja sesuai penugasan Anda.
         </p>
         {uniqueRoleLabels.length ? (
           <ul className="staff-role-chips" aria-label="Peran Anda">
@@ -148,25 +130,6 @@ export function PortalPage({ onSelectRoom }: PortalPageProps = {}): ReactNode {
               <li key={label} className="staff-role-chip">{label}</li>
             ))}
           </ul>
-        ) : null}
-
-        {env.demoMode ? (
-          <div className="staff-portal-demo-bar">
-            <span className="staff-portal-demo-label">Ganti Peran Langsung (Demo):</span>
-            <div className="staff-portal-demo-chips">
-              {DEMO_ACCOUNTS.map((acc) => (
-                <button
-                  key={acc.email}
-                  type="button"
-                  disabled={switching}
-                  className={`staff-portal-demo-btn ${user?.email === acc.email ? "staff-portal-demo-btn--active" : ""}`}
-                  onClick={() => void handleDemoSwitch(acc.email)}
-                >
-                  {acc.label}
-                </button>
-              ))}
-            </div>
-          </div>
         ) : null}
       </div>
 
@@ -189,14 +152,14 @@ export function PortalPage({ onSelectRoom }: PortalPageProps = {}): ReactNode {
               <span className="staff-app-emoji" aria-hidden="true">{app.emoji}</span>
               <span className="staff-app-name">{app.name}</span>
               <span className="staff-app-blurb">{app.blurb}</span>
-              <span className="staff-app-open">Buka →</span>
+              <span className="staff-app-open">Buka Ruangan →</span>
             </a>
           ))}
         </div>
       ) : (
         <p className="staff-empty">
           Peran Anda belum terdaftarkan pada aplikasi internal mana pun. Hubungi
-          admin untuk mendapatkan akses.
+          pemilik atau admin untuk mendapatkan akses operasional.
         </p>
       )}
     </section>
