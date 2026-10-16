@@ -273,6 +273,26 @@ export function HomePage({ onNavigate }: HomePageProps = {}): ReactNode {
       {/* Quick Governance Links */}
       <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1rem" }}>
         <div
+          onClick={() => onNavigate?.("staff")}
+          style={{
+            background: "#ffffff",
+            padding: "1.25rem",
+            borderRadius: "10px",
+            border: "1px solid #e2e8f0",
+            cursor: onNavigate ? "pointer" : "default",
+            transition: "transform 0.15s ease, box-shadow 0.15s ease",
+          }}
+        >
+          <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>👥</div>
+          <h3 style={{ fontSize: "1.05rem", fontWeight: 700, color: "#0f172a", margin: "0 0 0.4rem 0" }}>
+            Kelola Staf Restoran
+          </h3>
+          <p style={{ margin: 0, fontSize: "0.85rem", color: "#64748b", lineHeight: 1.5 }}>
+            Atur penugasan peran (Owner, Kasir &amp; Waiter, Dapur KDS, Admin), status hak akses staf, dan nama tampilan.
+          </p>
+        </div>
+
+        <div
           onClick={() => onNavigate?.("reservations")}
           style={{
             background: "#ffffff",

@@ -15,9 +15,11 @@ import { TablesPage, QrTablesPage } from "../../features/tables/index.js";
 import { SessionsPage } from "../../features/sessions/index.js";
 import { ReservationsPage } from "../../features/reservations/index.js";
 import { CmsPage } from "../../features/cms/index.js";
+import { StaffPage } from "../../features/users/index.js";
 
 export type AdminPage =
   | "home"
+  | "staff"
   | "cms"
   | "settings"
   | "gallery"
@@ -41,6 +43,14 @@ export function AppRouter(): ReactNode {
             onClick={() => setPage("home")}
           >
             Beranda
+          </button>
+          <button
+            type="button"
+            className="app-nav-link"
+            aria-current={page === "staff" ? "page" : undefined}
+            onClick={() => setPage("staff")}
+          >
+            👥 Kelola Staf
           </button>
           <button
             type="button"
@@ -109,7 +119,9 @@ export function AppRouter(): ReactNode {
         </>
       }
     >
-      {page === "reservations" ? (
+      {page === "staff" ? (
+        <StaffPage />
+      ) : page === "reservations" ? (
         <ReservationsPage />
       ) : page === "cms" ? (
         <CmsPage />
