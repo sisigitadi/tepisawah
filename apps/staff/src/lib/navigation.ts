@@ -13,13 +13,12 @@ import { useEffect, useState, useCallback } from "react";
 
 import type { Role } from "@tepisawah/permissions";
 
-export type StaffRoom = "portal" | "pos" | "kitchen" | "waiter" | "admin";
+export type StaffRoom = "portal" | "pos" | "kitchen" | "admin";
 
 export const STAFF_ROOMS: readonly StaffRoom[] = [
   "portal",
   "pos",
   "kitchen",
-  "waiter",
   "admin",
 ];
 
@@ -31,20 +30,19 @@ export interface RoomMeta {
 }
 
 export const ROOM_METAS: Record<StaffRoom, RoomMeta> = {
-  portal: { id: "portal", label: "Pintu Masuk", path: "/", emoji: "🏠" },
-  pos: { id: "pos", label: "Meja Kasir", path: "/pos", emoji: "🧾" },
-  kitchen: { id: "kitchen", label: "Layar Dapur", path: "/kitchen", emoji: "👨‍🍳" },
-  waiter: { id: "waiter", label: "Pelayan Meja", path: "/waiter", emoji: "🍽️" },
+  portal: { id: "portal", label: "Beranda Staf", path: "/", emoji: "🏠" },
+  pos: { id: "pos", label: "Kasir & Layanan Meja", path: "/pos", emoji: "🧾" },
+  kitchen: { id: "kitchen", label: "Layar Pesanan Dapur", path: "/kitchen", emoji: "👨‍🍳" },
   admin: { id: "admin", label: "Panel Pengelola", path: "/admin", emoji: "⚙️" },
 };
 
-/** Rooms that each role may enter in Staff Portal */
+/** Rooms that each role may enter in Staff Portal (Soft Opening Consolidation) */
 export const ROLE_ROOMS: Record<Role, readonly StaffRoom[]> = {
-  owner: ["pos", "kitchen", "waiter", "admin"],
-  admin: ["pos", "kitchen", "waiter", "admin"],
-  supervisor: ["pos", "kitchen", "waiter", "admin"],
-  cashier: ["pos", "waiter"],
-  waiter: ["pos", "waiter"],
+  owner: ["admin", "pos", "kitchen"],
+  admin: ["admin", "pos", "kitchen"],
+  supervisor: ["admin", "pos", "kitchen"],
+  cashier: ["pos"],
+  waiter: ["pos"],
   kitchen: ["kitchen"],
 };
 
@@ -62,12 +60,12 @@ function resolveCurrentRoom(): StaffRoom {
   if (typeof window === "undefined") return "portal";
 
   const path = window.location.pathname.replace(/^\/+|\/+$/g, "").toLowerCase();
-  if (path === "pos") return "pos";
+  if (path === "pos" || path === "waiter") return "pos";
   if (path === "kitchen") return "kitchen";
-  if (path === "waiter") return "waiter";
   if (path === "admin") return "admin";
 
   const searchParam = new URLSearchParams(window.location.search).get("room")?.toLowerCase();
+  if (searchParam === "waiter") return "pos";
   if (searchParam && (STAFF_ROOMS as readonly string[]).includes(searchParam)) {
     return searchParam as StaffRoom;
   }

@@ -5,6 +5,8 @@
   "description": "Staff portal: one staff login and a role-based launcher into the internal apps.",
   "type": "module",
   "scripts": {
+    "dev": "vite",
+    "preview": "vite preview",
     "build": "vite build",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",

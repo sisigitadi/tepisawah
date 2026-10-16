@@ -1,12 +1,11 @@
 /**
- * @tepisawah/staff — unified staff router.
+ * @tepisawah/staff — unified staff router (Production Soft Opening).
  *
- * Implements the single Staff Portal surface containing all internal rooms:
- * - /         → Portal Launcher (role-based card tiles)
- * - /pos      → Cashier POS Terminal & Confirmation Queue
- * - /kitchen  → Kitchen Display System (KDS)
- * - /waiter   → Waiter Handheld & Manual Order Entry
- * - /admin    → Admin Console (Catalog, Tables, Settings, Sessions)
+ * Implements the 3 primary operational surfaces:
+ * - /         → Portal Launcher (Beranda Staf)
+ * - /pos      → Kasir & Layanan Meja (Front of House: Antrean, Siap Antar, Catat Menu, Kasir Bayar)
+ * - /kitchen  → Layar Pesanan Dapur (Back of House: KDS tiket masak)
+ * - /admin    → Panel Pengelola Restoran (Manajemen, Katalog, Meja, CMS, Pengaturan)
  *
  * All rooms share the same authenticated session, protected by ProtectedRoute
  * and server-enforced RLS.
@@ -37,15 +36,14 @@ import {
 } from "@tepisawah/admin";
 
 type AdminTab = "home" | "reservations" | "cms" | "settings" | "catalog" | "tables" | "sessions";
-type PosTab = "terminal" | "confirm" | "waiter-console" | "manual-order";
-type WaiterTab = "console" | "manual-order";
+export type FrontOfHouseTab = "confirm" | "serve" | "manual-order" | "terminal";
 
 export function AppRouter(): ReactNode {
   const { currentRoom, navigateTo } = useStaffNavigation();
   const { user, roles } = useAuth();
   const allowedRooms = useMemo(() => getAllowedRooms(roles), [roles]);
 
-  // Auto-reset room to portal whenever user session changes (switch role/login)
+  // Auto-reset room to portal whenever user session changes (switch user/login)
   const prevUserIdRef = useRef<string | undefined>(user?.id);
   useEffect(() => {
     if (user?.id && prevUserIdRef.current && prevUserIdRef.current !== user.id) {
@@ -61,20 +59,15 @@ export function AppRouter(): ReactNode {
     }
   }, [user, currentRoom, allowedRooms, navigateTo]);
 
-  // Internal sub-tab state for multi-view rooms
-  const [posTab, setPosTab] = useState<PosTab>(() =>
-    typeof window !== "undefined" && new URLSearchParams(window.location.search).has("confirm")
-      ? "confirm"
-      : typeof window !== "undefined" && new URLSearchParams(window.location.search).has("order")
-        ? "manual-order"
-        : "terminal"
-  );
-
-  const [waiterTab, setWaiterTab] = useState<WaiterTab>(() =>
-    typeof window !== "undefined" && new URLSearchParams(window.location.search).has("order")
-      ? "manual-order"
-      : "console"
-  );
+  // Internal sub-tab state for Front of House (Kasir & Layanan Meja)
+  const [fohTab, setFohTab] = useState<FrontOfHouseTab>(() => {
+    if (typeof window === "undefined") return "confirm";
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("order")) return "manual-order";
+    if (params.has("terminal")) return "terminal";
+    if (params.has("serve") || params.has("waiter")) return "serve";
+    return "confirm";
+  });
 
   const [adminTab, setAdminTab] = useState<AdminTab>("home");
 
@@ -87,48 +80,88 @@ export function AppRouter(): ReactNode {
 
         {currentRoom === "pos" && (
           <PermissionRoute permission={PERMISSIONS.ORDERS_READ}>
+            {/* Top Subnav Bar for Desktop & Tablet */}
             <div className="staff-subnav-bar">
               <button
                 type="button"
-                className={`staff-subnav-btn ${posTab === "terminal" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => setPosTab("terminal")}
+                className={`staff-subnav-btn ${fohTab === "confirm" ? "staff-subnav-btn--active" : ""}`}
+                onClick={() => setFohTab("confirm")}
               >
-                💳 Meja Kasir
+                📥 Antrean Masuk (QR)
               </button>
               <button
                 type="button"
-                className={`staff-subnav-btn ${posTab === "confirm" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => setPosTab("confirm")}
+                className={`staff-subnav-btn ${fohTab === "serve" ? "staff-subnav-btn--active" : ""}`}
+                onClick={() => setFohTab("serve")}
               >
-                📥 Antrean Konfirmasi
+                🍽️ Siap Antar ke Meja
               </button>
               <button
                 type="button"
-                className={`staff-subnav-btn ${posTab === "waiter-console" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => setPosTab("waiter-console")}
-              >
-                🍽️ Layanan Meja & Saji
-              </button>
-              <button
-                type="button"
-                className={`staff-subnav-btn ${posTab === "manual-order" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => setPosTab("manual-order")}
+                className={`staff-subnav-btn ${fohTab === "manual-order" ? "staff-subnav-btn--active" : ""}`}
+                onClick={() => setFohTab("manual-order")}
               >
                 ✍️ Catat Pesanan Meja
               </button>
+              <button
+                type="button"
+                className={`staff-subnav-btn ${fohTab === "terminal" ? "staff-subnav-btn--active" : ""}`}
+                onClick={() => setFohTab("terminal")}
+              >
+                💳 Meja Kasir & Bayar
+              </button>
             </div>
 
-            {posTab === "confirm" ? (
-              <ConfirmQueuePage />
-            ) : posTab === "waiter-console" ? (
-              <WaiterHomePage />
-            ) : posTab === "manual-order" ? (
-              <PermissionRoute permission={PERMISSIONS.ORDERS_CREATE_MANUAL}>
-                <ManualOrderPage />
-              </PermissionRoute>
-            ) : (
-              <PosHomePage />
-            )}
+            {/* Main Content Area */}
+            <div className="staff-foh-content">
+              {fohTab === "confirm" ? (
+                <ConfirmQueuePage />
+              ) : fohTab === "serve" ? (
+                <WaiterHomePage />
+              ) : fohTab === "manual-order" ? (
+                <PermissionRoute permission={PERMISSIONS.ORDERS_CREATE_MANUAL}>
+                  <ManualOrderPage />
+                </PermissionRoute>
+              ) : (
+                <PosHomePage />
+              )}
+            </div>
+
+            {/* Mobile Thumb-Friendly Bottom Navigation Bar */}
+            <nav className="staff-bottom-nav" aria-label="Navigasi Bawah Layanan Kasir & Meja">
+              <button
+                type="button"
+                className={`staff-bottom-nav-item ${fohTab === "confirm" ? "staff-bottom-nav-item--active" : ""}`}
+                onClick={() => setFohTab("confirm")}
+              >
+                <span className="staff-bottom-nav-icon" aria-hidden="true">📥</span>
+                <span className="staff-bottom-nav-label">Antrean</span>
+              </button>
+              <button
+                type="button"
+                className={`staff-bottom-nav-item ${fohTab === "serve" ? "staff-bottom-nav-item--active" : ""}`}
+                onClick={() => setFohTab("serve")}
+              >
+                <span className="staff-bottom-nav-icon" aria-hidden="true">🍽️</span>
+                <span className="staff-bottom-nav-label">Siap Antar</span>
+              </button>
+              <button
+                type="button"
+                className={`staff-bottom-nav-item ${fohTab === "manual-order" ? "staff-bottom-nav-item--active" : ""}`}
+                onClick={() => setFohTab("manual-order")}
+              >
+                <span className="staff-bottom-nav-icon" aria-hidden="true">✍️</span>
+                <span className="staff-bottom-nav-label">Catat Menu</span>
+              </button>
+              <button
+                type="button"
+                className={`staff-bottom-nav-item ${fohTab === "terminal" ? "staff-bottom-nav-item--active" : ""}`}
+                onClick={() => setFohTab("terminal")}
+              >
+                <span className="staff-bottom-nav-icon" aria-hidden="true">💳</span>
+                <span className="staff-bottom-nav-label">Kasir</span>
+              </button>
+            </nav>
           </PermissionRoute>
         )}
 
@@ -137,35 +170,6 @@ export function AppRouter(): ReactNode {
             <div className="staff-room-kitchen">
               <KitchenHomePage />
             </div>
-          </PermissionRoute>
-        )}
-
-        {currentRoom === "waiter" && (
-          <PermissionRoute permission={PERMISSIONS.ORDERS_READ}>
-            <div className="staff-subnav-bar">
-              <button
-                type="button"
-                className={`staff-subnav-btn ${waiterTab === "console" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => setWaiterTab("console")}
-              >
-                📋 Meja & Pesanan Siap Saji
-              </button>
-              <button
-                type="button"
-                className={`staff-subnav-btn ${waiterTab === "manual-order" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => setWaiterTab("manual-order")}
-              >
-                ✍️ Catat Pesanan Manual
-              </button>
-            </div>
-
-            {waiterTab === "manual-order" ? (
-              <PermissionRoute permission={PERMISSIONS.ORDERS_CREATE_MANUAL}>
-                <ManualOrderPage />
-              </PermissionRoute>
-            ) : (
-              <WaiterHomePage />
-            )}
           </PermissionRoute>
         )}
 
