@@ -23,77 +23,29 @@ export interface ReservationItem {
 
 const STORAGE_KEY_DEMO_RESERVATIONS = "tepisawah_demo_reservations";
 
-const INITIAL_DEMO_RESERVATIONS: ReservationItem[] = [
-  {
-    id: "res-demo-1",
-    customer_name: "Bapak Hendra Wijaya",
-    phone: "081234567890",
-    reservation_date: new Date().toISOString().slice(0, 10),
-    reservation_time: "12:30",
-    guests_count: 6,
-    seating_area: "Saung Lesehan Sawah",
-    notes: "Minta saung di ujung yang menghadap langsung sawah terbuka.",
-    status: "PENDING",
-    created_at: new Date(Date.now() - 1000 * 60 * 35).toISOString(),
-  },
-  {
-    id: "res-demo-2",
-    customer_name: "Ibu Ratna Dewi",
-    phone: "085712345678",
-    reservation_date: new Date().toISOString().slice(0, 10),
-    reservation_time: "18:00",
-    guests_count: 10,
-    seating_area: "Gazebo Rombongan",
-    notes: "Acara ulang tahun keluarga, mohon disiapkan kursi anak 2 buah.",
-    status: "CONFIRMED",
-    created_at: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
-  },
-  {
-    id: "res-demo-3",
-    customer_name: "Mas Dimas Pratama",
-    phone: "089876543210",
-    reservation_date: new Date(Date.now() + 86400000).toISOString().slice(0, 10),
-    reservation_time: "16:30",
-    guests_count: 4,
-    seating_area: "Dek Rooftop Senja",
-    notes: "Rencana santap sambil menikmati matahari terbenam.",
-    status: "CONFIRMED",
-    created_at: new Date(Date.now() - 1000 * 60 * 300).toISOString(),
-  },
-];
-
 export function ReservationsPage(): ReactNode {
   const [items, setItems] = useState<ReservationItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [filterStatus, setFilterStatus] = useState<string>("ALL");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [dbNotice, setDbNotice] = useState<string | null>(null);
 
-  function loadDemoData(): ReservationItem[] {
+  // Clean out any legacy demo storage from testing
+  useEffect(() => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY_DEMO_RESERVATIONS);
-      if (stored) {
-        return JSON.parse(stored) as ReservationItem[];
-      }
+      localStorage.removeItem(STORAGE_KEY_DEMO_RESERVATIONS);
     } catch {
-      // fallback
+      // ignore
     }
-    return INITIAL_DEMO_RESERVATIONS;
-  }
-
-  function saveDemoData(data: ReservationItem[]) {
-    try {
-      localStorage.setItem(STORAGE_KEY_DEMO_RESERVATIONS, JSON.stringify(data));
-    } catch {
-      // fallback
-    }
-  }
+  }, []);
 
   async function fetchReservations() {
     setLoading(true);
+    setDbNotice(null);
     try {
       if (isDemoMode()) {
-        setItems(loadDemoData());
+        setItems([]);
         setLoading(false);
         return;
       }
@@ -105,14 +57,19 @@ export function ReservationsPage(): ReactNode {
         .order("reservation_date", { ascending: false })
         .order("reservation_time", { ascending: true });
 
-      if (error || !data || data.length === 0) {
-        // Fallback to demo/local data if table is empty or error
-        setItems(loadDemoData());
+      if (error) {
+        if (error.code === "PGRST205") {
+          setDbNotice("Tabel reservasi belum terpasang di Supabase. Silakan jalankan skrip supabase/scripts/production-clean-slate.sql di Supabase SQL Editor.");
+        } else {
+          setDbNotice(`Koneksi data reservasi: ${error.message}`);
+        }
+        setItems([]);
       } else {
-        setItems(data as unknown as ReservationItem[]);
+        setItems((data as unknown as ReservationItem[]) || []);
       }
-    } catch {
-      setItems(loadDemoData());
+    } catch (err: any) {
+      setDbNotice(`Terjadi kendala memuat reservasi: ${err?.message || err}`);
+      setItems([]);
     } finally {
       setLoading(false);
     }
@@ -137,7 +94,6 @@ export function ReservationsPage(): ReactNode {
         const updated = prev.map((item) =>
           item.id === id ? { ...item, status: newStatus } : item
         );
-        saveDemoData(updated);
         return updated;
       });
     } catch (err) {
@@ -221,6 +177,25 @@ export function ReservationsPage(): ReactNode {
         </button>
       </div>
 
+      {/* Database Setup Notice if table not present in Supabase */}
+      {dbNotice && (
+        <div
+          role="alert"
+          style={{
+            background: "#fffbeb",
+            border: "1px solid #fde68a",
+            borderRadius: "8px",
+            padding: "0.85rem 1.15rem",
+            marginBottom: "1.25rem",
+            color: "#92400e",
+            fontSize: "0.875rem",
+            lineHeight: 1.5,
+          }}
+        >
+          <strong>⚠️ Perhatian Skema Basis Data:</strong> {dbNotice}
+        </div>
+      )}
+
       {/* Metrics Row */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginBottom: "1.5rem" }}>
         <div style={{ background: "#ffffff", padding: "1rem", borderRadius: "10px", border: "1px solid #e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
@@ -296,11 +271,15 @@ export function ReservationsPage(): ReactNode {
           Memuat daftar reservasi...
         </div>
       ) : filteredItems.length === 0 ? (
-        <div style={{ padding: "3rem", textAlign: "center", background: "#ffffff", borderRadius: "10px", border: "1px dashed #cbd5e1" }}>
+        <div style={{ padding: "3rem 1.5rem", textAlign: "center", background: "#ffffff", borderRadius: "10px", border: "1px dashed #cbd5e1" }}>
           <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📭</div>
-          <div style={{ fontWeight: 600, color: "#334155" }}>Tidak ada data reservasi</div>
-          <div style={{ fontSize: "0.85rem", color: "#64748b", marginTop: "0.25rem" }}>
-            Tidak ada reservasi yang cocok dengan filter yang dipilih.
+          <div style={{ fontWeight: 600, color: "#334155", fontSize: "1rem" }}>
+            {items.length === 0 ? "Belum Ada Permohonan Reservasi" : "Tidak Ada Data yang Cocok"}
+          </div>
+          <div style={{ fontSize: "0.875rem", color: "#64748b", marginTop: "0.35rem", maxWidth: "480px", margin: "0.35rem auto 0", lineHeight: 1.5 }}>
+            {items.length === 0
+              ? "Sistem bersih dan siap menerima reservasi online. Permohonan booking meja atau saung dari situs web resmi akan otomatis masuk ke sini."
+              : "Tidak ditemukan reservasi yang sesuai dengan kata kunci pencarian atau filter status yang Anda pilih."}
           </div>
         </div>
       ) : (

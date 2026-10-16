@@ -53,7 +53,7 @@ export function ProtectedRoute({ children }: { children: ReactNode }): ReactNode
     return (
       <div className="staff-login">
         <LoginPanel
-          title="Portal Staf — Masuk"
+          title="Portal Staf: Masuk"
           demoAccounts={isDemoMode(import.meta.env as unknown as Record<string, string | undefined>) ? DEMO_ACCOUNTS : undefined}
         />
         <div className="staff-login__switch">

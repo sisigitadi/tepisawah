@@ -84,7 +84,7 @@ export function LoginPanel({
       {demoAccounts?.length ? (
         <section aria-label="Akun demo" data-testid="demo-accounts">
           <p>
-            <strong>Mode demo</strong> — pilih peran untuk mengisi form otomatis:
+            <strong>Mode demo</strong>: pilih peran untuk mengisi form otomatis:
           </p>
           <ul>
             {demoAccounts.map((account) => (
@@ -100,7 +100,7 @@ export function LoginPanel({
                   {account.label}
                 </button>{" "}
                 <small>
-                  {account.email} — {account.blurb}
+                  {account.email} ({account.blurb})
                 </small>
               </li>
             ))}
