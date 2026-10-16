@@ -24,6 +24,18 @@ export function getSupabaseClient(): SupabaseClient<Database> {
   return client;
 }
 
+/**
+ * Creates an ephemeral, unpersisted Supabase client.
+ * Does not overwrite localStorage session, ideal for admin signing up staff.
+ */
+export function createEphemeralSupabaseClient(): SupabaseClient<Database> {
+  const config = requireSupabaseConfig();
+  return createBrowserSupabaseClient({
+    ...config,
+    persistSession: false,
+  });
+}
+
 /** True once the client has been constructed. Mainly for tests. */
 export function hasSupabaseClient(): boolean {
   return client !== null;

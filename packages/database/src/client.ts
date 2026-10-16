@@ -20,6 +20,12 @@ export interface BrowserClientOptions {
   supabaseUrl: string;
   /** Public anon/publishable key (`VITE_SUPABASE_ANON_KEY`). Never a service-role key. */
   supabaseAnonKey: string;
+  /**
+   * Whether to persist session in local storage (default: true).
+   * Set to false for isolated/ephemeral clients (e.g. admin creating staff without
+   * replacing current admin session).
+   */
+  persistSession?: boolean;
 }
 
 /**
@@ -41,11 +47,12 @@ export function createBrowserSupabaseClient(
   if (options.supabaseUrl.includes("service_role")) {
     throw new Error("createBrowserSupabaseClient: refusing service-role URL in browser client");
   }
+  const persistSession = options.persistSession ?? true;
   return createClient<Database>(options.supabaseUrl, options.supabaseAnonKey, {
     auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true,
+      persistSession,
+      autoRefreshToken: persistSession,
+      detectSessionInUrl: persistSession,
     },
   });
 }

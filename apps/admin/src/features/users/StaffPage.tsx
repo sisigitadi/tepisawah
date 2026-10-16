@@ -15,7 +15,7 @@ import { AccessDenied, useAuth } from "@tepisawah/auth";
 import { PERMISSIONS } from "@tepisawah/permissions";
 import { Skeleton } from "@tepisawah/ui";
 import { useEffect, useState, useMemo, useCallback, type FormEvent, type ReactNode } from "react";
-import { getSupabaseClient } from "../../lib/supabase.js";
+import { getSupabaseClient, createEphemeralSupabaseClient } from "../../lib/supabase.js";
 
 export interface StaffRoleItem {
   id: string;
@@ -352,25 +352,46 @@ export function StaffPage(): ReactNode {
 
       // 2. Update Roles if authorized
       if (canManageRoles) {
-        // Delete previous roles
-        await client.from("user_roles").delete().eq("user_id", editingStaff.id);
+        // Use RPC admin_update_user_roles (SECURITY DEFINER bypasses RLS and updates roles atomically)
+        const { error: rpcError } = await client.rpc("admin_update_user_roles", {
+          p_user_id: editingStaff.id,
+          p_role_codes: editRoles,
+        });
 
-        // Insert selected roles
-        const roleInserts = editRoles
-          .map((code) => {
-            const roleObj = availableRoles.find((r) => r.code === code);
-            return roleObj ? { user_id: editingStaff.id, role_id: roleObj.id } : null;
-          })
-          .filter(Boolean);
+        if (rpcError) {
+          console.warn("RPC admin_update_user_roles failed, attempting direct table fallback:", rpcError);
+          // Delete previous roles
+          const { error: delRolesErr } = await client.from("user_roles").delete().eq("user_id", editingStaff.id);
+          if (delRolesErr) {
+            console.error("Direct delete user_roles failed:", delRolesErr);
+            throw new Error(
+              `Gagal memperbarui centang tugas staf: ${rpcError.message || delRolesErr.message}. ` +
+              "Silakan jalankan skrip SQL 'fix-staff-roles-and-management.sql' di Supabase SQL Editor."
+            );
+          }
 
-        if (roleInserts.length > 0) {
-          const { error: rolesInsertError } = await client.from("user_roles").insert(roleInserts);
-          if (rolesInsertError) throw rolesInsertError;
+          // Insert selected roles
+          const roleInserts = editRoles
+            .map((code) => {
+              const roleObj = availableRoles.find((r) => r.code === code);
+              return roleObj ? { user_id: editingStaff.id, role_id: roleObj.id } : null;
+            })
+            .filter(Boolean);
+
+          if (roleInserts.length > 0) {
+            const { error: rolesInsertError } = await client.from("user_roles").insert(roleInserts);
+            if (rolesInsertError) {
+              throw new Error(
+                `Gagal menyimpan centang tugas staf: ${rolesInsertError.message}. ` +
+                "Silakan jalankan skrip SQL 'fix-staff-roles-and-management.sql' di Supabase SQL Editor."
+              );
+            }
+          }
         }
       }
 
       setFeedback({
-        message: `Data staf "${trimmedName}" dan tugas operasional berhasil diperbarui.`,
+        message: `Data staf "${trimmedName}" dan tugas operasional (${editRoles.join(", ")}) berhasil disimpan ke database.`,
         type: "success",
       });
 
@@ -409,25 +430,44 @@ export function StaffPage(): ReactNode {
     try {
       const client = getSupabaseClient() as any;
 
-      // 1. Delete user_roles
-      await client.from("user_roles").delete().eq("user_id", deletingStaff.id);
+      // 1. Try RPC admin_delete_staff first (SECURITY DEFINER removes user_roles, profiles, and auth.users)
+      const { error: rpcError } = await client.rpc("admin_delete_staff", {
+        p_user_id: deletingStaff.id,
+      });
 
-      // 2. Attempt hard delete on profiles; fallback to deactivate if foreign key constraints exist
-      const { error: delError } = await client
-        .from("profiles")
-        .delete()
-        .eq("id", deletingStaff.id);
+      if (rpcError) {
+        console.warn("RPC admin_delete_staff failed, falling back to direct delete:", rpcError);
 
-      if (delError) {
-        // Soft-delete fallback to keep relational transaction history intact
-        await client
+        // Fallback: Delete user_roles
+        const { error: roleDelErr } = await client.from("user_roles").delete().eq("user_id", deletingStaff.id);
+        if (roleDelErr) {
+          console.warn("Direct delete user_roles failed:", roleDelErr);
+        }
+
+        // Fallback: Attempt hard delete on profiles; fallback to deactivate
+        const { error: delError } = await client
           .from("profiles")
-          .update({
-            is_active: false,
-            display_name: `[Nonaktif] ${deletingStaff.display_name}`,
-            updated_at: new Date().toISOString(),
-          })
+          .delete()
           .eq("id", deletingStaff.id);
+
+        if (delError) {
+          // Soft-delete fallback to keep relational transaction history intact
+          const { error: deactError } = await client
+            .from("profiles")
+            .update({
+              is_active: false,
+              display_name: `[Nonaktif] ${deletingStaff.display_name}`,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", deletingStaff.id);
+
+          if (deactError) {
+            throw new Error(
+              `Gagal menghapus staf: ${rpcError.message || delError.message}. ` +
+              "Silakan jalankan skrip SQL 'fix-staff-roles-and-management.sql' di Supabase SQL Editor."
+            );
+          }
+        }
       }
 
       // Remove from active list
@@ -438,6 +478,7 @@ export function StaffPage(): ReactNode {
         type: "success",
       });
       setDeletingStaff(null);
+      await loadData();
     } catch (err: any) {
       console.error("Gagal menghapus staf:", err);
       setFeedback({ message: `Gagal menghapus staf: ${err.message || err}`, type: "error" });
@@ -469,8 +510,9 @@ export function StaffPage(): ReactNode {
     try {
       const client = getSupabaseClient() as any;
 
-      // 1. Sign up user via Supabase Auth
-      const { data: authData, error: authError } = await client.auth.signUp({
+      // 1. Sign up user via ephemeral Supabase Auth client so current admin session is NEVER replaced
+      const ephemeralClient = createEphemeralSupabaseClient();
+      const { data: authData, error: authError } = await ephemeralClient.auth.signUp({
         email: newEmail.trim(),
         password: newPassword,
         options: {
@@ -486,24 +528,32 @@ export function StaffPage(): ReactNode {
       const newUserId = authData.user?.id;
 
       if (newUserId && newRoles.length > 0) {
-        // 2. Assign initial roles
-        const roleInserts = newRoles
-          .map((code) => {
-            const rObj = availableRoles.find((r) => r.code === code);
-            return rObj ? { user_id: newUserId, role_id: rObj.id } : null;
-          })
-          .filter(Boolean);
+        // 2. Assign initial roles via RPC
+        const { error: rpcError } = await client.rpc("admin_update_user_roles", {
+          p_user_id: newUserId,
+          p_role_codes: newRoles,
+        });
 
-        if (roleInserts.length > 0) {
-          const { error: roleError } = await client.from("user_roles").insert(roleInserts);
-          if (roleError) {
-            console.warn("User dibuat, sinkronisasi peran memerlukan perhatian:", roleError);
+        if (rpcError) {
+          console.warn("RPC admin_update_user_roles failed on creation, trying direct fallback:", rpcError);
+          const roleInserts = newRoles
+            .map((code) => {
+              const rObj = availableRoles.find((r) => r.code === code);
+              return rObj ? { user_id: newUserId, role_id: rObj.id } : null;
+            })
+            .filter(Boolean);
+
+          if (roleInserts.length > 0) {
+            const { error: roleError } = await client.from("user_roles").insert(roleInserts);
+            if (roleError) {
+              console.warn("User dibuat, sinkronisasi peran memerlukan perhatian:", roleError);
+            }
           }
         }
       }
 
       setFeedback({
-        message: `Akun staf "${newName.trim()}" (${newEmail.trim()}) berhasil didaftarkan dengan ${newRoles.length} tugas operasional.`,
+        message: `Akun staf "${newName.trim()}" (${newEmail.trim()}) berhasil didaftarkan dengan tugas operasional: ${newRoles.join(", ")}.`,
         type: "success",
       });
 
