@@ -1,13 +1,13 @@
 /**
  * @tepisawah/admin — Staff & User Management (Kelola Staf Restoran).
  *
- * Manages staff profiles, assigned operational roles (Owner, Cashier/Waiter,
- * Kitchen, Supervisor, Admin), and account active status connected to Supabase.
+ * Manages staff profiles, multi-role task assignments (Owner, Kasir, Waiter,
+ * Dapur KDS, Supervisor, Admin), editing staff details, and deleting staff.
  *
  * Enforces RBAC permissions via `@tepisawah/permissions`:
  *   - users.read: view staff list and metrics
- *   - users.update: edit staff display name
- *   - users.roles_manage: assign operational role
+ *   - users.update: edit staff profile (name, phone, active status)
+ *   - users.roles_manage: assign operational tasks/roles
  *   - users.disable: toggle active/inactive status
  *   - users.create: register new staff account
  */
@@ -17,14 +17,20 @@ import { Skeleton } from "@tepisawah/ui";
 import { useEffect, useState, useMemo, useCallback, type FormEvent, type ReactNode } from "react";
 import { getSupabaseClient } from "../../lib/supabase.js";
 
+export interface StaffRoleItem {
+  id: string;
+  code: string;
+  name: string;
+}
+
 export interface StaffItem {
   id: string;
   display_name: string;
+  phone?: string | null;
   is_active: boolean;
   created_at: string;
-  role_code: string;
-  role_name: string;
-  role_id: string;
+  roles: StaffRoleItem[];
+  role_codes: string[];
 }
 
 export interface AvailableRole {
@@ -34,17 +40,88 @@ export interface AvailableRole {
   description?: string;
 }
 
-const ROLE_BADGES: Record<string, { label: string; bg: string; color: string; border: string }> = {
-  owner: { label: "Owner / Pemilik", bg: "var(--c-ricepaper)", color: "var(--c-roastedearth)", border: "var(--c-border)" },
-  admin: { label: "Administrator", bg: "var(--c-forest-light)", color: "var(--c-forest)", border: "#bbf7d0" },
-  supervisor: { label: "Supervisor", bg: "var(--c-info-bg)", color: "var(--c-info)", border: "#bae6fd" },
-  cashier: { label: "Kasir & Layanan Meja", bg: "var(--c-warmcream)", color: "var(--c-coffeebrown)", border: "var(--c-golden)" },
-  waiter: { label: "Pelayan Meja", bg: "#f0fdfa", color: "#0f766e", border: "#99f6e4" },
-  kitchen: { label: "Dapur & KDS", bg: "#fff7ed", color: "#c2410c", border: "#fed7aa" },
+export interface TaskDefinition {
+  code: string;
+  title: string;
+  badge: string;
+  description: string;
+  bg: string;
+  color: string;
+  border: string;
+}
+
+export const TASK_DEFINITIONS: Record<string, TaskDefinition> = {
+  cashier: {
+    code: "cashier",
+    title: "Kasir & Pembayaran",
+    badge: "Kasir",
+    description: "Meja kasir POS, konfirmasi antrean pesanan QR meja, terima pembayaran QRIS/Tunai, cetak struk tagihan.",
+    bg: "var(--c-warmcream)",
+    color: "var(--c-coffeebrown)",
+    border: "var(--c-golden)",
+  },
+  waiter: {
+    code: "waiter",
+    title: "Layanan Meja & Pelayan",
+    badge: "Pelayan",
+    description: "Catat pesanan manual saung/meja, pantau hidangan siap saji dari dapur, antar pesanan ke saung/meja tamu.",
+    bg: "#f0fdfa",
+    color: "#0f766e",
+    border: "#99f6e4",
+  },
+  kitchen: {
+    code: "kitchen",
+    title: "Dapur & KDS",
+    badge: "Dapur",
+    description: "Layar sentuh dapur KDS, antrean tiket masak, timer durasi memasak, dan tandai hidangan siap antar.",
+    bg: "#fff7ed",
+    color: "#c2410c",
+    border: "#fed7aa",
+  },
+  supervisor: {
+    code: "supervisor",
+    title: "Supervisor Operasional",
+    badge: "Supervisor",
+    description: "Pengawasan operasional lantai resto, pembatalan/koreksi tiket pesanan bermasalah, void transaksi pembayaran.",
+    bg: "var(--c-info-bg)",
+    color: "var(--c-info)",
+    border: "#bae6fd",
+  },
+  admin: {
+    code: "admin",
+    title: "Administrator Sistem",
+    badge: "Admin",
+    description: "Kelola katalog & harga menu, konfigurasi denah meja & QR, pengaturan konten CMS website, dan kelola akun staf.",
+    bg: "var(--c-forest-light)",
+    color: "var(--c-forest)",
+    border: "#bbf7d0",
+  },
+  owner: {
+    code: "owner",
+    title: "Owner / Pemilik Resto",
+    badge: "Owner",
+    description: "Akses bisnis eksekutif penuh, pengawasan omzet keuangan resto, dan wewenang tingkat tertinggi.",
+    bg: "var(--c-ricepaper)",
+    color: "var(--c-roastedearth)",
+    border: "var(--c-border)",
+  },
 };
 
+const DEFAULT_TASK_DEF: TaskDefinition = {
+  code: "cashier",
+  title: "Kasir & Pembayaran",
+  badge: "Kasir",
+  description: "Meja kasir POS, konfirmasi antrean pesanan QR meja, terima pembayaran QRIS/Tunai, cetak struk tagihan.",
+  bg: "var(--c-warmcream)",
+  color: "var(--c-coffeebrown)",
+  border: "var(--c-golden)",
+};
+
+
 export function StaffPage(): ReactNode {
-  const { can } = useAuth();
+  const { can, user, roles: myRoles } = useAuth();
+  const isOwner = myRoles.includes("owner");
+
   const canRead = can(PERMISSIONS.USERS_READ);
   const canManageRoles = can(PERMISSIONS.USERS_ROLES_MANAGE);
   const canUpdateUser = can(PERMISSIONS.USERS_UPDATE);
@@ -58,14 +135,23 @@ export function StaffPage(): ReactNode {
   const [feedback, setFeedback] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("ALL");
-  const [editingStaff, setEditingStaff] = useState<StaffItem | null>(null);
-  const [editName, setEditName] = useState("");
+
+  // Modals state
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editingStaff, setEditingStaff] = useState<StaffItem | null>(null);
+  const [deletingStaff, setDeletingStaff] = useState<StaffItem | null>(null);
+
+  // Edit staff form state
+  const [editName, setEditName] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editRoles, setEditRoles] = useState<string[]>([]);
+  const [editIsActive, setEditIsActive] = useState(true);
 
   // New staff form state
   const [newEmail, setNewEmail] = useState("");
   const [newName, setNewName] = useState("");
-  const [newRole, setNewRole] = useState("cashier");
+  const [newPhone, setNewPhone] = useState("");
+  const [newRoles, setNewRoles] = useState<string[]>(["cashier"]);
   const [newPassword, setNewPassword] = useState("TepiSawah2026!");
   const [creating, setCreating] = useState(false);
 
@@ -85,25 +171,28 @@ export function StaffPage(): ReactNode {
       const roles: AvailableRole[] = rolesData || [];
       setAvailableRoles(roles);
 
-      // 2. Fetch profiles with user_roles
+      // 2. Fetch profiles with user_roles join
       const { data: profilesData, error: profilesError } = await client
         .from("profiles")
-        .select("id, display_name, is_active, created_at, user_roles(role_id, roles(id, code, name))")
+        .select("id, display_name, phone, is_active, created_at, user_roles(role_id, roles(id, code, name))")
         .order("created_at", { ascending: true });
 
       if (profilesError) throw profilesError;
 
       const items: StaffItem[] = (profilesData || []).map((p: any) => {
-        const ur = p.user_roles?.[0];
-        const role = ur?.roles;
+        const userRolesList = Array.isArray(p.user_roles) ? p.user_roles : [];
+        const assignedRoles: StaffRoleItem[] = userRolesList
+          .map((ur: any) => ur.roles)
+          .filter((r: any): r is StaffRoleItem => Boolean(r && r.code));
+
         return {
           id: p.id,
           display_name: p.display_name || "Staf Tanpa Nama",
+          phone: p.phone || "",
           is_active: p.is_active !== false,
           created_at: p.created_at || new Date().toISOString(),
-          role_code: role?.code || "cashier",
-          role_name: role?.name || "Kasir",
-          role_id: ur?.role_id || "",
+          roles: assignedRoles,
+          role_codes: assignedRoles.map((r) => r.code),
         };
       });
 
@@ -127,22 +216,52 @@ export function StaffPage(): ReactNode {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
         if (editingStaff) setEditingStaff(null);
+        if (deletingStaff) setDeletingStaff(null);
         if (showAddModal) setShowAddModal(false);
       }
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [editingStaff, showAddModal]);
+  }, [editingStaff, deletingStaff, showAddModal]);
 
   if (!canRead) {
     return <AccessDenied />;
   }
 
+  // Toggle Single Role for Checkbox Group
+  function toggleRoleSelection(
+    currentRoles: string[],
+    roleCode: string,
+    setFn: (roles: string[]) => void
+  ) {
+    if (currentRoles.includes(roleCode)) {
+      if (currentRoles.length === 1) {
+        setFeedback({ message: "Staf wajib memiliki minimal 1 tugas operasional aktif.", type: "error" });
+        return;
+      }
+      setFn(currentRoles.filter((c) => c !== roleCode));
+    } else {
+      setFn([...currentRoles, roleCode]);
+    }
+  }
+
+  // Quick Toggle Active Status
   async function handleToggleActive(staff: StaffItem) {
     if (!canDisableUser) {
       setFeedback({ message: "Anda tidak memiliki wewenang untuk menonaktifkan akun staf.", type: "error" });
       return;
     }
+
+    if (staff.id === user?.id) {
+      setFeedback({ message: "Pencegahan Self-Lockout: Anda tidak dapat menonaktifkan akun Anda sendiri.", type: "error" });
+      return;
+    }
+
+    if (staff.role_codes.includes("owner") && !isOwner) {
+      setFeedback({ message: "Hanya Owner yang berhak menonaktifkan akun sesama Owner.", type: "error" });
+      return;
+    }
+
     setSavingId(staff.id);
     setFeedback(null);
     try {
@@ -170,85 +289,178 @@ export function StaffPage(): ReactNode {
     }
   }
 
-  async function handleChangeRole(staff: StaffItem, nextRoleCode: string) {
-    if (!canManageRoles) {
-      setFeedback({ message: "Anda tidak memiliki wewenang untuk mengubah peran staf.", type: "error" });
+  // Open Edit Modal
+  function handleOpenEdit(staff: StaffItem) {
+    if (!canUpdateUser && !canManageRoles) {
+      setFeedback({ message: "Anda tidak memiliki wewenang untuk mengedit data staf.", type: "error" });
       return;
     }
-    const selectedRole = availableRoles.find((r) => r.code === nextRoleCode);
-    if (!selectedRole) return;
 
-    setSavingId(staff.id);
-    setFeedback(null);
-    try {
-      const client = getSupabaseClient() as any;
-
-      // Delete existing role and insert new role
-      await client.from("user_roles").delete().eq("user_id", staff.id);
-      const { error } = await client.from("user_roles").insert({
-        user_id: staff.id,
-        role_id: selectedRole.id,
-      });
-
-      if (error) throw error;
-
-      setStaffList((prev) =>
-        prev.map((s) =>
-          s.id === staff.id
-            ? { ...s, role_code: selectedRole.code, role_name: selectedRole.name, role_id: selectedRole.id }
-            : s
-        )
-      );
-      setFeedback({
-        message: `Peran ${staff.display_name} berhasil diubah menjadi ${selectedRole.name}.`,
-        type: "success",
-      });
-    } catch (err: any) {
-      setFeedback({ message: `Gagal mengubah peran: ${err.message || err}`, type: "error" });
-    } finally {
-      setSavingId(null);
+    if (staff.role_codes.includes("owner") && !isOwner) {
+      setFeedback({ message: "Hanya Owner yang berhak mengedit data akun Owner.", type: "error" });
+      return;
     }
+
+    setEditingStaff(staff);
+    setEditName(staff.display_name);
+    setEditPhone(staff.phone || "");
+    setEditRoles(staff.role_codes.length > 0 ? staff.role_codes : ["cashier"]);
+    setEditIsActive(staff.is_active);
+    setFeedback(null);
   }
 
-  async function handleSaveName() {
-    if (!canUpdateUser) {
-      setFeedback({ message: "Anda tidak memiliki wewenang untuk mengubah nama staf.", type: "error" });
+  // Save Edit Staff
+  async function handleSaveEditStaff(e: FormEvent) {
+    e.preventDefault();
+    if (!editingStaff) return;
+
+    if (!editName.trim()) {
+      setFeedback({ message: "Nama tampilan staf tidak boleh kosong.", type: "error" });
       return;
     }
-    if (!editingStaff || !editName.trim()) return;
+
+    if (editRoles.length === 0) {
+      setFeedback({ message: "Pilih minimal 1 centang tugas operasional untuk staf ini.", type: "error" });
+      return;
+    }
+
+    // Self-lockout check
+    if (editingStaff.id === user?.id && !editIsActive) {
+      setFeedback({ message: "Pencegahan Self-Lockout: Anda tidak dapat menonaktifkan akun Anda sendiri.", type: "error" });
+      return;
+    }
+
     setSavingId(editingStaff.id);
     setFeedback(null);
     try {
       const client = getSupabaseClient() as any;
-      const trimmed = editName.trim();
+      const trimmedName = editName.trim();
+      const trimmedPhone = editPhone.trim();
 
-      const { error } = await client
+      // 1. Update Profile
+      const { error: profileError } = await client
         .from("profiles")
-        .update({ display_name: trimmed, updated_at: new Date().toISOString() })
+        .update({
+          display_name: trimmedName,
+          phone: trimmedPhone || null,
+          is_active: editIsActive,
+          updated_at: new Date().toISOString(),
+        })
         .eq("id", editingStaff.id);
 
-      if (error) throw error;
+      if (profileError) throw profileError;
 
-      setStaffList((prev) =>
-        prev.map((s) => (s.id === editingStaff.id ? { ...s, display_name: trimmed } : s))
-      );
-      setFeedback({ message: `Nama staf berhasil diperbarui menjadi "${trimmed}".`, type: "success" });
+      // 2. Update Roles if authorized
+      if (canManageRoles) {
+        // Delete previous roles
+        await client.from("user_roles").delete().eq("user_id", editingStaff.id);
+
+        // Insert selected roles
+        const roleInserts = editRoles
+          .map((code) => {
+            const roleObj = availableRoles.find((r) => r.code === code);
+            return roleObj ? { user_id: editingStaff.id, role_id: roleObj.id } : null;
+          })
+          .filter(Boolean);
+
+        if (roleInserts.length > 0) {
+          const { error: rolesInsertError } = await client.from("user_roles").insert(roleInserts);
+          if (rolesInsertError) throw rolesInsertError;
+        }
+      }
+
+      setFeedback({
+        message: `Data staf "${trimmedName}" dan tugas operasional berhasil diperbarui.`,
+        type: "success",
+      });
+
       setEditingStaff(null);
+      await loadData();
     } catch (err: any) {
-      setFeedback({ message: `Gagal update nama: ${err.message || err}`, type: "error" });
+      console.error("Gagal menyimpan perubahan staf:", err);
+      setFeedback({ message: `Gagal memperbarui staf: ${err.message || err}`, type: "error" });
     } finally {
       setSavingId(null);
     }
   }
 
+  // Open Delete Modal
+  function handleOpenDelete(staff: StaffItem) {
+    if (staff.id === user?.id) {
+      setFeedback({ message: "Pencegahan Self-Lockout: Anda tidak dapat menghapus akun Anda sendiri.", type: "error" });
+      return;
+    }
+
+    if (staff.role_codes.includes("owner") && !isOwner) {
+      setFeedback({ message: "Hanya Owner yang berhak menghapus akun Owner.", type: "error" });
+      return;
+    }
+
+    setDeletingStaff(staff);
+    setFeedback(null);
+  }
+
+  // Confirm Delete Staff
+  async function handleConfirmDeleteStaff() {
+    if (!deletingStaff) return;
+
+    setSavingId(deletingStaff.id);
+    setFeedback(null);
+    try {
+      const client = getSupabaseClient() as any;
+
+      // 1. Delete user_roles
+      await client.from("user_roles").delete().eq("user_id", deletingStaff.id);
+
+      // 2. Attempt hard delete on profiles; fallback to deactivate if foreign key constraints exist
+      const { error: delError } = await client
+        .from("profiles")
+        .delete()
+        .eq("id", deletingStaff.id);
+
+      if (delError) {
+        // Soft-delete fallback to keep relational transaction history intact
+        await client
+          .from("profiles")
+          .update({
+            is_active: false,
+            display_name: `[Nonaktif] ${deletingStaff.display_name}`,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", deletingStaff.id);
+      }
+
+      // Remove from active list
+      setStaffList((prev) => prev.filter((s) => s.id !== deletingStaff.id));
+
+      setFeedback({
+        message: `Akun staf "${deletingStaff.display_name}" berhasil dihapus dari sistem.`,
+        type: "success",
+      });
+      setDeletingStaff(null);
+    } catch (err: any) {
+      console.error("Gagal menghapus staf:", err);
+      setFeedback({ message: `Gagal menghapus staf: ${err.message || err}`, type: "error" });
+    } finally {
+      setSavingId(null);
+    }
+  }
+
+  // Create New Staff
   async function handleCreateStaff(e: FormEvent) {
     e.preventDefault();
     if (!canCreateUser) {
       setFeedback({ message: "Anda tidak memiliki wewenang untuk mendaftarkan akun staf baru.", type: "error" });
       return;
     }
+
     if (!newName.trim() || !newEmail.trim() || !newPassword.trim()) {
-      setFeedback({ message: "Semua isian formulir staf wajib diisi lengkap.", type: "error" });
+      setFeedback({ message: "Nama, email, dan kata sandi wajib diisi lengkap.", type: "error" });
+      return;
+    }
+
+    if (newRoles.length === 0) {
+      setFeedback({ message: "Pilih minimal 1 tugas operasional untuk staf baru.", type: "error" });
       return;
     }
 
@@ -257,13 +469,14 @@ export function StaffPage(): ReactNode {
     try {
       const client = getSupabaseClient() as any;
 
-      // 1. Sign up user through Supabase Auth
+      // 1. Sign up user via Supabase Auth
       const { data: authData, error: authError } = await client.auth.signUp({
         email: newEmail.trim(),
         password: newPassword,
         options: {
           data: {
             display_name: newName.trim(),
+            phone: newPhone.trim() || undefined,
           },
         },
       });
@@ -271,33 +484,40 @@ export function StaffPage(): ReactNode {
       if (authError) throw authError;
 
       const newUserId = authData.user?.id;
-      const selectedRole = availableRoles.find((r) => r.code === newRole);
 
-      if (newUserId && selectedRole) {
-        // 2. Assign initial role in user_roles
-        const { error: roleError } = await client.from("user_roles").insert({
-          user_id: newUserId,
-          role_id: selectedRole.id,
-        });
-        if (roleError) {
-          console.warn("User dibuat, namun penugasan peran memerlukan sinkronisasi:", roleError);
+      if (newUserId && newRoles.length > 0) {
+        // 2. Assign initial roles
+        const roleInserts = newRoles
+          .map((code) => {
+            const rObj = availableRoles.find((r) => r.code === code);
+            return rObj ? { user_id: newUserId, role_id: rObj.id } : null;
+          })
+          .filter(Boolean);
+
+        if (roleInserts.length > 0) {
+          const { error: roleError } = await client.from("user_roles").insert(roleInserts);
+          if (roleError) {
+            console.warn("User dibuat, sinkronisasi peran memerlukan perhatian:", roleError);
+          }
         }
       }
 
       setFeedback({
-        message: `Akun staf ${newName.trim()} (${newEmail.trim()}) berhasil didaftarkan dengan peran ${selectedRole?.name || newRole}.`,
+        message: `Akun staf "${newName.trim()}" (${newEmail.trim()}) berhasil didaftarkan dengan ${newRoles.length} tugas operasional.`,
         type: "success",
       });
 
       setShowAddModal(false);
       setNewName("");
       setNewEmail("");
+      setNewPhone("");
+      setNewRoles(["cashier"]);
       setNewPassword("TepiSawah2026!");
       await loadData();
     } catch (err: any) {
       console.error("Gagal menambah staf:", err);
       setFeedback({
-        message: `Gagal mendaftarkan staf: ${err.message || err}. Pastikan email unik dan format sesuai.`,
+        message: `Gagal mendaftarkan staf: ${err.message || err}. Pastikan format email benar dan unik.`,
         type: "error",
       });
     } finally {
@@ -309,9 +529,9 @@ export function StaffPage(): ReactNode {
   const stats = useMemo(() => {
     const total = staffList.length;
     const active = staffList.filter((s) => s.is_active).length;
-    const foh = staffList.filter((s) => s.role_code === "cashier" || s.role_code === "waiter").length;
-    const kitchen = staffList.filter((s) => s.role_code === "kitchen").length;
-    const mgmt = staffList.filter((s) => s.role_code === "owner" || s.role_code === "admin" || s.role_code === "supervisor").length;
+    const foh = staffList.filter((s) => s.role_codes.some((c) => c === "cashier" || c === "waiter")).length;
+    const kitchen = staffList.filter((s) => s.role_codes.includes("kitchen")).length;
+    const mgmt = staffList.filter((s) => s.role_codes.some((c) => c === "owner" || c === "admin" || c === "supervisor")).length;
     return { total, active, foh, kitchen, mgmt };
   }, [staffList]);
 
@@ -320,15 +540,15 @@ export function StaffPage(): ReactNode {
     return staffList.filter((s) => {
       const matchSearch =
         s.display_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.role_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.role_code.toLowerCase().includes(searchTerm.toLowerCase());
+        s.role_codes.some((code) => code.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (s.phone && s.phone.includes(searchTerm));
 
       if (!matchSearch) return false;
 
       if (roleFilter === "ALL") return true;
-      if (roleFilter === "FOH") return s.role_code === "cashier" || s.role_code === "waiter";
-      if (roleFilter === "KITCHEN") return s.role_code === "kitchen";
-      if (roleFilter === "MGMT") return s.role_code === "owner" || s.role_code === "admin" || s.role_code === "supervisor";
+      if (roleFilter === "FOH") return s.role_codes.some((c) => c === "cashier" || c === "waiter");
+      if (roleFilter === "KITCHEN") return s.role_codes.includes("kitchen");
+      if (roleFilter === "MGMT") return s.role_codes.some((c) => c === "owner" || c === "admin" || c === "supervisor");
       if (roleFilter === "ACTIVE") return s.is_active;
       if (roleFilter === "INACTIVE") return !s.is_active;
       return true;
@@ -342,7 +562,7 @@ export function StaffPage(): ReactNode {
         <div className="staff-header-titles">
           <h1>Kelola Staf Restoran</h1>
           <p className="staff-header-sub">
-            Atur profil staf operasional, penugasan peran (Owner, Kasir, Waiter, Dapur KDS, Supervisor, Admin), serta status hak akses akun sistem.
+            Atur profil staf, penugasan centang tugas operasional (Kasir, Pelayan, Dapur KDS, Supervisor, Admin, Owner), serta pembaruan dan penghapusan staf.
           </p>
         </div>
 
@@ -360,7 +580,10 @@ export function StaffPage(): ReactNode {
             <button
               type="button"
               className="staff-btn staff-btn-primary"
-              onClick={() => setShowAddModal(true)}
+              onClick={() => {
+                setNewRoles(["cashier"]);
+                setShowAddModal(true);
+              }}
             >
               Tambah Staf Baru
             </button>
@@ -440,7 +663,7 @@ export function StaffPage(): ReactNode {
           <input
             type="text"
             className="staff-search-input"
-            placeholder="Cari nama staf atau peran operasional…"
+            placeholder="Cari nama staf, nomor HP, atau peran operasional…"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -483,20 +706,21 @@ export function StaffPage(): ReactNode {
               <thead>
                 <tr>
                   <th scope="col">Profil Staf</th>
-                  <th scope="col">Peran Operasional</th>
+                  <th scope="col">Tugas &amp; Peran Terpilih</th>
                   <th scope="col">Status Akun</th>
                   <th scope="col" style={{ textAlign: "right" }}>Tindakan</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredStaff.map((staff) => {
-                  const badge = ROLE_BADGES[staff.role_code] || {
-                    label: staff.role_name,
-                    bg: "var(--c-surface)",
-                    color: "var(--c-text-main)",
-                    border: "var(--c-border)",
-                  };
                   const isSaving = savingId === staff.id;
+                  const isSelf = staff.id === user?.id;
+                  const isStaffOwner = staff.role_codes.includes("owner");
+                  const primaryCode = staff.role_codes[0] || "cashier";
+                  const primaryDef: TaskDefinition =
+                    (primaryCode && TASK_DEFINITIONS[primaryCode])
+                      ? TASK_DEFINITIONS[primaryCode]!
+                      : DEFAULT_TASK_DEF;
 
                   return (
                     <tr
@@ -508,38 +732,73 @@ export function StaffPage(): ReactNode {
                           <div
                             className="staff-avatar"
                             style={{
-                              background: badge.bg,
-                              color: badge.color,
-                              borderColor: badge.border,
+                              background: primaryDef.bg,
+                              color: primaryDef.color,
+                              borderColor: primaryDef.border,
                             }}
                           >
                             {staff.display_name.charAt(0).toUpperCase()}
                           </div>
                           <div>
-                            <div className="staff-name">{staff.display_name}</div>
-                            <div className="staff-id">ID: {staff.id.slice(0, 8)}…</div>
+                            <div className="staff-name">
+                              {staff.display_name}
+                              {isSelf && (
+                                <span
+                                  style={{
+                                    marginLeft: "0.5rem",
+                                    fontSize: "0.6875rem",
+                                    padding: "0.15rem 0.45rem",
+                                    borderRadius: "4px",
+                                    background: "var(--c-forest-light)",
+                                    color: "var(--c-forest)",
+                                    fontWeight: 700,
+                                  }}
+                                >
+                                  Akun Anda
+                                </span>
+                              )}
+                            </div>
+                            <div className="staff-id">
+                              {staff.phone ? `📱 ${staff.phone} • ` : ""}ID: {staff.id.slice(0, 8)}…
+                            </div>
                           </div>
                         </div>
                       </td>
 
                       <td>
-                        <select
-                          className="staff-role-select"
-                          value={staff.role_code}
-                          disabled={isSaving || !canManageRoles}
-                          onChange={(e) => void handleChangeRole(staff, e.target.value)}
-                          style={{
-                            background: badge.bg,
-                            color: badge.color,
-                            borderColor: badge.border,
-                          }}
-                        >
-                          {availableRoles.map((r) => (
-                            <option key={r.id} value={r.code}>
-                              {ROLE_BADGES[r.code]?.label || r.name}
-                            </option>
-                          ))}
-                        </select>
+                        <div className="staff-badge-group">
+                          {staff.role_codes.length === 0 ? (
+                            <span style={{ fontSize: "0.75rem", color: "var(--c-text-muted)" }}>
+                              Belum ada tugas
+                            </span>
+                          ) : (
+                            staff.role_codes.map((code) => {
+                              const tDef = TASK_DEFINITIONS[code] || {
+                                badge: code,
+                                bg: "var(--c-surface)",
+                                color: "var(--c-text-main)",
+                                border: "var(--c-border)",
+                              };
+                              return (
+                                <span
+                                  key={code}
+                                  style={{
+                                    fontSize: "0.75rem",
+                                    fontWeight: 700,
+                                    padding: "0.25rem 0.6rem",
+                                    borderRadius: "6px",
+                                    background: tDef.bg,
+                                    color: tDef.color,
+                                    border: `1px solid ${tDef.border}`,
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  {tDef.badge}
+                                </span>
+                              );
+                            })
+                          )}
+                        </div>
                       </td>
 
                       <td>
@@ -555,17 +814,15 @@ export function StaffPage(): ReactNode {
 
                       <td style={{ textAlign: "right" }}>
                         <div className="staff-action-group">
-                          {canUpdateUser && (
+                          {(canUpdateUser || canManageRoles) && (
                             <button
                               type="button"
                               className="staff-action-btn staff-action-btn--edit"
-                              disabled={isSaving}
-                              onClick={() => {
-                                setEditingStaff(staff);
-                                setEditName(staff.display_name);
-                              }}
+                              disabled={isSaving || (isStaffOwner && !isOwner)}
+                              onClick={() => handleOpenEdit(staff)}
+                              title={isStaffOwner && !isOwner ? "Hanya Owner yang berhak mengedit akun Owner" : "Edit staf & atur tugas"}
                             >
-                              Edit Nama
+                              Edit Staf
                             </button>
                           )}
 
@@ -577,12 +834,37 @@ export function StaffPage(): ReactNode {
                                   ? "staff-action-btn--toggle-off"
                                   : "staff-action-btn--toggle-on"
                               }`}
-                              disabled={isSaving}
+                              disabled={isSaving || isSelf || (isStaffOwner && !isOwner)}
                               onClick={() => void handleToggleActive(staff)}
+                              title={
+                                isSelf
+                                  ? "Anda tidak dapat menonaktifkan akun sendiri"
+                                  : isStaffOwner && !isOwner
+                                  ? "Hanya Owner yang berhak menonaktifkan Owner"
+                                  : staff.is_active
+                                  ? "Nonaktifkan akses staf"
+                                  : "Aktifkan kembali akses staf"
+                              }
                             >
                               {staff.is_active ? "Nonaktifkan" : "Aktifkan"}
                             </button>
                           )}
+
+                          <button
+                            type="button"
+                            className="staff-action-btn staff-action-btn--delete"
+                            disabled={isSaving || isSelf || (isStaffOwner && !isOwner)}
+                            onClick={() => handleOpenDelete(staff)}
+                            title={
+                              isSelf
+                                ? "Anda tidak dapat menghapus akun sendiri"
+                                : isStaffOwner && !isOwner
+                                ? "Hanya Owner yang berhak menghapus akun Owner"
+                                : "Hapus akun staf dari sistem"
+                            }
+                          >
+                            Hapus
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -595,13 +877,14 @@ export function StaffPage(): ReactNode {
           {/* Mobile Stacked Cards View (< 48rem) */}
           <div className="staff-cards-view">
             {filteredStaff.map((staff) => {
-              const badge = ROLE_BADGES[staff.role_code] || {
-                label: staff.role_name,
-                bg: "var(--c-surface)",
-                color: "var(--c-text-main)",
-                border: "var(--c-border)",
-              };
               const isSaving = savingId === staff.id;
+              const isSelf = staff.id === user?.id;
+              const isStaffOwner = staff.role_codes.includes("owner");
+              const primaryCode = staff.role_codes[0] || "cashier";
+              const primaryDef: TaskDefinition =
+                (primaryCode && TASK_DEFINITIONS[primaryCode])
+                  ? TASK_DEFINITIONS[primaryCode]!
+                  : DEFAULT_TASK_DEF;
 
               return (
                 <div key={staff.id} className="staff-card-item">
@@ -610,16 +893,35 @@ export function StaffPage(): ReactNode {
                       <div
                         className="staff-avatar"
                         style={{
-                          background: badge.bg,
-                          color: badge.color,
-                          borderColor: badge.border,
+                          background: primaryDef.bg,
+                          color: primaryDef.color,
+                          borderColor: primaryDef.border,
                         }}
                       >
                         {staff.display_name.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <div className="staff-name">{staff.display_name}</div>
-                        <div className="staff-id">ID: {staff.id.slice(0, 8)}…</div>
+                        <div className="staff-name">
+                          {staff.display_name}
+                          {isSelf && (
+                            <span
+                              style={{
+                                marginLeft: "0.4rem",
+                                fontSize: "0.6875rem",
+                                padding: "0.1rem 0.35rem",
+                                borderRadius: "4px",
+                                background: "var(--c-forest-light)",
+                                color: "var(--c-forest)",
+                                fontWeight: 700,
+                              }}
+                            >
+                              Akun Anda
+                            </span>
+                          )}
+                        </div>
+                        <div className="staff-id">
+                          {staff.phone ? `📱 ${staff.phone} • ` : ""}ID: {staff.id.slice(0, 8)}…
+                        </div>
                       </div>
                     </div>
 
@@ -634,39 +936,54 @@ export function StaffPage(): ReactNode {
                   </div>
 
                   <div className="staff-card-details">
-                    <div className="staff-form-group" style={{ marginBottom: 0 }}>
-                      <label className="staff-form-label">Peran Operasional</label>
-                      <select
-                        className="staff-role-select"
-                        value={staff.role_code}
-                        disabled={isSaving || !canManageRoles}
-                        onChange={(e) => void handleChangeRole(staff, e.target.value)}
-                        style={{
-                          background: badge.bg,
-                          color: badge.color,
-                          borderColor: badge.border,
-                        }}
-                      >
-                        {availableRoles.map((r) => (
-                          <option key={r.id} value={r.code}>
-                            {ROLE_BADGES[r.code]?.label || r.name}
-                          </option>
-                        ))}
-                      </select>
+                    <div>
+                      <div className="staff-form-label" style={{ marginBottom: "0.35rem" }}>
+                        Tugas Operasional Diberikan
+                      </div>
+                      <div className="staff-badge-group">
+                        {staff.role_codes.length === 0 ? (
+                          <span style={{ fontSize: "0.75rem", color: "var(--c-text-muted)" }}>
+                            Belum ada tugas
+                          </span>
+                        ) : (
+                          staff.role_codes.map((code) => {
+                            const tDef = TASK_DEFINITIONS[code] || {
+                              badge: code,
+                              bg: "var(--c-surface)",
+                              color: "var(--c-text-main)",
+                              border: "var(--c-border)",
+                            };
+                            return (
+                              <span
+                                key={code}
+                                style={{
+                                  fontSize: "0.75rem",
+                                  fontWeight: 700,
+                                  padding: "0.2rem 0.5rem",
+                                  borderRadius: "6px",
+                                  background: tDef.bg,
+                                  color: tDef.color,
+                                  border: `1px solid ${tDef.border}`,
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {tDef.badge}
+                              </span>
+                            );
+                          })
+                        )}
+                      </div>
                     </div>
 
                     <div className="staff-card-actions">
-                      {canUpdateUser && (
+                      {(canUpdateUser || canManageRoles) && (
                         <button
                           type="button"
                           className="staff-action-btn staff-action-btn--edit"
-                          disabled={isSaving}
-                          onClick={() => {
-                            setEditingStaff(staff);
-                            setEditName(staff.display_name);
-                          }}
+                          disabled={isSaving || (isStaffOwner && !isOwner)}
+                          onClick={() => handleOpenEdit(staff)}
                         >
-                          Edit Nama
+                          Edit Staf
                         </button>
                       )}
 
@@ -678,12 +995,21 @@ export function StaffPage(): ReactNode {
                               ? "staff-action-btn--toggle-off"
                               : "staff-action-btn--toggle-on"
                           }`}
-                          disabled={isSaving}
+                          disabled={isSaving || isSelf || (isStaffOwner && !isOwner)}
                           onClick={() => void handleToggleActive(staff)}
                         >
                           {staff.is_active ? "Nonaktifkan" : "Aktifkan"}
                         </button>
                       )}
+
+                      <button
+                        type="button"
+                        className="staff-action-btn staff-action-btn--delete"
+                        disabled={isSaving || isSelf || (isStaffOwner && !isOwner)}
+                        onClick={() => handleOpenDelete(staff)}
+                      >
+                        Hapus
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -693,7 +1019,7 @@ export function StaffPage(): ReactNode {
         </>
       )}
 
-      {/* Edit Name Modal Dialog */}
+      {/* Edit Staff Modal Dialog with Checkbox Tasks */}
       {editingStaff && (
         <div
           className="staff-modal-backdrop"
@@ -701,15 +1027,15 @@ export function StaffPage(): ReactNode {
           role="presentation"
         >
           <div
-            className="staff-modal-card"
+            className="staff-modal-card staff-modal-card--lg"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="edit-name-title"
+            aria-labelledby="edit-staff-title"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="staff-modal-header">
-              <h2 id="edit-name-title" className="staff-modal-title">
-                Ubah Nama Staf
+              <h2 id="edit-staff-title" className="staff-modal-title">
+                Edit Data &amp; Tugas Staf
               </h2>
               <button
                 type="button"
@@ -721,43 +1047,210 @@ export function StaffPage(): ReactNode {
               </button>
             </div>
 
-            <div className="staff-form-group">
-              <label htmlFor="staff-display-name" className="staff-form-label">
-                Nama Tampilan Staf
-              </label>
-              <input
-                id="staff-display-name"
-                type="text"
-                className="staff-form-input"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                placeholder="Contoh: Siti Rahma (Kasir)"
-                autoFocus
-              />
+            <form onSubmit={(e) => void handleSaveEditStaff(e)}>
+              <div className="staff-form-group">
+                <label htmlFor="edit-staff-name" className="staff-form-label">
+                  Nama Tampilan Staf
+                </label>
+                <input
+                  id="edit-staff-name"
+                  type="text"
+                  required
+                  className="staff-form-input"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="Contoh: Siti Rahma"
+                  autoFocus
+                />
+              </div>
+
+              <div className="staff-form-group">
+                <label htmlFor="edit-staff-phone" className="staff-form-label">
+                  Nomor WhatsApp / Telepon (Opsional)
+                </label>
+                <input
+                  id="edit-staff-phone"
+                  type="tel"
+                  className="staff-form-input"
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                  placeholder="Contoh: 081234567890"
+                />
+              </div>
+
+              <div className="staff-form-group">
+                <label className="staff-form-label">
+                  Pilihan Centang Tugas Operasional (Bisa Pilih Lebih dari 1)
+                </label>
+                <small style={{ color: "var(--c-text-muted)", fontSize: "0.75rem", marginBottom: "0.4rem" }}>
+                  Centang tugas yang diizinkan untuk dikerjakan oleh staf ini di sistem resto:
+                </small>
+
+                <div className="staff-tasks-container">
+                  {Object.values(TASK_DEFINITIONS).map((task) => {
+                    const isChecked = editRoles.includes(task.code);
+                    const isOwnerTask = task.code === "owner";
+                    const isSelf = editingStaff.id === user?.id;
+                    const disabled = (isOwnerTask && !isOwner) || (isSelf && task.code === "owner");
+
+                    return (
+                      <label
+                        key={task.code}
+                        className={`staff-task-item ${isChecked ? "staff-task-item--checked" : ""} ${
+                          disabled ? "staff-task-item--disabled" : ""
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          className="staff-task-checkbox"
+                          checked={isChecked}
+                          disabled={disabled}
+                          onChange={() => toggleRoleSelection(editRoles, task.code, setEditRoles)}
+                        />
+                        <div className="staff-task-content">
+                          <div className="staff-task-header">
+                            <span className="staff-task-title">{task.title}</span>
+                            <span
+                              style={{
+                                fontSize: "0.6875rem",
+                                fontWeight: 700,
+                                padding: "0.15rem 0.45rem",
+                                borderRadius: "4px",
+                                background: task.bg,
+                                color: task.color,
+                                border: `1px solid ${task.border}`,
+                              }}
+                            >
+                              {task.badge}
+                            </span>
+                          </div>
+                          <span className="staff-task-desc">
+                            {task.description}
+                            {disabled && isOwnerTask && " (Khusus Owner)"}
+                          </span>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="staff-form-group">
+                <label className="staff-form-label">Status Akses Akun</label>
+                <div style={{ display: "flex", gap: "1rem", marginTop: "0.25rem" }}>
+                  <label style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.875rem", cursor: "pointer" }}>
+                    <input
+                      type="radio"
+                      name="edit-status"
+                      checked={editIsActive}
+                      onChange={() => setEditIsActive(true)}
+                    />
+                    <span>Aktif (Dapat Masuk ke Sistem)</span>
+                  </label>
+                  <label style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.875rem", cursor: "pointer" }}>
+                    <input
+                      type="radio"
+                      name="edit-status"
+                      checked={!editIsActive}
+                      disabled={editingStaff.id === user?.id}
+                      onChange={() => setEditIsActive(false)}
+                    />
+                    <span>Nonaktif (Akses Ditutup)</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="staff-modal-footer">
+                <button
+                  type="button"
+                  className="staff-btn staff-btn-secondary"
+                  onClick={() => setEditingStaff(null)}
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="staff-btn staff-btn-primary"
+                  disabled={savingId === editingStaff.id}
+                >
+                  {savingId === editingStaff.id ? "Menyimpan…" : "Simpan Perubahan"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal Dialog */}
+      {deletingStaff && (
+        <div
+          className="staff-modal-backdrop"
+          onClick={() => setDeletingStaff(null)}
+          role="presentation"
+        >
+          <div
+            className="staff-modal-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-staff-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="staff-modal-header">
+              <h2 id="delete-staff-title" className="staff-modal-title" style={{ color: "#991b1b" }}>
+                Hapus Akun Staf
+              </h2>
+              <button
+                type="button"
+                className="staff-modal-close"
+                onClick={() => setDeletingStaff(null)}
+                aria-label="Tutup dialog"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="staff-delete-box">
+              <div className="staff-delete-box-title">
+                ⚠️ Peringatan Penghapusan Akun
+              </div>
+              <div className="staff-delete-box-desc">
+                Apakah Anda yakin ingin menghapus staf <strong>{deletingStaff.display_name}</strong>?
+                Tindakan ini akan mencabut seluruh tugas operasional dan menghapus hak akses staf dari sistem restoran secara permanen.
+              </div>
+            </div>
+
+            <div style={{ fontSize: "0.8125rem", color: "var(--c-text-muted)", marginBottom: "1rem" }}>
+              ID Akun: <code>{deletingStaff.id}</code>
             </div>
 
             <div className="staff-modal-footer">
               <button
                 type="button"
                 className="staff-btn staff-btn-secondary"
-                onClick={() => setEditingStaff(null)}
+                onClick={() => setDeletingStaff(null)}
+                disabled={savingId === deletingStaff.id}
               >
                 Batal
               </button>
               <button
                 type="button"
-                className="staff-btn staff-btn-primary"
-                disabled={savingId === editingStaff.id || !editName.trim()}
-                onClick={() => void handleSaveName()}
+                className="staff-btn"
+                style={{
+                  background: "#dc2626",
+                  color: "#ffffff",
+                  borderColor: "#b91c1c",
+                }}
+                disabled={savingId === deletingStaff.id}
+                onClick={() => void handleConfirmDeleteStaff()}
               >
-                {savingId === editingStaff.id ? "Menyimpan…" : "Simpan Perubahan"}
+                {savingId === deletingStaff.id ? "Menghapus…" : "Ya, Hapus Staf"}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Add Staff Modal Dialog */}
+      {/* Add Staff Modal Dialog with Checkbox Tasks */}
       {showAddModal && (
         <div
           className="staff-modal-backdrop"
@@ -818,21 +1311,73 @@ export function StaffPage(): ReactNode {
               </div>
 
               <div className="staff-form-group">
-                <label htmlFor="new-staff-role" className="staff-form-label">
-                  Peran Operasional Awal
+                <label htmlFor="new-staff-phone" className="staff-form-label">
+                  Nomor Telepon / WhatsApp (Opsional)
                 </label>
-                <select
-                  id="new-staff-role"
-                  className="staff-form-select"
-                  value={newRole}
-                  onChange={(e) => setNewRole(e.target.value)}
-                >
-                  {availableRoles.map((r) => (
-                    <option key={r.id} value={r.code}>
-                      {ROLE_BADGES[r.code]?.label || r.name}
-                    </option>
-                  ))}
-                </select>
+                <input
+                  id="new-staff-phone"
+                  type="tel"
+                  className="staff-form-input"
+                  placeholder="Contoh: 081234567890"
+                  value={newPhone}
+                  onChange={(e) => setNewPhone(e.target.value)}
+                />
+              </div>
+
+              <div className="staff-form-group">
+                <label className="staff-form-label">
+                  Pilihan Centang Tugas Operasional (Bisa Pilih Lebih dari 1)
+                </label>
+                <small style={{ color: "var(--c-text-muted)", fontSize: "0.75rem", marginBottom: "0.4rem" }}>
+                  Centang satu atau beberapa tugas yang akan dijalankan oleh staf baru:
+                </small>
+
+                <div className="staff-tasks-container">
+                  {Object.values(TASK_DEFINITIONS).map((task) => {
+                    const isChecked = newRoles.includes(task.code);
+                    const isOwnerTask = task.code === "owner";
+                    const disabled = isOwnerTask && !isOwner;
+
+                    return (
+                      <label
+                        key={task.code}
+                        className={`staff-task-item ${isChecked ? "staff-task-item--checked" : ""} ${
+                          disabled ? "staff-task-item--disabled" : ""
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          className="staff-task-checkbox"
+                          checked={isChecked}
+                          disabled={disabled}
+                          onChange={() => toggleRoleSelection(newRoles, task.code, setNewRoles)}
+                        />
+                        <div className="staff-task-content">
+                          <div className="staff-task-header">
+                            <span className="staff-task-title">{task.title}</span>
+                            <span
+                              style={{
+                                fontSize: "0.6875rem",
+                                fontWeight: 700,
+                                padding: "0.15rem 0.45rem",
+                                borderRadius: "4px",
+                                background: task.bg,
+                                color: task.color,
+                                border: `1px solid ${task.border}`,
+                              }}
+                            >
+                              {task.badge}
+                            </span>
+                          </div>
+                          <span className="staff-task-desc">
+                            {task.description}
+                            {disabled && isOwnerTask && " (Khusus Owner)"}
+                          </span>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="staff-form-group">
