@@ -143,9 +143,9 @@ export interface DraftOrderItemModifier {
 export interface DraftOrder {
   id: string;
   orderNumber: string;
-  orderType: OrderType;
-  customerName: string | null;
-  externalReference: string | null;
+  orderType?: OrderType;
+  customerName?: string | null;
+  externalReference?: string | null;
   tableId: string | null;
   tableSessionId: string | null;
   source: OrderSource;

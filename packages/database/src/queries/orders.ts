@@ -53,6 +53,7 @@ import {
   type OrdersAuditEvent,
   type OrderSource,
   type OrderStatus,
+  type OrderType,
   type StaffOrder,
   type StaffOrderItem,
   type SubmitOrderInput,
