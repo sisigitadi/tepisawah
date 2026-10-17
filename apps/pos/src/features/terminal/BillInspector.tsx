@@ -41,15 +41,35 @@ export function BillInspector({ order, onPrint }: BillInspectorProps): ReactNode
             {order.table} <span className="pos-inspector__area">• {order.area}</span>
           </h2>
           <div className="pos-inspector__meta">
-            <span><UserIcon aria-hidden="true" /> Tamu {order.table} ({order.pax} Orang)</span>
-            <span className="pos-inspector__verified"><VerifiedIcon aria-hidden="true" /> QR Terverifikasi Otomatis</span>
+            <span>
+              <UserIcon aria-hidden="true" />{" "}
+              {order.orderType === "TAKE_AWAY"
+                ? `Pelanggan: ${order.customerName ?? "Bawa Pulang"}`
+                : order.channel === "delivery"
+                  ? `${order.orderType} (Ref: #${order.externalReference ?? "—"})`
+                  : `Tamu ${order.table} (${order.pax} Orang)`}
+            </span>
+            <span className="pos-inspector__verified">
+              <VerifiedIcon aria-hidden="true" />{" "}
+              {order.orderType === "TAKE_AWAY"
+                ? "Pesanan Bawa Pulang"
+                : order.channel === "delivery"
+                  ? `Mitra ${order.orderType ?? "Online Delivery"}`
+                  : "QR Terverifikasi Otomatis"}
+            </span>
           </div>
         </div>
         <div className="pos-inspector__aside">
           <span className="pos-inspector__aside-label">Waktu Pesanan</span>
           <span className="pos-inspector__aside-time">{order.time}</span>
           <div className="pos-inspector__pills">
-            <span className="pos-inspector__pill">Tamu: {order.pax} Orang</span>
+            <span className="pos-inspector__pill">
+              {order.orderType === "TAKE_AWAY"
+                ? "Bawa Pulang"
+                : order.channel === "delivery"
+                  ? (order.orderType ?? "Delivery")
+                  : `Tamu: ${order.pax} Orang`}
+            </span>
             <span className="pos-inspector__pill pos-inspector__pill--ghost">Pajak PB1: Aktif</span>
           </div>
         </div>

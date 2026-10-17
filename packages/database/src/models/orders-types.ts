@@ -52,6 +52,17 @@ export const ORDER_SOURCES = ["CUSTOMER_QR", "WAITER", "POS"] as const;
 
 export type OrderSource = (typeof ORDER_SOURCES)[number];
 
+/** Service channel / dining mode (Dine In, Take Away, Online Delivery). */
+export const ORDER_TYPES = [
+  "DINE_IN",
+  "TAKE_AWAY",
+  "GOFOOD",
+  "GRABFOOD",
+  "SHOPEEFOOD",
+] as const;
+
+export type OrderType = (typeof ORDER_TYPES)[number];
+
 /**
  * One line item the client wants to add. Nothing here is money: `productId`
  * and `modifierIds` are references, `quantity` and `notes` are intent.
@@ -71,8 +82,13 @@ export interface DraftOrderItemInput {
  */
 export interface CreateDraftOrderInput {
   source: OrderSource;
-  tableId: string;
-  tableSessionId: string;
+  orderType?: OrderType;
+  customerName?: string | null;
+  externalReference?: string | null;
+  /** Required for DINE_IN; optional for takeaway / online delivery. */
+  tableId?: string | null;
+  /** Required for DINE_IN; optional for takeaway / online delivery. */
+  tableSessionId?: string | null;
   items: DraftOrderItemInput[];
   customerNote?: string | null;
   internalNote?: string | null;
@@ -127,8 +143,11 @@ export interface DraftOrderItemModifier {
 export interface DraftOrder {
   id: string;
   orderNumber: string;
-  tableId: string;
-  tableSessionId: string;
+  orderType?: OrderType;
+  customerName?: string | null;
+  externalReference?: string | null;
+  tableId: string | null;
+  tableSessionId: string | null;
   source: OrderSource;
   status: OrderStatus;
   notes: string | null;
@@ -152,6 +171,9 @@ export interface DraftOrder {
 export interface OrderRow {
   id: string | null;
   order_number: string | null;
+  order_type?: string | null;
+  customer_name?: string | null;
+  external_reference?: string | null;
   table_id: string | null;
   table_session_id: string | null;
   source: string | null;
@@ -271,11 +293,14 @@ export interface StaffOrderItem {
 export interface StaffOrder {
   id: string;
   orderNumber: string;
-  tableId: string;
-  tableSessionId: string;
-  /** Resolved display label from `tables`, e.g. "Meja A1"; never empty. */
+  orderType: OrderType;
+  customerName: string | null;
+  externalReference: string | null;
+  tableId: string | null;
+  tableSessionId: string | null;
+  /** Resolved display label, e.g. "Meja A1" or "Bungkus (Budi)" or "GoFood #1234"; never empty. */
   tableName: string;
-  /** The QR code of the table, e.g. "A1"; empty when the table is unreadable. */
+  /** The QR code of the table, e.g. "A1"; empty for non-table orders. */
   tableCode: string;
   source: OrderSource;
   status: OrderStatus;

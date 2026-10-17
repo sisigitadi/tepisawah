@@ -31,13 +31,20 @@ import type {
   OrderRow,
   OrderSource,
   OrderStatus,
+  OrderType,
   SubmitOrderInput,
   TransitionOrderInput,
 } from "./orders-types.js";
 import {
+  ORDER_TYPES,
+} from "./orders-types.js";
+import {
   isValidOrderSource,
   isValidOrderStatus,
+  isValidOrderType,
 } from "./orders-validation.js";
+
+export { ORDER_TYPES };
 
 export type {
   CreateDraftOrderInput,
@@ -57,9 +64,12 @@ export type {
   OrdersAuditEvent,
   OrderSource,
   OrderStatus,
+  OrderType,
   SubmitOrderInput,
   TransitionOrderInput,
 } from "./orders-types.js";
+
+export { isValidOrderType };
 
 /** numeric(12,2) may arrive as a string; a missing value is 0, never invented. */
 export function toMoney(value: string | number | null | undefined): number {
@@ -70,6 +80,10 @@ export function toMoney(value: string | number | null | undefined): number {
 
 function toStatus(value: string | null | undefined): OrderStatus {
   return isValidOrderStatus(value) ? value : "DRAFT";
+}
+
+function toOrderType(value: string | null | undefined): OrderType {
+  return isValidOrderType(value) ? value : "DINE_IN";
 }
 
 /**
@@ -124,8 +138,11 @@ export function toDraftOrder(
   return {
     id: row.id ?? "",
     orderNumber: row.order_number ?? "",
-    tableId: row.table_id ?? "",
-    tableSessionId: row.table_session_id ?? "",
+    orderType: toOrderType(row.order_type),
+    customerName: row.customer_name ?? null,
+    externalReference: row.external_reference ?? null,
+    tableId: row.table_id ?? null,
+    tableSessionId: row.table_session_id ?? null,
     source: toSource(row.source),
     status: toStatus(row.status),
     notes: row.notes,
@@ -149,8 +166,8 @@ export function toDraftOrder(
 export function toCreateDraftOrderArgs(input: CreateDraftOrderInput): Record<string, unknown> {
   return {
     p_source: input.source,
-    p_table_id: input.tableId,
-    p_table_session_id: input.tableSessionId,
+    p_table_id: input.tableId ?? null,
+    p_table_session_id: input.tableSessionId ?? null,
     p_items: input.items.map((item) => ({
       productId: item.productId,
       quantity: item.quantity,
@@ -160,6 +177,9 @@ export function toCreateDraftOrderArgs(input: CreateDraftOrderInput): Record<str
     p_customer_note: input.customerNote ?? null,
     p_internal_note: input.internalNote ?? null,
     p_idempotency_key: input.idempotencyKey ?? null,
+    p_order_type: input.orderType ?? "DINE_IN",
+    p_customer_name: input.customerName ?? null,
+    p_external_reference: input.externalReference ?? null,
   };
 }
 

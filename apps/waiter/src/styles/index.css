@@ -490,10 +490,96 @@ body {
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
+.manual-order__field input {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  background: #ffffff;
+  color: var(--color-text-main);
+  box-sizing: border-box;
+}
+
 .manual-order__field select:focus,
+.manual-order__field input:focus,
 .manual-order__field textarea:focus {
   border-color: var(--color-forest);
   box-shadow: 0 0 0 3px rgba(46, 107, 52, 0.15);
+}
+
+/* Service Channel / Order Type Selector */
+.manual-order__type-selector {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.85rem;
+  background: var(--color-warmcream);
+  padding: 0.35rem;
+  border-radius: 10px;
+  border: 1px solid rgba(111, 63, 36, 0.15);
+}
+
+.manual-order__type-btn {
+  flex: 1;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-main);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.manual-order__type-btn:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.manual-order__type-btn--active {
+  background: var(--color-deepmoss);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.manual-order__nontable-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 0.25rem;
+}
+
+.manual-order__platform-chips {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.manual-order__platform-chip {
+  flex: 1;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: #ffffff;
+  color: var(--color-text-main);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.manual-order__platform-chip:hover {
+  border-color: var(--color-forest);
+}
+
+.manual-order__platform-chip--active {
+  background: var(--color-forest);
+  color: #ffffff;
+  border-color: var(--color-forest);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .manual-order__hint {

@@ -53,12 +53,25 @@ export function ManualOrderPage(): ReactNode {
   if (vm.created !== null) {
     const order = vm.confirmed ?? vm.created;
     const sent = vm.confirmPhase === "done";
+    let targetLabel = "";
+    if (order.orderType === "TAKE_AWAY") {
+      targetLabel = vm.customerName ? `Bungkus (${vm.customerName})` : "Bawa Pulang (Take Away)";
+    } else if (order.orderType === "GOFOOD") {
+      targetLabel = vm.externalReference ? `GoFood #${vm.externalReference}` : "GoFood";
+    } else if (order.orderType === "GRABFOOD") {
+      targetLabel = vm.externalReference ? `GrabFood #${vm.externalReference}` : "GrabFood";
+    } else if (order.orderType === "SHOPEEFOOD") {
+      targetLabel = vm.externalReference ? `ShopeeFood #${vm.externalReference}` : "ShopeeFood";
+    } else {
+      const tableCode = vm.tables.find((t) => t.id === vm.tableId)?.tableCode ?? "-";
+      targetLabel = `Meja ${tableCode}`;
+    }
+
     return (
       <div className="manual-order">
         <Card elevation="low" title={sent ? "Pesanan dikirim" : "Pesanan dibuat"}>
           <p>
-            Nomor order <strong>{order.orderNumber}</strong> — meja{" "}
-            <strong>{vm.tables.find((t) => t.id === vm.tableId)?.tableCode ?? "-"}</strong>
+            Nomor order <strong>{order.orderNumber}</strong> ({targetLabel})
           </p>
           <p className="manual-order__total">Total {formatIDR(order.total)}</p>
           {sent ? (
@@ -98,61 +111,162 @@ export function ManualOrderPage(): ReactNode {
   }
 
   const selected = vm.tables.find((t) => t.id === vm.tableId) ?? null;
-  const sessionClosed = vm.tableId !== null && vm.activeSession === null;
+  const isDineIn = vm.orderType === "DINE_IN";
+  const sessionClosed = isDineIn && vm.tableId !== null && vm.activeSession === null;
+  const isReadyForMenu = isDineIn ? selected !== null : true;
+
+  let menuCardTitle = "Pilih Menu";
+  if (isDineIn && selected) {
+    menuCardTitle = `Menu - Meja ${selected.tableCode}`;
+  } else if (vm.orderType === "TAKE_AWAY") {
+    menuCardTitle = "Menu - Bawa Pulang (Take Away)";
+  } else if (vm.orderType === "GOFOOD") {
+    menuCardTitle = "Menu - GoFood";
+  } else if (vm.orderType === "GRABFOOD") {
+    menuCardTitle = "Menu - GrabFood";
+  } else if (vm.orderType === "SHOPEEFOOD") {
+    menuCardTitle = "Menu - ShopeeFood";
+  }
 
   return (
     <div className="manual-order">
-      <Card elevation="low" title="Order manual" description="Pilih meja, lalu tambah menu">
-        <label className="manual-order__field" htmlFor="manual-order-table">
-          Meja
-          <select
-            id="manual-order-table"
-            value={vm.tableId ?? ""}
-            onChange={(event) => vm.setTable(event.target.value)}
+      <Card elevation="low" title="Catat Pesanan" description="Pilih jenis layanan, lalu pilih menu">
+        {/* Selector Jenis Layanan */}
+        <div className="manual-order__type-selector">
+          <button
+            type="button"
+            className={`manual-order__type-btn ${vm.orderType === "DINE_IN" ? "manual-order__type-btn--active" : ""}`}
+            onClick={() => vm.setOrderType("DINE_IN")}
           >
-            <option value="">— pilih meja —</option>
-            {vm.tables.map((table) => (
-              <option key={table.id} value={table.id}>
-                {table.tableCode} — {table.name}
-              </option>
-            ))}
-          </select>
-        </label>
+            🍽️ Makan di Tempat
+          </button>
+          <button
+            type="button"
+            className={`manual-order__type-btn ${vm.orderType === "TAKE_AWAY" ? "manual-order__type-btn--active" : ""}`}
+            onClick={() => vm.setOrderType("TAKE_AWAY")}
+          >
+            🥡 Bawa Pulang
+          </button>
+          <button
+            type="button"
+            className={`manual-order__type-btn ${["GOFOOD", "GRABFOOD", "SHOPEEFOOD"].includes(vm.orderType) ? "manual-order__type-btn--active" : ""}`}
+            onClick={() => vm.setOrderType("GOFOOD")}
+          >
+            🛵 Online Delivery
+          </button>
+        </div>
 
-        {vm.tableId === null ? (
-          <p className="manual-order__hint">Pilih meja untuk mulai memesan.</p>
-        ) : vm.activeSession !== null ? (
-          <p className="manual-order__session manual-order__session--open">
-            Sesi meja aktif — order akan ikut sesi ini.
-          </p>
-        ) : (
-          <div className="manual-order__session manual-order__session--closed" role="alert">
-            <p>
-              Sesi meja belum dibuka. Minta kasir/supervisor membuka sesi sebelum
-              membuat order atau langsung buka sesi meja ini:
-            </p>
-            <div style={{ marginTop: "0.5rem" }}>
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                disabled={vm.openingSession}
-                onClick={() => void vm.openSessionForSelectedTable()}
+        {isDineIn ? (
+          <>
+            <label className="manual-order__field" htmlFor="manual-order-table">
+              Meja
+              <select
+                id="manual-order-table"
+                value={vm.tableId ?? ""}
+                onChange={(event) => vm.setTable(event.target.value)}
               >
-                {vm.openingSession ? "Membuka sesi…" : `Buka Sesi Meja ${selected?.tableCode ?? ""}`}
-              </Button>
-            </div>
-            {vm.sessionError ? (
-              <p className="manual-order__error" style={{ marginTop: "0.5rem" }}>
-                {vm.sessionError}
+                <option value="">— pilih meja —</option>
+                {vm.tables.map((table) => (
+                  <option key={table.id} value={table.id}>
+                    {table.tableCode} — {table.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            {vm.tableId === null ? (
+              <p className="manual-order__hint">Pilih meja untuk mulai memesan.</p>
+            ) : vm.activeSession !== null ? (
+              <p className="manual-order__session manual-order__session--open">
+                Sesi meja aktif (order akan terhubung ke sesi ini).
               </p>
-            ) : null}
+            ) : (
+              <div className="manual-order__session manual-order__session--closed" role="alert">
+                <p>
+                  Sesi meja belum dibuka. Buka sesi sekarang untuk mulai mencatat pesanan:
+                </p>
+                <div style={{ marginTop: "0.5rem" }}>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    disabled={vm.openingSession}
+                    onClick={() => void vm.openSessionForSelectedTable()}
+                  >
+                    {vm.openingSession ? "Membuka sesi…" : `Buka Sesi Meja ${selected?.tableCode ?? ""}`}
+                  </Button>
+                </div>
+                {vm.sessionError ? (
+                  <p className="manual-order__error" style={{ marginTop: "0.35rem" }}>
+                    {vm.sessionError}
+                  </p>
+                ) : null}
+              </div>
+            )}
+          </>
+        ) : vm.orderType === "TAKE_AWAY" ? (
+          <div className="manual-order__nontable-fields">
+            <label className="manual-order__field" htmlFor="manual-order-customer">
+              Nama Pemesan (Wajib)
+              <input
+                id="manual-order-customer"
+                type="text"
+                placeholder="Contoh: Ibu Siti / Pak Budi"
+                value={vm.customerName}
+                onChange={(e) => vm.setCustomerName(e.target.value)}
+              />
+            </label>
+            <p className="manual-order__hint">
+              Pesanan bungkus tidak membutuhkan sesi meja fisik. Tiket dapur akan bertanda [BUNGKUS].
+            </p>
+          </div>
+        ) : (
+          <div className="manual-order__nontable-fields">
+            <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--color-text-main)" }}>
+              Pilih Platform Aplikasi:
+            </span>
+            <div className="manual-order__platform-chips">
+              <button
+                type="button"
+                className={`manual-order__platform-chip ${vm.orderType === "GOFOOD" ? "manual-order__platform-chip--active" : ""}`}
+                onClick={() => vm.setOrderType("GOFOOD")}
+              >
+                🟢 GoFood
+              </button>
+              <button
+                type="button"
+                className={`manual-order__platform-chip ${vm.orderType === "GRABFOOD" ? "manual-order__platform-chip--active" : ""}`}
+                onClick={() => vm.setOrderType("GRABFOOD")}
+              >
+                🟢 GrabFood
+              </button>
+              <button
+                type="button"
+                className={`manual-order__platform-chip ${vm.orderType === "SHOPEEFOOD" ? "manual-order__platform-chip--active" : ""}`}
+                onClick={() => vm.setOrderType("SHOPEEFOOD")}
+              >
+                🟠 ShopeeFood
+              </button>
+            </div>
+            <label className="manual-order__field" htmlFor="manual-order-ref">
+              Nomor Pesanan / ID Driver (Wajib)
+              <input
+                id="manual-order-ref"
+                type="text"
+                placeholder="Contoh: #GF-9281 atau Driver Pak Agus"
+                value={vm.externalReference}
+                onChange={(e) => vm.setExternalReference(e.target.value)}
+              />
+            </label>
+            <p className="manual-order__hint">
+              Pesanan online delivery diteruskan ke kasir untuk verifikasi platform.
+            </p>
           </div>
         )}
       </Card>
 
-      {selected !== null ? (
-        <Card elevation="low" title={`Menu — ${selected.tableCode}`}>
+      {isReadyForMenu ? (
+        <Card elevation="low" title={menuCardTitle}>
           {vm.catalog.length === 0 ? (
             <p className="manual-order__hint">Menu kosong.</p>
           ) : (
@@ -245,7 +359,7 @@ export function ManualOrderPage(): ReactNode {
         </Card>
       ) : null}
 
-      {selected !== null ? (
+      {isReadyForMenu ? (
         <Card elevation="low" title="Catatan">
           <label className="manual-order__field" htmlFor="manual-order-customer-note">
             Catatan untuk kitchen
@@ -268,10 +382,11 @@ export function ManualOrderPage(): ReactNode {
         </Card>
       ) : null}
 
-      <div className="manual-order__actions">              <Button
-                variant="primary"
+      <div className="manual-order__actions">
+        <Button
+          variant="primary"
           fullWidth
-          disabled={!vm.canSubmit || sessionClosed}
+          disabled={!vm.canSubmit || (isDineIn && sessionClosed)}
           aria-busy={vm.submitPhase === "submitting"}
           onClick={() => void vm.submit()}
         >

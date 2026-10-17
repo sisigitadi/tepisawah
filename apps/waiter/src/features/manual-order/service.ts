@@ -17,6 +17,7 @@
 import type {
   CreateDraftOrderInput,
   DraftOrder,
+  OrderType,
   PublicCatalogCategory,
   RestaurantTable,
   SubmitOrderInput,
@@ -71,8 +72,11 @@ export interface ManualOrderCatalogResult {
 }
 
 export interface ManualOrderSubmitInput {
-  tableId: string;
-  tableSessionId: string;
+  orderType?: OrderType;
+  customerName?: string | null;
+  externalReference?: string | null;
+  tableId?: string | null;
+  tableSessionId?: string | null;
   items: ManualOrderLine[];
   customerNote?: string | null;
   internalNote?: string | null;
@@ -161,14 +165,21 @@ function newAttemptId(): string {
 export async function submitManualOrder(
   input: ManualOrderSubmitInput,
 ): Promise<ManualOrderResult> {
-  if (!input.tableId || !input.tableSessionId || input.items.length === 0) {
+  const orderType = input.orderType ?? "DINE_IN";
+  if (orderType === "DINE_IN" && (!input.tableId || !input.tableSessionId)) {
+    return { data: null, error: { message: "Meja dan sesi meja wajib dipilih untuk pesanan di tempat." } };
+  }
+  if (input.items.length === 0) {
     return { data: null, error: { message: "Pesanan belum lengkap." } };
   }
 
   const payload: CreateDraftOrderInput = {
     source: "WAITER",
-    tableId: input.tableId,
-    tableSessionId: input.tableSessionId,
+    orderType,
+    customerName: input.customerName ?? null,
+    externalReference: input.externalReference ?? null,
+    tableId: input.tableId ?? null,
+    tableSessionId: input.tableSessionId ?? null,
     items: input.items,
     customerNote: input.customerNote ?? null,
     internalNote: input.internalNote ?? null,

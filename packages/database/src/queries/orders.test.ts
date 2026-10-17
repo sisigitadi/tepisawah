@@ -1094,6 +1094,9 @@ describe("createDraftOrder", () => {
         "p_customer_note",
         "p_internal_note",
         "p_idempotency_key",
+        "p_order_type",
+        "p_customer_name",
+        "p_external_reference",
       ]);
       // No money and no status is carried anywhere in the payload.
       const item = (args.p_items as Array<Record<string, unknown>>)[0];
