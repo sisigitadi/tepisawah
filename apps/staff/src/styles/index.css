@@ -67,17 +67,24 @@ input {
 
 .app-shell {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  overflow-x: clip;
+  position: relative;
 }
 
 .app-main {
-  flex: 1;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: 64rem;
   margin: 0 auto;
-  padding: clamp(1.5rem, 4vw, 3rem) 1.25rem 4rem;
+  padding: clamp(1.25rem, 3.5vw, 2.5rem) clamp(0.75rem, 2.5vw, 1.25rem);
   min-width: 0;
+  box-sizing: border-box;
 }
 
 /* Header ----------------------------------------------------------------- */
@@ -183,6 +190,86 @@ input {
 }
 .staff-signout:hover {
   background: rgba(254, 250, 224, 0.18);
+}
+
+/* Footer ----------------------------------------------------------------- */
+
+.staff-footer {
+  position: static;
+  margin-top: auto;
+  width: 100%;
+  background: rgba(18, 44, 22, 0.98);
+  border-top: 1px solid rgba(221, 161, 94, 0.25);
+  padding: 0.85rem clamp(0.75rem, 3vw, 1.5rem);
+  font-size: 0.78rem;
+  color: rgba(254, 250, 224, 0.8);
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.staff-footer-inner {
+  max-width: 64rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+
+.staff-footer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+}
+
+.staff-footer-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.staff-footer-system {
+  font-weight: 600;
+  color: var(--c-warmcream, #fefae0);
+}
+
+.staff-footer-room {
+  color: var(--c-golden, #dda15e);
+}
+
+.staff-footer-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.staff-footer-link-btn {
+  background: transparent;
+  border: 1px solid rgba(221, 161, 94, 0.4);
+  border-radius: var(--radius-sm, 6px);
+  color: var(--c-golden, #dda15e);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.55rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.staff-footer-link-btn:hover {
+  background: rgba(221, 161, 94, 0.15);
+  border-color: var(--c-golden, #dda15e);
+}
+
+.staff-footer-copy {
+  font-size: 0.72rem;
+  opacity: 0.85;
 }
 
 /* Login ------------------------------------------------------------------ */
@@ -1132,54 +1219,126 @@ input {
 /* Device Responsiveness Enhancements (Mobile-First Soft Opening) */
 @media (max-width: 768px) {
   .staff-header {
+    position: relative; /* Static / relative in document flow on mobile: does not cover menus/buttons or steal letterbox space */
+    top: auto;
     min-height: auto;
-    padding: 0.625rem 0.875rem;
-    gap: 0.5rem;
+    padding: 0.5rem clamp(0.5rem, 2.5vw, 0.875rem);
+    gap: 0.4rem;
     flex-wrap: nowrap;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow-x: clip;
   }
 
   .staff-nav-rooms {
     display: none; /* Hide wide desktop room tabs */
   }
 
-  .staff-mobile-room-selector {
-    display: inline-flex; /* Show compact room dropdown on mobile */
+  .staff-brand {
+    min-width: 0;
+    flex: 0 1 auto;
+    gap: 0.45rem;
+  }
+
+  .staff-brand-mark {
+    width: 2.15rem;
+    height: 2.15rem;
+    flex-shrink: 0;
+  }
+
+  .staff-brand-text {
+    min-width: 0;
   }
 
   .staff-brand-name {
-    font-size: 0.95rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
   }
 
   .staff-brand-tag {
-    font-size: 0.5rem;
+    display: none; /* Hide subtitle tag on mobile to prevent overflow */
   }
 
-  .staff-identity {
-    gap: 0.5rem;
+  .staff-mobile-room-selector {
+    display: inline-flex; /* Show compact room dropdown on mobile */
+    flex: 0 1 auto;
+    min-width: 0;
+    position: relative;
   }
 
-  .staff-identity-name {
-    max-width: 7rem;
-    font-size: 0.8125rem;
+  .staff-mobile-room-trigger {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.78rem;
+    gap: 0.3rem;
+    min-height: 44px; /* Accessible 44px touch target */
+    max-width: 100%;
+  }
+
+  .staff-mobile-room-label {
+    max-width: clamp(3.25rem, 15vw, 5.5rem);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
+  .staff-mobile-room-menu {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    left: 0;
+    max-width: calc(100vw - 1.5rem);
+    min-width: 13rem;
+    z-index: 1100;
+    box-sizing: border-box;
+  }
+
+  .staff-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex: 0 0 auto;
+    min-width: 0;
+  }
+
   .staff-identity-roles {
-    font-size: 0.625rem;
+    display: none; /* Roles hidden on mobile */
+  }
+
+  .staff-identity-name {
+    max-width: clamp(2.75rem, 12vw, 4.5rem);
+    font-size: 0.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .staff-header-install-btn {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+  }
+
+  .staff-header-install-btn span:last-child {
+    display: none; /* Icon-only install button on mobile */
   }
 
   .staff-signout {
+    min-height: 44px;
+    min-width: 44px;
     padding: 0.35rem 0.65rem;
     font-size: 0.75rem;
-    min-height: 44px;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
   }
 
   .app-main {
-    padding: 1rem 0.75rem 2rem;
+    padding: 1rem clamp(0.5rem, 2.5vw, 0.875rem) 2rem;
   }
 
   .staff-portal-head h1 {
@@ -1202,17 +1361,20 @@ input {
   }
 
   .staff-foh-content {
-    padding-bottom: 5.5rem;
+    padding-bottom: 2rem;
   }
 
-  /* Fixed Bottom Navigation Bar */
+  /* Sticky Bottom Navigation Bar (Statis at bottom of content when short, sticky when scrolling) */
   .staff-bottom-nav {
     display: flex;
-    position: fixed;
+    position: sticky;
     bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
+    margin-top: auto;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow-x: clip;
+    z-index: 100;
     background: rgba(24, 58, 29, 0.98);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -1228,10 +1390,11 @@ input {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.2rem;
-    flex: 1;
+    gap: 0.15rem;
+    flex: 1 1 0;
+    min-width: 0;
     min-height: 48px;
-    padding: 0.35rem 0.25rem;
+    padding: 0.35rem 0.15rem;
     background: transparent;
     border: none;
     color: rgba(254, 250, 224, 0.7);
@@ -1241,6 +1404,7 @@ input {
     transition: all 0.15s ease;
     border-radius: 0.5rem;
     -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
   }
 
   .staff-bottom-nav-item:active {
@@ -1250,6 +1414,14 @@ input {
   .staff-bottom-nav-icon {
     font-size: 1.25rem;
     line-height: 1;
+  }
+
+  .staff-bottom-nav-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    font-size: clamp(0.62rem, 2.3vw, 0.72rem);
   }
 
   .staff-bottom-nav-item--active {
@@ -1627,8 +1799,8 @@ input {
 /* Narrow Phone Screens (< 480px / 30rem) */
 @media (max-width: 30rem) {
   .staff-header {
-    padding: 0.5rem 0.65rem;
-    gap: 0.35rem;
+    padding: 0.45rem 0.5rem;
+    gap: 0.25rem;
   }
 
   .staff-brand-tag {
@@ -1636,12 +1808,12 @@ input {
   }
 
   .staff-brand-name {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
   }
 
   .staff-brand-mark {
-    width: 2rem;
-    height: 2rem;
+    width: 1.85rem;
+    height: 1.85rem;
   }
 
   .staff-identity-roles {
@@ -1649,8 +1821,7 @@ input {
   }
 
   .staff-identity-name {
-    max-width: 5rem;
-    font-size: 0.75rem;
+    display: none; /* Hide display name on phones < 480px to guarantee 100% space for Keluar button */
   }
 
   .staff-header-install-btn span:last-child {
@@ -1658,18 +1829,28 @@ input {
   }
 
   .staff-header-install-btn {
-    padding: 0.3rem 0.5rem;
-    min-height: 36px;
+    padding: 0;
+    min-height: 44px;
+    min-width: 44px;
+    width: 44px;
   }
 
   .staff-signout {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.72rem;
-    min-height: 36px;
+    padding: 0.35rem 0.55rem;
+    font-size: 0.75rem;
+    min-height: 44px;
+    min-width: 44px;
+    flex-shrink: 0;
+  }
+
+  .staff-mobile-room-trigger {
+    padding: 0.25rem 0.4rem;
+    font-size: 0.75rem;
+    min-height: 44px;
   }
 
   .staff-mobile-room-label {
-    max-width: 5.5rem;
+    max-width: clamp(2.5rem, 14vw, 4.25rem);
   }
 }
 
