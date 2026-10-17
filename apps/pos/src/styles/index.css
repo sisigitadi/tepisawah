@@ -2642,30 +2642,61 @@ input {
     size: auto;
   }
 
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  html,
   body {
     background: #fff !important;
     color: #000 !important;
     margin: 0 !important;
     padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
+  /* Hide screen chrome, navigation, queues, modals, and inspectors */
   .pos-header,
   .pos-sidebar,
   .pos-subbar,
   .pos-queue,
+  .pos-empty-bill,
+  .pos-alert,
+  .pos-split,
+  .pos-methods,
+  .pos-qris,
+  .pos-hotkeys,
   .pos-inspector,
   .pos-settlement__card,
   .pos-thermal__head,
   .staff-header,
-  .staff-subnav-bar {
+  .staff-subnav-bar,
+  .staff-bottom-nav,
+  .staff-footer {
     display: none !important;
   }
 
+  /* Unconstrain all ancestors so print engine doesn't clip content */
+  .app-shell,
+  .app-main,
+  .staff-foh-content,
+  .pos-shell__main,
+  .pos-main,
   .pos-shell,
   .pos-grid,
   .pos-settlement,
   .pos-thermal {
     display: block !important;
+    position: static !important;
+    float: none !important;
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
@@ -2673,15 +2704,20 @@ input {
     box-shadow: none !important;
     width: 100% !important;
     max-width: 100% !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
   }
 
+  /* Thermal paper layout (default 80mm roll, 72mm printable width) */
   .pos-thermal__paper {
     display: block !important;
     position: relative !important;
     margin: 0 auto !important;
-    width: 76mm !important;
+    width: 72mm !important;
     max-width: 80mm !important;
-    padding: 3mm 4mm !important;
+    padding: 2mm 3mm !important;
     border: none !important;
     box-shadow: none !important;
     background: #fff !important;
@@ -2691,6 +2727,34 @@ input {
     line-height: 1.35 !important;
   }
 
+  /* Thermal printer ink guarantee: all text and borders become solid black */
+  .pos-thermal__paper * {
+    color: #000 !important;
+    border-color: #000 !important;
+  }
+
+  /* 58mm thermal roll support (48mm printable width) */
+  .pos-thermal--58mm .pos-thermal__paper,
+  .pos-thermal__paper--58mm {
+    width: 48mm !important;
+    max-width: 58mm !important;
+    font-size: 9.5px !important;
+    padding: 1.5mm 2mm !important;
+  }
+
+  .pos-thermal__watermark {
+    text-align: center !important;
+    border-bottom: 1px dashed #000 !important;
+    padding-bottom: 4px !important;
+    margin-bottom: 6px !important;
+    font-weight: 800 !important;
+    font-size: 11px !important;
+  }
+
+  .pos-thermal--58mm .pos-thermal__watermark {
+    font-size: 9.5px !important;
+  }
+
   .pos-thermal__brand {
     font-size: 14px !important;
     font-weight: bold !important;
@@ -2698,10 +2762,18 @@ input {
     margin-bottom: 2px !important;
   }
 
+  .pos-thermal--58mm .pos-thermal__brand {
+    font-size: 12px !important;
+  }
+
   .pos-thermal__address {
     font-size: 9px !important;
     text-align: center !important;
     margin-bottom: 6px !important;
+  }
+
+  .pos-thermal--58mm .pos-thermal__address {
+    font-size: 8px !important;
   }
 
   .pos-thermal__line {
@@ -2713,6 +2785,16 @@ input {
     margin-bottom: 4px !important;
   }
 
+  .pos-thermal--58mm .pos-thermal__line {
+    font-size: 8.5px !important;
+  }
+
+  .pos-thermal__items {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+  }
+
   .pos-thermal__item {
     display: flex !important;
     justify-content: space-between !important;
@@ -2720,9 +2802,17 @@ input {
     font-weight: bold !important;
   }
 
+  .pos-thermal--58mm .pos-thermal__item {
+    font-size: 8.5px !important;
+  }
+
   .pos-thermal__item-note {
     font-size: 9px !important;
     font-style: italic !important;
+  }
+
+  .pos-thermal--58mm .pos-thermal__item-note {
+    font-size: 7.5px !important;
   }
 
   .pos-thermal__totals {
@@ -2737,6 +2827,10 @@ input {
     font-size: 10px !important;
   }
 
+  .pos-thermal--58mm .pos-thermal__total-row {
+    font-size: 8.5px !important;
+  }
+
   .pos-thermal__grand {
     display: flex !important;
     justify-content: space-between !important;
@@ -2748,11 +2842,19 @@ input {
     margin: 4px 0 !important;
   }
 
+  .pos-thermal--58mm .pos-thermal__grand {
+    font-size: 11px !important;
+  }
+
   .pos-thermal__change {
     display: flex !important;
     justify-content: space-between !important;
     font-size: 11px !important;
     font-weight: bold !important;
+  }
+
+  .pos-thermal--58mm .pos-thermal__change {
+    font-size: 9px !important;
   }
 
   .pos-thermal__footer {
@@ -2761,6 +2863,10 @@ input {
     margin-top: 8px !important;
     padding-top: 4px !important;
     border-top: 1px dashed #000 !important;
+  }
+
+  .pos-thermal--58mm .pos-thermal__footer {
+    font-size: 8px !important;
   }
 }
 

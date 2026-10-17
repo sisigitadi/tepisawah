@@ -12,6 +12,7 @@ import "../../pos/src/styles/index.css";
 import "../../kitchen/src/styles/index.css";
 import "../../waiter/src/styles/index.css";
 import "../../admin/src/styles/index.css";
+import "./styles/print.css";
 import { initPwa } from "./lib/pwa.js";
 
 // Initialize PWA Service Worker & Install event listeners

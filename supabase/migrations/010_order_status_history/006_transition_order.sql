@@ -131,7 +131,15 @@ as $$
     -- (API_CONTRACT.md §13 "Exceptional").
     ('CONFIRMED',           'CANCELLED',            'orders.cancel',     true),
     ('PREPARING',           'CANCELLED',            'orders.cancel',     true),
-    ('PAID',                'REFUNDED',             'payments.refund',   true)
+    ('PAID',                'REFUNDED',             'payments.refund',   true),
+    -- VOID flow: cashier and supervisor cancellation of unpaid orders
+    ('SUBMITTED',           'VOID',                 'orders.reject',     true),
+    ('PENDING_CONFIRMATION','VOID',                 'orders.reject',     true),
+    ('CONFIRMED',           'VOID',                 'payments.create',   true),
+    ('PREPARING',           'VOID',                 'payments.create',   true),
+    ('READY',               'VOID',                 'payments.create',   true),
+    ('SERVED',              'VOID',                 'payments.create',   true),
+    ('DRAFT',               'VOID',                 'orders.create_manual', true)
   ) as t(from_status, to_status, required_permission, requires_reason)
   where t.from_status = p_from
     and t.to_status   = p_to
@@ -143,6 +151,12 @@ comment on function public.order_transition_rule(text, text) is
 -- =============================================================================
 -- The command.
 -- =============================================================================
+
+-- Drop any previous overloaded signatures to avoid ambiguity
+drop function if exists public.transition_order(uuid, text, integer, text);
+drop function if exists public.transition_order(uuid, text, int, text);
+drop function if exists public.transition_order(uuid, text, text, integer);
+
 create or replace function public.transition_order(
   p_order_id         uuid,
   p_to_status        text,
