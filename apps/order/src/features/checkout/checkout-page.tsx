@@ -17,6 +17,7 @@ import type { ReactNode } from "react";
 
 import type { PublicTableResolve } from "@tepisawah/database";
 import { normalizeCartNote } from "@tepisawah/orders";
+import { useTaxSettings } from "../../hooks/index.js";
 import {
   checkoutIdempotencyKey,
   checkoutSubmitIdempotencyKey,
@@ -56,6 +57,7 @@ function newAttemptId(): string {
 
 export function CheckoutPage(props: CheckoutPageProps): ReactNode {
   const { table, items, customerNote, onSubmitted, onBack } = props;
+  const taxSettings = useTaxSettings();
   const [phase, setPhase] = useState<Phase>("idle");
   const [failure, setFailure] = useState<CheckoutError | null>(null);
 
@@ -133,6 +135,12 @@ export function CheckoutPage(props: CheckoutPageProps): ReactNode {
 
   if (created !== null) {
     if (paymentOption === "qris" || flowSettings.orderFlowMode === "pre_pay") {
+      const qrisSrc = taxSettings.qrisImageUrl
+        ? taxSettings.qrisImageUrl
+        : taxSettings.qrisPayload
+          ? `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(taxSettings.qrisPayload)}`
+          : `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=00020101021226600016ID.CO.QRIS.WWW01189360091100293847550215ID10260029384755303360540${created.total}5802ID5910TEPI SAWAH6007CIREBON6304`;
+
       return (
         <Card
           elevation="low"
@@ -151,12 +159,16 @@ export function CheckoutPage(props: CheckoutPageProps): ReactNode {
             </div>
             <div className="qris-qr-box">
               <img
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=00020101021226600016ID.CO.QRIS.WWW01189360091100293847550215ID10260029384755303360540${created.total}5802ID5910TEPI SAWAH6007CIREBON6304`}
-                alt="QRIS Pembayaran"
+                src={qrisSrc}
+                alt="QRIS Pembayaran Tepi Sawah"
                 className="qris-dynamic-img"
+                style={{ objectFit: "contain", maxHeight: "240px" }}
               />
             </div>
-            <p className="qris-nm-id">NMID: ID1026002938475 • Ciperna, Cirebon</p>
+            <p className="qris-nm-id">
+              {taxSettings.bankAccountHolder ? `${taxSettings.bankAccountHolder} • ` : ""}
+              NMID: ID1026002938475 • Ciperna, Cirebon
+            </p>
             <p className="qris-guide-text">
               Buka aplikasi Mobile Banking (BCA, Mandiri, BRI) atau e-Wallet (GoPay, OVO, ShopeePay, DANA) &amp; scan QRIS di atas untuk menyelesaikan pesanan.
             </p>

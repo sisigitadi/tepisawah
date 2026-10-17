@@ -23,10 +23,17 @@ export function QrisFullscreenModal({
   onClose,
   order,
   qrisImageUrl,
+  qrisPayload,
 }: QrisFullscreenModalProps): ReactNode {
   if (!order) return null;
 
   const total = grandTotalOf(order);
+
+  // Jika tidak ada gambar QRIS statis tetapi ada string payload QRIS, buat kode QR dinamis
+  const dynamicQrUrl =
+    !qrisImageUrl && qrisPayload
+      ? `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrisPayload)}`
+      : null;
 
   return (
     <Modal
@@ -70,6 +77,17 @@ export function QrisFullscreenModal({
           {qrisImageUrl ? (
             <img
               src={qrisImageUrl}
+              alt="QRIS Pembayaran Tepi Sawah"
+              style={{
+                width: "280px",
+                height: "280px",
+                objectFit: "contain",
+                borderRadius: "8px",
+              }}
+            />
+          ) : dynamicQrUrl ? (
+            <img
+              src={dynamicQrUrl}
               alt="QRIS Pembayaran Tepi Sawah"
               style={{
                 width: "280px",

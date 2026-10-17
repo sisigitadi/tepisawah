@@ -1,0 +1,246 @@
+/* ==========================================================================
+   TEPI SAWAH STAFF PORTAL — DEFINITIVE PRINT MEDIA RESOLUTION
+   Imported LAST in main.tsx so thermal receipts and POS slips are always
+   crisp, unclipped, and visible on both 58mm & 80mm printers.
+   ========================================================================== */
+@media print {
+  @page {
+    margin: 0;
+    size: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  html,
+  body,
+  #root {
+    background: #fff !important;
+    color: #000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Unconstrain every ancestor in the staff + POS shell hierarchy */
+  .app-shell,
+  .app-main,
+  .staff-foh-content,
+  .pos-shell__main,
+  .pos-main,
+  .pos-shell,
+  .pos-grid,
+  .pos-settlement,
+  .pos-thermal {
+    display: block !important;
+    position: static !important;
+    float: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    visibility: visible !important;
+  }
+
+  /* Hide screen chrome, navigation, headers, footers, queue, and inspector */
+  .staff-header,
+  .staff-subnav-bar,
+  .staff-bottom-nav,
+  .staff-footer,
+  .pos-header,
+  .pos-sidebar,
+  .pos-subbar,
+  .pos-queue,
+  .pos-empty-bill,
+  .pos-alert,
+  .pos-split,
+  .pos-methods,
+  .pos-qris,
+  .pos-hotkeys,
+  .pos-inspector,
+  .pos-settlement__card,
+  .pos-thermal__head,
+  .no-print,
+  .print-hidden {
+    display: none !important;
+  }
+
+  /* Force thermal paper and all receipt contents to be visible and solid black */
+  .pos-thermal,
+  .pos-thermal *,
+  .pos-thermal__paper,
+  .pos-thermal__paper * {
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #000 !important;
+    border-color: #000 !important;
+  }
+
+  /* 80mm thermal receipt roll layout (72mm printable width) */
+  .pos-thermal__paper {
+    display: block !important;
+    position: relative !important;
+    margin: 0 auto !important;
+    width: 72mm !important;
+    max-width: 80mm !important;
+    padding: 2mm 3mm !important;
+    border: none !important;
+    background: #fff !important;
+    font-family: 'Courier New', Courier, monospace !important;
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+  }
+
+  /* 58mm thermal receipt roll layout (48mm printable width) */
+  .pos-thermal--58mm .pos-thermal__paper,
+  .pos-thermal__paper--58mm {
+    width: 48mm !important;
+    max-width: 58mm !important;
+    font-size: 9.5px !important;
+    padding: 1.5mm 2mm !important;
+  }
+
+  .pos-thermal__watermark {
+    text-align: center !important;
+    border-bottom: 1px dashed #000 !important;
+    padding-bottom: 4px !important;
+    margin-bottom: 6px !important;
+    font-weight: 800 !important;
+    font-size: 11px !important;
+  }
+
+  .pos-thermal--58mm .pos-thermal__watermark {
+    font-size: 9.5px !important;
+  }
+
+  .pos-thermal__brand {
+    font-size: 14px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    margin-bottom: 2px !important;
+  }
+
+  .pos-thermal--58mm .pos-thermal__brand {
+    font-size: 12px !important;
+  }
+
+  .pos-thermal__address {
+    font-size: 9px !important;
+    text-align: center !important;
+    margin-bottom: 6px !important;
+  }
+
+  .pos-thermal--58mm .pos-thermal__address {
+    font-size: 8px !important;
+  }
+
+  .pos-thermal__line {
+    display: flex !important;
+    justify-content: space-between !important;
+    font-size: 10px !important;
+    border-bottom: 1px dashed #000 !important;
+    padding-bottom: 3px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .pos-thermal--58mm .pos-thermal__line {
+    font-size: 8.5px !important;
+  }
+
+  .pos-thermal__items {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+  }
+
+  .pos-thermal__item {
+    display: flex !important;
+    justify-content: space-between !important;
+    font-size: 10px !important;
+    font-weight: bold !important;
+  }
+
+  .pos-thermal--58mm .pos-thermal__item {
+    font-size: 8.5px !important;
+  }
+
+  .pos-thermal__item-note {
+    font-size: 9px !important;
+    font-style: italic !important;
+  }
+
+  .pos-thermal--58mm .pos-thermal__item-note {
+    font-size: 7.5px !important;
+  }
+
+  .pos-thermal__totals {
+    border-top: 1px dashed #000 !important;
+    margin-top: 5px !important;
+    padding-top: 5px !important;
+  }
+
+  .pos-thermal__total-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    font-size: 10px !important;
+  }
+
+  .pos-thermal--58mm .pos-thermal__total-row {
+    font-size: 8.5px !important;
+  }
+
+  .pos-thermal__grand {
+    display: flex !important;
+    justify-content: space-between !important;
+    font-size: 13px !important;
+    font-weight: bold !important;
+    border-top: 1px solid #000 !important;
+    border-bottom: 1px solid #000 !important;
+    padding: 3px 0 !important;
+    margin: 4px 0 !important;
+  }
+
+  .pos-thermal--58mm .pos-thermal__grand {
+    font-size: 11px !important;
+  }
+
+  .pos-thermal__change {
+    display: flex !important;
+    justify-content: space-between !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+  }
+
+  .pos-thermal--58mm .pos-thermal__change {
+    font-size: 9px !important;
+  }
+
+  .pos-thermal__footer {
+    text-align: center !important;
+    font-size: 9px !important;
+    margin-top: 8px !important;
+    padding-top: 4px !important;
+    border-top: 1px dashed #000 !important;
+  }
+
+  .pos-thermal--58mm .pos-thermal__footer {
+    font-size: 8px !important;
+  }
+}

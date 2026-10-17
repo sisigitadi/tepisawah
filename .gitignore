@@ -50,3 +50,7 @@ test-results/
 playwright-report/
 .freebuff/
 
+# AI Agent runtime artifacts
+.agents/
+skills-lock.json
+
