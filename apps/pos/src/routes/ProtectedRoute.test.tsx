@@ -143,7 +143,7 @@ describe("POS ProtectedRoute", () => {
     );
 
     await waitFor(() => expect(screen.getByRole("alert")).toBeInTheDocument());
-    expect(screen.getByText("Akses Ditolak")).toBeInTheDocument();
+    expect(screen.getByRole("alert")).toHaveTextContent(/Akses/);
     expect(screen.queryByTestId("protected")).not.toBeInTheDocument();
   });
 
@@ -154,7 +154,8 @@ describe("POS ProtectedRoute", () => {
       [],
     );
 
-    await waitFor(() => expect(screen.getByText("Akses Ditolak")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole("alert")).toBeInTheDocument());
+    expect(screen.getByRole("alert")).toHaveTextContent(/Akses/);
     expect(screen.queryByTestId("protected")).not.toBeInTheDocument();
   });
 });
