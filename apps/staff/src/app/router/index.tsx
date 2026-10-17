@@ -225,11 +225,11 @@ function AdminSubnavBar({
 
 export function AppRouter(): ReactNode {
   const { currentRoom, navigateTo } = useStaffNavigation();
-  const { user, roles } = useAuth();
+  const { user, roles, isLoading } = useAuth();
   const allowedRooms = useMemo(() => getAllowedRooms(roles), [roles]);
 
   // Auto-reset room to portal whenever user session changes (switch user/login)
-  const prevUserIdRef = useRef<string | undefined>(user?.id);
+  const prevUserIdRef = useRef<string | undefined>(undefined);
   useEffect(() => {
     if (user?.id && prevUserIdRef.current && prevUserIdRef.current !== user.id) {
       navigateTo("portal");
@@ -238,9 +238,11 @@ export function AppRouter(): ReactNode {
   }, [user?.id, navigateTo]);
 
   // Smart Route Redirection: if current room is not permitted for the active role,
-  // automatically redirect to their primary operational room (e.g. cashier to pos, kitchen to kitchen)
+  // automatically redirect to their primary operational room (e.g. cashier to pos, kitchen to kitchen).
+  // IMPORTANT: Wait until auth has settled (isLoading === false) so refreshing a subpage (e.g. /admin, /pos)
+  // does not prematurely kick the user back to portal before their roles finish fetching.
   useEffect(() => {
-    if (!user) return;
+    if (isLoading || !user) return;
     if (currentRoom !== "portal" && !allowedRooms.has(currentRoom)) {
       if (allowedRooms.has("pos")) {
         navigateTo("pos");
@@ -252,7 +254,7 @@ export function AppRouter(): ReactNode {
         navigateTo("portal");
       }
     }
-  }, [user, currentRoom, allowedRooms, navigateTo]);
+  }, [isLoading, user, currentRoom, allowedRooms, navigateTo]);
 
   // Internal sub-tab state for Front of House (Kasir & Layanan Meja)
   const [fohTab, setFohTab] = useState<FrontOfHouseTab>(() => {
@@ -261,10 +263,58 @@ export function AppRouter(): ReactNode {
     if (params.has("order")) return "manual-order";
     if (params.has("terminal")) return "terminal";
     if (params.has("serve") || params.has("waiter")) return "serve";
+    const tabParam = params.get("tab") as FrontOfHouseTab | null;
+    if (tabParam && (["confirm", "serve", "manual-order", "terminal"] as const).includes(tabParam)) return tabParam;
+    try {
+      const saved = localStorage.getItem("tepisawah_staff_foh_tab") as FrontOfHouseTab | null;
+      if (saved && (["confirm", "serve", "manual-order", "terminal"] as const).includes(saved)) return saved;
+    } catch {
+      // ignore
+    }
     return "confirm";
   });
 
-  const [adminTab, setAdminTab] = useState<AdminTab>("home");
+  const handleSelectFohTab = useCallback((tab: FrontOfHouseTab) => {
+    setFohTab(tab);
+    try {
+      localStorage.setItem("tepisawah_staff_foh_tab", tab);
+      const url = new URL(window.location.href);
+      url.searchParams.set("tab", tab);
+      window.history.replaceState({}, "", url.toString());
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const [adminTab, setAdminTab] = useState<AdminTab>(() => {
+    if (typeof window === "undefined") return "home";
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get("tab") as AdminTab | null;
+    if (tabParam && ADMIN_TABS.some((t) => t.id === tabParam)) return tabParam;
+    try {
+      const saved = localStorage.getItem("tepisawah_staff_admin_tab") as AdminTab | null;
+      if (saved && ADMIN_TABS.some((t) => t.id === saved)) return saved;
+    } catch {
+      // ignore
+    }
+    return "home";
+  });
+
+  const handleSelectAdminTab = useCallback((tab: AdminTab) => {
+    setAdminTab(tab);
+    try {
+      localStorage.setItem("tepisawah_staff_admin_tab", tab);
+      const url = new URL(window.location.href);
+      if (tab === "home") {
+        url.searchParams.delete("tab");
+      } else {
+        url.searchParams.set("tab", tab);
+      }
+      window.history.replaceState({}, "", url.toString());
+    } catch {
+      // ignore
+    }
+  }, []);
 
   return (
     <RootLayout currentRoom={currentRoom} onNavigate={navigateTo}>
@@ -280,28 +330,28 @@ export function AppRouter(): ReactNode {
               <button
                 type="button"
                 className={`staff-subnav-btn ${fohTab === "confirm" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => setFohTab("confirm")}
+                onClick={() => handleSelectFohTab("confirm")}
               >
                 📥 Antrean Masuk (QR)
               </button>
               <button
                 type="button"
                 className={`staff-subnav-btn ${fohTab === "serve" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => setFohTab("serve")}
+                onClick={() => handleSelectFohTab("serve")}
               >
                 🍽️ Siap Antar ke Meja
               </button>
               <button
                 type="button"
                 className={`staff-subnav-btn ${fohTab === "manual-order" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => setFohTab("manual-order")}
+                onClick={() => handleSelectFohTab("manual-order")}
               >
                 ✍️ Catat Pesanan Meja
               </button>
               <button
                 type="button"
                 className={`staff-subnav-btn ${fohTab === "terminal" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => setFohTab("terminal")}
+                onClick={() => handleSelectFohTab("terminal")}
               >
                 💳 Meja Kasir & Bayar
               </button>
@@ -327,7 +377,7 @@ export function AppRouter(): ReactNode {
               <button
                 type="button"
                 className={`staff-bottom-nav-item ${fohTab === "confirm" ? "staff-bottom-nav-item--active" : ""}`}
-                onClick={() => setFohTab("confirm")}
+                onClick={() => handleSelectFohTab("confirm")}
               >
                 <span className="staff-bottom-nav-icon" aria-hidden="true">📥</span>
                 <span className="staff-bottom-nav-label">Antrean</span>
@@ -335,7 +385,7 @@ export function AppRouter(): ReactNode {
               <button
                 type="button"
                 className={`staff-bottom-nav-item ${fohTab === "serve" ? "staff-bottom-nav-item--active" : ""}`}
-                onClick={() => setFohTab("serve")}
+                onClick={() => handleSelectFohTab("serve")}
               >
                 <span className="staff-bottom-nav-icon" aria-hidden="true">🍽️</span>
                 <span className="staff-bottom-nav-label">Siap Antar</span>
@@ -343,7 +393,7 @@ export function AppRouter(): ReactNode {
               <button
                 type="button"
                 className={`staff-bottom-nav-item ${fohTab === "manual-order" ? "staff-bottom-nav-item--active" : ""}`}
-                onClick={() => setFohTab("manual-order")}
+                onClick={() => handleSelectFohTab("manual-order")}
               >
                 <span className="staff-bottom-nav-icon" aria-hidden="true">✍️</span>
                 <span className="staff-bottom-nav-label">Catat Menu</span>
@@ -351,7 +401,7 @@ export function AppRouter(): ReactNode {
               <button
                 type="button"
                 className={`staff-bottom-nav-item ${fohTab === "terminal" ? "staff-bottom-nav-item--active" : ""}`}
-                onClick={() => setFohTab("terminal")}
+                onClick={() => handleSelectFohTab("terminal")}
               >
                 <span className="staff-bottom-nav-icon" aria-hidden="true">💳</span>
                 <span className="staff-bottom-nav-label">Kasir</span>
@@ -374,7 +424,7 @@ export function AppRouter(): ReactNode {
               <div className="staff-admin-room">
                 <AdminSubnavBar
                   activeTab={adminTab}
-                  onSelectTab={(tab) => setAdminTab(tab)}
+                  onSelectTab={handleSelectAdminTab}
                 />
 
                 {adminTab === "transactions" ? (
@@ -394,7 +444,7 @@ export function AppRouter(): ReactNode {
                 ) : adminTab === "sessions" ? (
                   <SessionsPage />
                 ) : (
-                  <AdminHomePage onNavigate={(tab) => setAdminTab(tab as AdminTab)} />
+                  <AdminHomePage onNavigate={(tab) => handleSelectAdminTab(tab as AdminTab)} />
                 )}
               </div>
             </PermissionRoute>

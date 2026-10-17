@@ -88,6 +88,11 @@ export function useStaffNavigation() {
     const targetPath = room === "portal" ? "/" : `/${room}`;
     const fullPath = search ? `${targetPath}?${search}` : targetPath;
     window.history.pushState({}, "", fullPath);
+    try {
+      localStorage.setItem("tepisawah_staff_room", room);
+    } catch {
+      // ignore
+    }
     setCurrentRoom(room);
   }, []);
 
