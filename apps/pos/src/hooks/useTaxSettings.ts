@@ -13,10 +13,22 @@ export function useTaxSettings(): TaxSettings {
   useEffect(() => {
     let active = true;
 
+    // Safely obtain client (in test environments without env vars, fallback gracefully)
+    let client: ReturnType<typeof getSupabaseClient> | null = null;
+    try {
+      client = getSupabaseClient();
+    } catch {
+      client = null;
+    }
+
+    if (!client) {
+      return;
+    }
+
     // 1. Initial fetch from Supabase to sync settings (including QRIS image) across devices
     const syncFromDb = async () => {
       try {
-        const client = getSupabaseClient();
+        if (!client) return;
         const { data, error } = await client
           .from("tax_settings")
           .select("*")
@@ -37,7 +49,6 @@ export function useTaxSettings(): TaxSettings {
     void syncFromDb();
 
     // 2. Realtime subscription: updates from Admin immediately propagate to this POS device
-    const client = getSupabaseClient();
     const channel = client
       .channel("tax_settings_pos_sync")
       .on(
@@ -67,7 +78,9 @@ export function useTaxSettings(): TaxSettings {
 
     return () => {
       active = false;
-      void client.removeChannel(channel);
+      if (client) {
+        void client.removeChannel(channel);
+      }
       window.removeEventListener("tepisawah:tax_settings_changed", handleLocalChange);
       window.removeEventListener("storage", handleLocalChange);
     };

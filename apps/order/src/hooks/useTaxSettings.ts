@@ -13,10 +13,22 @@ export function useTaxSettings(): TaxSettings {
   useEffect(() => {
     let active = true;
 
+    // Safely obtain client (in test environments without env vars, silently fallback to local)
+    let client: ReturnType<typeof getSupabaseClient> | null = null;
+    try {
+      client = getSupabaseClient();
+    } catch {
+      client = null;
+    }
+
+    if (!client) {
+      return;
+    }
+
     // 1. Initial fetch from Supabase to sync settings (including restaurant QRIS image)
     const syncFromDb = async () => {
       try {
-        const client = getSupabaseClient();
+        if (!client) return;
         const { data, error } = await client
           .from("tax_settings")
           .select("*")
@@ -37,7 +49,6 @@ export function useTaxSettings(): TaxSettings {
     void syncFromDb();
 
     // 2. Realtime subscription: updates from Admin immediately reflect on customer screen
-    const client = getSupabaseClient();
     const channel = client
       .channel("tax_settings_order_sync")
       .on(
@@ -62,7 +73,9 @@ export function useTaxSettings(): TaxSettings {
 
     return () => {
       active = false;
-      void client.removeChannel(channel);
+      if (client) {
+        void client.removeChannel(channel);
+      }
       window.removeEventListener("storage", handleStorage);
     };
   }, []);
