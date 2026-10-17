@@ -65,53 +65,6 @@ function AdminSubnavBar({
   activeTab: AdminTab;
   onSelectTab: (tab: AdminTab) => void;
 }): ReactNode {
-  const scrollRef = useRef<HTMLDivElement | null>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-  const [showQuickMenu, setShowQuickMenu] = useState(false);
-
-  const checkScroll = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 15);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 15);
-  }, []);
-
-  useEffect(() => {
-    checkScroll();
-    window.addEventListener("resize", checkScroll);
-    return () => window.removeEventListener("resize", checkScroll);
-  }, [checkScroll]);
-
-  // Handle Escape key to close quick menu
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape" && showQuickMenu) {
-        setShowQuickMenu(false);
-      }
-    }
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [showQuickMenu]);
-
-  const scrollByAmount = (delta: number) => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: delta, behavior: "smooth" });
-    }
-  };
-
-  // Scroll active tab into view smoothly
-  useEffect(() => {
-    if (scrollRef.current) {
-      const activeBtn = scrollRef.current.querySelector<HTMLElement>(".staff-subnav-btn--active");
-      if (activeBtn) {
-        activeBtn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-      }
-    }
-    const timer = setTimeout(checkScroll, 300);
-    return () => clearTimeout(timer);
-  }, [activeTab, checkScroll]);
-
   const currentTabMeta: AdminTabDef = ADMIN_TABS.find((t) => t.id === activeTab) ?? {
     id: "home",
     label: "Beranda",
@@ -120,104 +73,36 @@ function AdminSubnavBar({
 
   return (
     <div className="staff-admin-nav-container">
-      {/* Top Mobile Quick Row: Current Tab indicator + "Menu Cepat" Button */}
-      <div className="staff-admin-quick-header">
-        <div className="staff-admin-active-badge">
-          <span className="staff-admin-active-icon" aria-hidden="true">{currentTabMeta.icon}</span>
-          <span className="staff-admin-active-title">{currentTabMeta.label}</span>
+      <div className="staff-admin-dropdown-bar">
+        <div className="staff-admin-dropdown-current">
+          <span className="staff-admin-dropdown-icon" aria-hidden="true">{currentTabMeta.icon}</span>
+          <div className="staff-admin-dropdown-text">
+            <span className="staff-admin-dropdown-label">Modul Pengelola</span>
+            <span className="staff-admin-dropdown-title">{currentTabMeta.label}</span>
+          </div>
         </div>
-        <div className="staff-quick-jump-wrapper">
-          <button
-            type="button"
-            className="staff-quick-jump-trigger"
-            onClick={() => setShowQuickMenu((prev) => !prev)}
-            aria-expanded={showQuickMenu}
-            aria-haspopup="true"
-            aria-label="Pilih menu pengelola secara cepat"
-          >
-            <span>Pilih Menu</span>
-            <span className="staff-quick-jump-arrow">{showQuickMenu ? "▲" : "▼"}</span>
-          </button>
 
-          {showQuickMenu && (
-            <>
-              <div
-                className="staff-quick-nav-backdrop"
-                onClick={() => setShowQuickMenu(false)}
-                aria-hidden="true"
-              />
-              <div className="staff-quick-nav-popover" role="menu">
-                <div className="staff-quick-nav-popover-header">
-                  Pilih Modul Pengelola
-                </div>
-                {ADMIN_TABS.map((tab) => (
-                  <button
-                    key={tab.id}
-                    type="button"
-                    role="menuitem"
-                    className={`staff-quick-nav-item ${activeTab === tab.id ? "staff-quick-nav-item--active" : ""}`}
-                    onClick={() => {
-                      onSelectTab(tab.id);
-                      setShowQuickMenu(false);
-                    }}
-                  >
-                    <span className="staff-quick-nav-icon" aria-hidden="true">{tab.icon}</span>
-                    <span className="staff-quick-nav-label">{tab.label}</span>
-                    {activeTab === tab.id && <span className="staff-quick-nav-check">✓</span>}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Main Tab Scroller with Left & Right Arrow Buttons */}
-      <div className="staff-subnav-scroll-wrapper">
-        <button
-          type="button"
-          className={`staff-nav-arrow-btn staff-nav-arrow-btn--left ${canScrollLeft ? "staff-nav-arrow-btn--visible" : ""}`}
-          onClick={() => scrollByAmount(-220)}
-          aria-label="Geser tab ke kiri"
-          title="Geser ke kiri"
-        >
-          ‹
-        </button>
-
-        {canScrollLeft && <div className="staff-subnav-fade-left" aria-hidden="true" />}
-
-        <div
-          ref={scrollRef}
-          className="staff-subnav-bar"
-          onScroll={checkScroll}
-          role="tablist"
-        >
-          {ADMIN_TABS.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              role="tab"
-              aria-selected={activeTab === tab.id}
-              className={`staff-subnav-btn ${activeTab === tab.id ? "staff-subnav-btn--active" : ""}`}
-              onClick={() => onSelectTab(tab.id)}
+        <div className="staff-admin-dropdown-select-wrap">
+          <label htmlFor="staff-admin-tab-select" className="staff-admin-dropdown-accessible-label">
+            Pilih Modul:
+          </label>
+          <div className="staff-admin-select-field">
+            <select
+              id="staff-admin-tab-select"
+              className="staff-admin-dropdown-select"
+              value={activeTab}
+              onChange={(e) => onSelectTab(e.target.value as AdminTab)}
+              aria-label="Pilih Modul Pengelola"
             >
-              <span className="staff-tab-icon" aria-hidden="true">{tab.icon}</span>
-              <span>{tab.label}</span>
-            </button>
-          ))}
+              {ADMIN_TABS.map((tab) => (
+                <option key={tab.id} value={tab.id}>
+                  {tab.icon} {tab.label}
+                </option>
+              ))}
+            </select>
+            <span className="staff-admin-dropdown-arrow" aria-hidden="true">▾</span>
+          </div>
         </div>
-
-        {canScrollRight && <div className="staff-subnav-fade-right" aria-hidden="true" />}
-
-        <button
-          type="button"
-          className={`staff-nav-arrow-btn staff-nav-arrow-btn--right ${canScrollRight ? "staff-nav-arrow-btn--visible" : ""}`}
-          onClick={() => scrollByAmount(220)}
-          aria-label="Geser tab ke kanan"
-          title="Geser ke kanan"
-        >
-          ›
-        </button>
       </div>
     </div>
   );
@@ -260,6 +145,7 @@ export function AppRouter(): ReactNode {
   const [fohTab, setFohTab] = useState<FrontOfHouseTab>(() => {
     if (typeof window === "undefined") return "confirm";
     const params = new URLSearchParams(window.location.search);
+    if (params.has("confirm") || params.get("tab") === "confirm") return "confirm";
     if (params.has("order")) return "manual-order";
     if (params.has("terminal")) return "terminal";
     if (params.has("serve") || params.has("waiter")) return "serve";
@@ -285,6 +171,17 @@ export function AppRouter(): ReactNode {
       // ignore
     }
   }, []);
+
+  useEffect(() => {
+    const handleSwitchFohTab = (e: Event) => {
+      const customEvent = e as CustomEvent<FrontOfHouseTab>;
+      if (customEvent.detail) {
+        handleSelectFohTab(customEvent.detail);
+      }
+    };
+    window.addEventListener("tepisawah:switch-foh-tab", handleSwitchFohTab);
+    return () => window.removeEventListener("tepisawah:switch-foh-tab", handleSwitchFohTab);
+  }, [handleSelectFohTab]);
 
   const [adminTab, setAdminTab] = useState<AdminTab>(() => {
     if (typeof window === "undefined") return "home";
@@ -368,7 +265,7 @@ export function AppRouter(): ReactNode {
                   <ManualOrderPage />
                 </PermissionRoute>
               ) : (
-                <PosHomePage />
+                <PosHomePage onNavigateToConfirm={() => handleSelectFohTab("confirm")} />
               )}
             </div>
 

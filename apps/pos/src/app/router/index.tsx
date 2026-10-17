@@ -23,7 +23,8 @@ import { HomePage } from "../../pages/HomePage.js";
 import { PermissionRoute, ProtectedRoute } from "../../routes/index.js";
 
 function isConfirmRoute(): boolean {
-  return new URLSearchParams(window.location.search).has("confirm");
+  const params = new URLSearchParams(window.location.search);
+  return params.has("confirm") || params.get("tab") === "confirm";
 }
 
 export function AppRouter(): ReactNode {

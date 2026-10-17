@@ -46,7 +46,11 @@ import {
   WalletIcon,
 } from "@tepisawah/ui";
 
-export function HomePage(): ReactNode {
+export interface HomePageProps {
+  readonly onNavigateToConfirm?: () => void;
+}
+
+export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode {
   const { user, profile, can } = useAuth();
   const [orders, setOrders] = useState<QueueOrder[]>([]);
   const [historyOrders, setHistoryOrders] = useState<QueueOrder[]>([]);
@@ -271,7 +275,27 @@ export function HomePage(): ReactNode {
                 >
                   {orderBoardStatusLabel(boardChannel.status)}
                 </span>
-                <a className="pos-subbar__queue-link" href="?confirm">
+                <a
+                  className="pos-subbar__queue-link"
+                  href="?tab=confirm"
+                  onClick={(e) => {
+                    if (onNavigateToConfirm) {
+                      e.preventDefault();
+                      onNavigateToConfirm();
+                    } else {
+                      try {
+                        localStorage.setItem("tepisawah_staff_foh_tab", "confirm");
+                      } catch {
+                        // ignore
+                      }
+                      window.dispatchEvent(
+                        new CustomEvent("tepisawah:switch-foh-tab", { detail: "confirm" }),
+                      );
+                    }
+                  }}
+                  role="button"
+                  title="Buka antrean konfirmasi pesanan masuk (QR)"
+                >
                   Konfirmasi Pesanan →
                 </a>
               </div>
