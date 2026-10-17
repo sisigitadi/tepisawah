@@ -30,6 +30,7 @@ import { TerminalChrome } from "../features/terminal/TerminalChrome.js";
 import { OrderQueue, type QueueFilter } from "../features/terminal/OrderQueue.js";
 import { BillInspector } from "../features/terminal/BillInspector.js";
 import { PaymentExecution } from "../features/terminal/PaymentExecution.js";
+import { ThermalSlip } from "../features/terminal/ThermalSlip.js";
 import { CashDrawerModal } from "../features/shifts/CashDrawerModal.js";
 import { VoidOrderModal } from "../features/terminal/VoidOrderModal.js";
 import {
@@ -40,6 +41,7 @@ import {
 } from "../data/terminal.js";
 import { loadPayQueue, loadHistoryQueue, settleOrder, voidOrder } from "../lib/orders.js";
 import { getSupabaseClient } from "../lib/supabase.js";
+import { useTaxSettings } from "../hooks/index.js";
 import {
   LockResetIcon,
   ReceiptIcon,
@@ -52,6 +54,7 @@ export interface HomePageProps {
 
 export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode {
   const { user, profile, can } = useAuth();
+  useTaxSettings();
   const [orders, setOrders] = useState<QueueOrder[]>([]);
   const [historyOrders, setHistoryOrders] = useState<QueueOrder[]>([]);
   const [currentShift, setCurrentShift] = useState<CashShift | null>(null);
@@ -68,6 +71,7 @@ export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode
   const [method, setMethod] = useState<PaymentMethod["id"]>("cash");
   const [tendered, setTendered] = useState<string>("300.000");
   const [now, setNow] = useState<string>("27 Sep 2026, 11:32 WIB");
+  const [reprintKey, setReprintKey] = useState<number>(0);
 
   const cashierId = user?.id ?? "cashier-pos";
   const cashierName = profile?.display_name || profile?.username || user?.email || "Kasir Utama";
@@ -219,6 +223,22 @@ export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode
   const handleOpenVoid = useCallback((order: QueueOrder) => {
     setVoidTargetOrder(order);
     setShowVoidModal(true);
+  }, []);
+
+  const handlePrintReceipt = useCallback((orderToPrint: QueueOrder, isReprint = false): void => {
+    if (isReprint) {
+      orderToPrint.isReprint = true;
+      orderToPrint.reprintTime = `${new Intl.DateTimeFormat("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "Asia/Jakarta",
+      }).format(new Date())} WIB`;
+      setReprintKey((prev) => prev + 1);
+    }
+    // Give browser a tick to paint the receipt DOM node before invoking native print
+    window.setTimeout(() => {
+      window.print();
+    }, 60);
   }, []);
 
   const handleConfirmVoid = useCallback(async (reason: string, notes?: string) => {
@@ -382,18 +402,12 @@ export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode
             <>
               <BillInspector
                 order={selectedOrder}
-                onPrint={() => window.print()}
+                onPrint={() => handlePrintReceipt(selectedOrder, false)}
                 onVoid={() => selectedOrder && handleOpenVoid(selectedOrder)}
-                onReprint={() => {
-                  if (selectedOrder) {
-                    selectedOrder.isReprint = true;
-                    selectedOrder.reprintTime = `${new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit" }).format(new Date())} WIB`;
-                    window.print();
-                  }
-                }}
+                onReprint={() => handlePrintReceipt(selectedOrder, true)}
               />
 
-              {filter !== "history" && (
+              {filter !== "history" ? (
                 <PaymentExecution
                   order={selectedOrder}
                   method={method}
@@ -403,6 +417,17 @@ export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode
                   onSettle={handleSettle}
                   onVoid={() => selectedOrder && handleOpenVoid(selectedOrder)}
                 />
+              ) : (
+                <div className="pos-settlement" aria-label="Pratinjau struk riwayat">
+                  <ThermalSlip
+                    key={reprintKey}
+                    order={selectedOrder}
+                    method="cash"
+                    tenderedNumber={grandTotalOf(selectedOrder)}
+                    change={0}
+                    onPrint={() => handlePrintReceipt(selectedOrder, true)}
+                  />
+                </div>
               )}
             </>
           )}

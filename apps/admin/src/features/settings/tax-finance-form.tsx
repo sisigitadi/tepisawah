@@ -85,17 +85,28 @@ export function TaxFinanceForm({ editable, onSavedToast }: TaxFinanceFormProps):
     void (async () => {
       try {
         const client = getSupabaseClient();
-        const { data } = await client
+        const { data, error } = await client
           .from("tax_settings")
           .select("*")
+          .order("updated_at", { ascending: false })
           .limit(1)
-          .single();
-        if (data && active) {
+          .maybeSingle();
+        if (data && !error && active) {
           const synced = syncTaxSettingsFromDb(data as Record<string, unknown>);
           setSettings(synced);
+          if (synced.qrisImageUrl) {
+            if (synced.qrisImageUrl.startsWith("data:image")) {
+              const head = synced.qrisImageUrl.indexOf(",") + 1;
+              const b64 = synced.qrisImageUrl.slice(head);
+              const kb = Math.round((b64.length * 3) / 4 / 1024);
+              setQrisImageSize(`${kb} KB (WebP)`);
+            } else {
+              setQrisImageSize("Online Image");
+            }
+          }
         }
-      } catch {
-        // Fallback to local
+      } catch (err) {
+        console.warn("Gagal sinkronisasi tax_settings dari database:", err);
       }
     })();
     return () => {
@@ -120,9 +131,19 @@ export function TaxFinanceForm({ editable, onSavedToast }: TaxFinanceFormProps):
     saveTaxSettings(settings);
     try {
       const client = getSupabaseClient();
-      await (client.from("tax_settings") as any).upsert(toDbTaxSettings(settings));
-    } catch {
-      // Non-blocking fallback
+      const payload = toDbTaxSettings(settings);
+      const { error: upsertErr } = await (client.from("tax_settings") as any).upsert(payload);
+      if (upsertErr) {
+        console.error("Gagal menyimpan ke Supabase tax_settings:", upsertErr);
+      }
+      // Hapus baris 'default' lama jika ada agar tidak ada duplikasi data
+      try {
+        await (client.from("tax_settings") as any).delete().eq("id", "default");
+      } catch {
+        // Non-blocking
+      }
+    } catch (err) {
+      console.error("Gagal sinkronisasi tax_settings ke database:", err);
     }
     setSaving(false);
     onSavedToast?.("Pengaturan Pajak Restoran (PB1), QRIS, Rekening & Struk berhasil disimpan ke database.");

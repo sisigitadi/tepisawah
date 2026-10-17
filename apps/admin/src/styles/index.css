@@ -2898,8 +2898,8 @@ body {
    ========================================================================== */
 @media print {
   @page {
-    size: A4 portrait;
-    margin: 8mm 10mm;
+    size: auto;
+    margin: 0;
   }
 
   body {
@@ -2909,12 +2909,14 @@ body {
     print-color-adjust: exact !important;
   }
 
-  body * {
-    visibility: hidden;
-  }
-
   .no-print {
     display: none !important;
+  }
+
+  /* Scope sticker visibility: ONLY hide other content when printing QR table stickers */
+  body:has(.table-sticker-preview-area) *:not(.table-sticker-modal-overlay, .table-sticker-modal, .table-sticker-preview-area, .table-sticker-preview-area *),
+  body:has(.qr-page-grid-container) *:not(.qr-page-grid-container, .qr-page-grid-container *) {
+    visibility: hidden;
   }
 
   .table-sticker-modal-overlay,
@@ -2933,7 +2935,7 @@ body {
 
   .table-sticker-preview-area *,
   .qr-page-grid-container * {
-    visibility: visible;
+    visibility: visible !important;
   }
 
   .print-hidden {

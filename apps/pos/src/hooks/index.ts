@@ -6,3 +6,4 @@
 
 export { useNotifications } from "./useNotifications.js";
 export { useRealtimeConnection } from "./useRealtimeConnection.js";
+export { useTaxSettings } from "./useTaxSettings.js";
