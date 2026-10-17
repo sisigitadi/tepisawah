@@ -17,6 +17,7 @@ import {
   subtotalOf,
   taxBaseOf,
   taxOf,
+  getPosTaxSettings,
 } from "../../data/terminal.js";
 
 interface BillInspectorProps {
@@ -91,18 +92,25 @@ export function BillInspector({ order, onPrint }: BillInspectorProps): ReactNode
             <span>Dasar Pengenaan Pajak (DPP)</span>
             <span className="pos-ledger__value">{formatIDR(taxBaseOf(order))}</span>
           </div>
-          <div className="pos-ledger__row">
-            {/* A live bill carries the server's own tax (0 until the real PB1
-                rule lands); the fixture ledger still shows the 10% sample. */}
-            <span>{order.bill ? "Pajak Restoran (sesuai sistem)" : "Pajak Restoran PB1 (10%)"}</span>
-            <span className="pos-ledger__value">{formatIDR(taxOf(order))}</span>
-          </div>
-          {order.bill && serviceOf(order) === 0 ? null : (
+          {order.bill || getPosTaxSettings().taxEnabled ? (
             <div className="pos-ledger__row">
-              <span>Biaya Layanan Restoran (5%)</span>
+              <span>{order.bill ? "Pajak Restoran (sesuai sistem)" : getPosTaxSettings().taxName}</span>
+              <span className="pos-ledger__value">{formatIDR(taxOf(order))}</span>
+            </div>
+          ) : null}
+          {order.bill ? (
+            serviceOf(order) > 0 ? (
+              <div className="pos-ledger__row">
+                <span>Biaya Layanan Restoran</span>
+                <span className="pos-ledger__value">{formatIDR(serviceOf(order))}</span>
+              </div>
+            ) : null
+          ) : getPosTaxSettings().serviceChargeEnabled ? (
+            <div className="pos-ledger__row">
+              <span>{getPosTaxSettings().serviceChargeName}</span>
               <span className="pos-ledger__value">{formatIDR(serviceOf(order))}</span>
             </div>
-          )}
+          ) : null}
 
           <div className="pos-ledger__grand">
             <div>

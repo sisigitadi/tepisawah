@@ -340,4 +340,48 @@ $$;
 
 GRANT EXECUTE ON FUNCTION public.admin_delete_staff(uuid) TO authenticated;
 
+-- -----------------------------------------------------------------------------
+-- 4. Pengaturan Pajak Restoran (PB1), Service Charge, & Struk Kasir
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.tax_settings (
+  id text PRIMARY KEY DEFAULT 'default',
+  tax_enabled boolean NOT NULL DEFAULT true,
+  tax_rate numeric(5,2) NOT NULL DEFAULT 10.00,
+  tax_name text NOT NULL DEFAULT 'PB1 (Pajak Restoran 10%)',
+  tax_calculation text NOT NULL DEFAULT 'exclusive',
+  npwpd text NOT NULL DEFAULT 'P.2.0192834.01.24',
+  show_npwpd_on_receipt boolean NOT NULL DEFAULT true,
+  service_charge_enabled boolean NOT NULL DEFAULT false,
+  service_charge_rate numeric(5,2) NOT NULL DEFAULT 5.00,
+  service_charge_name text NOT NULL DEFAULT 'Biaya Layanan (5%)',
+  rounding text NOT NULL DEFAULT 'none',
+  receipt_header_note text NOT NULL DEFAULT 'Kawasan Wisata Sawah, Ciperna, Kec. Talun, Cirebon',
+  receipt_footer_note text NOT NULL DEFAULT 'Matur Kesuwun, Hatur Nuhun.\nInstagram: @tepisawah.id',
+  receipt_phone text NOT NULL DEFAULT '0812-3456-7890',
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.tax_settings ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "tax_settings_select_all" ON public.tax_settings;
+CREATE POLICY "tax_settings_select_all"
+  ON public.tax_settings FOR SELECT
+  TO authenticated, anon
+  USING (true);
+
+DROP POLICY IF EXISTS "tax_settings_update_authorized" ON public.tax_settings;
+CREATE POLICY "tax_settings_update_authorized"
+  ON public.tax_settings FOR ALL
+  TO authenticated
+  USING (public.is_owner() OR public.is_admin())
+  WITH CHECK (public.is_owner() OR public.is_admin());
+
+GRANT SELECT ON public.tax_settings TO anon, authenticated;
+GRANT ALL ON public.tax_settings TO authenticated;
+
+-- Pastikan singleton default terisi
+INSERT INTO public.tax_settings (id, tax_enabled, tax_rate, tax_name, tax_calculation, npwpd, show_npwpd_on_receipt)
+VALUES ('default', true, 10.00, 'PB1 (Pajak Restoran 10%)', 'exclusive', 'P.2.0192834.01.24', true)
+ON CONFLICT (id) DO NOTHING;
+
 COMMIT;

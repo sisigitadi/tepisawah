@@ -678,7 +678,7 @@ export function TransactionsLedgerPage(): ReactNode {
                 </div>
               )}
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem" }}>
-                <span style={{ color: "#64748b" }}>Pajak Restoran (PB1 10%):</span>
+                <span style={{ color: "#64748b" }}>Pajak Restoran (PB1):</span>
                 <span>{formatRupiah(selectedOrder.tax)}</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.5rem", paddingTop: "0.5rem", borderTop: "1px solid #cbd5e1", fontWeight: 700, fontSize: "1.05rem", color: "#0f172a" }}>
