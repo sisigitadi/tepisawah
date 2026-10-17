@@ -26,12 +26,14 @@ function StatusBadge(): ReactNode {
   return isOpen ? (
     <span className="web-status-badge web-status-open">
       <span className="web-status-dot" />
-      <span>BUKA SEKARANG (OPEN NOW)</span>
+      <span className="web-status-text-full">BUKA SEKARANG (OPEN NOW)</span>
+      <span className="web-status-text-short">BUKA SEKARANG</span>
     </span>
   ) : (
     <span className="web-status-badge web-status-closed">
       <span className="web-status-dot" />
-      <span>SEDANG TUTUP : BUKA KEMBALI 09:00 WIB</span>
+      <span className="web-status-text-full">SEDANG TUTUP : BUKA KEMBALI 09:00 WIB</span>
+      <span className="web-status-text-short">TUTUP • BUKA 09:00</span>
     </span>
   );
 }
@@ -139,17 +141,21 @@ export function SiteHeader(): ReactNode {
               <a
                 href="#reservasi"
                 className="web-btn web-btn-gold web-btn-pill web-btn-xs"
+                title="Reservasi Meja"
+                aria-label="Reservasi Meja"
               >
                 <Icon name="calendar" size={14} />
-                <span>Reservasi</span>
+                <span className="web-nav-btn-text">Reservasi</span>
               </a>
             ) : (
               <a
                 href="#menu-pilihan"
                 className="web-btn web-btn-gold web-btn-pill web-btn-xs"
+                title="Lihat Menu"
+                aria-label="Lihat Menu"
               >
                 <Icon name="book-open" size={14} />
-                <span>Menu</span>
+                <span className="web-nav-btn-text">Menu</span>
               </a>
             )}
             <button
