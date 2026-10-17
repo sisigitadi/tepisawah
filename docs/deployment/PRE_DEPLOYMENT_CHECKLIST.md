@@ -98,6 +98,9 @@ Buka DevTools Responsive Mode dan uji aplikasi pada:
   - `kasir@demo.tepisawah.id` (Sandi: `demo1234`)
   - `dapur@demo.tepisawah.id` (Sandi: `demo1234`)
   - Pastikan user telah terdaftar di Supabase Auth (`auth.users`) dan tabel `profiles` & `user_roles`.
+- [ ] **Konfigurasi Otentikasi Staf Berbasis Username**:
+  - Opsi *Confirm email* di Supabase Dashboard (`Authentication -> Providers -> Email`) telah dinonaktifkan (disetel ke **OFF**) agar pendaftaran staf operasional instan dan bebas batasan pengiriman email.
+  - Skrip `supabase/scripts/fix-staff-roles-and-management.sql` telah dijalankan untuk memasang fungsi RPC `admin_create_staff` dan kolom `username` pada tabel `profiles`.
 
 ---
 
@@ -109,7 +112,7 @@ Pastikan ketiga proyek Vercel memiliki variabel lingkungan yang benar:
 |---|---|---|
 | `tepisawah` | `tepisawah.id`<br>`www.tepisawah.id` | `VITE_SUPABASE_URL`<br>`VITE_SUPABASE_ANON_KEY`<br>`VITE_ORDER_APP_URL=https://order.tepisawah.id` |
 | `tepisawah-order` | `order.tepisawah.id` | `VITE_SUPABASE_URL`<br>`VITE_SUPABASE_ANON_KEY`<br>`VITE_SITE_URL=https://order.tepisawah.id` |
-| `tepisawah-staff` | `staff.tepisawah.id` | `VITE_SUPABASE_URL`<br>`VITE_SUPABASE_ANON_KEY`<br>`VITE_DEMO_MODE=true` |
+| `tepisawah-staff` | `staff.tepisawah.id` | `VITE_SUPABASE_URL`<br>`VITE_SUPABASE_ANON_KEY`<br>`VITE_DEMO_MODE=false` *(atau kosongkan)* |
 
 ---
 

@@ -9,6 +9,7 @@ export interface Profile {
   /** auth.users.id — the profile PK. */
   id: string;
   display_name: string;
+  username?: string | null;
   phone: string | null;
   avatar_url: string | null;
   /** False blocks internal authorization (AUTH_RBAC_RLS.md §14). */
@@ -21,6 +22,7 @@ export interface Profile {
 export interface ProfileRow {
   id: string;
   display_name: string | null;
+  username?: string | null;
   phone: string | null;
   avatar_url: string | null;
   is_active: boolean | null;
@@ -40,6 +42,7 @@ export function toProfile(row: ProfileRow): Profile {
   return {
     id: row.id,
     display_name: row.display_name ?? "",
+    username: row.username ?? null,
     phone: row.phone,
     avatar_url: row.avatar_url,
     is_active: row.is_active === true,

@@ -43,6 +43,12 @@ export const DEMO_ACCOUNTS: readonly DemoAccount[] = demoAccountsJson;
 
 /** True when the record turns the demo login hints on (`true`/`1`/`yes`). */
 export function isDemoMode(record: Record<string, string | undefined>): boolean {
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname.toLowerCase();
+    if (host === "staff.tepisawah.id" || host === "tepisawah.id" || host === "www.tepisawah.id") {
+      return false;
+    }
+  }
   const raw = (record[DEMO_MODE_KEY] ?? "").trim().toLowerCase();
   return raw === "true" || raw === "1" || raw === "yes";
 }
