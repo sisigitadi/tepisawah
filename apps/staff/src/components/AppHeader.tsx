@@ -35,6 +35,13 @@ export function AppHeader({
   ).filter((r) => allowedRooms.has(r));
 
   const handleSignOut = async () => {
+    try {
+      localStorage.removeItem("tepisawah_staff_room");
+      localStorage.removeItem("tepisawah_staff_admin_tab");
+      localStorage.removeItem("tepisawah_staff_foh_tab");
+    } catch {
+      // ignore
+    }
     if (onNavigate) {
       onNavigate("portal");
     } else {
