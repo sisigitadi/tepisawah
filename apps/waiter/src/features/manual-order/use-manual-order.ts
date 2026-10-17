@@ -20,6 +20,7 @@ import {
   loadManualOrderTables,
   manualOrderIdempotencyKey,
   manualOrderSubmitIdempotencyKey,
+  openManualOrderTableSession,
   submitManualOrder,
   submitManualOrderForConfirmation,
   type ManualOrderLine,
@@ -94,10 +95,13 @@ function lineFor(lines: ManualOrderLine[], productId: string): ManualOrderLine |
 export function useManualOrder(): ManualOrderState & {
   /** The session the selected table currently has open, or null. */
   activeSession: TableSession | null;
+  openingSession: boolean;
+  sessionError: string | null;
   canSubmit: boolean;
   /** True once a draft exists and it has not been sent to the kitchen yet. */
   canConfirm: boolean;
   setTable: (tableId: string) => void;
+  openSessionForSelectedTable: () => Promise<void>;
   addLine: (productId: string) => void;
   decrementLine: (productId: string) => void;
   setLineQuantity: (productId: string, quantity: number) => void;
@@ -109,6 +113,8 @@ export function useManualOrder(): ManualOrderState & {
   reset: () => void;
 } {
   const [state, setState] = useState<ManualOrderState>(INITIAL);
+  const [openingSession, setOpeningSession] = useState(false);
+  const [sessionError, setSessionError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setState((prev) => ({ ...prev, loadPhase: "loading", loadError: null }));
@@ -219,9 +225,37 @@ export function useManualOrder(): ManualOrderState & {
     }));
   }, [state.created, state.attemptId]);
 
+  const openSessionForSelectedTable = useCallback(async () => {
+    if (!state.tableId) return;
+    const table = state.tables.find((t) => t.id === state.tableId);
+    if (!table) return;
+
+    setOpeningSession(true);
+    setSessionError(null);
+    const result = await openManualOrderTableSession(table.id, table.tableCode);
+    setOpeningSession(false);
+
+    if (result.error || !result.data) {
+      setSessionError(result.error?.message ?? "Gagal membuka sesi meja.");
+      return;
+    }
+
+    const newSession = result.data;
+    setState((prev) => {
+      const nextSessions = new Map(prev.sessions);
+      nextSessions.set(table.id, newSession);
+      return {
+        ...prev,
+        sessions: nextSessions,
+      };
+    });
+  }, [state.tableId, state.tables]);
+
   return {
     ...state,
     activeSession,
+    openingSession,
+    sessionError,
     canSubmit:
       activeSession !== null &&
       state.lines.length > 0 &&
@@ -232,7 +266,9 @@ export function useManualOrder(): ManualOrderState & {
       state.created !== null &&
       state.confirmPhase !== "confirming" &&
       state.confirmPhase !== "done",
-    setTable: (tableId) =>
+    openSessionForSelectedTable,
+    setTable: (tableId) => {
+      setSessionError(null);
       setState((prev) => ({
         ...prev,
         tableId,
@@ -240,7 +276,8 @@ export function useManualOrder(): ManualOrderState & {
         created: null,
         submitPhase: "idle",
         attemptId: newAttemptId(),
-      })),
+      }));
+    },
     addLine: (productId) =>
       setState((prev) => {
         const existing = lineFor(prev.lines, productId);

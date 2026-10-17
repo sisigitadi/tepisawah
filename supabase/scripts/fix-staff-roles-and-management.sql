@@ -82,6 +82,7 @@ WITH grants(role_code, permission_code) AS (
     ('waiter', 'catalog.read'),
     ('waiter', 'tables.read'),
     ('waiter', 'table_sessions.read'),
+    ('waiter', 'table_sessions.manage'),
     ('waiter', 'orders.create_manual'),
     ('waiter', 'orders.read'),
     ('waiter', 'orders.serve'),
@@ -94,6 +95,8 @@ WITH grants(role_code, permission_code) AS (
     -- Cashier
     ('cashier', 'catalog.read'),
     ('cashier', 'tables.read'),
+    ('cashier', 'table_sessions.read'),
+    ('cashier', 'table_sessions.manage'),
     ('cashier', 'orders.create_manual'),
     ('cashier', 'orders.read'),
     ('cashier', 'orders.confirm'),

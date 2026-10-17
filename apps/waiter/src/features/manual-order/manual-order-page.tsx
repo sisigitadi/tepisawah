@@ -126,10 +126,28 @@ export function ManualOrderPage(): ReactNode {
             Sesi meja aktif — order akan ikut sesi ini.
           </p>
         ) : (
-          <p className="manual-order__session manual-order__session--closed" role="alert">
-            Sesi meja belum dibuka. Minta kasir/supervisor membuka sesi sebelum
-            membuat order.
-          </p>
+          <div className="manual-order__session manual-order__session--closed" role="alert">
+            <p>
+              Sesi meja belum dibuka. Minta kasir/supervisor membuka sesi sebelum
+              membuat order atau langsung buka sesi meja ini:
+            </p>
+            <div style={{ marginTop: "0.5rem" }}>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                disabled={vm.openingSession}
+                onClick={() => void vm.openSessionForSelectedTable()}
+              >
+                {vm.openingSession ? "Membuka sesi…" : `Buka Sesi Meja ${selected?.tableCode ?? ""}`}
+              </Button>
+            </div>
+            {vm.sessionError ? (
+              <p className="manual-order__error" style={{ marginTop: "0.5rem" }}>
+                {vm.sessionError}
+              </p>
+            ) : null}
+          </div>
         )}
       </Card>
 

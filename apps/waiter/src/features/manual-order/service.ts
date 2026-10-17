@@ -28,11 +28,25 @@ import {
   fetchPublicCatalog,
   fetchTables,
   groupCatalogByCategory,
+  openTableSession,
   orderItemFingerprint,
   submitOrder,
 } from "@tepisawah/database";
 
 import { getSupabaseClient } from "../../lib/supabase.js";
+
+/** Open a table session directly from manual order screen. */
+export async function openManualOrderTableSession(
+  tableId: string,
+  tableCode: string,
+): Promise<{ data: TableSession | null; error: { message: string } | null }> {
+  const client = getSupabaseClient();
+  const result = await openTableSession(client, tableId, tableCode);
+  if (result.error || !result.data) {
+    return { data: null, error: { message: result.error?.message ?? "Gagal membuka sesi meja." } };
+  }
+  return { data: result.data.session, error: null };
+}
 
 /** A line the waiter is building. References and intent only — no money. */
 export interface ManualOrderLine {
