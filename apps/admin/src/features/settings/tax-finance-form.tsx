@@ -19,8 +19,11 @@ import {
   loadTaxSettings,
   saveTaxSettings,
   calculateBill,
+  syncTaxSettingsFromDb,
+  toDbTaxSettings,
 } from "@tepisawah/config";
-import { useState, useMemo, type ReactNode } from "react";
+import { useEffect, useState, useMemo, type ReactNode } from "react";
+import { getSupabaseClient } from "../../lib/supabase.js";
 
 export interface TaxFinanceFormProps {
   editable: boolean;
@@ -30,6 +33,30 @@ export interface TaxFinanceFormProps {
 export function TaxFinanceForm({ editable, onSavedToast }: TaxFinanceFormProps): ReactNode {
   const [settings, setSettings] = useState<TaxSettings>(() => loadTaxSettings());
   const [saving, setSaving] = useState(false);
+
+  // Sync settings with Supabase database on mount
+  useEffect(() => {
+    let active = true;
+    void (async () => {
+      try {
+        const client = getSupabaseClient();
+        const { data } = await client
+          .from("tax_settings")
+          .select("*")
+          .limit(1)
+          .single();
+        if (data && active) {
+          const synced = syncTaxSettingsFromDb(data as Record<string, unknown>);
+          setSettings(synced);
+        }
+      } catch {
+        // Fallback to local
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // Sample items for live simulator
   const sampleSubtotal = 75000; // Contoh: Nasi Liwet Gurame (55k) + Es Kelapa Jeruk (20k)
@@ -43,13 +70,17 @@ export function TaxFinanceForm({ editable, onSavedToast }: TaxFinanceFormProps):
     return "Rp " + new Intl.NumberFormat("id-ID").format(Math.round(val));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setSaving(true);
     saveTaxSettings(settings);
-    setTimeout(() => {
-      setSaving(false);
-      onSavedToast?.("Pengaturan Pajak Restoran (PB1) & Struk berhasil disimpan dan disinkronkan ke POS Kasir.");
-    }, 250);
+    try {
+      const client = getSupabaseClient();
+      await (client.from("tax_settings") as any).upsert(toDbTaxSettings(settings));
+    } catch {
+      // Non-blocking fallback
+    }
+    setSaving(false);
+    onSavedToast?.("Pengaturan Pajak Restoran (PB1), QRIS, Rekening & Struk berhasil disimpan ke database.");
   };
 
   const handleReset = () => {
@@ -411,14 +442,247 @@ export function TaxFinanceForm({ editable, onSavedToast }: TaxFinanceFormProps):
           />
         </div>
 
-        {/* Bagian 4: Simulasi Live Kalkulator & Struk Thermal */}
+        {/* Bagian 4: Pengaturan QRIS & Rekening Bank */}
+        <div style={{ marginTop: "2rem", borderTop: "2px dashed #cbd5e1", paddingTop: "1.5rem" }}>
+          <div className="flow-section-header">
+            <h3 className="flow-section-title" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span>💳</span> Setup Pembayaran QRIS &amp; Rekening Bank
+            </h3>
+            <p className="flow-section-desc">
+              Data QRIS dan nomor rekening bank transfer untuk ditampilkan di layar kasir saat pelanggan memilih pembayaran non-tunai.
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: "1.25rem",
+              marginTop: "1rem",
+            }}
+          >
+            <div>
+              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, marginBottom: "0.25rem", color: "#334155" }}>
+                URL Gambar QRIS (Image Link / Cloud Storage)
+              </label>
+              <input
+                type="text"
+                className="admin-form-input"
+                style={{ width: "100%", padding: "0.5rem 0.75rem", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                value={settings.qrisImageUrl}
+                disabled={!editable}
+                onChange={(e) => setSettings((prev) => ({ ...prev, qrisImageUrl: e.target.value }))}
+                placeholder="https://.../qris-tepisawah.png"
+              />
+              <span style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "2px", display: "block" }}>
+                Link gambar QRIS statis atau dinamis yang dapat discan oleh customer dari tablet kasir
+              </span>
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, marginBottom: "0.25rem", color: "#334155" }}>
+                QRIS String / EMVCo Payload (Opsional)
+              </label>
+              <input
+                type="text"
+                className="admin-form-input"
+                style={{ width: "100%", padding: "0.5rem 0.75rem", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                value={settings.qrisPayload}
+                disabled={!editable}
+                onChange={(e) => setSettings((prev) => ({ ...prev, qrisPayload: e.target.value }))}
+                placeholder="00020101021126590014ID.LINKAJA.WWW0118..."
+              />
+              <span style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "2px", display: "block" }}>
+                Jika diisi, sistem POS dapat men-generate QR Code secara otomatis
+              </span>
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, marginBottom: "0.25rem", color: "#334155" }}>
+                Nama Bank Rekening Resto
+              </label>
+              <input
+                type="text"
+                className="admin-form-input"
+                style={{ width: "100%", padding: "0.5rem 0.75rem", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                value={settings.bankName}
+                disabled={!editable}
+                onChange={(e) => setSettings((prev) => ({ ...prev, bankName: e.target.value }))}
+                placeholder="BCA / Mandiri / BRI / BNI"
+              />
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, marginBottom: "0.25rem", color: "#334155" }}>
+                Nomor Rekening Bank
+              </label>
+              <input
+                type="text"
+                className="admin-form-input"
+                style={{ width: "100%", padding: "0.5rem 0.75rem", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                value={settings.bankAccountNumber}
+                disabled={!editable}
+                onChange={(e) => setSettings((prev) => ({ ...prev, bankAccountNumber: e.target.value }))}
+                placeholder="Contoh: 1340889210"
+              />
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, marginBottom: "0.25rem", color: "#334155" }}>
+                Atas Nama Pemilik Rekening
+              </label>
+              <input
+                type="text"
+                className="admin-form-input"
+                style={{ width: "100%", padding: "0.5rem 0.75rem", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                value={settings.bankAccountHolder}
+                disabled={!editable}
+                onChange={(e) => setSettings((prev) => ({ ...prev, bankAccountHolder: e.target.value }))}
+                placeholder="Contoh: RM Tepi Sawah / CV Tepi Sawah Sejahtera"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Bagian 5: Konfigurasi Printer Kasir & Kertas */}
+        <div style={{ marginTop: "2rem", borderTop: "2px dashed #cbd5e1", paddingTop: "1.5rem" }}>
+          <div className="flow-section-header">
+            <h3 className="flow-section-title" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span>🖨️</span> Pengaturan Printer &amp; Kertas Kasir
+            </h3>
+            <p className="flow-section-desc">
+              Ukuran kertas thermal dan opsi cetak otomatis nota transaksi pada kasir.
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: "1.25rem",
+              marginTop: "1rem",
+            }}
+          >
+            <div>
+              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, marginBottom: "0.25rem", color: "#334155" }}>
+                Lebar Kertas Struk Thermal
+              </label>
+              <select
+                className="admin-form-input"
+                style={{ width: "100%", padding: "0.5rem 0.75rem", borderRadius: "6px", border: "1px solid #cbd5e1", background: "#fff" }}
+                value={settings.printerPaperWidth}
+                disabled={!editable}
+                onChange={(e) => setSettings((prev) => ({ ...prev, printerPaperWidth: e.target.value as "58mm" | "80mm" }))}
+              >
+                <option value="80mm">80mm (Standar Desktop POS / Thermal Lebar)</option>
+                <option value="58mm">58mm (Printer Portabel / Mini Thermal Bluetooth)</option>
+              </select>
+              <span style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "2px", display: "block" }}>
+                Menyesuaikan layout cetak nota agar tidak terpotong atau terlalu renggang
+              </span>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer", fontWeight: 600, color: "#1e293b" }}>
+                <input
+                  type="checkbox"
+                  checked={settings.printerAutoPrint}
+                  disabled={!editable}
+                  onChange={(e) => setSettings((prev) => ({ ...prev, printerAutoPrint: e.target.checked }))}
+                />
+                <span>Cetak Nota Otomatis Setelah Pembayaran Sukses</span>
+              </label>
+              <span style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "4px", paddingLeft: "1.5rem" }}>
+                Bila aktif, dialog cetak struk kasir langsung terbuka sesaat setelah tombol konfirmasi bayar ditekan
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Bagian 6: Aturan Sesi Meja (Table Session Policy) */}
+        <div style={{ marginTop: "2rem", borderTop: "2px dashed #cbd5e1", paddingTop: "1.5rem" }}>
+          <div className="flow-section-header">
+            <h3 className="flow-section-title" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span>🪑</span> Aturan Sesi Meja (Table Session Policy)
+            </h3>
+            <p className="flow-section-desc">
+              Tentukan apakah pesanan meja baru memerlukan pembukaan sesi manual oleh supervisor/kasir atau otomatis dibuka saat pesanan pertama masuk.
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: "1.25rem",
+              marginTop: "1rem",
+            }}
+          >
+            <div
+              onClick={() => editable && setSettings((prev) => ({ ...prev, tableSessionMode: "auto" }))}
+              style={{
+                border: settings.tableSessionMode === "auto" ? "2px solid #059669" : "1px solid #cbd5e1",
+                background: settings.tableSessionMode === "auto" ? "#ecfdf5" : "#ffffff",
+                borderRadius: "8px",
+                padding: "1rem",
+                cursor: editable ? "pointer" : "default",
+                transition: "all 0.15s ease",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                <input
+                  type="radio"
+                  name="tableSessionMode"
+                  checked={settings.tableSessionMode === "auto"}
+                  onChange={() => editable && setSettings((prev) => ({ ...prev, tableSessionMode: "auto" }))}
+                  disabled={!editable}
+                />
+                <strong style={{ color: "#065f46" }}>Otomatis Buka Sesi (Open Ordering)</strong>
+                <span style={{ fontSize: "0.68rem", background: "#059669", color: "#fff", padding: "2px 6px", borderRadius: "4px" }}>
+                  Rekomendasi
+                </span>
+              </div>
+              <p style={{ margin: 0, fontSize: "0.8rem", color: "#334155", lineHeight: 1.4 }}>
+                Pelanggan dan kasir dapat langsung membuat order di meja kosong tanpa terhambat peringatan "Sesi meja belum dibuka". Sistem di backend otomatis membuka sesi meja aktif dan menghubungkannya ke order.
+              </p>
+            </div>
+
+            <div
+              onClick={() => editable && setSettings((prev) => ({ ...prev, tableSessionMode: "strict" }))}
+              style={{
+                border: settings.tableSessionMode === "strict" ? "2px solid #0284c7" : "1px solid #cbd5e1",
+                background: settings.tableSessionMode === "strict" ? "#f0f9ff" : "#ffffff",
+                borderRadius: "8px",
+                padding: "1rem",
+                cursor: editable ? "pointer" : "default",
+                transition: "all 0.15s ease",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                <input
+                  type="radio"
+                  name="tableSessionMode"
+                  checked={settings.tableSessionMode === "strict"}
+                  onChange={() => editable && setSettings((prev) => ({ ...prev, tableSessionMode: "strict" }))}
+                  disabled={!editable}
+                />
+                <strong style={{ color: "#0369a1" }}>Sesi Meja Ketat (Strict Mode)</strong>
+              </div>
+              <p style={{ margin: 0, fontSize: "0.8rem", color: "#334155", lineHeight: 1.4 }}>
+                Setiap meja kosong wajib dibuka sesinya terlebih dahulu oleh kasir atau supervisor melalui halaman Manajemen Meja sebelum pesanan dapat dibuat.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Bagian 7: Simulasi Live Kalkulator & Struk Thermal */}
         <div style={{ marginTop: "2rem", borderTop: "2px dashed #cbd5e1", paddingTop: "1.5rem" }}>
           <div className="flow-section-header">
             <h3 className="flow-section-title" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
               <span>🧾</span> Live Simulator Struk Kasir &amp; Kalkulasi Riil
             </h3>
             <p className="flow-section-desc">
-              Tampilan simulasi rincian tagihan kasir berdasarkan pengaturan di atas secara instan.
+              Tampilan simulasi rincian tagihan kasir berdasarkan pengaturan di atas secara instan ({settings.printerPaperWidth}).
             </p>
           </div>
 
@@ -514,42 +778,60 @@ export function TaxFinanceForm({ editable, onSavedToast }: TaxFinanceFormProps):
                 💡 <strong>Informasi Dispenda:</strong> Dengan tarif PB1 {settings.taxRate}%, restoran Anda memenuhi
                 kewajiban pungutan pajak restoran resmi Kota/Kabupaten. Setiap struk kasir dapat mencantumkan nomor NPWPD Anda.
               </div>
+
+              {settings.bankAccountNumber && (
+                <div
+                  style={{
+                    marginTop: "0.75rem",
+                    padding: "0.75rem",
+                    borderRadius: "6px",
+                    background: "#f0fdf4",
+                    border: "1px solid #bbf7d0",
+                    fontSize: "0.75rem",
+                    color: "#166534",
+                    lineHeight: 1.4,
+                  }}
+                >
+                  🏧 <strong>Info Bank Kasir:</strong> {settings.bankName} - {settings.bankAccountNumber} a/n {settings.bankAccountHolder}
+                </div>
+              )}
             </div>
 
-            {/* Simulasi Kertas Struk Thermal 80mm */}
+            {/* Simulasi Kertas Struk Thermal */}
             <div
               style={{
                 background: "#ffffff",
                 boxShadow: "0 4px 12px rgba(0,0,0,0.08), 0 0 1px rgba(0,0,0,0.1)",
                 borderRadius: "4px",
                 border: "1px solid #e2e8f0",
-                padding: "1.25rem 1rem",
+                padding: settings.printerPaperWidth === "58mm" ? "1rem 0.75rem" : "1.25rem 1rem",
                 fontFamily: "monospace",
-                fontSize: "0.8rem",
+                fontSize: settings.printerPaperWidth === "58mm" ? "0.74rem" : "0.8rem",
                 lineHeight: 1.35,
                 color: "#1e293b",
-                maxWidth: "340px",
+                maxWidth: settings.printerPaperWidth === "58mm" ? "270px" : "340px",
                 margin: "0 auto",
+                width: "100%",
               }}
             >
               <div style={{ textAlign: "center", borderBottom: "1px dashed #cbd5e1", paddingBottom: "0.75rem", marginBottom: "0.75rem" }}>
-                <div style={{ fontWeight: 800, fontSize: "1rem" }}>TEPI SAWAH RESTO &amp; CAFE</div>
-                <div style={{ fontSize: "0.72rem", color: "#475569", marginTop: "2px" }}>
+                <div style={{ fontWeight: 800, fontSize: settings.printerPaperWidth === "58mm" ? "0.9rem" : "1rem" }}>TEPI SAWAH RESTO &amp; CAFE</div>
+                <div style={{ fontSize: "0.7rem", color: "#475569", marginTop: "2px" }}>
                   {settings.receiptHeaderNote}
                 </div>
-                <div style={{ fontSize: "0.72rem", color: "#475569" }}>WA: {settings.receiptPhone}</div>
+                <div style={{ fontSize: "0.7rem", color: "#475569" }}>WA: {settings.receiptPhone}</div>
                 {settings.showNpwpdOnReceipt && settings.npwpd && (
-                  <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "#0f172a", marginTop: "3px" }}>
+                  <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "#0f172a", marginTop: "3px" }}>
                     NPWPD: {settings.npwpd}
                   </div>
                 )}
               </div>
 
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.72rem", color: "#64748b", marginBottom: "0.5rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.7rem", color: "#64748b", marginBottom: "0.35rem" }}>
                 <span>17/10/26 12:30 WIB</span>
                 <span>Kasir: Meja #01</span>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.72rem", color: "#64748b", borderBottom: "1px dashed #cbd5e1", paddingBottom: "0.5rem", marginBottom: "0.5rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.7rem", color: "#64748b", borderBottom: "1px dashed #cbd5e1", paddingBottom: "0.5rem", marginBottom: "0.5rem" }}>
                 <span>No: TS-20261017-0001</span>
                 <span>Meja: 05</span>
               </div>
@@ -599,7 +881,7 @@ export function TaxFinanceForm({ editable, onSavedToast }: TaxFinanceFormProps):
                     display: "flex",
                     justifyContent: "space-between",
                     fontWeight: 800,
-                    fontSize: "0.95rem",
+                    fontSize: settings.printerPaperWidth === "58mm" ? "0.85rem" : "0.95rem",
                     borderTop: "1px solid #1e293b",
                     borderBottom: "1px solid #1e293b",
                     padding: "4px 0",
@@ -611,7 +893,14 @@ export function TaxFinanceForm({ editable, onSavedToast }: TaxFinanceFormProps):
                 </div>
               </div>
 
-              <div style={{ textAlign: "center", borderTop: "1px dashed #cbd5e1", marginTop: "0.75rem", paddingTop: "0.75rem", fontSize: "0.72rem", color: "#475569", whiteSpace: "pre-line" }}>
+              {settings.bankAccountNumber && (
+                <div style={{ textAlign: "center", borderTop: "1px dashed #cbd5e1", marginTop: "0.5rem", paddingTop: "0.5rem", fontSize: "0.68rem", color: "#475569" }}>
+                  Transfer: {settings.bankName} {settings.bankAccountNumber}<br />
+                  a/n {settings.bankAccountHolder}
+                </div>
+              )}
+
+              <div style={{ textAlign: "center", borderTop: "1px dashed #cbd5e1", marginTop: "0.5rem", paddingTop: "0.5rem", fontSize: "0.68rem", color: "#475569", whiteSpace: "pre-line" }}>
                 {settings.receiptFooterNote}
               </div>
             </div>

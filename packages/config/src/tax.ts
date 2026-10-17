@@ -27,6 +27,14 @@ export interface TaxSettings {
   receiptHeaderNote: string;
   receiptFooterNote: string;
   receiptPhone: string;
+  tableSessionMode: "strict" | "auto";
+  qrisImageUrl?: string;
+  qrisPayload?: string;
+  bankName: string;
+  bankAccountNumber: string;
+  bankAccountHolder: string;
+  printerPaperWidth: "58mm" | "80mm";
+  printerAutoPrint: boolean;
 }
 
 export interface BillCalculation {
@@ -54,6 +62,14 @@ export const DEFAULT_TAX_SETTINGS: TaxSettings = {
   receiptHeaderNote: "Kawasan Wisata Sawah, Ciperna, Kec. Talun, Cirebon",
   receiptFooterNote: "Matur Kesuwun, Hatur Nuhun.\nInstagram: @tepisawah.id",
   receiptPhone: "0812-3456-7890",
+  tableSessionMode: "auto",
+  qrisImageUrl: "",
+  qrisPayload: "",
+  bankName: "BCA",
+  bankAccountNumber: "",
+  bankAccountHolder: "",
+  printerPaperWidth: "80mm",
+  printerAutoPrint: true,
 };
 
 const STORAGE_KEY = "tepisawah_tax_finance_settings";
@@ -80,6 +96,14 @@ export function loadTaxSettings(): TaxSettings {
       receiptHeaderNote: parsed.receiptHeaderNote !== undefined ? parsed.receiptHeaderNote : DEFAULT_TAX_SETTINGS.receiptHeaderNote,
       receiptFooterNote: parsed.receiptFooterNote !== undefined ? parsed.receiptFooterNote : DEFAULT_TAX_SETTINGS.receiptFooterNote,
       receiptPhone: parsed.receiptPhone !== undefined ? parsed.receiptPhone : DEFAULT_TAX_SETTINGS.receiptPhone,
+      tableSessionMode: parsed.tableSessionMode === "strict" ? "strict" : "auto",
+      qrisImageUrl: parsed.qrisImageUrl ?? DEFAULT_TAX_SETTINGS.qrisImageUrl,
+      qrisPayload: parsed.qrisPayload ?? DEFAULT_TAX_SETTINGS.qrisPayload,
+      bankName: parsed.bankName || DEFAULT_TAX_SETTINGS.bankName,
+      bankAccountNumber: parsed.bankAccountNumber ?? DEFAULT_TAX_SETTINGS.bankAccountNumber,
+      bankAccountHolder: parsed.bankAccountHolder ?? DEFAULT_TAX_SETTINGS.bankAccountHolder,
+      printerPaperWidth: parsed.printerPaperWidth === "58mm" ? "58mm" : "80mm",
+      printerAutoPrint: typeof parsed.printerAutoPrint === "boolean" ? parsed.printerAutoPrint : DEFAULT_TAX_SETTINGS.printerAutoPrint,
     };
   } catch {
     return DEFAULT_TAX_SETTINGS;
@@ -154,5 +178,62 @@ export function calculateBill(
     rawTotal,
     roundingAmount,
     total,
+  };
+}
+
+export function syncTaxSettingsFromDb(row: Record<string, unknown>): TaxSettings {
+  const current = loadTaxSettings();
+  const merged: TaxSettings = {
+    taxEnabled: typeof row.tax_enabled === "boolean" ? row.tax_enabled : current.taxEnabled,
+    taxRate: typeof row.tax_rate === "number" ? row.tax_rate : Number(row.tax_rate) || current.taxRate,
+    taxName: String(row.tax_name || current.taxName),
+    taxCalculation: row.tax_calculation === "inclusive" ? "inclusive" : "exclusive",
+    npwpd: String(row.npwpd ?? current.npwpd),
+    showNpwpdOnReceipt: typeof row.show_npwpd_on_receipt === "boolean" ? row.show_npwpd_on_receipt : current.showNpwpdOnReceipt,
+    serviceChargeEnabled: typeof row.service_charge_enabled === "boolean" ? row.service_charge_enabled : current.serviceChargeEnabled,
+    serviceChargeRate: typeof row.service_charge_rate === "number" ? row.service_charge_rate : Number(row.service_charge_rate) || current.serviceChargeRate,
+    serviceChargeName: String(row.service_charge_name || current.serviceChargeName),
+    rounding: ["round100", "round500", "round1000"].includes(String(row.rounding)) ? (row.rounding as RoundingMode) : "none",
+    receiptHeaderNote: String(row.receipt_header_note ?? current.receiptHeaderNote),
+    receiptFooterNote: String(row.receipt_footer_note ?? current.receiptFooterNote),
+    receiptPhone: String(row.receipt_phone ?? current.receiptPhone),
+    tableSessionMode: row.table_session_mode === "strict" ? "strict" : "auto",
+    qrisImageUrl: String(row.qris_image_url ?? current.qrisImageUrl ?? ""),
+    qrisPayload: String(row.qris_payload ?? current.qrisPayload ?? ""),
+    bankName: String(row.bank_name || current.bankName),
+    bankAccountNumber: String(row.bank_account_number ?? current.bankAccountNumber),
+    bankAccountHolder: String(row.bank_account_holder ?? current.bankAccountHolder),
+    printerPaperWidth: row.printer_paper_width === "58mm" ? "58mm" : "80mm",
+    printerAutoPrint: typeof row.printer_auto_print === "boolean" ? row.printer_auto_print : current.printerAutoPrint,
+  };
+  saveTaxSettings(merged);
+  return merged;
+}
+
+export function toDbTaxSettings(settings: TaxSettings): Record<string, unknown> {
+  return {
+    id: "22222222-2222-4222-8222-222222222222",
+    tax_enabled: settings.taxEnabled,
+    tax_rate: settings.taxRate,
+    tax_name: settings.taxName,
+    tax_calculation: settings.taxCalculation,
+    npwpd: settings.npwpd,
+    show_npwpd_on_receipt: settings.showNpwpdOnReceipt,
+    service_charge_enabled: settings.serviceChargeEnabled,
+    service_charge_rate: settings.serviceChargeRate,
+    service_charge_name: settings.serviceChargeName,
+    rounding: settings.rounding,
+    receipt_header_note: settings.receiptHeaderNote,
+    receipt_footer_note: settings.receiptFooterNote,
+    receipt_phone: settings.receiptPhone,
+    table_session_mode: settings.tableSessionMode,
+    qris_image_url: settings.qrisImageUrl ?? "",
+    qris_payload: settings.qrisPayload ?? "",
+    bank_name: settings.bankName,
+    bank_account_number: settings.bankAccountNumber,
+    bank_account_holder: settings.bankAccountHolder,
+    printer_paper_width: settings.printerPaperWidth,
+    printer_auto_print: settings.printerAutoPrint,
+    updated_at: new Date().toISOString(),
   };
 }

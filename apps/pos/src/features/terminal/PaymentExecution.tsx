@@ -34,6 +34,7 @@ import {
   taxOf,
   getPosTaxSettings,
 } from "../../data/terminal.js";
+import { QrisFullscreenModal } from "./QrisFullscreenModal.js";
 
 type SettlementState = "idle" | "printing" | "success";
 
@@ -44,6 +45,7 @@ interface PaymentExecutionProps {
   onMethodChange: (method: PaymentMethod["id"]) => void;
   onTenderedChange: (value: string) => void;
   onSettle: () => void;
+  onVoid?: () => void;
 }
 
 const METHOD_ICONS: Record<PaymentMethod["id"], ReactNode> = {
@@ -61,19 +63,28 @@ export function PaymentExecution({
   onMethodChange,
   onTenderedChange,
   onSettle,
+  onVoid,
 }: PaymentExecutionProps): ReactNode {
   const [split, setSplit] = useState<"single" | "item" | "pax">("single");
   const [settlement, setSettlement] = useState<SettlementState>("idle");
+  const [showQrisFullscreen, setShowQrisFullscreen] = useState<boolean>(false);
+  const [copied, setCopied] = useState<boolean>(false);
 
+  const taxSettings = getPosTaxSettings();
   const grandTotal = grandTotalOf(order);
   const tenderedNumber = Number.parseInt(tendered.replaceAll(/[.,]/g, ""), 10) || 0;
   const change = tenderedNumber - grandTotal;
-  const isCashLike = method === "cash" || method === "edc" || method === "wallet";
+  const isCashLike = method === "cash" || method === "edc";
 
   const handleSettle = (): void => {
     if (settlement !== "idle") return;
     setSettlement("printing");
     onSettle();
+    if (taxSettings.printerAutoPrint) {
+      window.setTimeout(() => {
+        window.print();
+      }, 400);
+    }
     window.setTimeout(() => {
       setSettlement("success");
       window.setTimeout(() => setSettlement("idle"), 2200);
@@ -205,8 +216,51 @@ export function PaymentExecution({
               </p>
             </div>
           </div>
+        ) : method === "wallet" ? (
+          <div className="pos-workspace">
+            <div className="pos-workspace__head">
+              <label className="pos-workspace__label">
+                Transfer Bank Resto ({taxSettings.bankName || "BCA"})
+              </label>
+              <span className="pos-workspace__bill">Tagihan: {formatIDR(grandTotal)}</span>
+            </div>
+            <div style={{ padding: "1rem 0", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              <div style={{ background: "#f8fafc", padding: "1rem", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                <div style={{ fontSize: "0.75rem", color: "#64748b" }}>Bank Tujuan:</div>
+                <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#1e293b" }}>{taxSettings.bankName || "BCA"}</div>
+
+                <div style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "0.5rem" }}>Nomor Rekening:</div>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "2px" }}>
+                  <span style={{ fontSize: "1.2rem", fontWeight: 800, color: "#0f172a", fontFamily: "monospace" }}>
+                    {taxSettings.bankAccountNumber || "1340889210"}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (taxSettings.bankAccountNumber) {
+                        navigator.clipboard.writeText(taxSettings.bankAccountNumber);
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2000);
+                      }
+                    }}
+                    style={{ padding: "3px 8px", fontSize: "0.75rem", borderRadius: "4px", border: "1px solid #cbd5e1", background: "#fff", cursor: "pointer" }}
+                  >
+                    {copied ? "✓ Tersalin" : "Salin"}
+                  </button>
+                </div>
+
+                <div style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "0.5rem" }}>Atas Nama Pemilik:</div>
+                <div style={{ fontSize: "0.95rem", fontWeight: 600, color: "#334155" }}>
+                  {taxSettings.bankAccountHolder || "RM Tepi Sawah"}
+                </div>
+              </div>
+              <p style={{ margin: 0, fontSize: "0.8rem", color: "#64748b" }}>
+                Pastikan dana sudah masuk ke rekening sebelum menekan tombol Bayar &amp; Cetak Struk.
+              </p>
+            </div>
+          </div>
         ) : (
-          <QrisWorkspace order={order} />
+          <QrisWorkspace order={order} onOpenFullscreen={() => setShowQrisFullscreen(true)} />
         )}
 
         <div className="pos-settle">
@@ -233,17 +287,29 @@ export function PaymentExecution({
             )}
           </button>
           <div className="pos-settle__row">
-            <button type="button" className="pos-btn pos-btn--outline">
+            <button type="button" className="pos-btn pos-btn--outline" onClick={() => window.print()}>
               <EyeIcon aria-hidden="true" /> Preview Struk
             </button>
-            <button type="button" className="pos-btn pos-btn--ghost-danger">
-              <TrashIcon aria-hidden="true" /> Batal / Void (Spv)
+            <button
+              type="button"
+              className="pos-btn pos-btn--ghost-danger"
+              onClick={onVoid}
+            >
+              <TrashIcon aria-hidden="true" /> Batal / Void Menu
             </button>
           </div>
         </div>
       </div>
 
       <ThermalSlip order={order} method={method} tenderedNumber={tenderedNumber} change={change} />
+
+      <QrisFullscreenModal
+        open={showQrisFullscreen}
+        onClose={() => setShowQrisFullscreen(false)}
+        order={order}
+        qrisImageUrl={taxSettings.qrisImageUrl}
+        qrisPayload={taxSettings.qrisPayload}
+      />
     </section>
   );
 }
@@ -265,29 +331,64 @@ function suggestDenomination(amount: number): string {
 
 interface QrisWorkspaceProps {
   order: QueueOrder;
+  onOpenFullscreen?: () => void;
 }
 
-function QrisWorkspace({ order }: QrisWorkspaceProps): ReactNode {
+function QrisWorkspace({ order, onOpenFullscreen }: QrisWorkspaceProps): ReactNode {
+  const taxSettings = getPosTaxSettings();
+  const grandTotal = grandTotalOf(order);
+
   return (
     <div className="pos-qris">
       <div className="pos-qris__head">
         <span className="pos-qris__label">QRIS Settlement Gateway</span>
-        <span className="pos-qris__timer"><TimerIcon aria-hidden="true" /> 04:45</span>
+        <button
+          type="button"
+          onClick={onOpenFullscreen}
+          style={{
+            padding: "3px 8px",
+            borderRadius: "4px",
+            border: "1px solid #059669",
+            background: "#ecfdf5",
+            color: "#065f46",
+            fontSize: "0.75rem",
+            fontWeight: 600,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+          }}
+        >
+          🔍 Perbesar di Layar
+        </button>
       </div>
 
-      <div className="pos-qris__stage">
-        <QrGlyph />
-        <span className="pos-qris__overlay">{order.id}</span>
+      <div
+        className="pos-qris__stage"
+        onClick={onOpenFullscreen}
+        style={{ cursor: "pointer" }}
+        title="Klik untuk scan pelanggan"
+      >
+        {taxSettings.qrisImageUrl ? (
+          <img
+            src={taxSettings.qrisImageUrl}
+            alt="QRIS"
+            style={{ width: "125px", height: "125px", objectFit: "contain", borderRadius: "6px" }}
+          />
+        ) : (
+          <QrGlyph />
+        )}
+        <span className="pos-qris__overlay">{order.ticket}</span>
       </div>
 
       <div className="pos-qris__meta">
         <p className="pos-qris__nmid">NMID: ID1020261947264</p>
-        <p className="pos-qris__hint">Customer facing screen menampilkan kode ini</p>
+        <p className="pos-qris__hint">Klik QR atau tombol di atas untuk scan pelanggan</p>
       </div>
 
       <div className="pos-qris__status">
         <span className="pos-qris__status-dot" aria-hidden="true" />
-        <span>Menunggu Konfirmasi Pembayaran Server Bank...</span>
+        <span>Tagihan: {formatIDR(grandTotal)}</span>
       </div>
     </div>
   );
@@ -324,10 +425,15 @@ interface ThermalSlipProps {
 }
 
 function ThermalSlip({ order, method, tenderedNumber, change }: ThermalSlipProps): ReactNode {
+  const taxSettings = getPosTaxSettings();
+  const is58mm = taxSettings.printerPaperWidth === "58mm";
+
   return (
-    <div className="pos-thermal">
+    <div className={`pos-thermal ${is58mm ? "pos-thermal--58mm" : ""}`}>
       <div className="pos-thermal__head">
-        <span className="pos-thermal__label"><PrintIcon aria-hidden="true" /> Struk Thermal (58mm / 80mm)</span>
+        <span className="pos-thermal__label">
+          <PrintIcon aria-hidden="true" /> Struk Thermal ({taxSettings.printerPaperWidth})
+        </span>
         <button
           type="button"
           className="pos-btn pos-btn--sm pos-btn--outline"
@@ -339,14 +445,38 @@ function ThermalSlip({ order, method, tenderedNumber, change }: ThermalSlipProps
         </button>
       </div>
 
-      <div className="pos-thermal__paper">
+      <div
+        className="pos-thermal__paper"
+        style={is58mm ? { width: "235px", fontSize: "10px", padding: "10px 8px" } : undefined}
+      >
+        {order.isReprint && (
+          <div
+            style={{
+              textAlign: "center",
+              borderBottom: "1px dashed #cbd5e1",
+              paddingBottom: "4px",
+              marginBottom: "6px",
+              fontWeight: 800,
+              fontSize: "11px",
+              color: "#b91c1c",
+            }}
+          >
+            *** SALINAN NOTA / REPRINT ***
+            {order.reprintTime && (
+              <div style={{ fontSize: "9px", fontWeight: "normal", color: "#64748b" }}>
+                Cetak Ulang: {order.reprintTime}
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="pos-thermal__brand">Tepi Sawah Resto &amp; Cafe</div>
         <div className="pos-thermal__address">
-          {getPosTaxSettings().receiptHeaderNote}<br />WA: {getPosTaxSettings().receiptPhone}
+          {taxSettings.receiptHeaderNote}<br />WA: {taxSettings.receiptPhone}
         </div>
-        {getPosTaxSettings().showNpwpdOnReceipt && getPosTaxSettings().npwpd ? (
+        {taxSettings.showNpwpdOnReceipt && taxSettings.npwpd ? (
           <div style={{ fontSize: "11px", fontWeight: "bold", textAlign: "center", marginTop: "2px", color: "#334155" }}>
-            NPWPD: {getPosTaxSettings().npwpd}
+            NPWPD: {taxSettings.npwpd}
           </div>
         ) : null}
         <div className="pos-thermal__line">
@@ -393,9 +523,9 @@ function ThermalSlip({ order, method, tenderedNumber, change }: ThermalSlipProps
               <span>Disc {order.promo.code}:</span><span>-{formatNumber(discountOf(order))}</span>
             </div>
           )}
-          {order.bill || getPosTaxSettings().taxEnabled ? (
+          {order.bill || taxSettings.taxEnabled ? (
             <div className="pos-thermal__total-row">
-              <span>{order.bill ? "Pajak:" : `${getPosTaxSettings().taxName}:`}</span>
+              <span>{order.bill ? "Pajak:" : `${taxSettings.taxName}:`}</span>
               <span>{formatNumber(taxOf(order))}</span>
             </div>
           ) : null}
@@ -406,9 +536,9 @@ function ThermalSlip({ order, method, tenderedNumber, change }: ThermalSlipProps
                 <span>{formatNumber(serviceOf(order))}</span>
               </div>
             ) : null
-          ) : getPosTaxSettings().serviceChargeEnabled ? (
+          ) : taxSettings.serviceChargeEnabled ? (
             <div className="pos-thermal__total-row">
-              <span>{getPosTaxSettings().serviceChargeName}:</span>
+              <span>{taxSettings.serviceChargeName}:</span>
               <span>{formatNumber(serviceOf(order))}</span>
             </div>
           ) : null}
@@ -426,8 +556,15 @@ function ThermalSlip({ order, method, tenderedNumber, change }: ThermalSlipProps
           </div>
         </div>
 
+        {taxSettings.bankAccountNumber && (
+          <div style={{ textAlign: "center", fontSize: "10px", color: "#64748b", marginTop: "6px", borderTop: "1px dashed #cbd5e1", paddingTop: "4px" }}>
+            Transfer: {taxSettings.bankName} {taxSettings.bankAccountNumber}<br />
+            a/n {taxSettings.bankAccountHolder}
+          </div>
+        )}
+
         <div className="pos-thermal__footer" style={{ whiteSpace: "pre-line" }}>
-          {getPosTaxSettings().receiptFooterNote}
+          {taxSettings.receiptFooterNote}
         </div>
       </div>
     </div>

@@ -14,3 +14,4 @@ export * from "./sessions.js";
 export * from "./orders.js";
 export * from "./order-board-channel.js";
 export * from "./settings.js";
+export * from "./cash-drawer.js";

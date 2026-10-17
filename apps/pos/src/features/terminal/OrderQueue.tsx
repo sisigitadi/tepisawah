@@ -11,7 +11,7 @@ import { InsightsIcon, KitchenIcon, PhoneIcon, ReceiptLongIcon, SearchIcon, User
 import type { QueueOrder } from "../../data/terminal.js";
 import { formatIDR } from "../../data/terminal.js";
 
-export type QueueFilter = "waiting" | "process" | "all";
+export type QueueFilter = "waiting" | "process" | "history" | "all";
 
 interface OrderQueueProps {
   orders: QueueOrder[];
@@ -27,6 +27,7 @@ interface OrderQueueProps {
 const FILTER_TABS: { id: QueueFilter; label: string }[] = [
   { id: "waiting", label: "Menunggu" },
   { id: "process", label: "Proses" },
+  { id: "history", label: "Riwayat Selesai" },
   { id: "all", label: "Semua" },
 ];
 
@@ -43,6 +44,7 @@ export function OrderQueue({
   const counts = {
     waiting: orders.filter((o) => o.status === "waiting").length,
     process: orders.filter((o) => o.status === "process").length,
+    history: orders.filter((o) => o.status === "paid" || o.status === "void").length,
     all: orders.length,
   };
 
@@ -208,9 +210,19 @@ function QueueCard({ order, selected, onSelect }: QueueCardProps): ReactNode {
                     ? `${order.orderType} • #${order.externalReference ?? "—"}`
                     : `Waiter • ${order.pax} Pax`}
             </span>
-            <span className={`pos-status ${order.status === "process" ? "pos-status--process" : "pos-status--waiting"}`}>
-              {order.status === "process" ? "Proses" : "Waiting Bill"}
-            </span>
+            {order.status === "paid" ? (
+              <span className="pos-status" style={{ background: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>
+                Lunas (PAID)
+              </span>
+            ) : order.status === "void" ? (
+              <span className="pos-status" style={{ background: "#fef2f2", color: "#991b1b", border: "1px solid #fecaca" }}>
+                Batal (VOID)
+              </span>
+            ) : (
+              <span className={`pos-status ${order.status === "process" ? "pos-status--process" : "pos-status--waiting"}`}>
+                {order.status === "process" ? "Proses" : "Waiting Bill"}
+              </span>
+            )}
           </>
         )}
       </div>
