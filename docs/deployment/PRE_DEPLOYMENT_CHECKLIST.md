@@ -109,7 +109,7 @@ Pastikan ketiga proyek Vercel memiliki variabel lingkungan yang benar:
 |---|---|---|
 | `tepisawah` | `tepisawah.id`<br>`www.tepisawah.id` | `VITE_SUPABASE_URL`<br>`VITE_SUPABASE_ANON_KEY`<br>`VITE_ORDER_APP_URL=https://order.tepisawah.id` |
 | `tepisawah-order` | `order.tepisawah.id` | `VITE_SUPABASE_URL`<br>`VITE_SUPABASE_ANON_KEY`<br>`VITE_SITE_URL=https://order.tepisawah.id` |
-| `tepisawah-staff` | `staff.tepisawah.id` | `VITE_SUPABASE_URL`<br>`VITE_SUPABASE_ANON_KEY`<br>`VITE_DEMO_MODE=true` |
+| `tepisawah-staff` | `staff.tepisawah.id` | `VITE_SUPABASE_URL`<br>`VITE_SUPABASE_ANON_KEY`<br>`VITE_DEMO_MODE=false` *(atau kosongkan)* |
 
 ---
 

@@ -102,7 +102,7 @@ describe("auth context", () => {
     renderAuth(auth, profiles.client);
     await waitFor(() => expect(screen.getByTestId("status")).toHaveTextContent("unauthenticated"));
 
-    await user.type(screen.getByLabelText("Email"), EMAIL);
+    await user.type(screen.getByLabelText(/Username atau Email/i), EMAIL);
     await user.type(screen.getByLabelText("Kata sandi"), PASSWORD);
     await user.click(screen.getByRole("button", { name: "Masuk" }));
 
@@ -118,7 +118,7 @@ describe("auth context", () => {
     renderAuth(auth, profiles.client);
     await waitFor(() => expect(screen.getByTestId("status")).toHaveTextContent("unauthenticated"));
 
-    await user.type(screen.getByLabelText("Email"), EMAIL);
+    await user.type(screen.getByLabelText(/Username atau Email/i), EMAIL);
     await user.type(screen.getByLabelText("Kata sandi"), "wrong-password");
     await user.click(screen.getByRole("button", { name: "Masuk" }));
 

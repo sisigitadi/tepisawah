@@ -341,6 +341,164 @@ $$;
 GRANT EXECUTE ON FUNCTION public.admin_delete_staff(uuid) TO authenticated;
 
 -- -----------------------------------------------------------------------------
+-- 3b. Dukungan Kolom Username pada Profil Staf & RPC Pendaftaran Bebas Rate-Limit
+-- -----------------------------------------------------------------------------
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS username text;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_profiles_username ON public.profiles (lower(username)) WHERE username IS NOT NULL;
+GRANT UPDATE (display_name, phone, avatar_url, is_active, username) ON public.profiles TO authenticated;
+
+-- Perbarui trigger otomatis pembuatan profil agar menyertakan username
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER SET search_path = public
+AS $$
+BEGIN
+  INSERT INTO public.profiles (id, display_name, username, phone)
+  VALUES (
+    new.id,
+    COALESCE(
+      new.raw_user_meta_data ->> 'display_name',
+      split_part(new.email, '@', 1)
+    ),
+    COALESCE(
+      new.raw_user_meta_data ->> 'username',
+      split_part(new.email, '@', 1)
+    ),
+    new.raw_user_meta_data ->> 'phone'
+  )
+  ON CONFLICT (id) DO UPDATE SET
+    display_name = COALESCE(EXCLUDED.display_name, profiles.display_name),
+    username = COALESCE(EXCLUDED.username, profiles.username),
+    phone = COALESCE(EXCLUDED.phone, profiles.phone);
+  RETURN new;
+END;
+$$;
+
+-- RPC Pendaftaran Staf Langsung di Basis Data (Bebas Rate-Limit Email Supabase)
+-- Staf operasional cukup menggunakan username + password tanpa memerlukan email pribadi.
+-- Hanya Owner/Admin yang menggunakan email resmi untuk audit & pemulihan.
+CREATE OR REPLACE FUNCTION public.admin_create_staff(
+  p_username text,
+  p_password text,
+  p_display_name text,
+  p_phone text DEFAULT NULL,
+  p_role_codes text[] DEFAULT ARRAY['cashier']::text[],
+  p_email text DEFAULT NULL
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER SET search_path = public, auth, extensions
+AS $$
+DECLARE
+  v_user_id uuid;
+  v_email text;
+  v_clean_username text;
+  v_role_code text;
+  v_role_id uuid;
+  v_encrypted_pw text;
+BEGIN
+  -- 1. Verifikasi wewenang eksekutif: Hanya Owner atau Admin yang berhak
+  IF NOT (public.is_owner() OR public.is_admin()) THEN
+    RAISE EXCEPTION 'Akses ditolak: Hanya akun Owner atau Administrator yang berhak mendaftarkan staf baru.';
+  END IF;
+
+  v_clean_username := lower(trim(p_username));
+  IF v_clean_username = '' THEN
+    RAISE EXCEPTION 'Username staf tidak boleh kosong.';
+  END IF;
+
+  -- 2. Tentukan email otentikasi internal
+  IF p_email IS NOT NULL AND trim(p_email) <> '' THEN
+    v_email := lower(trim(p_email));
+  ELSE
+    v_email := v_clean_username || '@staff.tepisawah.id';
+  END IF;
+
+  -- 3. Cek duplikasi di auth.users
+  IF EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    RAISE EXCEPTION 'Akun dengan username atau email "%" sudah terdaftar di sistem.', v_email;
+  END IF;
+
+  -- 4. Generate user_id & hash password
+  v_user_id := gen_random_uuid();
+  v_encrypted_pw := crypt(p_password, gen_salt('bf'));
+
+  -- 5. Insert akun ke auth.users (email_confirmed_at aktif, bebas batasan kirim email)
+  INSERT INTO auth.users (
+    instance_id,
+    id,
+    aud,
+    role,
+    email,
+    encrypted_password,
+    email_confirmed_at,
+    raw_app_meta_data,
+    raw_user_meta_data,
+    created_at,
+    updated_at,
+    confirmation_token,
+    recovery_token
+  ) VALUES (
+    '00000000-0000-0000-0000-000000000000',
+    v_user_id,
+    'authenticated',
+    'authenticated',
+    v_email,
+    v_encrypted_pw,
+    now(),
+    '{"provider":"email","providers":["email"]}'::jsonb,
+    jsonb_build_object(
+      'display_name', trim(p_display_name),
+      'username', v_clean_username,
+      'phone', nullif(trim(p_phone), '')
+    ),
+    now(),
+    now(),
+    '',
+    ''
+  );
+
+  -- 6. Insert atau update profil publik
+  INSERT INTO public.profiles (id, display_name, username, phone, is_active)
+  VALUES (
+    v_user_id,
+    trim(p_display_name),
+    v_clean_username,
+    nullif(trim(p_phone), ''),
+    true
+  )
+  ON CONFLICT (id) DO UPDATE SET
+    display_name = EXCLUDED.display_name,
+    username = EXCLUDED.username,
+    phone = EXCLUDED.phone,
+    is_active = true,
+    updated_at = now();
+
+  -- 7. Hubungkan tugas operasional di user_roles
+  IF p_role_codes IS NOT NULL AND array_length(p_role_codes, 1) > 0 THEN
+    FOREACH v_role_code IN ARRAY p_role_codes LOOP
+      SELECT id INTO v_role_id FROM public.roles WHERE code = v_role_code LIMIT 1;
+      IF v_role_id IS NOT NULL THEN
+        INSERT INTO public.user_roles (user_id, role_id)
+        VALUES (v_user_id, v_role_id)
+        ON CONFLICT DO NOTHING;
+      END IF;
+    END LOOP;
+  END IF;
+
+  RETURN jsonb_build_object(
+    'id', v_user_id,
+    'email', v_email,
+    'username', v_clean_username,
+    'display_name', trim(p_display_name)
+  );
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION public.admin_create_staff(text, text, text, text, text[], text) TO authenticated;
+
+-- -----------------------------------------------------------------------------
 -- 4. Pengaturan Pajak Restoran (PB1), Service Charge, & Struk Kasir
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.tax_settings (

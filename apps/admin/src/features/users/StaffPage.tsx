@@ -26,6 +26,7 @@ export interface StaffRoleItem {
 export interface StaffItem {
   id: string;
   display_name: string;
+  username?: string | null;
   phone?: string | null;
   is_active: boolean;
   created_at: string;
@@ -143,11 +144,13 @@ export function StaffPage(): ReactNode {
 
   // Edit staff form state
   const [editName, setEditName] = useState("");
+  const [editUsername, setEditUsername] = useState("");
   const [editPhone, setEditPhone] = useState("");
   const [editRoles, setEditRoles] = useState<string[]>([]);
   const [editIsActive, setEditIsActive] = useState(true);
 
-  // New staff form state
+  // New staff form state (operational staff use username + password; only admin/owner use official email)
+  const [newUsername, setNewUsername] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
@@ -171,13 +174,23 @@ export function StaffPage(): ReactNode {
       const roles: AvailableRole[] = rolesData || [];
       setAvailableRoles(roles);
 
-      // 2. Fetch profiles with user_roles join
-      const { data: profilesData, error: profilesError } = await client
+      // 2. Fetch profiles with user_roles join (with graceful fallback if username column is still being migrated)
+      let profilesData: any[] | null = null;
+      const { data: dataWithUsername, error: errWithUsername } = await client
         .from("profiles")
-        .select("id, display_name, phone, is_active, created_at, user_roles(role_id, roles(id, code, name))")
+        .select("id, display_name, username, phone, is_active, created_at, user_roles(role_id, roles(id, code, name))")
         .order("created_at", { ascending: true });
 
-      if (profilesError) throw profilesError;
+      if (errWithUsername) {
+        const { data: dataBase, error: errBase } = await client
+          .from("profiles")
+          .select("id, display_name, phone, is_active, created_at, user_roles(role_id, roles(id, code, name))")
+          .order("created_at", { ascending: true });
+        if (errBase) throw errBase;
+        profilesData = dataBase;
+      } else {
+        profilesData = dataWithUsername;
+      }
 
       const items: StaffItem[] = (profilesData || []).map((p: any) => {
         const userRolesList = Array.isArray(p.user_roles) ? p.user_roles : [];
@@ -188,6 +201,7 @@ export function StaffPage(): ReactNode {
         return {
           id: p.id,
           display_name: p.display_name || "Staf Tanpa Nama",
+          username: p.username || null,
           phone: p.phone || "",
           is_active: p.is_active !== false,
           created_at: p.created_at || new Date().toISOString(),
@@ -303,6 +317,7 @@ export function StaffPage(): ReactNode {
 
     setEditingStaff(staff);
     setEditName(staff.display_name);
+    setEditUsername(staff.username || "");
     setEditPhone(staff.phone || "");
     setEditRoles(staff.role_codes.length > 0 ? staff.role_codes : ["cashier"]);
     setEditIsActive(staff.is_active);
@@ -335,20 +350,37 @@ export function StaffPage(): ReactNode {
     try {
       const client = getSupabaseClient() as any;
       const trimmedName = editName.trim();
+      const trimmedUsername = editUsername.trim().toLowerCase().replace(/[^a-z0-9_.-]/g, "");
       const trimmedPhone = editPhone.trim();
 
-      // 1. Update Profile
+      // 1. Update Profile (with resilient handling if username column is still propagating)
+      const updatePayload: Record<string, any> = {
+        display_name: trimmedName,
+        phone: trimmedPhone || null,
+        is_active: editIsActive,
+        updated_at: new Date().toISOString(),
+      };
+      if (trimmedUsername) {
+        updatePayload.username = trimmedUsername;
+      }
+
       const { error: profileError } = await client
         .from("profiles")
-        .update({
-          display_name: trimmedName,
-          phone: trimmedPhone || null,
-          is_active: editIsActive,
-          updated_at: new Date().toISOString(),
-        })
+        .update(updatePayload)
         .eq("id", editingStaff.id);
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        if (profileError.message?.includes("username")) {
+          delete updatePayload.username;
+          const { error: retryError } = await client
+            .from("profiles")
+            .update(updatePayload)
+            .eq("id", editingStaff.id);
+          if (retryError) throw retryError;
+        } else {
+          throw profileError;
+        }
+      }
 
       // 2. Update Roles if authorized
       if (canManageRoles) {
@@ -487,7 +519,7 @@ export function StaffPage(): ReactNode {
     }
   }
 
-  // Create New Staff
+  // Create New Staff (Operational staff use username + password; only admin/owner use official email)
   async function handleCreateStaff(e: FormEvent) {
     e.preventDefault();
     if (!canCreateUser) {
@@ -495,8 +527,30 @@ export function StaffPage(): ReactNode {
       return;
     }
 
-    if (!newName.trim() || !newEmail.trim() || !newPassword.trim()) {
-      setFeedback({ message: "Nama, email, dan kata sandi wajib diisi lengkap.", type: "error" });
+    const cleanName = newName.trim();
+    const cleanUsername = newUsername.trim().toLowerCase().replace(/[^a-z0-9_.-]/g, "");
+    const cleanPassword = newPassword.trim();
+    const isPrivileged = newRoles.some((r) => r === "owner" || r === "admin");
+    const cleanEmail = newEmail.trim().toLowerCase();
+
+    if (!cleanName || !cleanPassword) {
+      setFeedback({ message: "Nama staf dan kata sandi wajib diisi lengkap.", type: "error" });
+      return;
+    }
+
+    if (!cleanUsername) {
+      setFeedback({
+        message: "Username staf wajib diisi (gunakan huruf kecil, angka, atau garis bawah).",
+        type: "error",
+      });
+      return;
+    }
+
+    if (isPrivileged && (!cleanEmail || !cleanEmail.includes("@"))) {
+      setFeedback({
+        message: "Akun Administrator atau Owner wajib menyertakan email resmi restoran yang valid (contoh: admin@tepisawah.id).",
+        type: "error",
+      });
       return;
     }
 
@@ -510,55 +564,70 @@ export function StaffPage(): ReactNode {
     try {
       const client = getSupabaseClient() as any;
 
-      // 1. Sign up user via ephemeral Supabase Auth client so current admin session is NEVER replaced
-      const ephemeralClient = createEphemeralSupabaseClient();
-      const { data: authData, error: authError } = await ephemeralClient.auth.signUp({
-        email: newEmail.trim(),
-        password: newPassword,
-        options: {
-          data: {
-            display_name: newName.trim(),
-            phone: newPhone.trim() || undefined,
-          },
-        },
+      // 1. Coba RPC admin_create_staff langsung di PostgreSQL (bebas dari batas kirim email GoTrue)
+      const { data: rpcData, error: rpcError } = await client.rpc("admin_create_staff", {
+        p_username: cleanUsername,
+        p_password: cleanPassword,
+        p_display_name: cleanName,
+        p_phone: newPhone.trim() || null,
+        p_role_codes: newRoles,
+        p_email: isPrivileged ? cleanEmail : null,
       });
 
-      if (authError) throw authError;
+      if (rpcError) {
+        console.warn("RPC admin_create_staff belum terpasang atau gagal, menggunakan fallback signUp:", rpcError);
 
-      const newUserId = authData.user?.id;
+        // 2. Fallback: Mendaftar melalui auth.signUp via ephemeral client
+        const authEmail = isPrivileged
+          ? cleanEmail
+          : `${cleanUsername}@staff.tepisawah.id`;
 
-      if (newUserId && newRoles.length > 0) {
-        // 2. Assign initial roles via RPC
-        const { error: rpcError } = await client.rpc("admin_update_user_roles", {
-          p_user_id: newUserId,
-          p_role_codes: newRoles,
+        const ephemeralClient = createEphemeralSupabaseClient();
+        const { data: authData, error: authError } = await ephemeralClient.auth.signUp({
+          email: authEmail,
+          password: cleanPassword,
+          options: {
+            data: {
+              display_name: cleanName,
+              username: cleanUsername,
+              phone: newPhone.trim() || undefined,
+            },
+          },
         });
 
-        if (rpcError) {
-          console.warn("RPC admin_update_user_roles failed on creation, trying direct fallback:", rpcError);
-          const roleInserts = newRoles
-            .map((code) => {
-              const rObj = availableRoles.find((r) => r.code === code);
-              return rObj ? { user_id: newUserId, role_id: rObj.id } : null;
-            })
-            .filter(Boolean);
-
-          if (roleInserts.length > 0) {
-            const { error: roleError } = await client.from("user_roles").insert(roleInserts);
-            if (roleError) {
-              console.warn("User dibuat, sinkronisasi peran memerlukan perhatian:", roleError);
-            }
+        if (authError) {
+          if (
+            authError.message?.toLowerCase().includes("rate limit") ||
+            (authError as any).code === "over_email_send_rate_limit"
+          ) {
+            throw new Error(
+              "Batas pengiriman email Supabase terlampaui (rate limit). " +
+              "Solusi cepat: Buka Supabase Dashboard > Authentication > Providers > Email, lalu matikan 'Confirm email' (OFF), " +
+              "atau jalankan skrip SQL 'fix-staff-roles-and-management.sql' di Supabase SQL Editor untuk pendaftaran instan tanpa email."
+            );
           }
+          throw authError;
+        }
+
+        const newUserId = authData.user?.id;
+        if (newUserId && newRoles.length > 0) {
+          await client.rpc("admin_update_user_roles", {
+            p_user_id: newUserId,
+            p_role_codes: newRoles,
+          });
         }
       }
 
       setFeedback({
-        message: `Akun staf "${newName.trim()}" (${newEmail.trim()}) berhasil didaftarkan dengan tugas operasional: ${newRoles.join(", ")}.`,
+        message: isPrivileged
+          ? `Akun manajemen "${cleanName}" (${cleanEmail}) berhasil didaftarkan. Login dapat menggunakan username "${cleanUsername}" atau email resmi.`
+          : `Akun staf "${cleanName}" berhasil didaftarkan. Staf dapat langsung masuk menggunakan username "${cleanUsername}" dan kata sandi tanpa memerlukan email pribadi.`,
         type: "success",
       });
 
       setShowAddModal(false);
       setNewName("");
+      setNewUsername("");
       setNewEmail("");
       setNewPhone("");
       setNewRoles(["cashier"]);
@@ -567,7 +636,7 @@ export function StaffPage(): ReactNode {
     } catch (err: any) {
       console.error("Gagal menambah staf:", err);
       setFeedback({
-        message: `Gagal mendaftarkan staf: ${err.message || err}. Pastikan format email benar dan unik.`,
+        message: `Gagal mendaftarkan staf: ${err.message || err}`,
         type: "error",
       });
     } finally {
@@ -590,6 +659,7 @@ export function StaffPage(): ReactNode {
     return staffList.filter((s) => {
       const matchSearch =
         s.display_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (s.username && s.username.toLowerCase().includes(searchTerm.toLowerCase())) ||
         s.role_codes.some((code) => code.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (s.phone && s.phone.includes(searchTerm));
 
@@ -808,8 +878,14 @@ export function StaffPage(): ReactNode {
                                 </span>
                               )}
                             </div>
-                            <div className="staff-id">
-                              {staff.phone ? `📱 ${staff.phone} • ` : ""}ID: {staff.id.slice(0, 8)}…
+                            <div className="staff-id" style={{ display: "flex", gap: "0.45rem", flexWrap: "wrap", alignItems: "center", marginTop: "0.2rem" }}>
+                              {staff.username ? (
+                                <span style={{ fontWeight: 600, color: "var(--c-forest)", fontSize: "0.8125rem" }}>
+                                  @{staff.username}
+                                </span>
+                              ) : null}
+                              {staff.phone ? <span>📱 {staff.phone}</span> : null}
+                              <span style={{ color: "var(--c-text-muted)", fontSize: "0.75rem" }}>ID: {staff.id.slice(0, 8)}…</span>
                             </div>
                           </div>
                         </div>
@@ -969,8 +1045,14 @@ export function StaffPage(): ReactNode {
                             </span>
                           )}
                         </div>
-                        <div className="staff-id">
-                          {staff.phone ? `📱 ${staff.phone} • ` : ""}ID: {staff.id.slice(0, 8)}…
+                        <div className="staff-id" style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap", alignItems: "center", marginTop: "0.15rem" }}>
+                          {staff.username ? (
+                            <span style={{ fontWeight: 600, color: "var(--c-forest)", fontSize: "0.8125rem" }}>
+                              @{staff.username}
+                            </span>
+                          ) : null}
+                          {staff.phone ? <span>📱 {staff.phone}</span> : null}
+                          <span style={{ fontSize: "0.75rem" }}>ID: {staff.id.slice(0, 8)}…</span>
                         </div>
                       </div>
                     </div>
@@ -1112,6 +1194,23 @@ export function StaffPage(): ReactNode {
                   placeholder="Contoh: Siti Rahma"
                   autoFocus
                 />
+              </div>
+
+              <div className="staff-form-group">
+                <label htmlFor="edit-staff-username" className="staff-form-label">
+                  Username Akun Staf
+                </label>
+                <input
+                  id="edit-staff-username"
+                  type="text"
+                  className="staff-form-input"
+                  value={editUsername}
+                  onChange={(e) => setEditUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.-]/g, ""))}
+                  placeholder="Contoh: kasir1"
+                />
+                <small style={{ color: "var(--c-text-muted)", fontSize: "0.75rem", marginTop: "0.25rem", display: "block" }}>
+                  Digunakan staf untuk login ke portal staf (tanpa memerlukan email).
+                </small>
               </div>
 
               <div className="staff-form-group">
@@ -1346,40 +1445,11 @@ export function StaffPage(): ReactNode {
               </div>
 
               <div className="staff-form-group">
-                <label htmlFor="new-staff-email" className="staff-form-label">
-                  Email Akun Staf
-                </label>
-                <input
-                  id="new-staff-email"
-                  type="email"
-                  required
-                  className="staff-form-input"
-                  placeholder="Contoh: sitirahma@tepisawah.id"
-                  value={newEmail}
-                  onChange={(e) => setNewEmail(e.target.value)}
-                />
-              </div>
-
-              <div className="staff-form-group">
-                <label htmlFor="new-staff-phone" className="staff-form-label">
-                  Nomor Telepon / WhatsApp (Opsional)
-                </label>
-                <input
-                  id="new-staff-phone"
-                  type="tel"
-                  className="staff-form-input"
-                  placeholder="Contoh: 081234567890"
-                  value={newPhone}
-                  onChange={(e) => setNewPhone(e.target.value)}
-                />
-              </div>
-
-              <div className="staff-form-group">
                 <label className="staff-form-label">
                   Pilihan Centang Tugas Operasional (Bisa Pilih Lebih dari 1)
                 </label>
-                <small style={{ color: "var(--c-text-muted)", fontSize: "0.75rem", marginBottom: "0.4rem" }}>
-                  Centang satu atau beberapa tugas yang akan dijalankan oleh staf baru:
+                <small style={{ color: "var(--c-text-muted)", fontSize: "0.75rem", marginBottom: "0.4rem", display: "block" }}>
+                  Centang satu atau beberapa tugas operasional yang akan dijalankan oleh staf baru:
                 </small>
 
                 <div className="staff-tasks-container">
@@ -1431,8 +1501,62 @@ export function StaffPage(): ReactNode {
               </div>
 
               <div className="staff-form-group">
+                <label htmlFor="new-staff-username" className="staff-form-label">
+                  Username Akun Staf
+                </label>
+                <input
+                  id="new-staff-username"
+                  type="text"
+                  required
+                  className="staff-form-input"
+                  placeholder="Contoh: kasir1, koki_eko, waiter_siti"
+                  value={newUsername}
+                  onChange={(e) => setNewUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.-]/g, ""))}
+                />
+                <small style={{ color: "var(--c-text-muted)", fontSize: "0.75rem", marginTop: "0.25rem", display: "block" }}>
+                  {newRoles.some((r) => r === "owner" || r === "admin")
+                    ? "Username login cepat staf (huruf kecil, angka, atau garis bawah)."
+                    : "Staf operasional cukup menggunakan username dan kata sandi saat masuk ke portal operasional (tanpa perlu email pribadi)."}
+                </small>
+              </div>
+
+              {newRoles.some((r) => r === "owner" || r === "admin") && (
+                <div className="staff-form-group">
+                  <label htmlFor="new-staff-email" className="staff-form-label">
+                    Email Resmi Admin / Pemilik Resto <span style={{ color: "#dc2626" }}>*</span>
+                  </label>
+                  <input
+                    id="new-staff-email"
+                    type="email"
+                    required
+                    className="staff-form-input"
+                    placeholder="Contoh: admin@tepisawah.id atau owner@tepisawah.id"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                  />
+                  <small style={{ color: "var(--c-text-muted)", fontSize: "0.75rem", marginTop: "0.25rem", display: "block" }}>
+                    Khusus akun eksekutif (Admin / Owner) wajib menyertakan email resmi untuk pemulihan akses dan notifikasi audit sistem.
+                  </small>
+                </div>
+              )}
+
+              <div className="staff-form-group">
+                <label htmlFor="new-staff-phone" className="staff-form-label">
+                  Nomor Telepon / WhatsApp (Opsional)
+                </label>
+                <input
+                  id="new-staff-phone"
+                  type="tel"
+                  className="staff-form-input"
+                  placeholder="Contoh: 081234567890"
+                  value={newPhone}
+                  onChange={(e) => setNewPhone(e.target.value)}
+                />
+              </div>
+
+              <div className="staff-form-group">
                 <label htmlFor="new-staff-password" className="staff-form-label">
-                  Password Sementara
+                  Kata Sandi Masuk
                 </label>
                 <input
                   id="new-staff-password"
@@ -1444,8 +1568,8 @@ export function StaffPage(): ReactNode {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
-                <small style={{ color: "var(--c-text-muted)", fontSize: "0.75rem", marginTop: "0.25rem" }}>
-                  Staf dapat memperbarui kata sandi setelah berhasil login ke portal staf.
+                <small style={{ color: "var(--c-text-muted)", fontSize: "0.75rem", marginTop: "0.25rem", display: "block" }}>
+                  Kata sandi sementara untuk diserahkan ke staf. Staf dapat memperbarui kata sandi setelah berhasil login.
                 </small>
               </div>
 

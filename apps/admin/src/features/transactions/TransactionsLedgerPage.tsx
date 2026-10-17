@@ -130,10 +130,10 @@ export function TransactionsLedgerPage(): ReactNode {
           updated_at,
           order_items (
             id,
-            product_name,
+            product_name_snapshot,
             quantity,
-            unit_price,
-            subtotal,
+            unit_price_snapshot,
+            line_total,
             notes
           )
         `)
@@ -176,10 +176,10 @@ export function TransactionsLedgerPage(): ReactNode {
           items: Array.isArray(row.order_items)
             ? row.order_items.map((oi: any) => ({
                 id: oi.id,
-                product_name: oi.product_name || "Menu",
+                product_name: oi.product_name_snapshot || oi.product_name || "Menu",
                 quantity: oi.quantity || 1,
-                unit_price: Number(oi.unit_price) || 0,
-                subtotal: Number(oi.subtotal) || 0,
+                unit_price: Number(oi.unit_price_snapshot ?? oi.unit_price) || 0,
+                subtotal: Number(oi.line_total ?? oi.subtotal) || 0,
                 notes: oi.notes,
               }))
             : [],

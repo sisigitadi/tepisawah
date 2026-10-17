@@ -100,4 +100,20 @@ describe("LoginPanel demo hints", () => {
     await waitFor(() => expect(auth.currentUser?.email).toBe("kasir@demo.tepisawah.id"));
     expect(screen.queryByRole("alert")).toBeNull();
   });
+
+  it("automatically resolves plain username to staff internal email on submit", async () => {
+    const user = userEvent.setup();
+    renderPanel();
+    await screen.findByRole("button", { name: "Masuk" });
+
+    const usernameInput = screen.getByLabelText(/Username atau Email/i);
+    const passwordInput = screen.getByLabelText(/Kata sandi/i);
+
+    await user.type(usernameInput, "kasir1");
+    await user.type(passwordInput, "rahasia123");
+    await user.click(screen.getByRole("button", { name: "Masuk" }));
+
+    await waitFor(() => expect(auth.currentUser?.email).toBe("kasir1@staff.tepisawah.id"));
+  });
 });
+

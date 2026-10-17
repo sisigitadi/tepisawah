@@ -31,12 +31,17 @@ describe("toProfile", () => {
     expect(profile).toEqual({
       id: "11111111-1111-1111-1111-111111111111",
       display_name: "Siti",
+      username: null,
       phone: "+6281234567890",
       avatar_url: null,
       is_active: true,
       created_at: "2026-09-01T00:00:00Z",
       updated_at: "2026-09-01T00:00:00Z",
     });
+  });
+
+  it("preserves an explicit username", () => {
+    expect(toProfile(row({ username: "kasir1" })).username).toBe("kasir1");
   });
 
   it("defaults a null display_name to an empty string", () => {

@@ -28,7 +28,7 @@ export function LoginPanel({
   demoAccounts?: readonly DemoAccount[];
 }): React.ReactNode {
   const { signIn, error, isLoading } = useAuth();
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -36,7 +36,20 @@ export function LoginPanel({
     event.preventDefault();
     setSubmitting(true);
     try {
-      await signIn(email.trim(), password);
+      const trimmed = identifier.trim().toLowerCase();
+      const primaryEmail = trimmed.includes("@")
+        ? trimmed
+        : `${trimmed}@staff.tepisawah.id`;
+
+      try {
+        await signIn(primaryEmail, password);
+      } catch (firstErr) {
+        if (!trimmed.includes("@") && trimmed === "admin") {
+          await signIn("admin@tepisawah.id", password);
+        } else {
+          throw firstErr;
+        }
+      }
     } catch {
       // `error` is surfaced through context as a safe public message.
     } finally {
@@ -50,13 +63,14 @@ export function LoginPanel({
     <form onSubmit={handleSubmit} aria-busy={disabled} noValidate>
       <h1>{title}</h1>
       <label>
-        Email
+        Username atau Email
         <input
-          type="email"
-          name="email"
+          type="text"
+          name="username"
           autoComplete="username"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
+          placeholder="Contoh: kasir1 atau admin@tepisawah.id"
+          value={identifier}
+          onChange={(event) => setIdentifier(event.target.value)}
           required
           disabled={disabled}
         />
@@ -93,7 +107,7 @@ export function LoginPanel({
                   type="button"
                   disabled={disabled}
                   onClick={() => {
-                    setEmail(account.email);
+                    setIdentifier(account.email);
                     setPassword(account.password);
                   }}
                 >
