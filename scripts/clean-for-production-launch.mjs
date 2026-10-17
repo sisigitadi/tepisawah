@@ -103,12 +103,16 @@ async function runViaPg(connectionString) {
     console.log(`   Dihapus: ${r9.rowCount} baris`);
 
     console.log("10. Mengembalikan status seluruh meja ke 'AVAILABLE'...");
-    const r10 = await client.query("UPDATE public.tables SET status = 'AVAILABLE', current_session_id = NULL WHERE is_active = true;");
+    const r10 = await client.query("UPDATE public.tables SET status = 'AVAILABLE' WHERE is_active = true;");
     console.log(`    Meja siap: ${r10.rowCount}`);
 
     console.log("11. Menyeleksi dan melindungi akun Admin/Owner...");
     await client.query(`
-      CREATE TEMP TABLE preserved_admin_users ON COMMIT DROP AS
+      CREATE TEMP TABLE preserved_admin_users (
+        id uuid PRIMARY KEY
+      ) ON COMMIT DROP;
+
+      INSERT INTO preserved_admin_users (id)
       SELECT u.id 
       FROM auth.users u
       LEFT JOIN public.user_roles ur ON ur.user_id = u.id
@@ -116,14 +120,12 @@ async function runViaPg(connectionString) {
       WHERE lower(u.email) = 'admin@tepisawah.id' 
          OR r.name IN ('owner', 'superadmin', 'admin')
       GROUP BY u.id;
-    `);
 
-    await client.query(`
       INSERT INTO preserved_admin_users (id)
       SELECT id FROM auth.users 
+      WHERE NOT EXISTS (SELECT 1 FROM preserved_admin_users)
       ORDER BY created_at ASC 
-      LIMIT 1
-      ON CONFLICT DO NOTHING;
+      LIMIT 1;
     `);
 
     const adminCheck = await client.query("SELECT count(*) AS total FROM preserved_admin_users;");
@@ -230,7 +232,7 @@ async function runViaRest(url, key) {
       "Content-Type": "application/json",
       Prefer: "return=representation",
     },
-    body: JSON.stringify({ status: "AVAILABLE", current_session_id: null }),
+    body: JSON.stringify({ status: "AVAILABLE" }),
   });
 
   console.log("\nBERHASIL: Transaksi dan shift telah dibersihkan via Supabase REST API.");

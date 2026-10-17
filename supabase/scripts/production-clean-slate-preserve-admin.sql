@@ -52,15 +52,18 @@ DELETE FROM public.reservations;
 -- 4. Kembalikan Status Seluruh Meja Restoran Menjadi 'AVAILABLE'
 -- -----------------------------------------------------------------------------
 UPDATE public.tables 
-SET status = 'AVAILABLE',
-    current_session_id = NULL
+SET status = 'AVAILABLE'
 WHERE is_active = true;
 
 -- -----------------------------------------------------------------------------
 -- 5. Bersihkan Akun Staf Uji Coba — HANYA PERTAHANKAN AKUN ADMIN (OWNER)
 -- -----------------------------------------------------------------------------
 -- Buat temporary table untuk mencatat user ID admin/owner yang dilindungi
-CREATE TEMP TABLE preserved_admin_users ON COMMIT DROP AS
+CREATE TEMP TABLE preserved_admin_users (
+  id uuid PRIMARY KEY
+) ON COMMIT DROP;
+
+INSERT INTO preserved_admin_users (id)
 SELECT u.id 
 FROM auth.users u
 LEFT JOIN public.user_roles ur ON ur.user_id = u.id
@@ -72,9 +75,9 @@ GROUP BY u.id;
 -- Jika tidak ada yang cocok dengan kriteria di atas, amankan user pertama yang terdaftar
 INSERT INTO preserved_admin_users (id)
 SELECT id FROM auth.users 
+WHERE NOT EXISTS (SELECT 1 FROM preserved_admin_users)
 ORDER BY created_at ASC 
-LIMIT 1
-ON CONFLICT DO NOTHING;
+LIMIT 1;
 
 -- Hapus penugasan peran staf non-admin
 DELETE FROM public.user_roles
