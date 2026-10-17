@@ -5,6 +5,7 @@
  */
 import type { ReactNode } from "react";
 import { AppHeader } from "../components/AppHeader.js";
+import { AppFooter } from "../components/AppFooter.js";
 import type { StaffRoom } from "../lib/navigation.js";
 
 export interface RootLayoutProps {
@@ -28,6 +29,7 @@ export function RootLayout({
       >
         {children}
       </main>
+      <AppFooter currentRoom={currentRoom} onNavigate={onNavigate} />
     </div>
   );
 }

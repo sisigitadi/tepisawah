@@ -4,8 +4,8 @@
  * Mengatur data merchant QRIS, NMID, akses WiFi tamu, jam buka,
  * dan teks instruksi yang dicetak pada Halaman 2 kartu meja / tent card.
  */
-import { useState, type ReactNode } from "react";
-import { Button } from "@tepisawah/ui";
+import { useState, useRef, type ChangeEvent, type ReactNode } from "react";
+import { Button, compressImageToWebP } from "@tepisawah/ui";
 import {
   type QrisStickerConfig,
   DEFAULT_QRIS_STICKER_CONFIG,
@@ -27,6 +27,33 @@ export function QrisStickerFormModal({
 }: QrisStickerFormModalProps): ReactNode {
   const [draft, setDraft] = useState<QrisStickerConfig>(config);
   const [successNotice, setSuccessNotice] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [compressing, setCompressing] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadError(null);
+
+    if (!file.type.startsWith("image/")) {
+      setUploadError("Harap pilih file gambar (JPG, PNG, atau WebP).");
+      return;
+    }
+
+    setCompressing(true);
+    try {
+      const result = await compressImageToWebP(file, {
+        maxDimension: 1000,
+        quality: 0.85,
+      });
+      setDraft((prev) => ({ ...prev, qrisImageUrl: result.dataUrl }));
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Gagal mengompres gambar QRIS.");
+    } finally {
+      setCompressing(false);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -149,6 +176,71 @@ export function QrisStickerFormModal({
                 <span style={{ fontSize: "0.7rem", color: "#64748b" }}>
                   String ini akan otomatis di-generate menjadi gambar QR Code QRIS pada Halaman 2.
                 </span>
+              </div>
+
+              <div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={(e) => void handleFileChange(e)}
+                />
+
+                <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#334155", marginBottom: "0.25rem" }}>
+                  Upload Gambar QRIS Kustom (Opsional):
+                </label>
+
+                {uploadError && (
+                  <div style={{ padding: "0.4rem 0.6rem", background: "#fef2f2", color: "#dc2626", borderRadius: "6px", fontSize: "0.75rem", marginBottom: "0.4rem" }}>
+                    ⚠️ {uploadError}
+                  </div>
+                )}
+
+                {draft.qrisImageUrl ? (
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.5rem", background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: "6px" }}>
+                    <img
+                      src={draft.qrisImageUrl}
+                      alt="Preview QRIS"
+                      style={{ width: "48px", height: "48px", objectFit: "contain", borderRadius: "4px", border: "1px solid #e2e8f0" }}
+                    />
+                    <div style={{ flex: 1, fontSize: "0.78rem" }}>
+                      <div style={{ fontWeight: 600, color: "#183a1d" }}>Gambar QRIS Aktif (WebP)</div>
+                      <div style={{ color: "#64748b", fontSize: "0.7rem" }}>Menggantikan generate QR payload otomatis</div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setDraft((prev) => ({ ...prev, qrisImageUrl: undefined }))}
+                      style={{ padding: "0.25rem 0.5rem", fontSize: "0.72rem", color: "#ef4444", background: "transparent", border: "1px solid #fecaca", borderRadius: "4px", cursor: "pointer" }}
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <button
+                      type="button"
+                      disabled={compressing}
+                      onClick={() => fileInputRef.current?.click()}
+                      style={{
+                        width: "100%",
+                        padding: "0.45rem 0.65rem",
+                        fontSize: "0.78rem",
+                        fontWeight: 600,
+                        color: "#183a1d",
+                        background: "#ffffff",
+                        border: "1px dashed #cbd5e1",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {compressing ? "⏳ Mengompres..." : "📁 Unggah File Gambar QRIS Resmi (WebP/PNG/JPG)"}
+                    </button>
+                    <span style={{ fontSize: "0.68rem", color: "#64748b", display: "block", marginTop: "2px" }}>
+                      Jika diunggah, gambar resmi ini akan dicetak pada kotak QRIS di Halaman 2.
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div>

@@ -72,7 +72,13 @@ export function TableCardBack({
 
           {/* QR Image Frame */}
           <div className="qris-qr-box">
-            {qrisDataUrl ? (
+            {config.qrisImageUrl ? (
+              <img
+                src={config.qrisImageUrl}
+                alt={`QRIS ${config.merchantName}`}
+                className="qris-qr-image"
+              />
+            ) : qrisDataUrl ? (
               <img
                 src={qrisDataUrl}
                 alt={`QRIS ${config.merchantName}`}

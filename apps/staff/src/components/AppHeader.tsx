@@ -145,7 +145,10 @@ export function AppHeader({
       {user ? (
         <div className="staff-identity">
           <div className="staff-identity-user">
-            <span className="staff-identity-name">
+            <span
+              className="staff-identity-name"
+              title={(profile?.display_name || user.email || "Staf").replace(/\s*\(Demo\)/gi, "").trim()}
+            >
               {(profile?.display_name || user.email || "Staf").replace(/\s*\(Demo\)/gi, "").trim()}
             </span>
             <span className="staff-identity-roles">
@@ -166,6 +169,7 @@ export function AppHeader({
               className="staff-header-install-btn"
               onClick={() => void triggerInstall()}
               title="Pasang aplikasi di layar utama perangkat ini"
+              aria-label="Pasang Aplikasi PWA"
             >
               <span aria-hidden="true">📲</span>
               <span>Pasang App</span>
@@ -179,6 +183,8 @@ export function AppHeader({
             type="button"
             className="staff-signout"
             onClick={() => void handleSignOut()}
+            title="Keluar dari akun staf"
+            aria-label="Keluar dari akun staf"
           >
             Keluar
           </button>

@@ -14,6 +14,8 @@ export interface QrisStickerConfig {
   city: string;
   /** String payload QRIS standar Bank Indonesia */
   qrisPayload: string;
+  /** URL / base64 data URL gambar QRIS yang diunggah (opsional jika menggunakan file gambar langsung) */
+  qrisImageUrl?: string;
   /** Tampilkan frame QRIS pembayaran di Halaman 2 */
   showQrisCode: boolean;
   /** Tampilkan info WiFi di Halaman 2 */

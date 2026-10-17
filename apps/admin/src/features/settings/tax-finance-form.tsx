@@ -10,7 +10,7 @@
  * - Live Preview Kalkulator & Simulasi Kertas Struk 80mm
  */
 
-import { Button, Card } from "@tepisawah/ui";
+import { Button, Card, compressImageToWebP } from "@tepisawah/ui";
 import {
   type TaxSettings,
   type TaxCalculationMode,
@@ -22,7 +22,7 @@ import {
   syncTaxSettingsFromDb,
   toDbTaxSettings,
 } from "@tepisawah/config";
-import { useEffect, useState, useMemo, type ReactNode } from "react";
+import { useEffect, useState, useMemo, useRef, type ChangeEvent, type ReactNode } from "react";
 import { getSupabaseClient } from "../../lib/supabase.js";
 
 export interface TaxFinanceFormProps {
@@ -33,6 +33,51 @@ export interface TaxFinanceFormProps {
 export function TaxFinanceForm({ editable, onSavedToast }: TaxFinanceFormProps): ReactNode {
   const [settings, setSettings] = useState<TaxSettings>(() => loadTaxSettings());
   const [saving, setSaving] = useState(false);
+  const qrisFileInputRef = useRef<HTMLInputElement | null>(null);
+  const [qrisCompressing, setQrisCompressing] = useState(false);
+  const [qrisUploadError, setQrisUploadError] = useState<string | null>(null);
+  const [showManualUrl, setShowManualUrl] = useState(false);
+  const [qrisImageSize, setQrisImageSize] = useState<string | null>(() => {
+    const url = loadTaxSettings().qrisImageUrl;
+    if (!url) return null;
+    if (url.startsWith("data:image")) {
+      const head = url.indexOf(",") + 1;
+      const b64 = url.slice(head);
+      const kb = Math.round((b64.length * 3) / 4 / 1024);
+      return `${kb} KB (WebP)`;
+    }
+    return null;
+  });
+
+  const handleQrisFileSelected = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setQrisUploadError(null);
+
+    if (!file.type.startsWith("image/")) {
+      setQrisUploadError("Harap pilih file gambar (JPG, PNG, atau WebP).");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setQrisUploadError("Ukuran file maksimal 10MB sebelum kompresi.");
+      return;
+    }
+
+    setQrisCompressing(true);
+    try {
+      const result = await compressImageToWebP(file, {
+        maxDimension: 1000,
+        quality: 0.85,
+      });
+      const kb = Math.round(result.compressedSize / 1024);
+      setQrisImageSize(`${kb} KB (WebP)`);
+      setSettings((prev) => ({ ...prev, qrisImageUrl: result.dataUrl }));
+    } catch (err) {
+      setQrisUploadError(err instanceof Error ? err.message : "Gagal mengompres gambar QRIS.");
+    } finally {
+      setQrisCompressing(false);
+    }
+  };
 
   // Sync settings with Supabase database on mount
   useEffect(() => {
@@ -461,22 +506,223 @@ export function TaxFinanceForm({ editable, onSavedToast }: TaxFinanceFormProps):
               marginTop: "1rem",
             }}
           >
-            <div>
-              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, marginBottom: "0.25rem", color: "#334155" }}>
-                URL Gambar QRIS (Image Link / Cloud Storage)
-              </label>
+            <div style={{ gridColumn: "1 / -1" }}>
+              {/* Hidden file input */}
               <input
-                type="text"
-                className="admin-form-input"
-                style={{ width: "100%", padding: "0.5rem 0.75rem", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                value={settings.qrisImageUrl}
-                disabled={!editable}
-                onChange={(e) => setSettings((prev) => ({ ...prev, qrisImageUrl: e.target.value }))}
-                placeholder="https://.../qris-tepisawah.png"
+                ref={qrisFileInputRef}
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={(e) => void handleQrisFileSelected(e)}
               />
-              <span style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "2px", display: "block" }}>
-                Link gambar QRIS statis atau dinamis yang dapat discan oleh customer dari tablet kasir
-              </span>
+
+              <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, marginBottom: "0.4rem", color: "#1e293b" }}>
+                Gambar QRIS Pembayaran (Website &amp; Kasir POS)
+              </label>
+
+              {qrisUploadError && (
+                <div style={{ padding: "0.5rem 0.75rem", background: "#fef2f2", color: "#dc2626", border: "1px solid #fecaca", borderRadius: "6px", fontSize: "0.8rem", marginBottom: "0.6rem" }}>
+                  ⚠️ {qrisUploadError}
+                </div>
+              )}
+
+              {settings.qrisImageUrl ? (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "1.25rem",
+                    padding: "1rem",
+                    background: "#f8fafc",
+                    border: "1px solid #cbd5e1",
+                    borderRadius: "10px",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "130px",
+                      height: "130px",
+                      background: "#ffffff",
+                      borderRadius: "8px",
+                      border: "1px solid #e2e8f0",
+                      padding: "4px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <img
+                      src={settings.qrisImageUrl}
+                      alt="QRIS Tepi Sawah"
+                      style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                    />
+                  </div>
+
+                  <div style={{ flex: "1 1 200px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.25rem", flexWrap: "wrap" }}>
+                      <span style={{ fontSize: "0.95rem", fontWeight: 700, color: "#183a1d" }}>
+                        Gambar QRIS Siap Digunakan
+                      </span>
+                      {qrisImageSize && (
+                        <span style={{ fontSize: "0.72rem", background: "#dcfce7", color: "#166534", padding: "0.15rem 0.5rem", borderRadius: "9999px", fontWeight: 600 }}>
+                          ✓ {qrisImageSize}
+                        </span>
+                      )}
+                    </div>
+                    <p style={{ margin: "0 0 0.75rem", fontSize: "0.8rem", color: "#64748b", lineHeight: 1.4 }}>
+                      Gambar QRIS ini otomatis terkompresi WebP untuk loading instan di tablet kasir POS dan layar pembayaran pelanggan.
+                    </p>
+
+                    <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                      <button
+                        type="button"
+                        disabled={!editable || qrisCompressing}
+                        onClick={() => qrisFileInputRef.current?.click()}
+                        style={{
+                          padding: "0.4rem 0.85rem",
+                          fontSize: "0.8rem",
+                          fontWeight: 600,
+                          color: "#183a1d",
+                          background: "#ffffff",
+                          border: "1px solid #cbd5e1",
+                          borderRadius: "6px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {qrisCompressing ? "⏳ Mengompres..." : "🔄 Ganti Gambar QRIS"}
+                      </button>
+
+                      <button
+                        type="button"
+                        disabled={!editable}
+                        onClick={() => {
+                          setSettings((prev) => ({ ...prev, qrisImageUrl: "" }));
+                          setQrisImageSize(null);
+                        }}
+                        style={{
+                          padding: "0.4rem 0.85rem",
+                          fontSize: "0.8rem",
+                          fontWeight: 600,
+                          color: "#ef4444",
+                          background: "#ffffff",
+                          border: "1px solid #fecaca",
+                          borderRadius: "6px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        🗑️ Hapus
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setShowManualUrl(!showManualUrl)}
+                        style={{
+                          padding: "0.4rem 0.65rem",
+                          fontSize: "0.78rem",
+                          color: "#64748b",
+                          background: "transparent",
+                          border: "none",
+                          cursor: "pointer",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        {showManualUrl ? "Sembunyikan URL" : "Edit URL Manual"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    border: "2px dashed #cbd5e1",
+                    borderRadius: "10px",
+                    padding: "1.25rem",
+                    textAlign: "center",
+                    background: "#f8fafc",
+                    cursor: editable ? "pointer" : "default",
+                    transition: "border-color 0.15s ease",
+                  }}
+                  onClick={() => {
+                    if (editable) qrisFileInputRef.current?.click();
+                  }}
+                >
+                  <div style={{ fontSize: "2rem", marginBottom: "0.35rem" }}>
+                    {qrisCompressing ? "⏳" : "💳"}
+                  </div>
+                  <div style={{ fontSize: "0.92rem", fontWeight: 700, color: "#183a1d", marginBottom: "0.2rem" }}>
+                    {qrisCompressing ? "Sedang Mengompres Gambar ke WebP..." : "Klik untuk Unggah Gambar QRIS"}
+                  </div>
+                  <p style={{ margin: "0 0 0.75rem", fontSize: "0.8rem", color: "#64748b" }}>
+                    Pilih file QRIS resmi (PNG, JPG, WebP). Otomatis dikompresi resolusi tajam &amp; ringan untuk website dan POS.
+                  </p>
+                  <button
+                    type="button"
+                    disabled={!editable || qrisCompressing}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      qrisFileInputRef.current?.click();
+                    }}
+                    style={{
+                      padding: "0.45rem 1rem",
+                      fontSize: "0.82rem",
+                      fontWeight: 600,
+                      color: "#ffffff",
+                      background: "#183a1d",
+                      border: "none",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    📁 Pilih Gambar dari Perangkat
+                  </button>
+
+                  <div style={{ marginTop: "0.75rem" }}>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowManualUrl(!showManualUrl);
+                      }}
+                      style={{
+                        fontSize: "0.78rem",
+                        color: "#64748b",
+                        background: "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                      }}
+                    >
+                      {showManualUrl ? "Tutup input URL" : "Atau masukkan URL gambar secara manual"}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {showManualUrl && (
+                <div style={{ marginTop: "0.75rem", padding: "0.75rem", background: "#f1f5f9", borderRadius: "8px" }}>
+                  <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "#334155", marginBottom: "0.25rem" }}>
+                    URL Gambar QRIS Eksternal:
+                  </label>
+                  <input
+                    type="text"
+                    className="admin-form-input"
+                    style={{ width: "100%", padding: "0.45rem 0.65rem", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "0.82rem" }}
+                    value={settings.qrisImageUrl}
+                    disabled={!editable}
+                    onChange={(e) => {
+                      setSettings((prev) => ({ ...prev, qrisImageUrl: e.target.value }));
+                      setQrisImageSize(null);
+                    }}
+                    placeholder="https://.../qris-tepisawah.png"
+                  />
+                  <span style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "2px", display: "block" }}>
+                    Tautan gambar QRIS dari Supabase Storage atau CDN publik
+                  </span>
+                </div>
+              )}
             </div>
 
             <div>
