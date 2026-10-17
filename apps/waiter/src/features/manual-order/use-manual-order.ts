@@ -104,6 +104,7 @@ export function useManualOrder(): ManualOrderState & {
   openSessionForSelectedTable: () => Promise<void>;
   addLine: (productId: string) => void;
   decrementLine: (productId: string) => void;
+  toggleModifier: (productId: string, modifierId: string) => void;
   setLineQuantity: (productId: string, quantity: number) => void;
   setLineNotes: (productId: string, notes: string) => void;
   setCustomerNote: (note: string) => void;
@@ -291,8 +292,43 @@ export function useManualOrder(): ManualOrderState & {
             ),
           };
         }
-        return { ...prev, lines: [...prev.lines, { productId, quantity: 1 }] };
+        let defaultModifiers: string[] = [];
+        for (const cat of prev.catalog) {
+          const prod = cat.products.find((p) => p.productId === productId);
+          if (prod) {
+            defaultModifiers = prod.modifiers
+              .filter((m) => m.isRequired)
+              .map((m) => m.modifierId);
+            break;
+          }
+        }
+        return {
+          ...prev,
+          lines: [
+            ...prev.lines,
+            {
+              productId,
+              quantity: 1,
+              ...(defaultModifiers.length > 0 ? { modifierIds: defaultModifiers } : {}),
+            },
+          ],
+        };
       }),
+    toggleModifier: (productId, modifierId) =>
+      setState((prev) => ({
+        ...prev,
+        lines: prev.lines.map((line) => {
+          if (line.productId !== productId) return line;
+          const current = line.modifierIds ?? [];
+          const next = current.includes(modifierId)
+            ? current.filter((id) => id !== modifierId)
+            : [...current, modifierId];
+          return {
+            ...line,
+            ...(next.length > 0 ? { modifierIds: next } : { modifierIds: undefined }),
+          };
+        }),
+      })),
     decrementLine: (productId) =>
       setState((prev) => {
         const existing = lineFor(prev.lines, productId);

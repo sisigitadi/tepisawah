@@ -197,6 +197,30 @@ export function ManualOrderPage(): ReactNode {
                               +
                             </Button>
                           </span>
+                          {line && product.modifiers && product.modifiers.length > 0 ? (
+                            <div className="manual-order__modifiers">
+                              <span className="manual-order__modifiers-label">
+                                Pilihan / Varian {product.modifiers.some((m) => m.isRequired) ? "(Wajib)" : "(Opsional)"}:
+                              </span>
+                              <div className="manual-order__modifier-chips">
+                                {product.modifiers.map((modifier) => {
+                                  const isSelected = line.modifierIds?.includes(modifier.modifierId) ?? false;
+                                  return (
+                                    <button
+                                      key={modifier.modifierId}
+                                      type="button"
+                                      className={`manual-order__mod-chip ${isSelected ? "manual-order__mod-chip--selected" : ""}`}
+                                      onClick={() => vm.toggleModifier(product.productId, modifier.modifierId)}
+                                    >
+                                      {isSelected ? "✓ " : "+ "}
+                                      {modifier.name}
+                                      {modifier.priceDelta > 0 ? ` (+${formatIDR(modifier.priceDelta)})` : ""}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          ) : null}
                           {line ? (
                             <label className="manual-order__notes">
                               <span className="manual-order__notes-label">Catatan</span>
