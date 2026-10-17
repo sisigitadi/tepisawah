@@ -564,57 +564,57 @@ export function StaffPage(): ReactNode {
     try {
       const client = getSupabaseClient() as any;
 
-      // 1. Coba RPC admin_create_staff langsung di PostgreSQL (bebas dari batas kirim email GoTrue)
-      const { data: rpcData, error: rpcError } = await client.rpc("admin_create_staff", {
-        p_username: cleanUsername,
-        p_password: cleanPassword,
-        p_display_name: cleanName,
-        p_phone: newPhone.trim() || null,
-        p_role_codes: newRoles,
-        p_email: isPrivileged ? cleanEmail : null,
+      // 1. Mendaftar secara murni melalui GoTrue API (ephemeralClient memastikan sesi admin saat ini tidak tertimpa)
+      const authEmail = isPrivileged
+        ? cleanEmail
+        : `${cleanUsername}@staff.tepisawah.id`;
+
+      const ephemeralClient = createEphemeralSupabaseClient();
+      const { data: authData, error: authError } = await ephemeralClient.auth.signUp({
+        email: authEmail,
+        password: cleanPassword,
+        options: {
+          data: {
+            display_name: cleanName,
+            username: cleanUsername,
+            phone: newPhone.trim() || undefined,
+          },
+        },
       });
 
-      if (rpcError) {
-        console.warn("RPC admin_create_staff belum terpasang atau gagal, menggunakan fallback signUp:", rpcError);
+      if (authError) {
+        if (
+          authError.message?.toLowerCase().includes("rate limit") ||
+          (authError as any).code === "over_email_send_rate_limit"
+        ) {
+          throw new Error(
+            "Batas pengiriman email Supabase terlampaui (rate limit). " +
+            "Pastikan opsi 'Confirm email' di Supabase Dashboard (Authentication > Providers > Email) telah disetel ke OFF agar pendaftaran staf instan tanpa email konfirmasi."
+          );
+        }
+        throw authError;
+      }
 
-        // 2. Fallback: Mendaftar melalui auth.signUp via ephemeral client
-        const authEmail = isPrivileged
-          ? cleanEmail
-          : `${cleanUsername}@staff.tepisawah.id`;
-
-        const ephemeralClient = createEphemeralSupabaseClient();
-        const { data: authData, error: authError } = await ephemeralClient.auth.signUp({
-          email: authEmail,
-          password: cleanPassword,
-          options: {
-            data: {
-              display_name: cleanName,
-              username: cleanUsername,
-              phone: newPhone.trim() || undefined,
-            },
-          },
+      const newUserId = authData.user?.id;
+      if (newUserId && newRoles.length > 0) {
+        // 2. Hubungkan tugas operasional melalui RPC admin_update_user_roles
+        const { error: rpcError } = await client.rpc("admin_update_user_roles", {
+          p_user_id: newUserId,
+          p_role_codes: newRoles,
         });
 
-        if (authError) {
-          if (
-            authError.message?.toLowerCase().includes("rate limit") ||
-            (authError as any).code === "over_email_send_rate_limit"
-          ) {
-            throw new Error(
-              "Batas pengiriman email Supabase terlampaui (rate limit). " +
-              "Solusi cepat: Buka Supabase Dashboard > Authentication > Providers > Email, lalu matikan 'Confirm email' (OFF), " +
-              "atau jalankan skrip SQL 'fix-staff-roles-and-management.sql' di Supabase SQL Editor untuk pendaftaran instan tanpa email."
-            );
-          }
-          throw authError;
-        }
+        if (rpcError) {
+          console.warn("RPC admin_update_user_roles failed on creation, trying direct fallback:", rpcError);
+          const roleInserts = newRoles
+            .map((code) => {
+              const rObj = availableRoles.find((r) => r.code === code);
+              return rObj ? { user_id: newUserId, role_id: rObj.id } : null;
+            })
+            .filter(Boolean);
 
-        const newUserId = authData.user?.id;
-        if (newUserId && newRoles.length > 0) {
-          await client.rpc("admin_update_user_roles", {
-            p_user_id: newUserId,
-            p_role_codes: newRoles,
-          });
+          if (roleInserts.length > 0) {
+            await client.from("user_roles").insert(roleInserts);
+          }
         }
       }
 
