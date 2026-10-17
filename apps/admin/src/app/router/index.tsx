@@ -16,9 +16,11 @@ import { SessionsPage } from "../../features/sessions/index.js";
 import { ReservationsPage } from "../../features/reservations/index.js";
 import { CmsPage } from "../../features/cms/index.js";
 import { StaffPage } from "../../features/users/index.js";
+import { TransactionsLedgerPage } from "../../features/transactions/index.js";
 
 export type AdminPage =
   | "home"
+  | "transactions"
   | "staff"
   | "cms"
   | "settings"
@@ -43,6 +45,14 @@ export function AppRouter(): ReactNode {
             onClick={() => setPage("home")}
           >
             Beranda
+          </button>
+          <button
+            type="button"
+            className="app-nav-link"
+            aria-current={page === "transactions" ? "page" : undefined}
+            onClick={() => setPage("transactions")}
+          >
+            💰 Buku Transaksi
           </button>
           <button
             type="button"
@@ -119,7 +129,9 @@ export function AppRouter(): ReactNode {
         </>
       }
     >
-      {page === "staff" ? (
+      {page === "transactions" ? (
+        <TransactionsLedgerPage />
+      ) : page === "staff" ? (
         <StaffPage />
       ) : page === "reservations" ? (
         <ReservationsPage />

@@ -14,4 +14,5 @@ export { SessionsPage } from "./features/sessions/index.js";
 export { ReservationsPage } from "./features/reservations/index.js";
 export { CmsPage } from "./features/cms/index.js";
 export { StaffPage } from "./features/users/index.js";
+export { TransactionsLedgerPage } from "./features/transactions/index.js";
 

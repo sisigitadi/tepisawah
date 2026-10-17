@@ -68,20 +68,24 @@ export function HomePage({ onNavigate }: HomePageProps = {}): ReactNode {
       const startOfDay = new Date();
       startOfDay.setHours(0, 0, 0, 0);
 
-      const { data: ordersData } = await client
+      const { data: ordersData, error: ordersError } = await client
         .from("orders")
-        .select("id, order_number, status, total_amount, created_at, table_id")
+        .select("id, order_number, status, total, subtotal, tax, discount, created_at, table_id")
         .gte("created_at", startOfDay.toISOString())
         .order("created_at", { ascending: false });
+
+      if (ordersError) {
+        console.error("Gagal memuat ringkasan pesanan hari ini:", ordersError);
+      }
 
       const orders = ordersData || [];
       const totalOrdersToday = orders.length;
 
       const totalRevenueToday = orders
-        .filter((o: any) => o.status === "PAID")
-        .reduce((sum: number, o: any) => sum + (Number(o.total_amount) || 0), 0);
+        .filter((o: any) => o.status === "PAID" || o.status === "COMPLETED")
+        .reduce((sum: number, o: any) => sum + (Number(o.total) || 0), 0);
 
-      const pendingOrders = orders.filter((o: any) => o.status === "PENDING" || o.status === "DRAFT");
+      const pendingOrders = orders.filter((o: any) => o.status === "PENDING_CONFIRMATION" || o.status === "SUBMITTED" || o.status === "DRAFT");
       const kitchenOrders = orders.filter((o: any) => o.status === "CONFIRMED" || o.status === "PREPARING");
       const readyOrders = orders.filter((o: any) => o.status === "READY");
       const servedOrders = orders.filter((o: any) => o.status === "SERVED");
@@ -96,8 +100,8 @@ export function HomePage({ onNavigate }: HomePageProps = {}): ReactNode {
         readyOrders,
         servedOrders,
       });
-    } catch {
-      // Graceful fallback to zero state
+    } catch (err) {
+      console.error("Error overview dashboard:", err);
     } finally {
       setLoading(false);
     }
@@ -223,7 +227,7 @@ export function HomePage({ onNavigate }: HomePageProps = {}): ReactNode {
               {metrics.pendingOrders.map((o) => (
                 <div key={o.id} style={{ padding: "0.75rem", background: "#fefce8", borderRadius: "8px", marginBottom: "0.5rem", border: "1px solid #fef08a" }}>
                   <strong>{o.order_number}</strong>
-                  <div style={{ fontSize: "0.8rem", color: "#854d0e" }}>{formatRupiah(o.total_amount)}</div>
+                  <div style={{ fontSize: "0.8rem", color: "#854d0e" }}>{formatRupiah(o.total)}</div>
                 </div>
               ))}
             </div>

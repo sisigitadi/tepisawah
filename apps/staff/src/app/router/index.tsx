@@ -34,9 +34,10 @@ import {
   ReservationsPage,
   CmsPage,
   StaffPage,
+  TransactionsLedgerPage,
 } from "@tepisawah/admin";
 
-type AdminTab = "home" | "staff" | "reservations" | "cms" | "settings" | "catalog" | "tables" | "sessions";
+type AdminTab = "home" | "transactions" | "staff" | "reservations" | "cms" | "settings" | "catalog" | "tables" | "sessions";
 export type FrontOfHouseTab = "confirm" | "serve" | "manual-order" | "terminal";
 
 interface AdminTabDef {
@@ -47,6 +48,7 @@ interface AdminTabDef {
 
 const ADMIN_TABS: readonly AdminTabDef[] = [
   { id: "home", label: "Beranda", icon: "📊" },
+  { id: "transactions", label: "Buku Transaksi", icon: "💰" },
   { id: "staff", label: "Kelola Staf", icon: "👥" },
   { id: "reservations", label: "Reservasi Meja", icon: "📅" },
   { id: "cms", label: "Konten Web", icon: "🌐" },
@@ -375,7 +377,9 @@ export function AppRouter(): ReactNode {
                   onSelectTab={(tab) => setAdminTab(tab)}
                 />
 
-                {adminTab === "staff" ? (
+                {adminTab === "transactions" ? (
+                  <TransactionsLedgerPage />
+                ) : adminTab === "staff" ? (
                   <StaffPage />
                 ) : adminTab === "reservations" ? (
                   <ReservationsPage />
