@@ -69,6 +69,9 @@ INSERT INTO public.tax_settings (
   'auto', 'BCA', '80mm', true
 ) ON CONFLICT (id) DO UPDATE SET updated_at = now();
 
+-- Bersihkan baris duplikat 'default' lama jika ada agar hanya ada 1 baris canonical (singleton)
+DELETE FROM public.tax_settings WHERE id <> '22222222-2222-4222-8222-222222222222';
+
 ALTER TABLE public.tax_settings ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "tax_settings_select_all" ON public.tax_settings;
 CREATE POLICY "tax_settings_select_all" ON public.tax_settings FOR SELECT USING (true);
@@ -383,7 +386,7 @@ BEGIN
   END IF;
 
   -- Baca mode sesi meja dari tax_settings
-  SELECT COALESCE(table_session_mode, 'auto') INTO v_session_mode FROM public.tax_settings LIMIT 1;
+  SELECT COALESCE(table_session_mode, 'auto') INTO v_session_mode FROM public.tax_settings ORDER BY updated_at DESC LIMIT 1;
   IF v_session_mode IS NULL THEN
     v_session_mode := 'auto';
   END IF;
@@ -422,7 +425,7 @@ BEGIN
   END IF;
 
   -- Baca parameter pajak
-  SELECT tax_enabled, tax_rate INTO v_tax_enabled, v_tax_rate FROM public.tax_settings LIMIT 1;
+  SELECT tax_enabled, tax_rate INTO v_tax_enabled, v_tax_rate FROM public.tax_settings ORDER BY updated_at DESC LIMIT 1;
 
   -- Buat Nomor Order Unik
   v_order_number := 'TS-' || to_char(now(), 'YYYYMMDD') || '-' || lpad(floor(random() * 9000 + 1000)::text, 4, '0');

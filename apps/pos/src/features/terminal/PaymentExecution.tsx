@@ -34,6 +34,7 @@ import {
   taxOf,
   getPosTaxSettings,
 } from "../../data/terminal.js";
+import { useTaxSettings } from "../../hooks/index.js";
 import { QrisFullscreenModal } from "./QrisFullscreenModal.js";
 import { ThermalSlip } from "./ThermalSlip.js";
 
@@ -71,7 +72,7 @@ export function PaymentExecution({
   const [showQrisFullscreen, setShowQrisFullscreen] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
 
-  const taxSettings = getPosTaxSettings();
+  const taxSettings = useTaxSettings();
   const grandTotal = grandTotalOf(order);
   const tenderedNumber = Number.parseInt(tendered.replaceAll(/[.,]/g, ""), 10) || 0;
   const change = tenderedNumber - grandTotal;
@@ -261,7 +262,7 @@ export function PaymentExecution({
             </div>
           </div>
         ) : (
-          <QrisWorkspace order={order} onOpenFullscreen={() => setShowQrisFullscreen(true)} />
+          <QrisWorkspace order={order} taxSettings={taxSettings} onOpenFullscreen={() => setShowQrisFullscreen(true)} />
         )}
 
         <div className="pos-settle">
@@ -332,12 +333,17 @@ function suggestDenomination(amount: number): string {
 
 interface QrisWorkspaceProps {
   order: QueueOrder;
+  taxSettings: ReturnType<typeof useTaxSettings>;
   onOpenFullscreen?: () => void;
 }
 
-function QrisWorkspace({ order, onOpenFullscreen }: QrisWorkspaceProps): ReactNode {
-  const taxSettings = getPosTaxSettings();
+function QrisWorkspace({ order, taxSettings, onOpenFullscreen }: QrisWorkspaceProps): ReactNode {
   const grandTotal = grandTotalOf(order);
+
+  const dynamicQrUrl =
+    !taxSettings.qrisImageUrl && taxSettings.qrisPayload
+      ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(taxSettings.qrisPayload)}`
+      : null;
 
   return (
     <div className="pos-qris">
@@ -373,6 +379,12 @@ function QrisWorkspace({ order, onOpenFullscreen }: QrisWorkspaceProps): ReactNo
         {taxSettings.qrisImageUrl ? (
           <img
             src={taxSettings.qrisImageUrl}
+            alt="QRIS"
+            style={{ width: "125px", height: "125px", objectFit: "contain", borderRadius: "6px" }}
+          />
+        ) : dynamicQrUrl ? (
+          <img
+            src={dynamicQrUrl}
             alt="QRIS"
             style={{ width: "125px", height: "125px", objectFit: "contain", borderRadius: "6px" }}
           />

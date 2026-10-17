@@ -41,6 +41,7 @@ import {
 } from "../data/terminal.js";
 import { loadPayQueue, loadHistoryQueue, settleOrder, voidOrder } from "../lib/orders.js";
 import { getSupabaseClient } from "../lib/supabase.js";
+import { useTaxSettings } from "../hooks/index.js";
 import {
   LockResetIcon,
   ReceiptIcon,
@@ -53,6 +54,7 @@ export interface HomePageProps {
 
 export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode {
   const { user, profile, can } = useAuth();
+  useTaxSettings();
   const [orders, setOrders] = useState<QueueOrder[]>([]);
   const [historyOrders, setHistoryOrders] = useState<QueueOrder[]>([]);
   const [currentShift, setCurrentShift] = useState<CashShift | null>(null);
