@@ -7,7 +7,7 @@
  */
 
 import type { ReactNode } from "react";
-import { InsightsIcon, KitchenIcon, PhoneIcon, SearchIcon, UserIcon } from "@tepisawah/ui";
+import { InsightsIcon, KitchenIcon, PhoneIcon, ReceiptLongIcon, SearchIcon, UserIcon } from "@tepisawah/ui";
 import type { QueueOrder } from "../../data/terminal.js";
 import { formatIDR } from "../../data/terminal.js";
 
@@ -140,8 +140,30 @@ function QueueCard({ order, selected, onSelect }: QueueCardProps): ReactNode {
       <div className="pos-queue-card__head">
         <div className="pos-queue-card__id">
           <span className="pos-queue-card__ticket">{order.ticket}</span>
-          <span className={`pos-chip ${order.channel === "qr" ? "pos-chip--qr" : "pos-chip--waiter"}`}>
-            {order.channel === "qr" ? "QR MEJA" : "WAITER POS"}
+          <span
+            className={`pos-chip ${
+              order.channel === "qr"
+                ? "pos-chip--qr"
+                : order.channel === "takeaway"
+                  ? "pos-chip--takeaway"
+                  : order.channel === "delivery"
+                    ? order.orderType === "GOFOOD"
+                      ? "pos-chip--gofood"
+                      : order.orderType === "GRABFOOD"
+                        ? "pos-chip--grabfood"
+                        : order.orderType === "SHOPEEFOOD"
+                          ? "pos-chip--shopeefood"
+                          : "pos-chip--delivery"
+                    : "pos-chip--waiter"
+            }`}
+          >
+            {order.channel === "qr"
+              ? "QR MEJA"
+              : order.channel === "takeaway"
+                ? "TAKE AWAY"
+                : order.channel === "delivery"
+                  ? (order.orderType ?? "DELIVERY")
+                  : "WAITER POS"}
           </span>
         </div>
         <time className="pos-queue-card__time">{order.time}</time>
@@ -169,8 +191,22 @@ function QueueCard({ order, selected, onSelect }: QueueCardProps): ReactNode {
         ) : (
           <>
             <span className="pos-queue-card__channel">
-              {order.channel === "qr" ? <PhoneIcon aria-hidden="true" /> : <UserIcon aria-hidden="true" />}
-              {order.channel === "qr" ? "Tamu Self-Scan" : `Waiter • ${order.pax} Pax`}
+              {order.channel === "qr" ? (
+                <PhoneIcon aria-hidden="true" />
+              ) : order.channel === "takeaway" ? (
+                <ReceiptLongIcon aria-hidden="true" />
+              ) : order.channel === "delivery" ? (
+                <InsightsIcon aria-hidden="true" />
+              ) : (
+                <UserIcon aria-hidden="true" />
+              )}
+              {order.channel === "qr"
+                ? "Tamu Self-Scan"
+                : order.channel === "takeaway"
+                  ? `Bungkus • ${order.customerName ?? "Pelanggan"}`
+                  : order.channel === "delivery"
+                    ? `${order.orderType} • #${order.externalReference ?? "—"}`
+                    : `Waiter • ${order.pax} Pax`}
             </span>
             <span className={`pos-status ${order.status === "process" ? "pos-status--process" : "pos-status--waiting"}`}>
               {order.status === "process" ? "Proses" : "Waiting Bill"}

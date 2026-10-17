@@ -13,10 +13,16 @@ import type {
   DraftOrderItemInput,
   OrderSource,
   OrderStatus,
+  OrderType,
   SubmitOrderInput,
   TransitionOrderInput,
 } from "./orders-types.js";
-import { ORDER_EXCEPTION_STATUSES, ORDER_SOURCES, ORDER_STATUSES } from "./orders-types.js";
+import {
+  ORDER_EXCEPTION_STATUSES,
+  ORDER_SOURCES,
+  ORDER_STATUSES,
+  ORDER_TYPES,
+} from "./orders-types.js";
 
 export function isValidOrderStatus(value: string | null | undefined): value is OrderStatus {
   return value !== null && value !== undefined && (ORDER_STATUSES as readonly string[]).includes(value);
@@ -24,6 +30,10 @@ export function isValidOrderStatus(value: string | null | undefined): value is O
 
 export function isValidOrderSource(value: string | null | undefined): value is OrderSource {
   return value !== null && value !== undefined && (ORDER_SOURCES as readonly string[]).includes(value);
+}
+
+export function isValidOrderType(value: string | null | undefined): value is OrderType {
+  return value !== null && value !== undefined && (ORDER_TYPES as readonly string[]).includes(value);
 }
 
 /** Quantity must be positive and sane; the server re-checks this (§20 rules). */
@@ -61,8 +71,12 @@ export function isValidDraftItemInput(value: DraftOrderItemInput | null | undefi
 export function isValidCreateDraftOrderInput(value: CreateDraftOrderInput | null | undefined): boolean {
   if (!value) return false;
   if (!isValidOrderSource(value.source)) return false;
-  if (typeof value.tableId !== "string" || value.tableId === "") return false;
-  if (typeof value.tableSessionId !== "string" || value.tableSessionId === "") return false;
+  const orderType = value.orderType ?? "DINE_IN";
+  if (!isValidOrderType(orderType)) return false;
+  if (orderType === "DINE_IN") {
+    if (typeof value.tableId !== "string" || value.tableId === "") return false;
+    if (typeof value.tableSessionId !== "string" || value.tableSessionId === "") return false;
+  }
   if (!Array.isArray(value.items) || value.items.length === 0) return false;
   if (!value.items.every(isValidDraftItemInput)) return false;
   return true;

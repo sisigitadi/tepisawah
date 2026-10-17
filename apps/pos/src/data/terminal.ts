@@ -11,7 +11,9 @@
  * service derivation for the design sample.
  */
 
-export type OrderChannel = "qr" | "waiter";
+import type { OrderType } from "@tepisawah/database";
+
+export type OrderChannel = "qr" | "waiter" | "takeaway" | "delivery";
 export type OrderStatus = "waiting" | "process" | "hold";
 
 export interface BillItem {
@@ -30,6 +32,9 @@ export interface QueueOrder {
   table: string;
   area: string;
   channel: OrderChannel;
+  orderType?: OrderType;
+  customerName?: string | null;
+  externalReference?: string | null;
   status: OrderStatus;
   time: string;
   pax: number;
@@ -147,7 +152,7 @@ export const QUEUE_ORDERS: QueueOrder[] = [
 ];
 
 export interface PaymentMethod {
-  id: "cash" | "qris" | "edc" | "wallet";
+  id: "cash" | "qris" | "edc" | "wallet" | "platform";
   label: string;
   hint: string;
 }
@@ -157,6 +162,7 @@ export const PAYMENT_METHODS: PaymentMethod[] = [
   { id: "qris", label: "QRIS Dinamis", hint: "BCA / Mandiri / GoPay" },
   { id: "edc", label: "Kartu EDC", hint: "Debit / Credit Mandiri" },
   { id: "wallet", label: "Transfer Bank", hint: "BCA VA / Settlement" },
+  { id: "platform", label: "Platform Mitra", hint: "GoFood / Grab / Shopee" },
 ];
 
 export const TENDER_PRESETS = [

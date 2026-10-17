@@ -237,6 +237,7 @@ export async function fetchOrder(
 
   const base = untypedTable(client, "orders").select(
     "id, order_number, table_id, table_session_id, source, status, notes, " +
+      "order_type, customer_name, external_reference, " +
       "subtotal, discount, tax, total, idempotency_key, version, created_by, created_at, updated_at",
   );
 
@@ -295,6 +296,7 @@ export async function fetchOrdersByStatuses(
   const result = await untypedTable(client, "orders")
     .select(
       "id, order_number, table_id, table_session_id, source, status, notes, " +
+        "order_type, customer_name, external_reference, " +
         "subtotal, discount, tax, total, version, created_at, updated_at",
     )
     .in("status", [...statuses])
@@ -358,12 +360,29 @@ export async function fetchOrdersByStatuses(
   const orders: StaffOrder[] = rows.map((row) => {
     const label = row.table_id !== null ? tableLabels.get(row.table_id) : undefined;
     const code = label?.code ?? "";
+    const orderType = (row.order_type ?? "DINE_IN") as OrderType;
+    let tableName = "";
+    if (orderType === "TAKE_AWAY") {
+      tableName = row.customer_name ? `Bungkus (${row.customer_name})` : "Take Away (Bungkus)";
+    } else if (orderType === "GOFOOD") {
+      tableName = row.external_reference ? `GoFood #${row.external_reference}` : "GoFood";
+    } else if (orderType === "GRABFOOD") {
+      tableName = row.external_reference ? `GrabFood #${row.external_reference}` : "GrabFood";
+    } else if (orderType === "SHOPEEFOOD") {
+      tableName = row.external_reference ? `ShopeeFood #${row.external_reference}` : "ShopeeFood";
+    } else {
+      tableName = label?.name || (code ? `Meja ${code}` : (row.table_id ? `Meja ${row.table_id.slice(0, 4)}` : "Pesanan"));
+    }
+
     return {
       id: row.id,
       orderNumber: row.order_number ?? "",
-      tableId: row.table_id ?? "",
-      tableSessionId: row.table_session_id ?? "",
-      tableName: label?.name || (code ? `Meja ${code}` : `Meja ${(row.table_id ?? "").slice(0, 4)}`),
+      orderType,
+      customerName: row.customer_name ?? null,
+      externalReference: row.external_reference ?? null,
+      tableId: row.table_id ?? null,
+      tableSessionId: row.table_session_id ?? null,
+      tableName,
       tableCode: code,
       source: (row.source ?? "CUSTOMER_QR") as OrderSource,
       status: (row.status ?? "DRAFT") as OrderStatus,

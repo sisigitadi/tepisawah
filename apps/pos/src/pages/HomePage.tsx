@@ -102,6 +102,15 @@ export function HomePage(): ReactNode {
     [orders, selectedId],
   );
 
+  // Auto-switch to platform payment for online delivery orders
+  useEffect(() => {
+    if (selectedOrder?.channel === "delivery") {
+      setMethod("platform");
+    } else if (method === "platform") {
+      setMethod("cash");
+    }
+  }, [selectedOrder?.id, selectedOrder?.channel]);
+
   const filteredOrders = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return orders.filter((order) => {

@@ -339,4 +339,54 @@ describe("ManualOrderPage", () => {
     await user.click(screen.getByRole("button", { name: "Kurang Nasi Liwet" }));
     expect(screen.queryByPlaceholderText("mis. tidak pedas")).not.toBeInTheDocument();
   });
+
+  it("lets the waiter switch to Take Away and submit without a table session", async () => {
+    prime();
+    const user = userEvent.setup();
+    render(<ManualOrderPage />);
+
+    // Wait for initial load to finish and switch to Take Away
+    const takeAwayButton = await screen.findByRole("button", { name: /Bawa Pulang/i });
+    await user.click(takeAwayButton);
+
+    expect(screen.getByLabelText(/Nama Pemesan/i)).toBeInTheDocument();
+    await user.type(screen.getByLabelText(/Nama Pemesan/i), "Ibu Siti");
+
+    // Menu is immediately available without choosing a table
+    await user.click(screen.getByRole("button", { name: "Tambah Nasi Liwet" }));
+
+    expect(screen.getByRole("button", { name: "Buat order draf" })).toBeEnabled();
+    await user.click(screen.getByRole("button", { name: "Buat order draf" }));
+
+    expect(captured.input).not.toBeNull();
+    expect(captured.input!.orderType).toBe("TAKE_AWAY");
+    expect(captured.input!.customerName).toBe("Ibu Siti");
+    expect(captured.input!.tableId).toBeNull();
+    expect(captured.input!.tableSessionId).toBeNull();
+  });
+
+  it("lets the waiter switch to Online Delivery (GoFood) and input external reference", async () => {
+    prime();
+    const user = userEvent.setup();
+    render(<ManualOrderPage />);
+
+    // Wait for initial load to finish and switch to Online Delivery
+    const deliveryButton = await screen.findByRole("button", { name: /Online Delivery/i });
+    await user.click(deliveryButton);
+
+    expect(screen.getByLabelText(/Nomor Pesanan \/ ID Driver/i)).toBeInTheDocument();
+    await user.type(screen.getByLabelText(/Nomor Pesanan \/ ID Driver/i), "GF-9921");
+
+    // Menu is immediately available
+    await user.click(screen.getByRole("button", { name: "Tambah Nasi Liwet" }));
+
+    expect(screen.getByRole("button", { name: "Buat order draf" })).toBeEnabled();
+    await user.click(screen.getByRole("button", { name: "Buat order draf" }));
+
+    expect(captured.input).not.toBeNull();
+    expect(captured.input!.orderType).toBe("GOFOOD");
+    expect(captured.input!.externalReference).toBe("GF-9921");
+    expect(captured.input!.tableId).toBeNull();
+    expect(captured.input!.tableSessionId).toBeNull();
+  });
 });

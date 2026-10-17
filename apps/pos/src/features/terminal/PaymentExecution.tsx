@@ -51,6 +51,7 @@ const METHOD_ICONS: Record<PaymentMethod["id"], ReactNode> = {
   qris: <QrIcon />,
   edc: <CardIcon />,
   wallet: <BankIcon />,
+  platform: <ReceiptLongIcon />,
 };
 
 export function PaymentExecution({
@@ -185,6 +186,25 @@ export function PaymentExecution({
               <span className="pos-denomination__value">{suggestDenomination(Math.abs(change))}</span>
             </div>
           </div>
+        ) : method === "platform" ? (
+          <div className="pos-workspace">
+            <div className="pos-workspace__head">
+              <label className="pos-workspace__label">
+                Pelunasan Platform Online ({order.orderType ?? "Mitra Delivery"})
+              </label>
+              <span className="pos-workspace__bill">Tagihan: {formatIDR(grandTotal)}</span>
+            </div>
+            <div style={{ padding: "1.25rem 0", color: "var(--ink-variant, #404040)", fontSize: "0.875rem", lineHeight: "1.6" }}>
+              <p style={{ margin: "0 0 0.5rem 0", fontWeight: 600, color: "var(--color-primary-dark, #1b4332)" }}>
+                ✓ Pembayaran Non-Tunai Mitra
+              </p>
+              <p style={{ margin: 0 }}>
+                Pelanggan telah membayar melalui aplikasi mitra {order.orderType ?? "Online Delivery"}.
+                {order.externalReference ? ` Nomor Referensi: #${order.externalReference}. ` : " "}
+                Penyelesaian ini akan mencatat transaksi sebagai lunas tanpa membuka laci kasir tunai.
+              </p>
+            </div>
+          </div>
         ) : (
           <QrisWorkspace order={order} />
         )}
@@ -199,7 +219,18 @@ export function PaymentExecution({
           >
             {settlement === "idle" && (<><ReceiptLongIcon aria-hidden="true" /> <span>Bayar &amp; Cetak Struk (F3 / Enter)</span></>)}
             {settlement === "printing" && (<><RefreshIcon className="pos-spin" aria-hidden="true" /> <span>Mencetak Struk Kasir &amp; Sinkronisasi...</span></>)}
-            {settlement === "success" && (<><CheckCircleIcon aria-hidden="true" /> <span>Pembayaran Sukses! (Laci Terbuka)</span></>)}
+            {settlement === "success" && (
+              <>
+                <CheckCircleIcon aria-hidden="true" />{" "}
+                <span>
+                  {method === "platform"
+                    ? "Pelunasan Mitra Sukses!"
+                    : method === "qris"
+                      ? "Pembayaran QRIS Sukses!"
+                      : "Pembayaran Sukses! (Laci Terbuka)"}
+                </span>
+              </>
+            )}
           </button>
           <div className="pos-settle__row">
             <button type="button" className="pos-btn pos-btn--outline">
@@ -324,8 +355,24 @@ function ThermalSlip({ order, method, tenderedNumber, change }: ThermalSlipProps
         </div>
         <div className="pos-thermal__line">
           <span>No: {order.ticket}</span>
-          <span>Meja: {order.table.replace("Meja ", "")}</span>
+          <span>
+            {order.orderType === "TAKE_AWAY"
+              ? "Bawa Pulang"
+              : order.channel === "delivery"
+                ? (order.orderType ?? "Online")
+                : `Meja: ${order.table.replace("Meja ", "")}`}
+          </span>
         </div>
+        {order.customerName ? (
+          <div className="pos-thermal__line">
+            <span>Pelanggan: {order.customerName}</span>
+          </div>
+        ) : null}
+        {order.externalReference ? (
+          <div className="pos-thermal__line">
+            <span>Ref: #{order.externalReference}</span>
+          </div>
+        ) : null}
 
         <div className="pos-thermal__items">
           {order.items.map((item) => (

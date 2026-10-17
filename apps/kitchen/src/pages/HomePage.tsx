@@ -235,6 +235,17 @@ export function HomePage(): ReactNode {
                       {order.tableCode ? (
                         <span className="ticket-area-sub">{order.tableCode}</span>
                       ) : null}
+                      {order.orderType === "TAKE_AWAY" ? (
+                        <span className="ticket-badge ticket-badge--takeaway">🥡 BUNGKUS / TAKE AWAY</span>
+                      ) : order.orderType === "GOFOOD" ? (
+                        <span className="ticket-badge ticket-badge--delivery ticket-badge--gofood">🛵 GOFOOD #{order.externalReference ?? "—"}</span>
+                      ) : order.orderType === "GRABFOOD" ? (
+                        <span className="ticket-badge ticket-badge--delivery ticket-badge--grabfood">🛵 GRABFOOD #{order.externalReference ?? "—"}</span>
+                      ) : order.orderType === "SHOPEEFOOD" ? (
+                        <span className="ticket-badge ticket-badge--delivery ticket-badge--shopeefood">🛵 SHOPEEFOOD #{order.externalReference ?? "—"}</span>
+                      ) : (
+                        <span className="ticket-badge ticket-badge--dinein">🍽️ MAKAN DI TEMPAT</span>
+                      )}
                     </div>
                     <div className={`ticket-timer ${isOverdue ? "timer-alert" : ""}`}>
                       ⏱ {elapsed}m
@@ -280,7 +291,11 @@ export function HomePage(): ReactNode {
                     )}
                     {order.status === "READY" && (
                       <div className="ticket-ready-notice">
-                        ✓ Menunggu Waiter Ambil
+                        {order.orderType === "TAKE_AWAY"
+                          ? "✓ Siap Diambil Pelanggan / Kasir"
+                          : order.orderType === "GOFOOD" || order.orderType === "GRABFOOD" || order.orderType === "SHOPEEFOOD"
+                            ? "✓ Siap Diambil Driver Online"
+                            : "✓ Menunggu Waiter Ambil"}
                       </div>
                     )}
                   </div>

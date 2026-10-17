@@ -13,7 +13,13 @@
  */
 import { useCallback, useEffect, useState } from "react";
 
-import type { DraftOrder, PublicCatalogCategory, RestaurantTable, TableSession } from "@tepisawah/database";
+import type {
+  DraftOrder,
+  OrderType,
+  PublicCatalogCategory,
+  RestaurantTable,
+  TableSession,
+} from "@tepisawah/database";
 
 import {
   loadManualOrderCatalog,
@@ -35,11 +41,17 @@ export interface ManualOrderState {
   /** Catalog + tables load. */
   loadPhase: LoadPhase;
   loadError: string | null;
+  /** Service channel / dining mode (DINE_IN, TAKE_AWAY, GOFOOD, GRABFOOD, SHOPEEFOOD) */
+  orderType: OrderType;
+  /** Guest name for take away or tableless order */
+  customerName: string;
+  /** External delivery platform reference (e.g. #GF-1234, Driver name) */
+  externalReference: string;
   catalog: PublicCatalogCategory[];
   tables: RestaurantTable[];
   /** Active (OPEN) session per table id. */
   sessions: Map<string, TableSession>;
-  /** The table the waiter is entering an order for. */
+  /** The table the waiter is entering an order for (required for DINE_IN). */
   tableId: string | null;
   /** Lines keyed by product id for easy quantity bumps. */
   lines: ManualOrderLine[];
@@ -65,6 +77,9 @@ export interface ManualOrderState {
 const INITIAL: ManualOrderState = {
   loadPhase: "loading",
   loadError: null,
+  orderType: "DINE_IN",
+  customerName: "",
+  externalReference: "",
   catalog: [],
   tables: [],
   sessions: new Map(),
@@ -100,6 +115,9 @@ export function useManualOrder(): ManualOrderState & {
   canSubmit: boolean;
   /** True once a draft exists and it has not been sent to the kitchen yet. */
   canConfirm: boolean;
+  setOrderType: (orderType: OrderType) => void;
+  setCustomerName: (customerName: string) => void;
+  setExternalReference: (externalReference: string) => void;
   setTable: (tableId: string) => void;
   openSessionForSelectedTable: () => Promise<void>;
   addLine: (productId: string) => void;
@@ -160,13 +178,18 @@ export function useManualOrder(): ManualOrderState & {
   const activeSession = state.tableId ? state.sessions.get(state.tableId) ?? null : null;
 
   const submit = useCallback(async () => {
-    if (!state.tableId || !activeSession || state.lines.length === 0) return;
+    const isDineIn = state.orderType === "DINE_IN";
+    if (isDineIn && (!state.tableId || !activeSession)) return;
+    if (state.lines.length === 0) return;
 
     setState((prev) => ({ ...prev, submitPhase: "submitting", submitError: null }));
 
     const result = await submitManualOrder({
-      tableId: state.tableId,
-      tableSessionId: activeSession.id,
+      orderType: state.orderType,
+      customerName: state.customerName.trim() || null,
+      externalReference: state.externalReference.trim() || null,
+      tableId: isDineIn ? state.tableId : null,
+      tableSessionId: isDineIn ? (activeSession?.id ?? null) : null,
       items: state.lines,
       customerNote: state.customerNote.trim() || null,
       internalNote: state.internalNote.trim() || null,
@@ -188,7 +211,17 @@ export function useManualOrder(): ManualOrderState & {
       submitError: null,
       created: result.data!.order,
     }));
-  }, [state.tableId, state.lines, state.customerNote, state.internalNote, activeSession]);
+  }, [
+    state.orderType,
+    state.customerName,
+    state.externalReference,
+    state.tableId,
+    state.lines,
+    state.customerNote,
+    state.internalNote,
+    state.attemptId,
+    activeSession,
+  ]);
 
   /**
    * Send the accepted draft to PENDING_CONFIRMATION (API_CONTRACT.md §11.2).
@@ -258,7 +291,11 @@ export function useManualOrder(): ManualOrderState & {
     openingSession,
     sessionError,
     canSubmit:
-      activeSession !== null &&
+      (state.orderType === "DINE_IN"
+        ? activeSession !== null
+        : state.orderType === "TAKE_AWAY"
+        ? state.customerName.trim().length > 0
+        : state.externalReference.trim().length > 0) &&
       state.lines.length > 0 &&
       state.submitPhase !== "submitting" &&
       state.submitPhase !== "done",
@@ -268,6 +305,17 @@ export function useManualOrder(): ManualOrderState & {
       state.confirmPhase !== "confirming" &&
       state.confirmPhase !== "done",
     openSessionForSelectedTable,
+    setOrderType: (orderType) => {
+      setState((prev) => ({
+        ...prev,
+        orderType,
+        created: null,
+        submitPhase: "idle",
+        attemptId: newAttemptId(),
+      }));
+    },
+    setCustomerName: (customerName) => setState((prev) => ({ ...prev, customerName })),
+    setExternalReference: (externalReference) => setState((prev) => ({ ...prev, externalReference })),
     setTable: (tableId) => {
       setSessionError(null);
       setState((prev) => ({

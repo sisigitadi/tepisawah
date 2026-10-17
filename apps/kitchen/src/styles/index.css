@@ -163,6 +163,56 @@ body:has(.kds-screen),
   color: #7d8a7d;
 }
 
+.ticket-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.725rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  margin-top: 0.4rem;
+  width: fit-content;
+}
+
+.ticket-badge--dinein {
+  background: #142a18;
+  color: #86efac;
+  border: 1px solid #22c55e;
+}
+
+.ticket-badge--takeaway {
+  background: #431407;
+  color: #fdba74;
+  border: 1px solid #f97316;
+}
+
+.ticket-badge--delivery {
+  background: #172554;
+  color: #93c5fd;
+  border: 1px solid #3b82f6;
+}
+
+.ticket-badge--gofood {
+  background: #022c22;
+  color: #6ee7b7;
+  border: 1px solid #10b981;
+}
+
+.ticket-badge--grabfood {
+  background: #064e3b;
+  color: #a7f3d0;
+  border: 1px solid #059669;
+}
+
+.ticket-badge--shopeefood {
+  background: #4a1506;
+  color: #fed7aa;
+  border: 1px solid #ea580c;
+}
+
+
 .ticket-timer {
   font-size: 1.1rem;
   font-weight: 700;

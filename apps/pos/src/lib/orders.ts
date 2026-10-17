@@ -98,14 +98,40 @@ function toQueueOrder(
   order: StaffOrder,
   categoryOf: Map<string, string>,
 ): QueueOrder {
+  let channel: QueueOrder["channel"] = order.source === "CUSTOMER_QR" ? "qr" : "waiter";
+  if (order.orderType === "TAKE_AWAY") {
+    channel = "takeaway";
+  } else if (
+    order.orderType === "GOFOOD" ||
+    order.orderType === "GRABFOOD" ||
+    order.orderType === "SHOPEEFOOD"
+  ) {
+    channel = "delivery";
+  }
+
+  const areaDescription =
+    order.tableCode ??
+    (order.orderType === "TAKE_AWAY"
+      ? "Bawa Pulang / Take Away"
+      : order.orderType === "GOFOOD"
+        ? "GoFood Delivery"
+        : order.orderType === "GRABFOOD"
+          ? "GrabFood Delivery"
+          : order.orderType === "SHOPEEFOOD"
+            ? "ShopeeFood Delivery"
+            : "Layanan Kasir");
+
   return {
     // The selection/react key is the database id; the human handle is `ticket`.
     id: order.id,
     orderId: order.id,
     ticket: `#${order.orderNumber}`,
     table: order.tableName,
-    area: order.tableCode,
-    channel: order.source === "CUSTOMER_QR" ? "qr" : "waiter",
+    area: areaDescription,
+    channel,
+    orderType: order.orderType,
+    customerName: order.customerName,
+    externalReference: order.externalReference,
     status: "waiting",
     time: formatWibTime(order.createdAt),
     pax: 1,
