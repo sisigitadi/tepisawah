@@ -528,7 +528,9 @@ input {
 .pos-subbar__title-row {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  row-gap: 0.5rem;
 }
 
 .pos-subbar__title {
@@ -621,18 +623,29 @@ input {
 /* ===================== SUBBAR QUEUE LINK ===================== */
 
 .pos-subbar__queue-link {
-  margin-left: 0.75rem;
-  padding: 0.15rem 0.6rem;
-  border: 1px solid rgba(24, 58, 29, 0.35);
+  margin-left: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid rgba(24, 58, 29, 0.4);
   border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 700;
   color: #183a1d;
+  background: #ffffff;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 36px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
 }
 
-.pos-subbar__queue-link:hover {
-  background: rgba(24, 58, 29, 0.08);
+.pos-subbar__queue-link:hover,
+.pos-subbar__queue-link:focus-visible {
+  background: var(--surface-highest, #f4edd0);
+  border-color: var(--primary, #183a1d);
+  outline: 2px solid var(--primary, #183a1d);
 }
 
 /* ===================== CONFIRMATION QUEUE ===================== */
@@ -1039,6 +1052,23 @@ input {
     gap: 0.75rem;
   }
 
+  .pos-subbar__identity {
+    width: 100%;
+  }
+
+  .pos-subbar__title-row {
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    row-gap: 0.45rem;
+  }
+
+  .pos-subbar__queue-link {
+    margin-left: 0;
+    min-height: 40px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.825rem;
+  }
+
   .pos-subbar__metrics {
     width: 100%;
     justify-content: space-between;
@@ -1060,6 +1090,16 @@ input {
 }
 
 @media (max-width: 36rem) {
+  .pos-subbar__identity {
+    align-items: flex-start;
+  }
+
+  .pos-subbar__queue-link {
+    width: 100%;
+    justify-content: center;
+    margin-top: 0.35rem;
+  }
+
   .pos-subbar__metrics {
     flex-direction: column;
     align-items: stretch;
