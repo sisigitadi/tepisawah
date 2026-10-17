@@ -695,6 +695,52 @@ body {
   background: #ffffff;
 }
 
+.manual-order__modifiers {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-top: 0.45rem;
+  margin-top: 0.2rem;
+  border-top: 1px dashed rgba(0, 0, 0, 0.08);
+}
+
+.manual-order__modifiers-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-coffeebrown);
+  text-transform: uppercase;
+}
+
+.manual-order__modifier-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.manual-order__mod-chip {
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  background: #fafaf9;
+  color: var(--color-text-main);
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.manual-order__mod-chip:hover {
+  border-color: var(--color-forest);
+}
+
+.manual-order__mod-chip--selected {
+  background: var(--color-forest);
+  color: #ffffff;
+  border-color: var(--color-forest);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
 /* Sticky Bottom Action Bar */
 .manual-order__actions {
   position: sticky;
