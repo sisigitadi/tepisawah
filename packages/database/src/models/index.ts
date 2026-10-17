@@ -17,3 +17,5 @@ export * from "./orders.js";
 export * from "./orders-types.js";
 export * from "./orders-validation.js";
 export * from "./settings-validation.js";
+export * from "./cash-drawer.js";
+export * from "./cash-drawer-types.js";

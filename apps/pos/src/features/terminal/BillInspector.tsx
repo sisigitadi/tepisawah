@@ -23,10 +23,13 @@ import {
 interface BillInspectorProps {
   order: QueueOrder;
   onPrint: () => void;
+  onVoid?: () => void;
+  onReprint?: () => void;
 }
 
-export function BillInspector({ order, onPrint }: BillInspectorProps): ReactNode {
+export function BillInspector({ order, onPrint, onVoid, onReprint }: BillInspectorProps): ReactNode {
   const portions = order.items.reduce((sum, item) => sum + item.qty, 0);
+  const isHistory = order.status === "paid" || order.status === "void";
 
   return (
     <section className="pos-inspector" aria-label="Pemeriksa tagihan aktif">
@@ -34,7 +37,13 @@ export function BillInspector({ order, onPrint }: BillInspectorProps): ReactNode
         <div className="pos-inspector__banner-glow" aria-hidden="true" />
         <div className="pos-inspector__banner-main">
           <div className="pos-inspector__eyebrow">
-            <span className="pos-inspector__badge">Pemeriksaan Tagihan Aktif</span>
+            <span className="pos-inspector__badge">
+              {order.status === "paid"
+                ? "Tagihan Telah Dilunasi"
+                : order.status === "void"
+                  ? "Pesanan Dibatalkan (Void)"
+                  : "Pemeriksaan Tagihan Aktif"}
+            </span>
             <span className="pos-inspector__ticket">Tiket {order.ticket}</span>
           </div>
           <h2 className="pos-inspector__title">
@@ -81,7 +90,7 @@ export function BillInspector({ order, onPrint }: BillInspectorProps): ReactNode
             Rincian Menu Dipesan ({order.items.length} Varian • {portions} Porsi)
           </span>
           <button type="button" className="pos-registry__note">
-            <NoteIcon aria-hidden="true" /> Tambah Catatan Meja
+            <NoteIcon aria-hidden="true" /> Catatan Meja
           </button>
         </div>
 
@@ -146,12 +155,44 @@ export function BillInspector({ order, onPrint }: BillInspectorProps): ReactNode
         </div>
 
         <div className="pos-inspector__actions">
-          <button type="button" className="pos-btn pos-btn--outline pos-btn--grow" onClick={onPrint}>
-            <PrintIcon aria-hidden="true" /> Cetak Struk Dapur / Bill Tamu
-          </button>
-          <button type="button" className="pos-btn pos-btn--ghost-danger">
-            <XCircleIcon aria-hidden="true" /> Void Menu
-          </button>
+          {order.status === "paid" ? (
+            <button
+              type="button"
+              className="pos-btn pos-btn--primary pos-btn--grow"
+              onClick={onReprint || onPrint}
+            >
+              <PrintIcon aria-hidden="true" /> Cetak Ulang Struk (Reprint Salinan)
+            </button>
+          ) : order.status === "void" ? (
+            <div
+              style={{
+                width: "100%",
+                padding: "0.6rem 1rem",
+                borderRadius: "6px",
+                background: "#fef2f2",
+                border: "1px solid #fecaca",
+                color: "#991b1b",
+                fontWeight: 700,
+                textAlign: "center",
+                fontSize: "0.85rem",
+              }}
+            >
+              🚫 PESANAN INI TELAH DIBATALKAN / VOID
+            </div>
+          ) : (
+            <>
+              <button type="button" className="pos-btn pos-btn--outline pos-btn--grow" onClick={onPrint}>
+                <PrintIcon aria-hidden="true" /> Cetak Struk Dapur / Bill Tamu
+              </button>
+              <button
+                type="button"
+                className="pos-btn pos-btn--ghost-danger"
+                onClick={onVoid}
+              >
+                <XCircleIcon aria-hidden="true" /> Void Menu
+              </button>
+            </>
+          )}
         </div>
       </div>
     </section>

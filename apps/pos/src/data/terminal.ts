@@ -14,7 +14,7 @@
 import type { OrderType } from "@tepisawah/database";
 
 export type OrderChannel = "qr" | "waiter" | "takeaway" | "delivery";
-export type OrderStatus = "waiting" | "process" | "hold";
+export type OrderStatus = "waiting" | "process" | "hold" | "paid" | "void";
 
 export interface BillItem {
   id: string;
@@ -46,6 +46,12 @@ export interface QueueOrder {
   bill?: { subtotal: number; discount: number; tax: number; total: number };
   /** Optimistic-concurrency handle for the settle transition (§26). */
   version?: number;
+  /** Original raw status from database (e.g. "PAID", "VOID", "SERVED"). */
+  rawStatus?: string;
+  /** Flag indicating this is a reprinted receipt. */
+  isReprint?: boolean;
+  /** Timestamp when reprint occurred. */
+  reprintTime?: string;
 }
 
 export const QUEUE_ORDERS: QueueOrder[] = [

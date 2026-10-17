@@ -286,7 +286,7 @@ export function SettingsPage(): ReactNode {
           },
           {
             id: "taxFinance",
-            label: "Pajak & Biaya (PB1)",
+            label: "Pajak, QRIS & Struk",
             content: (
               <TaxFinanceForm
                 editable={canManage}

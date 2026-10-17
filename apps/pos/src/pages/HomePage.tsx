@@ -20,17 +20,25 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useAuth } from "@tepisawah/auth";
 import { PERMISSIONS } from "@tepisawah/permissions";
-import { orderBoardStatusLabel, useOrderBoardChannel } from "@tepisawah/database";
+import {
+  orderBoardStatusLabel,
+  useOrderBoardChannel,
+  getCurrentCashShift,
+  type CashShift,
+} from "@tepisawah/database";
 import { TerminalChrome } from "../features/terminal/TerminalChrome.js";
 import { OrderQueue, type QueueFilter } from "../features/terminal/OrderQueue.js";
 import { BillInspector } from "../features/terminal/BillInspector.js";
 import { PaymentExecution } from "../features/terminal/PaymentExecution.js";
+import { CashDrawerModal } from "../features/shifts/CashDrawerModal.js";
+import { VoidOrderModal } from "../features/terminal/VoidOrderModal.js";
 import {
   grandTotalOf,
+  formatIDR,
   type PaymentMethod,
   type QueueOrder,
 } from "../data/terminal.js";
-import { loadPayQueue, settleOrder } from "../lib/orders.js";
+import { loadPayQueue, loadHistoryQueue, settleOrder, voidOrder } from "../lib/orders.js";
 import { getSupabaseClient } from "../lib/supabase.js";
 import {
   LockResetIcon,
@@ -39,8 +47,13 @@ import {
 } from "@tepisawah/ui";
 
 export function HomePage(): ReactNode {
-  const { can } = useAuth();
+  const { user, profile, can } = useAuth();
   const [orders, setOrders] = useState<QueueOrder[]>([]);
+  const [historyOrders, setHistoryOrders] = useState<QueueOrder[]>([]);
+  const [currentShift, setCurrentShift] = useState<CashShift | null>(null);
+  const [showCashDrawerModal, setShowCashDrawerModal] = useState<boolean>(false);
+  const [voidTargetOrder, setVoidTargetOrder] = useState<QueueOrder | null>(null);
+  const [showVoidModal, setShowVoidModal] = useState<boolean>(false);
   const [loaded, setLoaded] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [settleError, setSettleError] = useState<string | null>(null);
@@ -51,6 +64,27 @@ export function HomePage(): ReactNode {
   const [method, setMethod] = useState<PaymentMethod["id"]>("cash");
   const [tendered, setTendered] = useState<string>("300.000");
   const [now, setNow] = useState<string>("27 Sep 2026, 11:32 WIB");
+
+  const cashierId = user?.id ?? "cashier-pos";
+  const cashierName = profile?.display_name || profile?.username || user?.email || "Kasir Utama";
+
+  const refreshShift = useCallback(async () => {
+    try {
+      const client = getSupabaseClient();
+      const res = await getCurrentCashShift(client);
+      if (res.data?.active && res.data.shift) {
+        setCurrentShift(res.data.shift);
+      } else {
+        setCurrentShift(null);
+      }
+    } catch {
+      // Non-blocking
+    }
+  }, []);
+
+  useEffect(() => {
+    void refreshShift();
+  }, [refreshShift]);
 
   // Live WIB clock for the terminal header.
   useEffect(() => {
@@ -88,18 +122,35 @@ export function HomePage(): ReactNode {
 
   // Keep a valid selection as the live queue changes underneath.
   useEffect(() => {
-    if (orders.length === 0) {
+    const list = filter === "history" ? historyOrders : orders;
+    if (list.length === 0) {
       if (selectedId !== "") setSelectedId("");
       return;
     }
-    if (!orders.some((order) => order.id === selectedId)) {
-      setSelectedId(orders[0]!.id);
+    if (!list.some((order) => order.id === selectedId)) {
+      setSelectedId(list[0]!.id);
     }
-  }, [orders, selectedId]);
+  }, [filter, historyOrders, orders, selectedId]);
+
+  // Load history queue when switching to history filter
+  useEffect(() => {
+    if (filter === "history") {
+      void loadHistoryQueue().then((res) => {
+        if (res.orders) {
+          setHistoryOrders(res.orders);
+          if (res.orders.length > 0 && !res.orders.some((o) => o.id === selectedId)) {
+            setSelectedId(res.orders[0]!.id);
+          }
+        }
+      });
+    }
+  }, [filter, selectedId]);
+
+  const activeOrders = filter === "history" ? historyOrders : orders;
 
   const selectedOrder: QueueOrder | undefined = useMemo(
-    () => orders.find((order) => order.id === selectedId),
-    [orders, selectedId],
+    () => activeOrders.find((order) => order.id === selectedId),
+    [activeOrders, selectedId],
   );
 
   // Auto-switch to platform payment for online delivery orders
@@ -113,7 +164,8 @@ export function HomePage(): ReactNode {
 
   const filteredOrders = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    return orders.filter((order) => {
+    const source = filter === "history" ? historyOrders : orders;
+    return source.filter((order) => {
       if (filter === "waiting" && order.status !== "waiting") return false;
       if (filter === "process" && order.status !== "process") return false;
       if (!needle) return true;
@@ -124,7 +176,7 @@ export function HomePage(): ReactNode {
         order.area.toLowerCase().includes(needle)
       );
     });
-  }, [filter, orders, query]);
+  }, [filter, historyOrders, orders, query]);
 
   const unpaidTotal = useMemo(
     () => orders.reduce((sum, order) => sum + grandTotalOf(order), 0),
@@ -153,8 +205,30 @@ export function HomePage(): ReactNode {
         return;
       }
       void refresh();
+      void refreshShift();
+      void loadHistoryQueue().then((res) => {
+        if (res.orders) setHistoryOrders(res.orders);
+      });
     });
-  }, [can, refresh, selectedOrder, settling]);
+  }, [can, refresh, refreshShift, selectedOrder, settling]);
+
+  const handleOpenVoid = useCallback((order: QueueOrder) => {
+    setVoidTargetOrder(order);
+    setShowVoidModal(true);
+  }, []);
+
+  const handleConfirmVoid = useCallback(async (reason: string, notes?: string) => {
+    if (!voidTargetOrder) return;
+    const res = await voidOrder(voidTargetOrder, reason, notes);
+    if (res.error) {
+      throw new Error(res.error.message);
+    }
+    void refresh();
+    void refreshShift();
+    void loadHistoryQueue().then((hRes) => {
+      if (hRes.orders) setHistoryOrders(hRes.orders);
+    });
+  }, [voidTargetOrder, refresh, refreshShift]);
 
   // Enterprise POS shortcuts: F1 search, F3 settle, ESC cancel tender.
   useEffect(() => {
@@ -181,10 +255,16 @@ export function HomePage(): ReactNode {
           <div className="pos-subbar__identity">
             <div className="pos-subbar__icon" aria-hidden="true">
               <TerminalGlyph />
-            </div>              <div>
+            </div>
+            <div>
               <div className="pos-subbar__title-row">
                 <span className="pos-subbar__title">Kasir Utama #01</span>
-                <span className="pos-subbar__online">Terminal Online</span>
+                <span
+                  className="pos-subbar__online"
+                  style={!currentShift ? { background: "#fef2f2", color: "#991b1b", border: "1px solid #fecaca" } : undefined}
+                >
+                  {currentShift ? "Kasir Dibuka" : "Kasir Ditutup"}
+                </span>
                 <span
                   className={`live-chip live-chip--${boardChannel.status}`}
                   title="Koneksi realtime antrean pembayaran"
@@ -196,30 +276,44 @@ export function HomePage(): ReactNode {
                 </a>
               </div>
               <p className="pos-subbar__hint">
-                Lobi Utama Ciperna • Shift Pagi (07:00 - 15:30) • Sinkronisasi EDC &amp; QRIS Siap
+                {currentShift
+                  ? `Lobi Utama Ciperna • ${currentShift.shiftName} (${currentShift.staffName}) • Sinkronisasi EDC & QRIS Siap`
+                  : "Laci kasir belum dibuka. Klik tombol 'Laci Kas' untuk memasukkan modal awal kasir."}
               </p>
             </div>
           </div>
 
           <div className="pos-subbar__metrics">
-            <div className="pos-metric">
+            <div
+              className="pos-metric"
+              onClick={() => setShowCashDrawerModal(true)}
+              style={{ cursor: "pointer" }}
+              title="Klik untuk membuka kelola laci kas"
+            >
               <WalletIcon aria-hidden="true" />
               <div className="pos-metric__text">
                 <span className="pos-metric__label">Kas Laci Sekarang</span>
-                <span className="pos-metric__value">Rp 2.450.000</span>
+                <span className="pos-metric__value">
+                  {currentShift ? formatIDR(currentShift.expectedCash) : "Rp 0 (Tutup)"}
+                </span>
               </div>
             </div>
             <div className="pos-metric">
               <ReceiptIcon aria-hidden="true" />
               <div className="pos-metric__text">
-                <span className="pos-metric__label">Selesai Hari Ini</span>
+                <span className="pos-metric__label">Status Antrean Hari Ini</span>
                 <span className="pos-metric__value pos-metric__value--go">
-                  {loaded ? `${orders.length} Tagihan Tertunda` : "Memuat…"}
+                  {loaded ? `${orders.length} Antrean • ${historyOrders.length} Selesai` : "Memuat…"}
                 </span>
               </div>
             </div>
-            <button type="button" className="pos-drawer">
-              <LockResetIcon aria-hidden="true" /> Laci Kas
+            <button
+              type="button"
+              className="pos-drawer"
+              onClick={() => setShowCashDrawerModal(true)}
+              style={!currentShift ? { background: "#b91c1c", color: "#fff" } : undefined}
+            >
+              <LockResetIcon aria-hidden="true" /> {currentShift ? "Laci Kas" : "Buka Kasir"}
             </button>
           </div>
         </div>
@@ -253,27 +347,59 @@ export function HomePage(): ReactNode {
           {selectedOrder === undefined ? (
             <div className="pos-empty-bill">
               <p>
-                {loaded && orders.length === 0
-                  ? "Tidak ada tagihan menunggu pembayaran. Order yang sudah disajikan muncul di sini."
-                  : "Pilih satu order dari antrean untuk memeriksa tagihan."}
+                {filter === "history"
+                  ? "Pilih satu pesanan riwayat untuk mencetak ulang struk."
+                  : loaded && orders.length === 0
+                    ? "Tidak ada tagihan menunggu pembayaran. Order yang sudah disajikan muncul di sini."
+                    : "Pilih satu order dari antrean untuk memeriksa tagihan."}
               </p>
             </div>
           ) : (
             <>
-              <BillInspector order={selectedOrder} onPrint={() => window.print()} />
-
-              <PaymentExecution
+              <BillInspector
                 order={selectedOrder}
-                method={method}
-                tendered={tendered}
-                onMethodChange={setMethod}
-                onTenderedChange={setTendered}
-                onSettle={handleSettle}
+                onPrint={() => window.print()}
+                onVoid={() => selectedOrder && handleOpenVoid(selectedOrder)}
+                onReprint={() => {
+                  if (selectedOrder) {
+                    selectedOrder.isReprint = true;
+                    selectedOrder.reprintTime = `${new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit" }).format(new Date())} WIB`;
+                    window.print();
+                  }
+                }}
               />
+
+              {filter !== "history" && (
+                <PaymentExecution
+                  order={selectedOrder}
+                  method={method}
+                  tendered={tendered}
+                  onMethodChange={setMethod}
+                  onTenderedChange={setTendered}
+                  onSettle={handleSettle}
+                  onVoid={() => selectedOrder && handleOpenVoid(selectedOrder)}
+                />
+              )}
             </>
           )}
         </div>
       </div>
+
+      <CashDrawerModal
+        open={showCashDrawerModal}
+        onClose={() => setShowCashDrawerModal(false)}
+        currentShift={currentShift}
+        cashierId={cashierId}
+        cashierName={cashierName}
+        onShiftUpdated={() => void refreshShift()}
+      />
+
+      <VoidOrderModal
+        open={showVoidModal}
+        order={voidTargetOrder}
+        onClose={() => setShowVoidModal(false)}
+        onConfirmVoid={handleConfirmVoid}
+      />
     </TerminalChrome>
   );
 }

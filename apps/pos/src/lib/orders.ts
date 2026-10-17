@@ -72,6 +72,61 @@ export function settleOrder(
   });
 }
 
+/** The statuses for completed and cancelled order history. */
+const HISTORY_STATUSES = ["PAID", "VOID", "CANCELLED"] as const;
+
+/** The cashier's transaction history: settled and void orders today. */
+export async function loadHistoryQueue(): Promise<{
+  orders: QueueOrder[];
+  error: string | null;
+}> {
+  const [ordersResult, catalogResult] = await Promise.all([
+    fetchOrdersByStatuses(getSupabaseClient(), HISTORY_STATUSES),
+    fetchPublicCatalog(getSupabaseClient()),
+  ]);
+
+  if (ordersResult.error) {
+    return { orders: [], error: ordersResult.error.message };
+  }
+
+  const categoryOf = new Map<string, string>();
+  for (const product of catalogResult.data ?? []) {
+    categoryOf.set(product.productId, product.categoryName);
+  }
+
+  const mapped = (ordersResult.data ?? []).map((order) => toQueueOrder(order, categoryOf));
+  mapped.reverse();
+
+  return {
+    orders: mapped,
+    error: null,
+  };
+}
+
+/** Transition order to VOID with mandatory cancellation reason. */
+export function voidOrder(
+  order: QueueOrder,
+  reason: string,
+  notes?: string,
+): Promise<OrdersQueryResult<{ order: DraftOrder }>> {
+  if (!order.orderId) {
+    return Promise.resolve({
+      data: null,
+      error: { message: "Order ini tidak terhubung ke database." },
+    });
+  }
+  const cleanReason = reason.trim();
+  const cleanNotes = notes?.trim() ?? "";
+  const fullReason = cleanNotes.length > 0 ? `${cleanReason} (${cleanNotes})` : cleanReason;
+
+  return transitionOrder(getSupabaseClient(), {
+    orderId: order.orderId,
+    toStatus: "VOID",
+    reason: fullReason,
+    expectedVersion: order.version ?? null,
+  });
+}
+
 function categoryFor(
   productId: string | null,
   categoryOf: Map<string, string>,
@@ -89,8 +144,13 @@ function stationForStatus(status: StaffOrder["status"]): string {
     case "READY":
       return "Siap saji";
     case "SERVED":
-    default:
       return "Sudah disajikan";
+    case "PAID":
+      return "Lunas";
+    case "VOID":
+      return "Dibatalkan / Void";
+    default:
+      return status;
   }
 }
 
@@ -121,6 +181,13 @@ function toQueueOrder(
             ? "ShopeeFood Delivery"
             : "Layanan Kasir");
 
+  let queueStatus: QueueOrder["status"] = "waiting";
+  if (order.status === "PAID") {
+    queueStatus = "paid";
+  } else if (order.status === "VOID" || order.status === "CANCELLED") {
+    queueStatus = "void";
+  }
+
   return {
     // The selection/react key is the database id; the human handle is `ticket`.
     id: order.id,
@@ -132,7 +199,8 @@ function toQueueOrder(
     orderType: order.orderType,
     customerName: order.customerName,
     externalReference: order.externalReference,
-    status: "waiting",
+    status: queueStatus,
+    rawStatus: order.status,
     time: formatWibTime(order.createdAt),
     pax: 1,
     items: order.items.map((item) => ({

@@ -75,14 +75,29 @@ export function HomePage(): ReactNode {
 
   // Alert kitchen staff with an audible chime when new cooking tickets arrive
   const prevCountRef = useRef<number>(0);
+  const prevOrdersRef = useRef<StaffOrder[]>([]);
+  const [cancelNotification, setCancelNotification] = useState<string | null>(null);
+
   useEffect(() => {
     if (loaded && orders.length > prevCountRef.current && prevCountRef.current > 0) {
       playKitchenTicketChime();
     }
+    if (loaded && prevOrdersRef.current.length > 0) {
+      const removed = prevOrdersRef.current.filter((po) => !orders.some((o) => o.id === po.id));
+      if (removed.length > 0) {
+        const wasCooking = removed.filter((r) => r.status === "PREPARING" || r.status === "CONFIRMED");
+        if (wasCooking.length > 0) {
+          const names = wasCooking.map((c) => `#${c.orderNumber} (${c.tableName})`).join(", ");
+          setCancelNotification(`Pesanan ${names} telah dibatalkan / void oleh kasir. Hentikan proses masak.`);
+          window.setTimeout(() => setCancelNotification(null), 8000);
+        }
+      }
+    }
     if (loaded) {
       prevCountRef.current = orders.length;
+      prevOrdersRef.current = orders;
     }
-  }, [loaded, orders.length]);
+  }, [loaded, orders]);
 
   /**
    * One guarded server-side hop. The command re-validates the permission and
@@ -172,6 +187,41 @@ export function HomePage(): ReactNode {
           </button>
         </div>
       </header>
+
+      {cancelNotification && (
+        <div
+          style={{
+            background: "#fef2f2",
+            color: "#991b1b",
+            border: "2px solid #ef4444",
+            padding: "0.85rem 1.25rem",
+            borderRadius: "10px",
+            margin: "0.75rem 1.5rem",
+            fontWeight: 700,
+            fontSize: "1rem",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            boxShadow: "0 4px 12px rgba(239,68,68,0.2)",
+          }}
+        >
+          <span>🚫 {cancelNotification}</span>
+          <button
+            type="button"
+            onClick={() => setCancelNotification(null)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#991b1b",
+              cursor: "pointer",
+              fontWeight: 800,
+              fontSize: "1.2rem",
+            }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Board states */}
       {error !== null ? (
