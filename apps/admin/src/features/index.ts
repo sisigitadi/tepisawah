@@ -5,3 +5,6 @@
  * Each feature re-exports through this barrel once implemented; deep internal
  * imports are not allowed (§43).
  */
+
+export * from "./transactions/index.js";
+

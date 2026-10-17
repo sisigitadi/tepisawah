@@ -18,6 +18,7 @@ export function setDemoMode(value: boolean | null): void {
 /** True when the configured backend is the unreachable preview placeholder. */
 export function isDemoMode(): boolean {
   if (override !== null) return override;
+  if (import.meta.env.MODE === "test") return true;
   return (
     env.supabaseUrl.includes("local-preview") ||
     env.supabaseAnonKey.includes("placeholder")

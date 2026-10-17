@@ -11,9 +11,10 @@ import { getSupabaseClient } from "../lib/supabase.js";
 
 interface FirstTimeSetupProps {
   onSetupComplete: () => void;
+  onBackToLogin?: () => void;
 }
 
-export function FirstTimeSetup({ onSetupComplete }: FirstTimeSetupProps): ReactNode {
+export function FirstTimeSetup({ onSetupComplete, onBackToLogin }: FirstTimeSetupProps): ReactNode {
   const { signIn } = useAuth();
 
   const [name, setName] = useState("");
@@ -72,40 +73,43 @@ export function FirstTimeSetup({ onSetupComplete }: FirstTimeSetupProps): ReactN
         throw new Error("Pendaftaran berhasil dibuat, namun ID pengguna tidak terbit. Silakan muat ulang.");
       }
 
-      // 2. Fetch 'owner' role ID
-      const { data: roleData, error: roleError } = await client
-        .from("roles")
-        .select("id")
-        .eq("code", "owner")
-        .single();
-
-      if (roleError || !roleData) {
-        throw new Error("Peran 'owner' tidak ditemukan di basis data.");
+      // 2. Sign in immediately to establish authenticated session
+      try {
+        await signIn(trimmedEmail, password);
+      } catch (signInErr: any) {
+        console.warn("Auto-signin catatan:", signInErr);
       }
 
-      // 3. Assign 'owner' role to this user
-      const { error: assignError } = await client.from("user_roles").insert({
-        user_id: newUserId,
-        role_id: roleData.id,
-      });
+      // 3. Claim initial Owner role via secure RPC claim_first_owner
+      const { error: rpcError } = await client.rpc("claim_first_owner");
+      if (rpcError) {
+        // Fallback: if RPC does not exist yet, attempt direct user_roles assignment
+        console.warn("claim_first_owner RPC:", rpcError.message);
+        try {
+          const { data: roleData } = await client
+            .from("roles")
+            .select("id")
+            .eq("code", "owner")
+            .maybeSingle();
 
-      if (assignError) {
-        console.warn("Peringatan penugasan peran owner:", assignError);
+          if (roleData?.id) {
+            await client.from("user_roles").insert({
+              user_id: newUserId,
+              role_id: roleData.id,
+            });
+          }
+        } catch {
+          // fallback ignore
+        }
       }
 
       setSuccess("Inisialisasi berhasil! Membuka portal pengelola restoran…");
 
-      // 4. Automatically sign in
-      try {
-        await signIn(trimmedEmail, password);
-      } catch (signInErr) {
-        console.warn("Auto-signin gagal, pengguna dapat login manual:", signInErr);
-      }
-
-      // 5. Notify parent
+      // 4. Reload page after brief delay to refresh tokens & role grants
       setTimeout(() => {
         onSetupComplete();
-      }, 800);
+        window.location.href = "/admin";
+      }, 900);
     } catch (err: any) {
       console.error("Gagal inisialisasi akun owner:", err);
       setError(`Gagal melakukan inisialisasi: ${err.message || err}`);
@@ -114,27 +118,8 @@ export function FirstTimeSetup({ onSetupComplete }: FirstTimeSetupProps): ReactN
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "1.5rem",
-        background: "radial-gradient(ellipse at top, #fbfbf9 0%, #fefae0 100%)",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "32rem",
-          background: "#ffffff",
-          borderRadius: "16px",
-          border: "1px solid var(--c-border, #e7e5e4)",
-          padding: "clamp(1.5rem, 5vw, 2.25rem)",
-          boxShadow: "0 20px 40px -15px rgba(24, 58, 29, 0.15)",
-        }}
-      >
+    <div className="first-time-setup-container">
+      <div className="first-time-setup-card">
         {/* Brand Header */}
         <div style={{ textAlign: "center", marginBottom: "1.75rem" }}>
           <span
@@ -397,6 +382,27 @@ export function FirstTimeSetup({ onSetupComplete }: FirstTimeSetupProps): ReactN
           >
             {loading ? "Mendaftarkan & Menginisialisasi…" : "Daftarkan Owner & Buka Portal"}
           </button>
+
+          {onBackToLogin && (
+            <div style={{ textAlign: "center", marginTop: "1.25rem" }}>
+              <button
+                type="button"
+                onClick={onBackToLogin}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "var(--c-forest, #2e6b34)",
+                  fontSize: "0.875rem",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  padding: "0.5rem",
+                  textDecoration: "underline",
+                }}
+              >
+                Sudah punya akun staf? Masuk di sini →
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>

@@ -11,7 +11,7 @@
  * and server-enforced RLS.
  */
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useAuth } from "@tepisawah/auth";
 import { PERMISSIONS } from "@tepisawah/permissions";
@@ -34,10 +34,194 @@ import {
   ReservationsPage,
   CmsPage,
   StaffPage,
+  TransactionsLedgerPage,
 } from "@tepisawah/admin";
 
-type AdminTab = "home" | "staff" | "reservations" | "cms" | "settings" | "catalog" | "tables" | "sessions";
+type AdminTab = "home" | "transactions" | "staff" | "reservations" | "cms" | "settings" | "catalog" | "tables" | "sessions";
 export type FrontOfHouseTab = "confirm" | "serve" | "manual-order" | "terminal";
+
+interface AdminTabDef {
+  readonly id: AdminTab;
+  readonly label: string;
+  readonly icon: string;
+}
+
+const ADMIN_TABS: readonly AdminTabDef[] = [
+  { id: "home", label: "Beranda", icon: "📊" },
+  { id: "transactions", label: "Buku Transaksi", icon: "💰" },
+  { id: "staff", label: "Kelola Staf", icon: "👥" },
+  { id: "reservations", label: "Reservasi Meja", icon: "📅" },
+  { id: "cms", label: "Konten Web", icon: "🌐" },
+  { id: "settings", label: "Pengaturan", icon: "⚙️" },
+  { id: "catalog", label: "Katalog Menu", icon: "📖" },
+  { id: "tables", label: "Meja & QR", icon: "🪑" },
+  { id: "sessions", label: "Sesi Meja", icon: "⏱️" },
+];
+
+function AdminSubnavBar({
+  activeTab,
+  onSelectTab,
+}: {
+  activeTab: AdminTab;
+  onSelectTab: (tab: AdminTab) => void;
+}): ReactNode {
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+  const [showQuickMenu, setShowQuickMenu] = useState(false);
+
+  const checkScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 15);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 15);
+  }, []);
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener("resize", checkScroll);
+    return () => window.removeEventListener("resize", checkScroll);
+  }, [checkScroll]);
+
+  // Handle Escape key to close quick menu
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape" && showQuickMenu) {
+        setShowQuickMenu(false);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showQuickMenu]);
+
+  const scrollByAmount = (delta: number) => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: delta, behavior: "smooth" });
+    }
+  };
+
+  // Scroll active tab into view smoothly
+  useEffect(() => {
+    if (scrollRef.current) {
+      const activeBtn = scrollRef.current.querySelector<HTMLElement>(".staff-subnav-btn--active");
+      if (activeBtn) {
+        activeBtn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      }
+    }
+    const timer = setTimeout(checkScroll, 300);
+    return () => clearTimeout(timer);
+  }, [activeTab, checkScroll]);
+
+  const currentTabMeta: AdminTabDef = ADMIN_TABS.find((t) => t.id === activeTab) ?? {
+    id: "home",
+    label: "Beranda",
+    icon: "📊",
+  };
+
+  return (
+    <div className="staff-admin-nav-container">
+      {/* Top Mobile Quick Row: Current Tab indicator + "Menu Cepat" Button */}
+      <div className="staff-admin-quick-header">
+        <div className="staff-admin-active-badge">
+          <span className="staff-admin-active-icon" aria-hidden="true">{currentTabMeta.icon}</span>
+          <span className="staff-admin-active-title">{currentTabMeta.label}</span>
+        </div>
+        <div className="staff-quick-jump-wrapper">
+          <button
+            type="button"
+            className="staff-quick-jump-trigger"
+            onClick={() => setShowQuickMenu((prev) => !prev)}
+            aria-expanded={showQuickMenu}
+            aria-haspopup="true"
+            aria-label="Pilih menu pengelola secara cepat"
+          >
+            <span>Pilih Menu</span>
+            <span className="staff-quick-jump-arrow">{showQuickMenu ? "▲" : "▼"}</span>
+          </button>
+
+          {showQuickMenu && (
+            <>
+              <div
+                className="staff-quick-nav-backdrop"
+                onClick={() => setShowQuickMenu(false)}
+                aria-hidden="true"
+              />
+              <div className="staff-quick-nav-popover" role="menu">
+                <div className="staff-quick-nav-popover-header">
+                  Pilih Modul Pengelola
+                </div>
+                {ADMIN_TABS.map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    role="menuitem"
+                    className={`staff-quick-nav-item ${activeTab === tab.id ? "staff-quick-nav-item--active" : ""}`}
+                    onClick={() => {
+                      onSelectTab(tab.id);
+                      setShowQuickMenu(false);
+                    }}
+                  >
+                    <span className="staff-quick-nav-icon" aria-hidden="true">{tab.icon}</span>
+                    <span className="staff-quick-nav-label">{tab.label}</span>
+                    {activeTab === tab.id && <span className="staff-quick-nav-check">✓</span>}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Main Tab Scroller with Left & Right Arrow Buttons */}
+      <div className="staff-subnav-scroll-wrapper">
+        <button
+          type="button"
+          className={`staff-nav-arrow-btn staff-nav-arrow-btn--left ${canScrollLeft ? "staff-nav-arrow-btn--visible" : ""}`}
+          onClick={() => scrollByAmount(-220)}
+          aria-label="Geser tab ke kiri"
+          title="Geser ke kiri"
+        >
+          ‹
+        </button>
+
+        {canScrollLeft && <div className="staff-subnav-fade-left" aria-hidden="true" />}
+
+        <div
+          ref={scrollRef}
+          className="staff-subnav-bar"
+          onScroll={checkScroll}
+          role="tablist"
+        >
+          {ADMIN_TABS.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              className={`staff-subnav-btn ${activeTab === tab.id ? "staff-subnav-btn--active" : ""}`}
+              onClick={() => onSelectTab(tab.id)}
+            >
+              <span className="staff-tab-icon" aria-hidden="true">{tab.icon}</span>
+              <span>{tab.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {canScrollRight && <div className="staff-subnav-fade-right" aria-hidden="true" />}
+
+        <button
+          type="button"
+          className={`staff-nav-arrow-btn staff-nav-arrow-btn--right ${canScrollRight ? "staff-nav-arrow-btn--visible" : ""}`}
+          onClick={() => scrollByAmount(220)}
+          aria-label="Geser tab ke kanan"
+          title="Geser ke kanan"
+        >
+          ›
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export function AppRouter(): ReactNode {
   const { currentRoom, navigateTo } = useStaffNavigation();
@@ -53,10 +237,20 @@ export function AppRouter(): ReactNode {
     prevUserIdRef.current = user?.id;
   }, [user?.id, navigateTo]);
 
-  // Auto-redirect if current room is not permitted for the active role
+  // Smart Route Redirection: if current room is not permitted for the active role,
+  // automatically redirect to their primary operational room (e.g. cashier to pos, kitchen to kitchen)
   useEffect(() => {
-    if (user && currentRoom !== "portal" && !allowedRooms.has(currentRoom)) {
-      navigateTo("portal");
+    if (!user) return;
+    if (currentRoom !== "portal" && !allowedRooms.has(currentRoom)) {
+      if (allowedRooms.has("pos")) {
+        navigateTo("pos");
+      } else if (allowedRooms.has("kitchen")) {
+        navigateTo("kitchen");
+      } else if (allowedRooms.has("admin")) {
+        navigateTo("admin");
+      } else {
+        navigateTo("portal");
+      }
     }
   }, [user, currentRoom, allowedRooms, navigateTo]);
 
@@ -175,86 +369,40 @@ export function AppRouter(): ReactNode {
         )}
 
         {currentRoom === "admin" && (
-          <PermissionRoute permission={PERMISSIONS.SETTINGS_READ}>
-            <div className="staff-admin-room">
-              <div className="staff-subnav-bar">
-                <button
-                  type="button"
-                  className={`staff-subnav-btn ${adminTab === "home" ? "staff-subnav-btn--active" : ""}`}
-                  onClick={() => setAdminTab("home")}
-                >
-                  Beranda
-                </button>
-                <button
-                  type="button"
-                  className={`staff-subnav-btn ${adminTab === "staff" ? "staff-subnav-btn--active" : ""}`}
-                  onClick={() => setAdminTab("staff")}
-                >
-                  Kelola Staf
-                </button>
-                <button
-                  type="button"
-                  className={`staff-subnav-btn ${adminTab === "reservations" ? "staff-subnav-btn--active" : ""}`}
-                  onClick={() => setAdminTab("reservations")}
-                >
-                  Reservasi Meja
-                </button>
-                <button
-                  type="button"
-                  className={`staff-subnav-btn ${adminTab === "cms" ? "staff-subnav-btn--active" : ""}`}
-                  onClick={() => setAdminTab("cms")}
-                >
-                  Konten Web
-                </button>
-                <button
-                  type="button"
-                  className={`staff-subnav-btn ${adminTab === "settings" ? "staff-subnav-btn--active" : ""}`}
-                  onClick={() => setAdminTab("settings")}
-                >
-                  Pengaturan
-                </button>
-                <button
-                  type="button"
-                  className={`staff-subnav-btn ${adminTab === "catalog" ? "staff-subnav-btn--active" : ""}`}
-                  onClick={() => setAdminTab("catalog")}
-                >
-                  Katalog Menu
-                </button>
-                <button
-                  type="button"
-                  className={`staff-subnav-btn ${adminTab === "tables" ? "staff-subnav-btn--active" : ""}`}
-                  onClick={() => setAdminTab("tables")}
-                >
-                  Meja &amp; QR
-                </button>
-                <button
-                  type="button"
-                  className={`staff-subnav-btn ${adminTab === "sessions" ? "staff-subnav-btn--active" : ""}`}
-                  onClick={() => setAdminTab("sessions")}
-                >
-                  Sesi Meja
-                </button>
-              </div>
+          allowedRooms.has("admin") ? (
+            <PermissionRoute permission={PERMISSIONS.SETTINGS_READ}>
+              <div className="staff-admin-room">
+                <AdminSubnavBar
+                  activeTab={adminTab}
+                  onSelectTab={(tab) => setAdminTab(tab)}
+                />
 
-              {adminTab === "staff" ? (
-                <StaffPage />
-              ) : adminTab === "reservations" ? (
-                <ReservationsPage />
-              ) : adminTab === "cms" ? (
-                <CmsPage />
-              ) : adminTab === "settings" ? (
-                <SettingsPage />
-              ) : adminTab === "catalog" ? (
-                <CatalogPage />
-              ) : adminTab === "tables" ? (
-                <TablesPage />
-              ) : adminTab === "sessions" ? (
-                <SessionsPage />
-              ) : (
-                <AdminHomePage onNavigate={(tab) => setAdminTab(tab as AdminTab)} />
-              )}
+                {adminTab === "transactions" ? (
+                  <TransactionsLedgerPage />
+                ) : adminTab === "staff" ? (
+                  <StaffPage />
+                ) : adminTab === "reservations" ? (
+                  <ReservationsPage />
+                ) : adminTab === "cms" ? (
+                  <CmsPage />
+                ) : adminTab === "settings" ? (
+                  <SettingsPage />
+                ) : adminTab === "catalog" ? (
+                  <CatalogPage />
+                ) : adminTab === "tables" ? (
+                  <TablesPage />
+                ) : adminTab === "sessions" ? (
+                  <SessionsPage />
+                ) : (
+                  <AdminHomePage onNavigate={(tab) => setAdminTab(tab as AdminTab)} />
+                )}
+              </div>
+            </PermissionRoute>
+          ) : (
+            <div style={{ padding: "3rem", textAlign: "center", color: "#64748b" }}>
+              <p>Mengalihkan ke ruangan tugas operasional Anda...</p>
             </div>
-          </PermissionRoute>
+          )
         )}
       </ProtectedRoute>
     </RootLayout>

@@ -165,6 +165,12 @@ export const TENDER_PRESETS = [
   { label: "Rp 500.000", value: 500000 },
 ];
 
+import { loadTaxSettings, calculateBill, type TaxSettings } from "@tepisawah/config";
+
+export function getPosTaxSettings(): TaxSettings {
+  return loadTaxSettings();
+}
+
 /** Tax & service constants per the reference ledger. */
 export const TAX_RATE = 0.1;
 export const SERVICE_RATE = 0.05;
@@ -197,17 +203,23 @@ export function taxBaseOf(order: QueueOrder): number {
 /** PB1 resto tax (the server's own value on a live order). */
 export function taxOf(order: QueueOrder): number {
   if (order.bill) return order.bill.tax;
-  return taxBaseOf(order) * TAX_RATE;
+  const settings = loadTaxSettings();
+  const bill = calculateBill(subtotalOf(order), discountOf(order), settings);
+  return bill.taxAmount;
 }
 
 /** Hospitality service charge (not yet modelled server-side → 0 on live). */
 export function serviceOf(order: QueueOrder): number {
   if (order.bill) return 0;
-  return taxBaseOf(order) * SERVICE_RATE;
+  const settings = loadTaxSettings();
+  const bill = calculateBill(subtotalOf(order), discountOf(order), settings);
+  return bill.serviceAmount;
 }
 
 /** Grand total to settle (the server's own value on a live order). */
 export function grandTotalOf(order: QueueOrder): number {
   if (order.bill) return order.bill.total;
-  return taxBaseOf(order) + taxOf(order) + serviceOf(order);
+  const settings = loadTaxSettings();
+  const bill = calculateBill(subtotalOf(order), discountOf(order), settings);
+  return bill.total;
 }

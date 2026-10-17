@@ -9,6 +9,7 @@
 export { SettingsPage } from "./settings-page.js";
 export { OperatingHoursForm } from "./operating-hours-form.js";
 export { RestaurantSettingsForm } from "./restaurant-settings-form.js";
+export { TaxFinanceForm } from "./tax-finance-form.js";
 export {
   DAY_OF_WEEK_LABELS,
   toHoursInputs,

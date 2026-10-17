@@ -75,6 +75,7 @@ async function executeWipe() {
     await client.query("DELETE FROM public.table_session_order_links;");
     await client.query("DELETE FROM public.orders;");
     await client.query("DELETE FROM public.table_sessions;");
+    await client.query("DELETE FROM public.reservations;");
 
     console.log("2. Menghapus seluruh penugasan peran dan profil staf...");
     const rRoles = await client.query("DELETE FROM public.user_roles;");

@@ -27,6 +27,7 @@ import type { ReactNode } from "react";
 import { OperatingHoursForm } from "./operating-hours-form.js";
 import { RestaurantSettingsForm } from "./restaurant-settings-form.js";
 import { OrderFlowForm } from "./order-flow-form.js";
+import { TaxFinanceForm } from "./tax-finance-form.js";
 import {
   loadSettings,
   saveHours,
@@ -48,7 +49,7 @@ import {
 
 const SUPPORTED_TIMEZONES = ["Asia/Jakarta", "Asia/Makassar", "Asia/Jayapura"];
 
-type TabId = "profile" | "hours" | "orderFlow";
+type TabId = "profile" | "hours" | "orderFlow" | "taxFinance";
 
 /**
  * Loading placeholder. Deliberately renders no real heading: the page heading
@@ -278,6 +279,16 @@ export function SettingsPage(): ReactNode {
             label: "Alur Pemesanan & Kasir",
             content: (
               <OrderFlowForm
+                editable={canManage}
+                onSavedToast={(msg) => pushToast("success", "Tersimpan", msg)}
+              />
+            ),
+          },
+          {
+            id: "taxFinance",
+            label: "Pajak & Biaya (PB1)",
+            content: (
+              <TaxFinanceForm
                 editable={canManage}
                 onSavedToast={(msg) => pushToast("success", "Tersimpan", msg)}
               />

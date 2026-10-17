@@ -75,6 +75,8 @@ export interface AuthContextValue {
   signOut: () => Promise<void>;
   /** True when the session holds `permission` (UX only — backend re-validates). */
   can: (permission: Permission) => boolean;
+  /** Supabase client instance bound to this provider. */
+  supabase?: SupabaseClient<Database>;
 }
 
 const NO_GRANTS: Authorization = {
@@ -265,8 +267,9 @@ export function AuthProvider({
       signIn,
       signOut,
       can,
+      supabase,
     }),
-    [user, profile, authorization, status, isLoading, error, signIn, signOut, can],
+    [user, profile, authorization, status, isLoading, error, signIn, signOut, can, supabase],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

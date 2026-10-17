@@ -12,6 +12,10 @@ import "../../pos/src/styles/index.css";
 import "../../kitchen/src/styles/index.css";
 import "../../waiter/src/styles/index.css";
 import "../../admin/src/styles/index.css";
+import { initPwa } from "./lib/pwa.js";
+
+// Initialize PWA Service Worker & Install event listeners
+initPwa();
 
 const container = document.getElementById("root");
 if (!container) {

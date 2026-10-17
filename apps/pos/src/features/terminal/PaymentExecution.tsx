@@ -32,6 +32,7 @@ import {
   serviceOf,
   subtotalOf,
   taxOf,
+  getPosTaxSettings,
 } from "../../data/terminal.js";
 
 type SettlementState = "idle" | "printing" | "success";
@@ -310,8 +311,13 @@ function ThermalSlip({ order, method, tenderedNumber, change }: ThermalSlipProps
       <div className="pos-thermal__paper">
         <div className="pos-thermal__brand">Tepi Sawah Resto &amp; Cafe</div>
         <div className="pos-thermal__address">
-          Kawasan Wisata Sawah, Ciperna, Kec. Talun, Cirebon<br />WA: 0812-3456-7890
+          {getPosTaxSettings().receiptHeaderNote}<br />WA: {getPosTaxSettings().receiptPhone}
         </div>
+        {getPosTaxSettings().showNpwpdOnReceipt && getPosTaxSettings().npwpd ? (
+          <div style={{ fontSize: "11px", fontWeight: "bold", textAlign: "center", marginTop: "2px", color: "#334155" }}>
+            NPWPD: {getPosTaxSettings().npwpd}
+          </div>
+        ) : null}
         <div className="pos-thermal__line">
           <span>{new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" }).format(new Date())} WIB</span>
           <span>Kasir: Meja Kasir #01</span>
@@ -340,16 +346,25 @@ function ThermalSlip({ order, method, tenderedNumber, change }: ThermalSlipProps
               <span>Disc {order.promo.code}:</span><span>-{formatNumber(discountOf(order))}</span>
             </div>
           )}
-          <div className="pos-thermal__total-row">
-            <span>{order.bill ? "Pajak:" : "PB1 (10%):"}</span>
-            <span>{formatNumber(taxOf(order))}</span>
-          </div>
-          {order.bill && serviceOf(order) === 0 ? null : (
+          {order.bill || getPosTaxSettings().taxEnabled ? (
             <div className="pos-thermal__total-row">
-              <span>Service (5%):</span>
+              <span>{order.bill ? "Pajak:" : `${getPosTaxSettings().taxName}:`}</span>
+              <span>{formatNumber(taxOf(order))}</span>
+            </div>
+          ) : null}
+          {order.bill ? (
+            serviceOf(order) > 0 ? (
+              <div className="pos-thermal__total-row">
+                <span>Biaya Layanan:</span>
+                <span>{formatNumber(serviceOf(order))}</span>
+              </div>
+            ) : null
+          ) : getPosTaxSettings().serviceChargeEnabled ? (
+            <div className="pos-thermal__total-row">
+              <span>{getPosTaxSettings().serviceChargeName}:</span>
               <span>{formatNumber(serviceOf(order))}</span>
             </div>
-          )}
+          ) : null}
           <div className="pos-thermal__grand">
             <span>TOTAL AKHIR:</span>
             <span>{formatIDR(grandTotalOf(order))}</span>
@@ -364,8 +379,8 @@ function ThermalSlip({ order, method, tenderedNumber, change }: ThermalSlipProps
           </div>
         </div>
 
-        <div className="pos-thermal__footer">
-          Matur Kesuwun, Hatur Nuhun.<br />Instagram: @tepisawah.id
+        <div className="pos-thermal__footer" style={{ whiteSpace: "pre-line" }}>
+          {getPosTaxSettings().receiptFooterNote}
         </div>
       </div>
     </div>
