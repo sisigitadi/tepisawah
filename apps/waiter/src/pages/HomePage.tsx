@@ -70,19 +70,7 @@ interface WaiterTable {
   orderSummary?: string;
 }
 
-const SAMPLE_SERVICE_CALLS: ServiceCall[] = [
-  { id: "sc-1", table: "Meja 02", type: "BILL_REQUEST", timeAgo: "2 mnt lalu" },
-  { id: "sc-2", table: "Meja 05", type: "CALL_WAITER", timeAgo: "4 mnt lalu" },
-];
-
-const SAMPLE_TABLES: WaiterTable[] = [
-  { id: "w-1", name: "Meja 01", area: "Saung A", status: "occupied", orderSummary: "Masakan siap antar" },
-  { id: "w-2", name: "Meja 02", area: "Saung A", status: "needs_attention", orderSummary: "Minta Tagihan" },
-  { id: "w-3", name: "Meja 03", area: "Saung A", status: "available" },
-  { id: "w-4", name: "Meja 04", area: "Gazebo B", status: "occupied", orderSummary: "Sedang dipersiapkan dapur" },
-  { id: "w-5", name: "Meja 05", area: "Gazebo B", status: "needs_attention", orderSummary: "Panggil Pelayan" },
-  { id: "w-6", name: "Meja 06", area: "Gazebo B", status: "available" },
-];
+const SAMPLE_SERVICE_CALLS: ServiceCall[] = [];
 
 export function HomePage(): ReactNode {
   const { can } = useAuth();
@@ -92,8 +80,40 @@ export function HomePage(): ReactNode {
   const [actionError, setActionError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [now, setNow] = useState<number>(() => Date.now());
-  const [serviceCalls, setServiceCalls] = useState<ServiceCall[]>(SAMPLE_SERVICE_CALLS);
+  const [serviceCalls, setServiceCalls] = useState<ServiceCall[]>([]);
+  const [tables, setTables] = useState<WaiterTable[]>([]);
   const [activeTab, setActiveTab] = useState<"ready" | "requests" | "tables">("ready");
+
+  useEffect(() => {
+    let active = true;
+    const fetchLiveTables = async () => {
+      try {
+        const client = getSupabaseClient();
+        const { data } = await client
+          .from("tables")
+          .select("id, table_number, area, status, is_active")
+          .eq("is_active", true)
+          .order("table_number", { ascending: true });
+
+        if (data && active) {
+          setTables(
+            data.map((t: any) => ({
+              id: t.id,
+              name: `Meja ${t.table_number}`,
+              area: t.area || "Lobi Ciperna",
+              status: t.status === "OCCUPIED" ? "occupied" : "available",
+            }))
+          );
+        }
+      } catch {
+        // Fallback silently if offline or unseeded
+      }
+    };
+    void fetchLiveTables();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const refreshBoard = useCallback(async () => {
     const result = await loadReadyOrders();
@@ -188,7 +208,7 @@ export function HomePage(): ReactNode {
           className={`waiter-tab-btn ${activeTab === "tables" ? "active" : ""}`}
           onClick={() => setActiveTab("tables")}
         >
-          🪑 Meja ({SAMPLE_TABLES.length})
+          🪑 Meja ({tables.length})
         </button>
       </nav>
 
@@ -300,24 +320,30 @@ export function HomePage(): ReactNode {
         {activeTab === "tables" && (
           <div className="waiter-section-content">
             <h2 className="waiter-heading">Status Meja Pelayanan</h2>
-            <div className="waiter-tables-grid">
-              {SAMPLE_TABLES.map((t) => (
-                <div key={t.id} className={`waiter-tbl-card ${t.status}`}>
-                  <div className="tbl-card-top">
-                    <strong>{t.name}</strong>
-                    <span className="tbl-area">{t.area}</span>
+            {tables.length === 0 ? (
+              <div className="waiter-empty-card">
+                <span>✓</span> Belum ada data meja aktif.
+              </div>
+            ) : (
+              <div className="waiter-tables-grid">
+                {tables.map((t) => (
+                  <div key={t.id} className={`waiter-tbl-card ${t.status}`}>
+                    <div className="tbl-card-top">
+                      <strong>{t.name}</strong>
+                      <span className="tbl-area">{t.area}</span>
+                    </div>
+                    <div className="tbl-card-status">
+                      {t.status === "occupied" && "🟢 Terisi"}
+                      {t.status === "available" && "⚪ Kosong"}
+                      {t.status === "needs_attention" && "🔴 Perlu Perhatian"}
+                    </div>
+                    {t.orderSummary ? (
+                      <div className="tbl-summary">{t.orderSummary}</div>
+                    ) : null}
                   </div>
-                  <div className="tbl-card-status">
-                    {t.status === "occupied" && "🟢 Terisi"}
-                    {t.status === "available" && "⚪ Kosong"}
-                    {t.status === "needs_attention" && "🔴 Perlu Perhatian"}
-                  </div>
-                  {t.orderSummary ? (
-                    <div className="tbl-summary">{t.orderSummary}</div>
-                  ) : null}
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </main>

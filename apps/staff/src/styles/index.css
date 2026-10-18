@@ -720,45 +720,8 @@ input {
   line-height: 1;
 }
 
-/* Sub-Navigation Bar (Inside multi-view rooms) ---------------------------- */
+/* Sub-Navigation Bar styles are defined in the FOH room navigation section below */
 
-.staff-subnav-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  margin-bottom: 1.25rem;
-  background: var(--c-ricepaper);
-  border: 1px solid rgba(111, 63, 36, 0.16);
-  border-radius: 0.75rem;
-  overflow-x: auto;
-}
-
-.staff-subnav-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.45rem 0.9rem;
-  border-radius: 0.5rem;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--c-deepmoss);
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.12s ease;
-}
-
-.staff-subnav-btn:hover {
-  background: rgba(46, 107, 52, 0.08);
-}
-
-.staff-subnav-btn--active {
-  background: var(--c-forest);
-  color: #ffffff;
-  box-shadow: 0 2px 6px rgba(46, 107, 52, 0.3);
-}
 
 /* Room Layout Helpers ---------------------------------------------------- */
 
@@ -973,54 +936,182 @@ input {
   }
 }
 
-/* Staff Subnav Bar (Used by FOH room tabs) */
+/* Staff Subnav Bar & Segmented Control (Used by FOH room tabs) */
+.staff-subnav-container {
+  width: 100%;
+  margin-bottom: 1.25rem;
+}
+
 .staff-subnav-bar {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0.25rem 0.5rem;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  white-space: nowrap;
-  scroll-behavior: smooth;
+  justify-content: space-between;
+  gap: 1rem;
   width: 100%;
+  flex-wrap: wrap;
 }
 
-.staff-subnav-bar::-webkit-scrollbar {
-  display: none;
+.staff-subnav-segmented {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background: rgba(24, 58, 29, 0.06);
+  border: 1px solid rgba(24, 58, 29, 0.12);
+  border-radius: 0.75rem;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .staff-subnav-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.6rem 1.15rem;
-  min-height: 44px;
+  gap: 0.5rem;
+  padding: 0.55rem 1.15rem;
+  min-height: 42px;
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--c-deepmoss);
-  background: #ffffff;
-  border: 1px solid rgba(221, 161, 94, 0.4);
-  border-radius: 9999px;
+  color: var(--c-deepmoss, #183a1d);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  text-decoration: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  user-select: none;
 }
 
-.staff-subnav-btn:hover,
+.staff-subnav-btn:hover {
+  background: rgba(24, 58, 29, 0.08);
+  color: var(--c-deepmoss, #183a1d);
+}
+
 .staff-subnav-btn:focus-visible {
-  background: #f4edd0;
-  border-color: var(--c-golden);
-  outline: 2px solid var(--c-golden);
+  outline: 2px solid var(--c-forest, #2e6b34);
+  outline-offset: 1px;
 }
 
 .staff-subnav-btn--active {
-  background: var(--c-deepmoss);
-  color: var(--c-warmcream);
-  border-color: var(--c-deepmoss);
-  box-shadow: 0 2px 8px rgba(24, 58, 29, 0.25);
+  background: var(--c-deepmoss, #183a1d) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(24, 58, 29, 0.25);
+  border-color: rgba(24, 58, 29, 0.4);
+}
+
+.staff-subnav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border-radius: 9999px;
+  background: #dc2626;
+  color: #ffffff;
+  line-height: 1;
+  box-shadow: 0 1px 3px rgba(220, 38, 38, 0.35);
+  animation: pos-pulse-badge 2s infinite ease-in-out;
+}
+
+@keyframes pos-pulse-badge {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+.staff-subnav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.staff-subnav-quick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.1rem;
+  min-height: 42px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--c-forest, #2e6b34);
+  background: #ffffff;
+  border: 1.5px solid var(--c-forest, #2e6b34);
+  border-radius: 0.6rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.staff-subnav-quick-btn:hover {
+  background: rgba(46, 107, 52, 0.08);
+  border-color: var(--c-deepmoss, #183a1d);
+  color: var(--c-deepmoss, #183a1d);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.staff-subnav-quick-btn:focus-visible {
+  outline: 2px solid var(--c-forest, #2e6b34);
+  outline-offset: 2px;
+}
+
+.staff-subnav-quick-btn--active {
+  background: var(--c-forest, #2e6b34);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(46, 107, 52, 0.3);
+}
+
+/* Manual Order Mode Wrapper in FOH */
+.staff-manual-order-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.staff-manual-order-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  background: #fefce8;
+  border: 1px solid #fef08a;
+  border-radius: 0.65rem;
+}
+
+.staff-back-to-terminal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #854d0e;
+  background: #ffffff;
+  border: 1px solid #fde047;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.staff-back-to-terminal-btn:hover {
+  background: #fef9c3;
+  color: #713f12;
+  border-color: #eab308;
+}
+
+.staff-manual-order-mode-badge {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #854d0e;
 }
 
 .staff-tab-icon {
@@ -1413,6 +1504,34 @@ input {
     color: var(--c-amberwarm);
     background: rgba(221, 161, 94, 0.18);
     font-weight: 700;
+  }
+
+  .staff-subnav-container {
+    display: none;
+  }
+
+  .staff-bottom-nav-icon-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .staff-bottom-nav-badge {
+    position: absolute;
+    top: -4px;
+    right: -10px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    border-radius: 9999px;
+    background: #dc2626;
+    color: #ffffff;
+    line-height: 16px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
   }
 
   .staff-login form {

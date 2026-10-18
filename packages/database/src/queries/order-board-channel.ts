@@ -111,8 +111,9 @@ export function useOrderBoardChannel(
       scheduleRefresh();
     };
 
+    const channelName = `order-board-${Math.random().toString(36).slice(2, 8)}-${Date.now()}`;
     const channel: RealtimeChannel = client
-      .channel("order-board")
+      .channel(channelName)
       .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, onEvent)
       .subscribe((state: string) => {
         if (disposed) return;
@@ -131,7 +132,11 @@ export function useOrderBoardChannel(
       if (debounce !== null) window.clearTimeout(debounce);
       if (safetyNet !== null) window.clearInterval(safetyNet);
       if (staleTimer !== null) window.clearTimeout(staleTimer);
-      void client.removeChannel(channel);
+      try {
+        void client.removeChannel(channel);
+      } catch {
+        // channel may have already been cleaned up
+      }
     };
   }, [client]);
 

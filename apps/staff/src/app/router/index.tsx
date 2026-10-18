@@ -15,14 +15,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useAuth } from "@tepisawah/auth";
 import { PERMISSIONS } from "@tepisawah/permissions";
+import { useOrderBoardChannel } from "@tepisawah/database";
 
 import { RootLayout } from "../../layouts/RootLayout.js";
 import { PortalPage } from "../../pages/PortalPage.js";
 import { PermissionRoute, ProtectedRoute } from "../../routes/index.js";
 import { getAllowedRooms, useStaffNavigation, type StaffRoom } from "../../lib/navigation.js";
+import { getSupabaseClient } from "../../lib/supabase.js";
 
 // Embedded rooms from workspace apps
-import { PosHomePage, ConfirmQueuePage } from "@tepisawah/pos";
+import { PosHomePage, ConfirmQueuePage, loadConfirmationQueue } from "@tepisawah/pos";
 import { KitchenHomePage } from "@tepisawah/kitchen";
 import { WaiterHomePage, ManualOrderPage } from "@tepisawah/waiter";
 import {
@@ -213,6 +215,34 @@ export function AppRouter(): ReactNode {
     }
   }, []);
 
+  const [pendingConfirmCount, setPendingConfirmCount] = useState<number>(0);
+
+  const refreshPendingCount = useCallback(async () => {
+    try {
+      const res = await loadConfirmationQueue();
+      if (res.data) {
+        setPendingConfirmCount(res.data.length);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  useEffect(() => {
+    void refreshPendingCount();
+  }, [refreshPendingCount]);
+
+  useOrderBoardChannel(getSupabaseClient(), refreshPendingCount);
+
+  const showServeTab = useMemo(() => {
+    return (
+      roles.includes("waiter") ||
+      roles.includes("admin") ||
+      roles.includes("owner") ||
+      roles.includes("supervisor")
+    );
+  }, [roles]);
+
   return (
     <RootLayout currentRoom={currentRoom} onNavigate={navigateTo}>
       <ProtectedRoute>
@@ -223,35 +253,53 @@ export function AppRouter(): ReactNode {
         {currentRoom === "pos" && (
           <PermissionRoute permission={PERMISSIONS.ORDERS_READ}>
             {/* Top Subnav Bar for Desktop & Tablet */}
-            <div className="staff-subnav-bar">
-              <button
-                type="button"
-                className={`staff-subnav-btn ${fohTab === "confirm" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => handleSelectFohTab("confirm")}
-              >
-                📥 Antrean Masuk (QR)
-              </button>
-              <button
-                type="button"
-                className={`staff-subnav-btn ${fohTab === "serve" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => handleSelectFohTab("serve")}
-              >
-                🍽️ Siap Antar ke Meja
-              </button>
-              <button
-                type="button"
-                className={`staff-subnav-btn ${fohTab === "manual-order" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => handleSelectFohTab("manual-order")}
-              >
-                ✍️ Catat Pesanan Meja
-              </button>
-              <button
-                type="button"
-                className={`staff-subnav-btn ${fohTab === "terminal" ? "staff-subnav-btn--active" : ""}`}
-                onClick={() => handleSelectFohTab("terminal")}
-              >
-                💳 Meja Kasir & Bayar
-              </button>
+            <div className="staff-subnav-container">
+              <div className="staff-subnav-bar">
+                <div className="staff-subnav-segmented">
+                  <button
+                    type="button"
+                    className={`staff-subnav-btn ${fohTab === "confirm" ? "staff-subnav-btn--active" : ""}`}
+                    onClick={() => handleSelectFohTab("confirm")}
+                  >
+                    <span>📥 Antrean Masuk (QR)</span>
+                    {pendingConfirmCount > 0 && (
+                      <span className="staff-subnav-badge" aria-label={`${pendingConfirmCount} antrean menunggu`}>
+                        {pendingConfirmCount}
+                      </span>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    className={`staff-subnav-btn ${fohTab === "terminal" ? "staff-subnav-btn--active" : ""}`}
+                    onClick={() => handleSelectFohTab("terminal")}
+                  >
+                    <span>💳 Meja Kasir &amp; Bayar</span>
+                  </button>
+
+                  {showServeTab && (
+                    <button
+                      type="button"
+                      className={`staff-subnav-btn ${fohTab === "serve" ? "staff-subnav-btn--active" : ""}`}
+                      onClick={() => handleSelectFohTab("serve")}
+                    >
+                      <span>🍽️ Siap Antar ke Meja</span>
+                    </button>
+                  )}
+                </div>
+
+                <div className="staff-subnav-actions">
+                  <button
+                    type="button"
+                    className={`staff-subnav-quick-btn ${fohTab === "manual-order" ? "staff-subnav-quick-btn--active" : ""}`}
+                    onClick={() => handleSelectFohTab("manual-order")}
+                    title="Catat pesanan tamu langsung dari meja atau kasir"
+                  >
+                    <span aria-hidden="true">✍️</span>
+                    <span>Catat Menu Manual</span>
+                  </button>
+                </div>
+              </div>
             </div>
 
             {/* Main Content Area */}
@@ -262,7 +310,19 @@ export function AppRouter(): ReactNode {
                 <WaiterHomePage />
               ) : fohTab === "manual-order" ? (
                 <PermissionRoute permission={PERMISSIONS.ORDERS_CREATE_MANUAL}>
-                  <ManualOrderPage />
+                  <div className="staff-manual-order-container">
+                    <div className="staff-manual-order-bar">
+                      <button
+                        type="button"
+                        className="staff-back-to-terminal-btn"
+                        onClick={() => handleSelectFohTab("terminal")}
+                      >
+                        ← Kembali ke Meja Kasir &amp; Bayar
+                      </button>
+                      <span className="staff-manual-order-mode-badge">Mode Catat Pesanan Meja / Pelayan</span>
+                    </div>
+                    <ManualOrderPage />
+                  </div>
                 </PermissionRoute>
               ) : (
                 <PosHomePage onNavigateToConfirm={() => handleSelectFohTab("confirm")} />
@@ -276,25 +336,15 @@ export function AppRouter(): ReactNode {
                 className={`staff-bottom-nav-item ${fohTab === "confirm" ? "staff-bottom-nav-item--active" : ""}`}
                 onClick={() => handleSelectFohTab("confirm")}
               >
-                <span className="staff-bottom-nav-icon" aria-hidden="true">📥</span>
+                <span className="staff-bottom-nav-icon-wrap">
+                  <span className="staff-bottom-nav-icon" aria-hidden="true">📥</span>
+                  {pendingConfirmCount > 0 && (
+                    <span className="staff-bottom-nav-badge">{pendingConfirmCount}</span>
+                  )}
+                </span>
                 <span className="staff-bottom-nav-label">Antrean</span>
               </button>
-              <button
-                type="button"
-                className={`staff-bottom-nav-item ${fohTab === "serve" ? "staff-bottom-nav-item--active" : ""}`}
-                onClick={() => handleSelectFohTab("serve")}
-              >
-                <span className="staff-bottom-nav-icon" aria-hidden="true">🍽️</span>
-                <span className="staff-bottom-nav-label">Siap Antar</span>
-              </button>
-              <button
-                type="button"
-                className={`staff-bottom-nav-item ${fohTab === "manual-order" ? "staff-bottom-nav-item--active" : ""}`}
-                onClick={() => handleSelectFohTab("manual-order")}
-              >
-                <span className="staff-bottom-nav-icon" aria-hidden="true">✍️</span>
-                <span className="staff-bottom-nav-label">Catat Menu</span>
-              </button>
+
               <button
                 type="button"
                 className={`staff-bottom-nav-item ${fohTab === "terminal" ? "staff-bottom-nav-item--active" : ""}`}
@@ -303,6 +353,26 @@ export function AppRouter(): ReactNode {
                 <span className="staff-bottom-nav-icon" aria-hidden="true">💳</span>
                 <span className="staff-bottom-nav-label">Kasir</span>
               </button>
+
+              <button
+                type="button"
+                className={`staff-bottom-nav-item ${fohTab === "manual-order" ? "staff-bottom-nav-item--active" : ""}`}
+                onClick={() => handleSelectFohTab("manual-order")}
+              >
+                <span className="staff-bottom-nav-icon" aria-hidden="true">✍️</span>
+                <span className="staff-bottom-nav-label">Catat Menu</span>
+              </button>
+
+              {showServeTab && (
+                <button
+                  type="button"
+                  className={`staff-bottom-nav-item ${fohTab === "serve" ? "staff-bottom-nav-item--active" : ""}`}
+                  onClick={() => handleSelectFohTab("serve")}
+                >
+                  <span className="staff-bottom-nav-icon" aria-hidden="true">🍽️</span>
+                  <span className="staff-bottom-nav-label">Siap Antar</span>
+                </button>
+              )}
             </nav>
           </PermissionRoute>
         )}

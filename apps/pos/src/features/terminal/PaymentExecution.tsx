@@ -68,6 +68,7 @@ export function PaymentExecution({
   onVoid,
 }: PaymentExecutionProps): ReactNode {
   const [split, setSplit] = useState<"single" | "item" | "pax">("single");
+  const [showSplitOptions, setShowSplitOptions] = useState<boolean>(false);
   const [settlement, setSettlement] = useState<SettlementState>("idle");
   const [showQrisFullscreen, setShowQrisFullscreen] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
@@ -105,21 +106,40 @@ export function PaymentExecution({
     <section className="pos-settlement" aria-label="Eksekusi pembayaran">
       <div className="pos-settlement__card">
         <div className="pos-settlement__head">
-          <span className="pos-settlement__title">Eksekusi Pembayaran</span>
-          <div className="pos-split" role="group" aria-label="Mode bill">
-            {(["single", "item", "pax"] as const).map((mode) => (
-              <button
-                key={mode}
-                type="button"
-                className={`pos-split__btn ${split === mode ? "pos-split__btn--active" : ""}`}
-                aria-pressed={split === mode}
-                onClick={() => setSplit(mode)}
-              >
-                {mode === "single" ? "Satu Tagihan" : mode === "item" ? "Pisah Menu" : "Bagi Rata"}
-              </button>
-            ))}
+          <div className="pos-settlement__title-group">
+            <span className="pos-settlement__title">Metode Pembayaran</span>
+            <span className="pos-settlement__subtitle">Pilih cara bayar tamu</span>
           </div>
+
+          <button
+            type="button"
+            className={`pos-split-toggle-btn ${showSplitOptions || split !== "single" ? "pos-split-toggle-btn--active" : ""}`}
+            onClick={() => setShowSplitOptions((prev) => !prev)}
+            aria-expanded={showSplitOptions}
+            title="Bagi tagihan (Split Bill)"
+          >
+            <span>⚙️ {split === "single" ? "Opsi Split Bill" : split === "item" ? "Split: Pisah Menu" : "Split: Bagi Rata"}</span>
+          </button>
         </div>
+
+        {showSplitOptions && (
+          <div className="pos-split-drawer" role="group" aria-label="Mode bill">
+            <span className="pos-split-drawer__label">Mode Tagihan:</span>
+            <div className="pos-split">
+              {(["single", "item", "pax"] as const).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  className={`pos-split__btn ${split === mode ? "pos-split__btn--active" : ""}`}
+                  aria-pressed={split === mode}
+                  onClick={() => setSplit(mode)}
+                >
+                  {mode === "single" ? "Satu Tagihan (Utuh)" : mode === "item" ? "Pisah Per Menu" : "Bagi Rata (Pax)"}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="pos-methods">
           {PAYMENT_METHODS.map((entry) => (
@@ -289,17 +309,35 @@ export function PaymentExecution({
             )}
           </button>
           <div className="pos-settle__row">
-            <button type="button" className="pos-btn pos-btn--outline" onClick={() => window.print()}>
-              <EyeIcon aria-hidden="true" /> Preview Struk
-            </button>
             <button
               type="button"
-              className="pos-btn pos-btn--ghost-danger"
-              onClick={onVoid}
+              className="pos-btn pos-btn--outline"
+              onClick={() => window.print()}
+              style={{ width: "100%", justifyContent: "center", padding: "0.65rem 1rem" }}
             >
-              <TrashIcon aria-hidden="true" /> Batal / Void Menu
+              <EyeIcon aria-hidden="true" /> Preview Struk Tagihan
             </button>
           </div>
+          {onVoid && (
+            <div className="pos-settle__danger-row">
+              <button
+                type="button"
+                className="pos-settle__void-btn"
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      `Yakin ingin membatalkan (VOID) pesanan ${order.table} (${order.ticket})? Seluruh pesanan ini akan dibatalkan.`
+                    )
+                  ) {
+                    onVoid();
+                  }
+                }}
+                title="Batalkan seluruh pesanan meja ini (memerlukan konfirmasi)"
+              >
+                <TrashIcon aria-hidden="true" /> Batalkan Pesanan (Void Menu)
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
