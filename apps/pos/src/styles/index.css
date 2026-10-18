@@ -919,6 +919,73 @@ input {
   border-color: rgba(24, 58, 29, 0.25);
 }
 
+.confirm-btn--direct {
+  background: #065f46;
+  color: #fff;
+}
+
+.confirm-btn--direct:hover:not(:disabled) {
+  background: #044e3a;
+}
+
+.confirm-btn--cook {
+  background: #b45309;
+  color: #fff;
+}
+
+.confirm-btn--cook:hover:not(:disabled) {
+  background: #92400e;
+}
+
+.confirm-btn--outline {
+  background: transparent;
+  color: #2e6b34;
+  border-color: rgba(46, 107, 52, 0.4);
+}
+
+.confirm-btn--outline:hover:not(:disabled) {
+  background: rgba(46, 107, 52, 0.08);
+}
+
+.confirm-queue__tab-nav {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(24, 58, 29, 0.15);
+  padding-bottom: 0.5rem;
+}
+
+.confirm-queue__tab {
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #4b5563;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.confirm-queue__tab--active {
+  background: rgba(24, 58, 29, 0.1);
+  color: #183a1d;
+  border-color: rgba(24, 58, 29, 0.2);
+}
+
+.flow-badge-kds-off {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+
 /* ===================== 3-PANEL GRID ===================== */
 
 .pos-grid {
@@ -2813,8 +2880,47 @@ input {
   .staff-header,
   .staff-subnav-bar,
   .staff-bottom-nav,
-  .staff-footer {
+  .staff-footer,
+  .ui-modal__backdrop,
+  .ui-modal__header,
+  .ui-modal__footer,
+  .ui-modal__close,
+  .rekap-screen-only,
+  .no-print {
     display: none !important;
+  }
+
+  body.printing-thermal-rekap .ui-modal {
+    position: static !important;
+    display: block !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  body.printing-thermal-rekap .ui-modal__panel {
+    position: static !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  body.printing-thermal-rekap .ui-modal__body {
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  body.printing-thermal-rekap #thermal-rekap-print-area {
+    display: block !important;
+    position: static !important;
+    margin: 0 auto !important;
+    visibility: visible !important;
   }
 
   /* Unconstrain all ancestors so print engine doesn't clip content */

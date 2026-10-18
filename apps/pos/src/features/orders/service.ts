@@ -42,6 +42,93 @@ export function confirmOrder(
   });
 }
 
+/**
+ * Konfirmasi transaksi dan langsung tandai disajikan (Bypass Dapur / Direct Serve).
+ * Berguna saat modul dapur dinonaktifkan dan pesanan langsung diantar ke tamu.
+ */
+export async function confirmAndDirectServe(
+  order: StaffOrder,
+): Promise<OrdersQueryResult<{ order: DraftOrder }>> {
+  const client = getSupabaseClient();
+  const confirmRes = await transitionOrder(client, {
+    orderId: order.id,
+    toStatus: "CONFIRMED",
+    expectedVersion: order.version,
+  });
+  if (confirmRes.error) {
+    return confirmRes;
+  }
+
+  const nextVersion = (order.version ?? 0) + 1;
+  return transitionOrder(client, {
+    orderId: order.id,
+    toStatus: "SERVED",
+    expectedVersion: nextVersion,
+  });
+}
+
+/**
+ * Konfirmasi transaksi dan langsung mulai proses memasak (Manual Cook & Serve).
+ */
+export async function confirmAndStartCooking(
+  order: StaffOrder,
+): Promise<OrdersQueryResult<{ order: DraftOrder }>> {
+  const client = getSupabaseClient();
+  const confirmRes = await transitionOrder(client, {
+    orderId: order.id,
+    toStatus: "CONFIRMED",
+    expectedVersion: order.version,
+  });
+  if (confirmRes.error) {
+    return confirmRes;
+  }
+
+  const nextVersion = (order.version ?? 0) + 1;
+  return transitionOrder(client, {
+    orderId: order.id,
+    toStatus: "PREPARING",
+    expectedVersion: nextVersion,
+  });
+}
+
+/** Pindahkan pesanan ke status PREPARING (`kitchen.start`) */
+export function startCookingOrder(
+  order: StaffOrder,
+): Promise<OrdersQueryResult<{ order: DraftOrder }>> {
+  return transitionOrder(getSupabaseClient(), {
+    orderId: order.id,
+    toStatus: "PREPARING",
+    expectedVersion: order.version,
+  });
+}
+
+/** Pindahkan pesanan ke status READY (`kitchen.ready`) */
+export function markOrderReady(
+  order: StaffOrder,
+): Promise<OrdersQueryResult<{ order: DraftOrder }>> {
+  return transitionOrder(getSupabaseClient(), {
+    orderId: order.id,
+    toStatus: "READY",
+    expectedVersion: order.version,
+  });
+}
+
+/** Pindahkan pesanan ke status SERVED (`orders.serve`) */
+export function markOrderServed(
+  order: StaffOrder,
+): Promise<OrdersQueryResult<{ order: DraftOrder }>> {
+  return transitionOrder(getSupabaseClient(), {
+    orderId: order.id,
+    toStatus: "SERVED",
+    expectedVersion: order.version,
+  });
+}
+
+/** Mengambil pesanan yang sedang aktif dimasak atau siap saji (CONFIRMED / PREPARING / READY) */
+export function loadActiveCookingOrders(): Promise<OrdersQueryResult<StaffOrder[]>> {
+  return fetchOrdersByStatuses(getSupabaseClient(), ["CONFIRMED", "PREPARING", "READY"]);
+}
+
 /** PENDING_CONFIRMATION -> REJECTED (`orders.reject`), guarded server-side. */
 export function rejectOrder(
   order: StaffOrder,

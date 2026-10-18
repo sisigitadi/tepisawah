@@ -11,6 +11,12 @@
 export { ConfirmQueuePage } from "./confirm-queue-page.js";
 export {
   confirmOrder,
+  confirmAndDirectServe,
+  confirmAndStartCooking,
+  startCookingOrder,
+  markOrderReady,
+  markOrderServed,
+  loadActiveCookingOrders,
   loadConfirmationQueue,
   rejectOrder,
 } from "./service.js";

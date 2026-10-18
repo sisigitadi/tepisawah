@@ -24,7 +24,8 @@ import {
 import type { PaymentMethod, QueueOrder } from "../../data/terminal.js";
 import {
   PAYMENT_METHODS,
-  TENDER_PRESETS,
+  getTenderPresets,
+  suggestDenomination,
   discountOf,
   formatIDR,
   formatNumber,
@@ -201,9 +202,9 @@ export function PaymentExecution({
             </div>
 
             <div className="pos-tender-presets">
-              {TENDER_PRESETS.map((preset) => (
+              {getTenderPresets(grandTotal).map((preset) => (
                 <button
-                  key={preset.value}
+                  key={`${preset.label}-${preset.value}`}
                   type="button"
                   className="pos-tender-preset"
                   onClick={() => setNominal(preset.value)}
@@ -248,7 +249,9 @@ export function PaymentExecution({
 
             <div className="pos-denomination">
               <span>Saran pecahan kasir:</span>
-              <span className="pos-denomination__value">{suggestDenomination(Math.abs(change))}</span>
+              <span className="pos-denomination__value">
+                {change < 0 ? "—" : change === 0 ? "Uang pas" : suggestDenomination(change)}
+              </span>
             </div>
           </div>
         ) : method === "platform" ? (
@@ -386,20 +389,6 @@ export function PaymentExecution({
   );
 }
 
-function suggestDenomination(amount: number): string {
-  if (amount <= 0) return "—";
-  const denominations = [100000, 50000, 20000, 10000, 5000, 2000, 1000, 500, 200, 100];
-  const parts: string[] = [];
-  let remaining = amount;
-  for (const denom of denominations) {
-    const count = Math.floor(remaining / denom);
-    if (count > 0 && parts.length < 3) {
-      parts.push(`${count}x ${denom >= 1000 ? `${denom / 1000}k` : denom}`);
-    }
-    remaining -= count * denom;
-  }
-  return parts.length > 0 ? parts.join(" + ") : "bulatkan";
-}
 
 interface QrisWorkspaceProps {
   order: QueueOrder;

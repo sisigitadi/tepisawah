@@ -347,16 +347,19 @@ export function HomePage(props: HomePageProps): ReactNode {
             >
               Semua Menu
             </button>
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                type="button"
-                className={`cat-pill ${selectedCategory === category.id ? "active" : ""}`}
-                onClick={() => setSelectedCategory(category.id)}
-              >
-                {category.name}
-              </button>
-            ))}
+            {categories.map((category) => {
+              const isPromo = category.name.toLowerCase().includes("promo");
+              return (
+                <button
+                  key={category.id}
+                  type="button"
+                  className={`cat-pill ${selectedCategory === category.id ? "active" : ""} ${isPromo ? "cat-pill--promo" : ""}`}
+                  onClick={() => setSelectedCategory(category.id)}
+                >
+                  {isPromo ? `🎉 ${category.name}` : category.name}
+                </button>
+              );
+            })}
           </div>
 
           {/* Menu Dishes List */}
@@ -368,6 +371,11 @@ export function HomePage(props: HomePageProps): ReactNode {
               const missingRequired = requiredModifiers.filter(
                 (m) => !entry?.modifierIds.includes(m.modifierId),
               );
+              const isPromoItem =
+                item.categoryName.toLowerCase().includes("promo") ||
+                item.name.toLowerCase().includes("paket") ||
+                item.name.toLowerCase().includes("promo");
+
               return (
                 <div key={item.productId} className="menu-dish-card">
                   <div className="dish-img">
@@ -382,7 +390,11 @@ export function HomePage(props: HomePageProps): ReactNode {
                     ) : (
                       <div className="dish-img-art dish-img-art--fallback" aria-hidden="true" />
                     )}
-                    {item.isAvailable ? null : (
+                    {item.isAvailable ? (
+                      isPromoItem ? (
+                        <span className="dish-tag dish-tag--promo">PROMO</span>
+                      ) : null
+                    ) : (
                       <span className="dish-tag">Habis</span>
                     )}
                   </div>

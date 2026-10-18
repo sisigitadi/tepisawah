@@ -186,6 +186,12 @@ function toQueueOrder(
     queueStatus = "paid";
   } else if (order.status === "VOID" || order.status === "CANCELLED") {
     queueStatus = "void";
+  } else if (
+    order.status === "CONFIRMED" ||
+    order.status === "PREPARING" ||
+    order.status === "READY"
+  ) {
+    queueStatus = "process";
   }
 
   return {

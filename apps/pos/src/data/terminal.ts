@@ -171,11 +171,75 @@ export const PAYMENT_METHODS: PaymentMethod[] = [
   { id: "platform", label: "Platform Mitra", hint: "GoFood / Grab / Shopee" },
 ];
 
-export const TENDER_PRESETS = [
-  { label: "[Pas] 260.000", value: 260000 },
-  { label: "Rp 300.000", value: 300000 },
-  { label: "Rp 500.000", value: 500000 },
-];
+export function formatIDR(value: number): string {
+  return "Rp " + new Intl.NumberFormat("id-ID").format(Math.round(value));
+}
+
+export function formatNumber(value: number): string {
+  return new Intl.NumberFormat("id-ID").format(Math.round(value));
+}
+
+export interface TenderPreset {
+  label: string;
+  value: number;
+}
+
+export function getTenderPresets(grandTotal: number): TenderPreset[] {
+  const roundedTotal = Math.round(grandTotal);
+  if (roundedTotal <= 0) {
+    return [
+      { label: "[Pas] 0", value: 0 },
+      { label: "Rp 50.000", value: 50000 },
+      { label: "Rp 100.000", value: 100000 },
+    ];
+  }
+
+  const presets: TenderPreset[] = [
+    { label: `[Pas] ${formatNumber(roundedTotal)}`, value: roundedTotal },
+  ];
+
+  const candidates = new Set<number>();
+
+  if (roundedTotal < 20000) {
+    candidates.add(20000);
+    candidates.add(50000);
+    candidates.add(100000);
+  } else if (roundedTotal < 50000) {
+    candidates.add(50000);
+    candidates.add(100000);
+  } else if (roundedTotal < 100000) {
+    candidates.add(100000);
+    candidates.add(150000);
+    candidates.add(200000);
+  } else {
+    const next50k = Math.ceil(roundedTotal / 50000) * 50000;
+    const next100k = Math.ceil(roundedTotal / 100000) * 100000;
+    if (next50k > roundedTotal) candidates.add(next50k);
+    if (next100k > roundedTotal) candidates.add(next100k);
+    candidates.add((next100k > roundedTotal ? next100k : next50k) + 100000);
+    candidates.add(500000);
+    candidates.add(1000000);
+  }
+
+  const sorted = Array.from(candidates).filter((v) => v > roundedTotal).sort((a, b) => a - b);
+  for (const val of sorted) {
+    if (presets.length >= 3) break;
+    presets.push({
+      label: `Rp ${formatNumber(val)}`,
+      value: val,
+    });
+  }
+
+  while (presets.length < 3) {
+    const last = presets[presets.length - 1]!.value;
+    const next = last + 50000;
+    presets.push({ label: `Rp ${formatNumber(next)}`, value: next });
+  }
+
+  return presets;
+}
+
+export const TENDER_PRESETS: TenderPreset[] = getTenderPresets(260000);
 
 import { loadTaxSettings, calculateBill, type TaxSettings } from "@tepisawah/config";
 
@@ -186,14 +250,6 @@ export function getPosTaxSettings(): TaxSettings {
 /** Tax & service constants per the reference ledger. */
 export const TAX_RATE = 0.1;
 export const SERVICE_RATE = 0.05;
-
-export function formatIDR(value: number): string {
-  return "Rp " + new Intl.NumberFormat("id-ID").format(Math.round(value));
-}
-
-export function formatNumber(value: number): string {
-  return new Intl.NumberFormat("id-ID").format(Math.round(value));
-}
 
 /** Subtotal of all bill items (the server's own value on a live order). */
 export function subtotalOf(order: QueueOrder): number {
@@ -244,4 +300,29 @@ export function grandTotalOf(order: QueueOrder): number {
   }
   const bill = calculateBill(subtotalOf(order), discountOf(order), settings);
   return bill.total;
+}
+
+/**
+ * Suggest optimal cashier bill denominations for customer change.
+ * Breaks down amount into Indonesian Rupiah banknotes and coins accurately.
+ */
+export function suggestDenomination(amount: number): string {
+  if (amount <= 0) return "—";
+  const denominations = [100000, 50000, 20000, 10000, 5000, 2000, 1000, 500, 200, 100];
+  const parts: string[] = [];
+  let remaining = Math.round(amount);
+
+  for (const denom of denominations) {
+    const count = Math.floor(remaining / denom);
+    if (count > 0) {
+      parts.push(`${count}x ${denom >= 1000 ? `${denom / 1000}k` : denom}`);
+      remaining -= count * denom;
+    }
+  }
+
+  if (remaining > 0) {
+    parts.push(`bulatkan ${remaining}`);
+  }
+
+  return parts.length > 0 ? parts.join(" + ") : "—";
 }

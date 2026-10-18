@@ -1,15 +1,14 @@
-/**
- * Order Flow & Finance Form (Alur Pemesanan & Kasir).
- */
 import { Button, Card } from "@tepisawah/ui";
 import { useState } from "react";
 import type { ReactNode } from "react";
 import {
   loadOrderFlowSettings,
   saveOrderFlowSettings,
+  type KitchenBypassMode,
   type OrderFlowMode,
   type OrderFlowSettings,
 } from "./order-flow-settings.js";
+import { getSupabaseClient } from "../../lib/supabase.js";
 
 export interface OrderFlowFormProps {
   editable: boolean;
@@ -28,9 +27,23 @@ export function OrderFlowForm({ editable, onSavedToast }: OrderFlowFormProps): R
   const handleSave = () => {
     setSaving(true);
     saveOrderFlowSettings(settings);
+
+    try {
+      const client = getSupabaseClient();
+      void (client.from("tax_settings") as any)
+        .update({
+          kitchen_enabled: settings.kitchenEnabled,
+          kitchen_bypass_mode: settings.kitchenBypassMode,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", "22222222-2222-4222-8222-222222222222");
+    } catch {
+      // Non-blocking
+    }
+
     setTimeout(() => {
       setSaving(false);
-      onSavedToast?.("Pengaturan alur pemesanan & kasir berhasil disimpan.");
+      onSavedToast?.("Pengaturan alur pemesanan & status dapur berhasil disimpan.");
     }, 250);
   };
 
@@ -159,6 +172,169 @@ export function OrderFlowForm({ editable, onSavedToast }: OrderFlowFormProps): R
             </div>
           </div>
         </div>
+
+        {/* Status Modul Dapur & Alur Memasak (KDS) */}
+        <div className="flow-section-header" style={{ marginTop: "1.75rem" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.5rem" }}>
+            <h3 className="flow-section-title">Status Modul Dapur &amp; Alur Memasak (KDS)</h3>
+            <span
+              style={{
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                padding: "0.2rem 0.6rem",
+                borderRadius: "999px",
+                background: settings.kitchenEnabled ? "rgba(46, 125, 50, 0.12)" : "rgba(198, 40, 40, 0.12)",
+                color: settings.kitchenEnabled ? "#2e7d32" : "#c62828",
+                border: `1px solid ${settings.kitchenEnabled ? "rgba(46, 125, 50, 0.3)" : "rgba(198, 40, 40, 0.3)"}`,
+              }}
+            >
+              {settings.kitchenEnabled ? "● Dapur Aktif (Layar KDS)" : "○ Dapur Nonaktif (Alur Langsung)"}
+            </span>
+          </div>
+          <p className="flow-section-desc">
+            Tentukan apakah pesanan diteruskan ke Layar Dapur (/kitchen) atau kasir/waiter langsung memproses hidangan dan mengantar ke meja.
+          </p>
+        </div>
+
+        <div className="flow-cards-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
+          {/* Opsi 1: Dapur Aktif */}
+          <div
+            className={`flow-card ${settings.kitchenEnabled ? "flow-card--active" : ""}`}
+            onClick={() => editable && setSettings((prev) => ({ ...prev, kitchenEnabled: true }))}
+            role="button"
+            tabIndex={0}
+          >
+            <div className="flow-card__top">
+              <span className="flow-card__radio">
+                <input
+                  type="radio"
+                  name="kitchenEnabled"
+                  checked={settings.kitchenEnabled}
+                  onChange={() => editable && setSettings((prev) => ({ ...prev, kitchenEnabled: true }))}
+                  disabled={!editable}
+                />
+              </span>
+              <div className="flow-card__heading">
+                <div className="flow-card__title-row">
+                  <h4 className="flow-card__title">Dapur Aktif (Layar KDS)</h4>
+                  <span className="flow-badge">Standar Resto</span>
+                </div>
+                <span className="flow-card__sub">Tiket masak mengalir ke layar tablet koki</span>
+              </div>
+            </div>
+            <p className="flow-card__body">
+              Pesanan masuk ke Layar Pesanan Dapur (/kitchen). Koki memantau antrean masak, memulai proses memasak (<em>Memasak</em>), dan menandai saat masakan siap diambil (<em>Siap Saji</em>).
+            </p>
+            <div className="flow-card__steps">
+              <span>Pesanan Masuk</span> &rarr; <span>Koki Masak (KDS)</span> &rarr; <span>Siap Saji</span> &rarr; <span>Pelayan Antar</span>
+            </div>
+          </div>
+
+          {/* Opsi 2: Dapur Nonaktif */}
+          <div
+            className={`flow-card ${!settings.kitchenEnabled ? "flow-card--active" : ""}`}
+            onClick={() => editable && setSettings((prev) => ({ ...prev, kitchenEnabled: false }))}
+            role="button"
+            tabIndex={0}
+          >
+            <div className="flow-card__top">
+              <span className="flow-card__radio">
+                <input
+                  type="radio"
+                  name="kitchenEnabled"
+                  checked={!settings.kitchenEnabled}
+                  onChange={() => editable && setSettings((prev) => ({ ...prev, kitchenEnabled: false }))}
+                  disabled={!editable}
+                />
+              </span>
+              <div className="flow-card__heading">
+                <div className="flow-card__title-row">
+                  <h4 className="flow-card__title">Dapur Nonaktif (Alur Langsung)</h4>
+                  <span className="flow-badge flow-badge--recommended">Alur Cepat</span>
+                </div>
+                <span className="flow-card__sub">Kasir/waiter terima transaksi, masak, langsung antar</span>
+              </div>
+            </div>
+            <p className="flow-card__body">
+              Restoran beroperasi tanpa monitor dapur terpisah. Kasir atau pramusaji menerima pesanan, proses memasak dilakukan langsung (lewat struk fisik), dan staf langsung mengantar pesanan ke meja tamu.
+            </p>
+            <div className="flow-card__steps">
+              <span>Terima Transaksi</span> &rarr; <span>Proses Masak</span> &rarr; <span>Langsung Antar ke Meja</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Sub-opsi bila Dapur Nonaktif */}
+        {!settings.kitchenEnabled && (
+          <div
+            style={{
+              marginTop: "1rem",
+              padding: "1rem",
+              borderRadius: "8px",
+              background: "var(--surface-container, #fdfbf7)",
+              border: "1px dashed var(--outline-variant, #cbd5e1)",
+            }}
+          >
+            <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--color-primary-dark, #1b4332)", marginBottom: "0.5rem" }}>
+              ⚡ Mode Antar saat Dapur Nonaktif:
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "0.75rem" }}>
+              <label
+                style={{
+                  display: "flex",
+                  gap: "0.6rem",
+                  padding: "0.75rem",
+                  borderRadius: "6px",
+                  background: settings.kitchenBypassMode === "direct_serve" ? "rgba(46, 125, 50, 0.08)" : "#fff",
+                  border: `1px solid ${settings.kitchenBypassMode === "direct_serve" ? "#2e7d32" : "#e2e8f0"}`,
+                  cursor: editable ? "pointer" : "default",
+                }}
+              >
+                <input
+                  type="radio"
+                  name="kitchenBypassMode"
+                  checked={settings.kitchenBypassMode === "direct_serve"}
+                  onChange={() => editable && setSettings((prev) => ({ ...prev, kitchenBypassMode: "direct_serve" }))}
+                  disabled={!editable}
+                  style={{ marginTop: "2px" }}
+                />
+                <div>
+                  <strong style={{ fontSize: "0.85rem", display: "block" }}>Otomatis Siap Antar (Direct Serve)</strong>
+                  <span style={{ fontSize: "0.75rem", color: "var(--color-text-muted, #64748b)" }}>
+                    Pesanan yang dikonfirmasi langsung siap antar ke meja tanpa jeda status masak manual.
+                  </span>
+                </div>
+              </label>
+
+              <label
+                style={{
+                  display: "flex",
+                  gap: "0.6rem",
+                  padding: "0.75rem",
+                  borderRadius: "6px",
+                  background: settings.kitchenBypassMode === "manual_cook_serve" ? "rgba(46, 125, 50, 0.08)" : "#fff",
+                  border: `1px solid ${settings.kitchenBypassMode === "manual_cook_serve" ? "#2e7d32" : "#e2e8f0"}`,
+                  cursor: editable ? "pointer" : "default",
+                }}
+              >
+                <input
+                  type="radio"
+                  name="kitchenBypassMode"
+                  checked={settings.kitchenBypassMode === "manual_cook_serve"}
+                  onChange={() => editable && setSettings((prev) => ({ ...prev, kitchenBypassMode: "manual_cook_serve" }))}
+                  disabled={!editable}
+                  style={{ marginTop: "2px" }}
+                />
+                <div>
+                  <strong style={{ fontSize: "0.85rem", display: "block" }}>Kontrol Masak Kasir / Waiter</strong>
+                  <span style={{ fontSize: "0.75rem", color: "var(--color-text-muted, #64748b)" }}>
+                    Kasir &amp; waiter dapat menekan tombol &ldquo;Mulai Masak&rdquo; lalu &ldquo;Selesai &amp; Antar&rdquo; langsung dari meja kasir/waiter.
+                  </span>
+                </div>
+              </label>
+            </div>
+          </div>
+        )}
 
         {/* Fleksibilitas Kasir & Pramusaji */}
         <div className="flow-section-header" style={{ marginTop: "1.75rem" }}>

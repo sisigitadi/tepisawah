@@ -118,6 +118,10 @@ as $$
     ('PREPARING',           'READY',                'kitchen.ready',     false),
     ('READY',               'SERVED',               'orders.serve',      false),
     ('SERVED',              'PAID',                 'payments.create',   false),
+    -- Kitchen bypass flows: direct serve and cook-then-serve
+    ('CONFIRMED',           'READY',                'orders.serve',      false),
+    ('CONFIRMED',           'SERVED',               'orders.serve',      false),
+    ('PREPARING',           'SERVED',               'orders.serve',      false),
     -- Hybrid payment: allow pre-pay at counter (CONFIRMED/PREPARING/READY -> PAID)
     -- and allow post-pay completion (SERVED -> PAID -> COMPLETED).
     ('CONFIRMED',           'PAID',                 'payments.create',   false),

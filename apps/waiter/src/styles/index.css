@@ -236,6 +236,65 @@ body {
   background: var(--color-deepmoss);
 }
 
+.btn-waiter-cook {
+  width: 100%;
+  background: #b45309;
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 0.25rem;
+}
+
+.btn-waiter-cook:hover {
+  background: #92400e;
+}
+
+.btn-waiter-cook:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-waiter-outline {
+  width: 100%;
+  background: transparent;
+  color: var(--color-forest);
+  border: 1px solid var(--color-forest);
+  padding: 0.8rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 0.25rem;
+}
+
+.btn-waiter-outline:hover {
+  background: rgba(46, 107, 52, 0.08);
+}
+
+.btn-waiter-outline:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.waiter-action-row {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.waiter-status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+
 /* Service Requests List */
 .service-calls-list {
   display: flex;

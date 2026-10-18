@@ -25,10 +25,19 @@ const NOW = "2025-06-01T09:00:00Z";
 
 export const demoCategories: Category[] = [
   {
+    id: "cat-promo",
+    name: "Promo & Paket",
+    description: "Paket hemat keluarga, santap bersama, dan hidangan komplit spesial Tepi Sawah",
+    sortOrder: 1,
+    isActive: true,
+    createdAt: NOW,
+    updatedAt: NOW,
+  },
+  {
     id: "cat-makanan",
     name: "Makanan Utama",
     description: "Menu utama khas Tepi Sawah",
-    sortOrder: 1,
+    sortOrder: 2,
     isActive: true,
     createdAt: NOW,
     updatedAt: NOW,
@@ -37,7 +46,7 @@ export const demoCategories: Category[] = [
     id: "cat-sayur",
     name: "Sayur & Sup",
     description: "Sayuran segar kebun sekitar sawah",
-    sortOrder: 2,
+    sortOrder: 3,
     isActive: true,
     createdAt: NOW,
     updatedAt: NOW,
@@ -46,7 +55,7 @@ export const demoCategories: Category[] = [
     id: "cat-minuman",
     name: "Minuman & Kopi",
     description: "Minuman segar dan kopi robusta lokal",
-    sortOrder: 3,
+    sortOrder: 4,
     isActive: true,
     createdAt: NOW,
     updatedAt: NOW,
@@ -56,6 +65,78 @@ export const demoCategories: Category[] = [
 type SeedProduct = Omit<Product, "createdAt" | "updatedAt">;
 
 const PRODUCT_SEED: SeedProduct[] = [
+  {
+    id: "promo-nasi-liwet",
+    categoryId: "cat-promo",
+    name: "Paket Nasi Liwet Komplit (4 Orang)",
+    description:
+      "Nasi liwet kastrol harum (4 porsi), 4 potong ayam bakar/goreng, sambal terasi cobek daun pisang, tahu, tempe, lalapan segar sawah, dan 4 es teh manis.",
+    imageUrl: "/gallery/saung-lesehan.webp",
+    price: 145000,
+    isActive: true,
+    isAvailable: true,
+    sortOrder: 1,
+  },
+  {
+    id: "promo-gurame-bakar",
+    categoryId: "cat-promo",
+    name: "Paket Gurame Bakar Madu Spesial",
+    description:
+      "1 ekor gurame bakar bumbu madu karamel ukuran besar, 2 porsi nasi putih hangat, tahu tempe, lalapan segar, sambal kecap pedas, dan 2 es teh manis.",
+    imageUrl: "/gallery/gurame-bakar.webp",
+    price: 89000,
+    isActive: true,
+    isAvailable: true,
+    sortOrder: 2,
+  },
+  {
+    id: "promo-roaster-rempah",
+    categoryId: "cat-promo",
+    name: "Paket Roaster Rempah Sawah (Ayam Utuh)",
+    description:
+      "Ayam utuh panggang oven bumbu rempah Nusantara gurih meresap, 3 porsi nasi liwet pulen, sambal terasi, lalapan sawah, dan sayur asem segar.",
+    imageUrl: "/gallery/ayam-roaster.webp",
+    price: 115000,
+    isActive: true,
+    isAvailable: true,
+    sortOrder: 3,
+  },
+  {
+    id: "promo-berdua-gurame",
+    categoryId: "cat-promo",
+    name: "Paket Hemat Berdua Gurame + Es Teh",
+    description:
+      "Gurame goreng terbang krispi renyah, 2 porsi nasi putih, sambal dabu-dabu segar, cah kangkung belacan, dan 2 es teh manis segar.",
+    imageUrl: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80",
+    price: 79000,
+    isActive: true,
+    isAvailable: true,
+    sortOrder: 4,
+  },
+  {
+    id: "promo-timbel-komplit",
+    categoryId: "cat-promo",
+    name: "Paket Nasi Timbel Komplit Ayam Bakar",
+    description:
+      "Nasi timbel daun pisang pulen wangi, ayam bakar manis gurih rempah, sayur asem segar, tahu tempe bacem, ikan asin jambal, sambal terasi.",
+    imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
+    price: 42000,
+    isActive: true,
+    isAvailable: true,
+    sortOrder: 5,
+  },
+  {
+    id: "promo-bebek-goreng",
+    categoryId: "cat-promo",
+    name: "Paket Bebek Goreng Crispy Sambal Korek",
+    description:
+      "Paha/dada bebek ungkep bumbu hitam empuk digoreng garing renyah, nasi liwet hangat, bumbu bebek gurih khas, dan sambal korek pedas segar.",
+    imageUrl: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80",
+    price: 48000,
+    isActive: true,
+    isAvailable: true,
+    sortOrder: 6,
+  },
   {
     id: "chicken-roaster",
     categoryId: "cat-makanan",

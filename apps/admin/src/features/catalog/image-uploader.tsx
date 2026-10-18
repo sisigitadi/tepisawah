@@ -67,6 +67,31 @@ export const PRESET_DISH_IMAGES: readonly PresetOption[] = [
     name: "Sambal Terasi & Lalap",
     url: "https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=800&q=80",
   },
+  {
+    id: "promo-paket-liwet",
+    name: "[Promo] Paket Liwet Komplit",
+    url: "/gallery/saung-lesehan.webp",
+  },
+  {
+    id: "promo-gurame-bakar",
+    name: "[Promo] Paket Gurame Bakar Madu",
+    url: "/gallery/gurame-bakar.webp",
+  },
+  {
+    id: "promo-roaster-rempah",
+    name: "[Promo] Paket Roaster Rempah",
+    url: "/gallery/ayam-roaster.webp",
+  },
+  {
+    id: "promo-kopi-senja",
+    name: "[Promo] Paket Ngopi Sunset",
+    url: "/gallery/kopi-senja.webp",
+  },
+  {
+    id: "promo-rombongan",
+    name: "[Promo] Paket Rombongan Saung",
+    url: "/gallery/rombongan-gathering.webp",
+  },
 ];
 
 export interface ImageUploaderProps {

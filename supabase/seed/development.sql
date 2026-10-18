@@ -343,6 +343,7 @@ on conflict (day_of_week) do update set
 
 insert into public.categories (id, name, description, sort_order, is_active)
 values
+  ('00000000-0000-4000-8000-100000000004', 'Promo & Paket', 'Paket hemat santap bersama, keluarga, dan hidangan komplit spesial Tepi Sawah', 5, true),
   ('00000000-0000-4000-8000-100000000001', 'Menu Utama', 'Nasi dan hidangan utama', 10, true),
   ('00000000-0000-4000-8000-100000000002', 'Minuman',    'Es, teh, dan kopi',        20, true),
   ('00000000-0000-4000-8000-100000000003', 'Cemilan',    'Cemilan untuk berbagi',    30, true)
@@ -354,6 +355,12 @@ on conflict (id) do update set
 
 insert into public.products (id, category_id, name, description, image_url, price, is_active, is_available, sort_order)
 values
+  ('00000000-0000-4000-8000-200000000010', '00000000-0000-4000-8000-100000000004', 'Paket Nasi Liwet Komplit (4 Orang)', 'Nasi liwet kastrol harum (4 porsi), 4 potong ayam bakar/goreng, sambal terasi cobek daun pisang, tahu, tempe, lalapan segar sawah, dan 4 es teh manis.', '/gallery/saung-lesehan.webp', 145000, true, true, 10),
+  ('00000000-0000-4000-8000-200000000011', '00000000-0000-4000-8000-100000000004', 'Paket Gurame Bakar Madu Spesial', '1 ekor gurame bakar bumbu madu karamel ukuran besar, 2 porsi nasi putih hangat, tahu tempe, lalapan segar, sambal kecap pedas, dan 2 es teh manis.', '/gallery/gurame-bakar.webp', 89000, true, true, 20),
+  ('00000000-0000-4000-8000-200000000012', '00000000-0000-4000-8000-100000000004', 'Paket Roaster Rempah Sawah (Ayam Utuh)', 'Ayam utuh panggang oven bumbu rempah Nusantara gurih meresap, 3 porsi nasi liwet pulen, sambal terasi, lalapan sawah, dan sayur asem segar.', '/gallery/ayam-roaster.webp', 115000, true, true, 30),
+  ('00000000-0000-4000-8000-200000000013', '00000000-0000-4000-8000-100000000004', 'Paket Ngopi Sunset & Kudapan Sawah (2 Orang)', '2 cangkir Kopi Senja Sawah atau Teh Poci Gula Batu, 1 porsi pisang goreng keju gula aren, dan 1 porsi cireng bumbu rujak pedas manis.', '/gallery/kopi-senja.webp', 42000, true, true, 40),
+  ('00000000-0000-4000-8000-200000000014', '00000000-0000-4000-8000-100000000004', 'Paket Rombongan Liwet Saung (8-10 Orang)', 'Paket gathering saung lesehan: 2 kastrol nasi liwet besar, 10 potong ayam bakar madu, 2 ekor gurame goreng kipas, 2 sayur asem mangkok besar, tahu tempe, lalap sambal, dan 10 es teh manis.', '/gallery/rombongan-gathering.webp', 385000, true, true, 50),
+  ('00000000-0000-4000-8000-200000000015', '00000000-0000-4000-8000-100000000004', 'Paket Hemat Ayam Bakar + Es Kelapa Muda (Single)', '1 porsi nasi liwet hangat, 1 potong ayam bakar madu gurih, tahu tempe goreng, lalapan segar, sambal dadak pedas, dan 1 gelas es kelapa muda segar.', 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80', 48000, true, true, 60),
   ('00000000-0000-4000-8000-200000000001', '00000000-0000-4000-8000-100000000001', 'Nasi Liwet Sawah', 'Nasi liwet dengan lauk khas sawah', 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=800&q=80', 45000, true, true,  10),
   ('00000000-0000-4000-8000-200000000002', '00000000-0000-4000-8000-100000000001', 'Ayam Bakar Tepi',  'Ayam bakar bumbu rumahan',          'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80', 38000, true, true,  20),
   ('00000000-0000-4000-8000-200000000003', '00000000-0000-4000-8000-100000000001', 'Pepes Ikan',       'Pepes ikan air tawar',              'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=800&q=80', 32000, true, false, 30),
@@ -387,6 +394,18 @@ on conflict (id) do update set
 -- "Tanpa Es" applies to drinks, and "Extra Telur" is a multi-select (max 3).
 insert into public.product_modifiers (product_id, modifier_id, is_required, min_select, max_select, sort_order)
 values
+  ('00000000-0000-4000-8000-200000000010', '00000000-0000-4000-8000-300000000001', true,  1, 1, 10),
+  ('00000000-0000-4000-8000-200000000010', '00000000-0000-4000-8000-300000000002', false, 0, 2, 20),
+  ('00000000-0000-4000-8000-200000000010', '00000000-0000-4000-8000-300000000004', false, 0, 4, 30),
+  ('00000000-0000-4000-8000-200000000011', '00000000-0000-4000-8000-300000000001', true,  1, 1, 10),
+  ('00000000-0000-4000-8000-200000000011', '00000000-0000-4000-8000-300000000002', false, 0, 2, 20),
+  ('00000000-0000-4000-8000-200000000012', '00000000-0000-4000-8000-300000000001', true,  1, 1, 10),
+  ('00000000-0000-4000-8000-200000000012', '00000000-0000-4000-8000-300000000002', false, 0, 2, 20),
+  ('00000000-0000-4000-8000-200000000013', '00000000-0000-4000-8000-300000000003', false, 0, 1, 10),
+  ('00000000-0000-4000-8000-200000000014', '00000000-0000-4000-8000-300000000001', true,  1, 1, 10),
+  ('00000000-0000-4000-8000-200000000014', '00000000-0000-4000-8000-300000000002', false, 0, 4, 20),
+  ('00000000-0000-4000-8000-200000000015', '00000000-0000-4000-8000-300000000001', true,  1, 1, 10),
+  ('00000000-0000-4000-8000-200000000015', '00000000-0000-4000-8000-300000000003', false, 0, 1, 20),
   ('00000000-0000-4000-8000-200000000001', '00000000-0000-4000-8000-300000000001', true,  1, 1, 10),
   ('00000000-0000-4000-8000-200000000001', '00000000-0000-4000-8000-300000000002', false, 0, 1, 20),
   ('00000000-0000-4000-8000-200000000001', '00000000-0000-4000-8000-300000000004', false, 0, 3, 30),
