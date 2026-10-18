@@ -7,7 +7,7 @@
  * 3. Navigation / HTML pages: Network-First with Cache fallback (SPA Offline Shell).
  */
 
-const CACHE_NAME = "tepisawah-staff-v1.5.2";
+const CACHE_NAME = "tepisawah-staff-v1.5.3";
 
 const PRECACHE_ASSETS = [
   "/",
