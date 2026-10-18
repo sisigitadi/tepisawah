@@ -48,20 +48,27 @@ export function useTaxSettings(): TaxSettings {
 
     void syncFromDb();
 
-    // 2. Realtime subscription: updates from Admin immediately reflect on customer screen
-    const channel = client
-      .channel("tax_settings_order_sync")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "tax_settings" },
-        (payload) => {
-          if (payload.new && active) {
-            const synced = syncTaxSettingsFromDb(payload.new as Record<string, unknown>);
-            setSettings(synced);
+    // 2. Realtime subscription: updates from Admin immediately reflect on customer screen.
+    // Use an isolated unique channel name per hook instance to prevent duplicate channel collision.
+    let channel: ReturnType<typeof client.channel> | null = null;
+    try {
+      const channelName = `order_tax_${Math.random().toString(36).slice(2)}_${Date.now()}`;
+      channel = client
+        .channel(channelName)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "tax_settings" },
+          (payload) => {
+            if (payload.new && active) {
+              const synced = syncTaxSettingsFromDb(payload.new as Record<string, unknown>);
+              setSettings(synced);
+            }
           }
-        }
-      )
-      .subscribe();
+        );
+      channel.subscribe();
+    } catch (err) {
+      console.warn("Realtime tax_settings order subscription failed, continuing with cached settings:", err);
+    }
 
     // 3. Storage event listener for same-device multi-tab sync
     const handleStorage = () => {
@@ -73,8 +80,12 @@ export function useTaxSettings(): TaxSettings {
 
     return () => {
       active = false;
-      if (client) {
-        void client.removeChannel(channel);
+      if (channel && client) {
+        try {
+          void client.removeChannel(channel);
+        } catch {
+          // Ignore disposal errors
+        }
       }
       window.removeEventListener("storage", handleStorage);
     };

@@ -13,7 +13,7 @@ export function useTaxSettings(): TaxSettings {
   useEffect(() => {
     let active = true;
 
-    // Safely obtain client (in test environments without env vars, fallback gracefully)
+    // Safely obtain client (in test environments or offline, fallback gracefully)
     let client: ReturnType<typeof getSupabaseClient> | null = null;
     try {
       client = getSupabaseClient();
@@ -48,20 +48,27 @@ export function useTaxSettings(): TaxSettings {
 
     void syncFromDb();
 
-    // 2. Realtime subscription: updates from Admin immediately propagate to this POS device
-    const channel = client
-      .channel("tax_settings_pos_sync")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "tax_settings" },
-        (payload) => {
-          if (payload.new && active) {
-            const synced = syncTaxSettingsFromDb(payload.new as Record<string, unknown>);
-            setSettings(synced);
+    // 2. Realtime subscription: updates from Admin immediately propagate to this POS device.
+    // Use an isolated unique channel name per hook instance to prevent duplicate channel collision.
+    let channel: ReturnType<typeof client.channel> | null = null;
+    try {
+      const channelName = `pos_tax_${Math.random().toString(36).slice(2)}_${Date.now()}`;
+      channel = client
+        .channel(channelName)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "tax_settings" },
+          (payload) => {
+            if (payload.new && active) {
+              const synced = syncTaxSettingsFromDb(payload.new as Record<string, unknown>);
+              setSettings(synced);
+            }
           }
-        }
-      )
-      .subscribe();
+        );
+      channel.subscribe();
+    } catch (err) {
+      console.warn("Realtime tax_settings subscription failed, continuing with cached settings:", err);
+    }
 
     // 3. Local events for cross-tab or same-window updates
     const handleLocalChange = (e: Event) => {
@@ -78,8 +85,12 @@ export function useTaxSettings(): TaxSettings {
 
     return () => {
       active = false;
-      if (client) {
-        void client.removeChannel(channel);
+      if (channel && client) {
+        try {
+          void client.removeChannel(channel);
+        } catch {
+          // Ignore disposal errors
+        }
       }
       window.removeEventListener("tepisawah:tax_settings_changed", handleLocalChange);
       window.removeEventListener("storage", handleLocalChange);
