@@ -2,6 +2,29 @@
 
 Semua perubahan penting pada proyek **Tepi Sawah Resto & POS Platform** didokumentasikan di sini mengikuti pedoman [Keep a Changelog](https://keepachangelog.com/id/1.0.0/) dan [Semantic Versioning](https://semver.org/).
 
+## [1.6.0] - 2026-10-18 (Grand Opening: Zero-Modal Staff Routing, Blueprint Mobile Thermal Print, and Self-Healing CMS Sync)
+
+### 🚪 Perutean Peran Staf Instan Bebas Modal
+- **Penghapusan Total Dialog "Akses Belum Ditetapkan"**:
+  - `AccessDenied` diubah menjadi pengalihan otomatis senyap (*silent redirect*) langsung ke ruangan kerja tugas login.
+  - Penambahan resolusi peran instan berbasis konvensi username & email internal (`owner`, `admin`, `manager`, `dapur`, `kitchen`, `kasir`, `waiter`, `@staff.tepisawah.id`).
+  - Staf yang terotentikasi tidak pernah lagi melewati portal peluncur atau melihat kartu penolakan akses.
+
+### 🖨️ Integrasi Printer Thermal Blueprint BP-ECO58 & Blueprint Mobile
+- **Driver Khusus Aplikasi Blueprint Mobile (Android)**:
+  - Format ESC/POS 32-kolom presisi untuk printer thermal 58mm Blueprint BP-ECO58.
+  - Integrasi dengan Print Spooler sistem Android dan intent Blueprint Mobile Print.
+- **Pemindahan Konfigurasi ke Panel Pengelola**:
+  - Pengaturan printer dihapus dari antarmuka kasir agar terminal kasir tetap bersih dan fokus pada transaksi.
+  - Menambahkan tab khusus "Printer Thermal & Blueprint" di Pengaturan Restoran dengan panduan 3 langkah koneksi Android.
+
+### 🌐 CMS Web Konten & Sinkronisasi Realtime
+- **Navigasi Sub-Tab Anti-Geser**: Mengganti geser horizontal dengan bilah *chip* responsif yang membungkus rapi.
+- **Tarik Otomatis Katalog**: Tombol 1-klik untuk mengimpor menu aktif dari katalog database ke etalase menu website.
+- **Skrip Database Self-Healing**: `add-theme-to-landing-content.sql` otomatis membuat tabel `public.landing_content` jika belum ada dan mendaftarkan replikasi Supabase Realtime.
+
+---
+
 ## [1.0.0] - 2026-10-16 (Production Release: Dynamic Landing CMS, Multi-Slot WebP Customization, Real Maps & Staff Ecosystem)
 
 ### 🌾 Pengelola Konten Web (CMS) 8 Seksi Dinamis

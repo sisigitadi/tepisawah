@@ -174,11 +174,57 @@ function QueueCard({ order, selected, onSelect }: QueueCardProps): ReactNode {
       <div className="pos-queue-card__body">
         <div>
           <h4 className="pos-queue-card__table">{order.table}</h4>
-          <p className="pos-queue-card__area">{order.area} • {order.items.length} menu</p>
+          <p className="pos-queue-card__area">{order.area} • {order.items.length} menu ({itemCount} porsi)</p>
         </div>
         <div className="pos-queue-card__amount">
           <span className="pos-queue-card__total">{formatIDR(total)}</span>
-          {order.promo && <span className="pos-queue-card__tax-note">INC. TAX &amp; DISC</span>}
+          {order.promo && <span className="pos-queue-card__tax-note">Promo {order.promo.label}</span>}
+        </div>
+      </div>
+
+      {/* Rincian Menu Terintegrasi Langsung di Kartu Antrean */}
+      <div
+        className="pos-queue-card__items-preview"
+        style={{
+          margin: "0.5rem 0",
+          padding: "0.5rem 0.65rem",
+          borderRadius: "6px",
+          background: selected ? "rgba(24, 58, 29, 0.05)" : "rgba(0, 0, 0, 0.02)",
+          border: selected ? "1px solid rgba(24, 58, 29, 0.15)" : "1px solid rgba(0, 0, 0, 0.05)",
+          fontSize: "0.8125rem",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
+          {order.items.slice(0, selected ? undefined : 3).map((item) => (
+            <div
+              key={item.id}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "baseline",
+                color: "#334155",
+                gap: "0.5rem",
+              }}
+            >
+              <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <strong style={{ color: "#183a1d", marginRight: "0.3rem" }}>{item.qty}x</strong>
+                <span>{item.name}</span>
+                {selected && item.note && (
+                  <span style={{ fontSize: "0.72rem", color: "#64748b", display: "block", fontStyle: "italic" }}>
+                    ↳ {item.note}
+                  </span>
+                )}
+              </span>
+              <span style={{ fontWeight: 600, whiteSpace: "nowrap", color: "#1e293b", fontSize: "0.8rem" }}>
+                {formatIDR(item.qty * item.price)}
+              </span>
+            </div>
+          ))}
+          {!selected && order.items.length > 3 && (
+            <span style={{ fontSize: "0.75rem", color: "#64748b", fontStyle: "italic" }}>
+              + {order.items.length - 3} menu lainnya…
+            </span>
+          )}
         </div>
       </div>
 
@@ -208,7 +254,7 @@ function QueueCard({ order, selected, onSelect }: QueueCardProps): ReactNode {
                   ? `Bungkus • ${order.customerName ?? "Pelanggan"}`
                   : order.channel === "delivery"
                     ? `${order.orderType} • #${order.externalReference ?? "—"}`
-                    : `Waiter • ${order.pax} Pax`}
+                    : `Pelayan • ${order.pax} Tamu`}
             </span>
             {order.status === "paid" ? (
               <span className="pos-status" style={{ background: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0" }}>
@@ -220,7 +266,7 @@ function QueueCard({ order, selected, onSelect }: QueueCardProps): ReactNode {
               </span>
             ) : (
               <span className={`pos-status ${order.status === "process" ? "pos-status--process" : "pos-status--waiting"}`}>
-                {order.status === "process" ? "Proses" : "Waiting Bill"}
+                {order.status === "process" ? "Proses" : "Menunggu Bayar"}
               </span>
             )}
           </>

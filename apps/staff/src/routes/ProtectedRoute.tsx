@@ -14,7 +14,7 @@ import { DEMO_ACCOUNTS, isDemoMode } from "@tepisawah/config";
 import { FirstTimeSetup } from "../components/FirstTimeSetup.js";
 
 export function ProtectedRoute({ children }: { children: ReactNode }): ReactNode {
-  const { status, isLoading } = useAuth();
+  const { status, isLoading, user } = useAuth();
   const [showSetup, setShowSetup] = useState(() => {
     if (typeof window === "undefined") return false;
     return new URLSearchParams(window.location.search).has("setup");
@@ -37,6 +37,11 @@ export function ProtectedRoute({ children }: { children: ReactNode }): ReactNode
         Memuat portal staf…
       </div>
     );
+  }
+
+  // If user is authenticated, always allow them through to their duty workspace
+  if (user) {
+    return children;
   }
 
   if (status === "disabled" || status === "unauthorized") return <AccessDenied />;

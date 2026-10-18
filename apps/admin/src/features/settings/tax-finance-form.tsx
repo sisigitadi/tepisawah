@@ -129,12 +129,16 @@ export function TaxFinanceForm({ editable, onSavedToast }: TaxFinanceFormProps):
   const handleSave = async () => {
     setSaving(true);
     saveTaxSettings(settings);
+    let saveFailed = false;
+    let errorMessage = "";
     try {
       const client = getSupabaseClient();
       const payload = toDbTaxSettings(settings);
       const { error: upsertErr } = await (client.from("tax_settings") as any).upsert(payload);
       if (upsertErr) {
         console.error("Gagal menyimpan ke Supabase tax_settings:", upsertErr);
+        saveFailed = true;
+        errorMessage = upsertErr.message;
       }
       // Hapus baris 'default' lama jika ada agar tidak ada duplikasi data
       try {
@@ -142,11 +146,17 @@ export function TaxFinanceForm({ editable, onSavedToast }: TaxFinanceFormProps):
       } catch {
         // Non-blocking
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Gagal sinkronisasi tax_settings ke database:", err);
+      saveFailed = true;
+      errorMessage = err?.message || "Kesalahan jaringan";
     }
     setSaving(false);
-    onSavedToast?.("Pengaturan Pajak Restoran (PB1), QRIS, Rekening & Struk berhasil disimpan ke database.");
+    if (saveFailed) {
+      onSavedToast?.(`⚠️ Tersimpan di perangkat lokal, namun sinkronisasi ke server terkendala: ${errorMessage}`);
+    } else {
+      onSavedToast?.("Pengaturan Pajak Restoran (PB1), QRIS, Rekening & Struk berhasil disimpan & disinkronkan ke seluruh perangkat staf.");
+    }
   };
 
   const handleReset = () => {

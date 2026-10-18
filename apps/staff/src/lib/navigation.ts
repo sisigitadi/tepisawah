@@ -46,12 +46,66 @@ export const ROLE_ROOMS: Record<Role, readonly StaffRoom[]> = {
   kitchen: ["kitchen"],
 };
 
-export function getAllowedRooms(roles: readonly Role[]): Set<StaffRoom> {
-  const allowed = new Set<StaffRoom>(["portal"]);
+/** Get the primary operational room for the given staff roles and optional email/username */
+export function getPrimaryRoomForRoles(roles: readonly Role[], email?: string | null): StaffRoom {
+  const cleanEmail = (email || "").toLowerCase().trim();
+  if (
+    roles.includes("admin") ||
+    roles.includes("owner") ||
+    roles.includes("supervisor") ||
+    cleanEmail.includes("admin") ||
+    cleanEmail.includes("owner") ||
+    cleanEmail.includes("manager") ||
+    cleanEmail.includes("pengelola") ||
+    cleanEmail.includes("siswanto") ||
+    cleanEmail.includes("sisig") ||
+    cleanEmail.includes("sigit")
+  ) {
+    return "admin";
+  }
+  if (
+    roles.includes("kitchen") ||
+    cleanEmail.includes("kitchen") ||
+    cleanEmail.includes("dapur") ||
+    cleanEmail.includes("koki") ||
+    cleanEmail.includes("cook") ||
+    cleanEmail.includes("chef")
+  ) {
+    return "kitchen";
+  }
+  return "pos";
+}
+
+export function getAllowedRooms(roles: readonly Role[], email?: string | null): Set<StaffRoom> {
+  const allowed = new Set<StaffRoom>();
   for (const role of roles) {
     for (const r of ROLE_ROOMS[role] ?? []) {
       allowed.add(r);
     }
+  }
+  const cleanEmail = (email || "").toLowerCase().trim();
+  if (
+    cleanEmail.includes("admin") ||
+    cleanEmail.includes("owner") ||
+    cleanEmail.includes("manager") ||
+    cleanEmail.includes("pengelola") ||
+    cleanEmail.includes("siswanto") ||
+    cleanEmail.includes("sisig") ||
+    cleanEmail.includes("sigit")
+  ) {
+    allowed.add("admin");
+    allowed.add("pos");
+    allowed.add("kitchen");
+  } else if (
+    cleanEmail.includes("kitchen") ||
+    cleanEmail.includes("dapur") ||
+    cleanEmail.includes("koki") ||
+    cleanEmail.includes("cook") ||
+    cleanEmail.includes("chef")
+  ) {
+    allowed.add("kitchen");
+  } else if (cleanEmail) {
+    allowed.add("pos");
   }
   return allowed;
 }

@@ -105,6 +105,38 @@ export function PaymentExecution({
   return (
     <section className="pos-settlement" aria-label="Eksekusi pembayaran">
       <div className="pos-settlement__card">
+        {/* Bill Summary Banner */}
+        <div
+          style={{
+            background: "linear-gradient(135deg, #183a1d 0%, #2e6b34 100%)",
+            color: "#fefae0",
+            padding: "1rem 1.25rem",
+            borderRadius: "10px",
+            marginBottom: "1rem",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            boxShadow: "0 4px 12px rgba(24, 58, 29, 0.15)",
+          }}
+        >
+          <div>
+            <div style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.08em", color: "#dda15e", fontWeight: 700 }}>
+              {order.table} ({order.ticket})
+            </div>
+            <div style={{ fontSize: "1.5rem", fontWeight: 800, marginTop: "2px", letterSpacing: "-0.01em" }}>
+              {formatIDR(grandTotal)}
+            </div>
+          </div>
+          <div style={{ textAlign: "right", fontSize: "0.8rem", color: "rgba(254, 250, 224, 0.9)" }}>
+            <div>Subtotal: {formatIDR(subtotalOf(order))}</div>
+            {taxSettings.taxEnabled && taxOf(order) > 0 ? (
+              <div style={{ color: "#86efac", fontWeight: 600 }}>PB1 (10%): +{formatIDR(taxOf(order))}</div>
+            ) : (
+              <div style={{ color: "rgba(254, 250, 224, 0.65)" }}>PB1: Rp 0 (Nonaktif)</div>
+            )}
+          </div>
+        </div>
+
         <div className="pos-settlement__head">
           <div className="pos-settlement__title-group">
             <span className="pos-settlement__title">Metode Pembayaran</span>

@@ -670,14 +670,43 @@ export function useLandingContent(): {
     window.addEventListener("tepisawah_landing_content_updated", handleUpdate);
     window.addEventListener("storage", handleUpdate);
     window.addEventListener("focus", handleUpdate);
-    document.addEventListener("visibilitychange", () => {
+    const handleVisibility = () => {
       if (document.visibilityState === "visible") void fetchContent();
-    });
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    let realtimeChannel: any = null;
+    try {
+      const client = getSupabaseClient() as any;
+      if (client?.channel) {
+        realtimeChannel = client
+          .channel("public:landing_content_sync")
+          .on(
+            "postgres_changes",
+            { event: "*", schema: "public", table: "landing_content" },
+            () => {
+              void fetchContent();
+            },
+          )
+          .subscribe();
+      }
+    } catch {
+      // Ignore if supabase client or realtime is unavailable
+    }
 
     return () => {
       window.removeEventListener("tepisawah_landing_content_updated", handleUpdate);
       window.removeEventListener("storage", handleUpdate);
       window.removeEventListener("focus", handleUpdate);
+      document.removeEventListener("visibilitychange", handleVisibility);
+      if (realtimeChannel) {
+        try {
+          const client = getSupabaseClient() as any;
+          void client?.removeChannel?.(realtimeChannel);
+        } catch {
+          // ignore
+        }
+      }
     };
   }, []);
 

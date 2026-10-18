@@ -28,11 +28,11 @@ import {
 } from "@tepisawah/database";
 import { TerminalChrome } from "../features/terminal/TerminalChrome.js";
 import { OrderQueue, type QueueFilter } from "../features/terminal/OrderQueue.js";
-import { BillInspector } from "../features/terminal/BillInspector.js";
 import { PaymentExecution } from "../features/terminal/PaymentExecution.js";
 import { ThermalSlip } from "../features/terminal/ThermalSlip.js";
 import { CashDrawerModal } from "../features/shifts/CashDrawerModal.js";
 import { VoidOrderModal } from "../features/terminal/VoidOrderModal.js";
+import { executePrint } from "../lib/printer.js";
 import {
   grandTotalOf,
   formatIDR,
@@ -235,9 +235,9 @@ export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode
       }).format(new Date())} WIB`;
       setReprintKey((prev) => prev + 1);
     }
-    // Give browser a tick to paint the receipt DOM node before invoking native print
+    // Give browser a tick to paint the receipt DOM node before invoking print driver
     window.setTimeout(() => {
-      window.print();
+      void executePrint(orderToPrint);
     }, 60);
   }, []);
 
@@ -395,41 +395,30 @@ export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode
                   ? "Pilih satu pesanan riwayat untuk mencetak ulang struk."
                   : loaded && orders.length === 0
                     ? "Tidak ada tagihan menunggu pembayaran. Order yang sudah disajikan muncul di sini."
-                    : "Pilih satu order dari antrean untuk memeriksa tagihan."}
+                    : "Pilih salah satu order dari antrean di sebelah kiri untuk memproses pembayaran."}
               </p>
             </div>
+          ) : filter !== "history" ? (
+            <PaymentExecution
+              order={selectedOrder}
+              method={method}
+              tendered={tendered}
+              onMethodChange={setMethod}
+              onTenderedChange={setTendered}
+              onSettle={handleSettle}
+              onVoid={() => selectedOrder && handleOpenVoid(selectedOrder)}
+            />
           ) : (
-            <>
-              <BillInspector
+            <div className="pos-settlement" aria-label="Pratinjau struk riwayat">
+              <ThermalSlip
+                key={reprintKey}
                 order={selectedOrder}
-                onPrint={() => handlePrintReceipt(selectedOrder, false)}
-                onVoid={() => selectedOrder && handleOpenVoid(selectedOrder)}
-                onReprint={() => handlePrintReceipt(selectedOrder, true)}
+                method="cash"
+                tenderedNumber={grandTotalOf(selectedOrder)}
+                change={0}
+                onPrint={() => handlePrintReceipt(selectedOrder, true)}
               />
-
-              {filter !== "history" ? (
-                <PaymentExecution
-                  order={selectedOrder}
-                  method={method}
-                  tendered={tendered}
-                  onMethodChange={setMethod}
-                  onTenderedChange={setTendered}
-                  onSettle={handleSettle}
-                  onVoid={() => selectedOrder && handleOpenVoid(selectedOrder)}
-                />
-              ) : (
-                <div className="pos-settlement" aria-label="Pratinjau struk riwayat">
-                  <ThermalSlip
-                    key={reprintKey}
-                    order={selectedOrder}
-                    method="cash"
-                    tenderedNumber={grandTotalOf(selectedOrder)}
-                    change={0}
-                    onPrint={() => handlePrintReceipt(selectedOrder, true)}
-                  />
-                </div>
-              )}
-            </>
+            </div>
           )}
         </div>
       </div>

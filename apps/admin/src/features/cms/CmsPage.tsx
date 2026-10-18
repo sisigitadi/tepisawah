@@ -585,6 +585,9 @@ export function CmsPage(): ReactNode {
   const [imageSizes, setImageSizes] = useState<Record<string, string>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [targetImageField, setTargetImageField] = useState<string | null>(null);
+  const [isDirty, setIsDirty] = useState(false);
+  const [mobileMode, setMobileMode] = useState<"editor" | "preview">("editor");
+  const [importingCatalog, setImportingCatalog] = useState(false);
 
   useEffect(() => {
     async function loadFromDb() {
@@ -640,7 +643,57 @@ export function CmsPage(): ReactNode {
     void loadFromDb();
   }, []);
 
+  async function handleSyncFromCatalog() {
+    setImportingCatalog(true);
+    try {
+      const client = getSupabaseClient() as any;
+      const { data, error } = await client
+        .from("products")
+        .select("*, category:categories(name)")
+        .eq("is_available", true)
+        .order("is_featured", { ascending: false })
+        .limit(6);
+
+      if (error) throw error;
+      if (Array.isArray(data) && data.length > 0) {
+        const mappedItems: MenuItemConfig[] = data.map((p, idx) => ({
+          id: p.id || `menu-${idx + 1}`,
+          isActive: true,
+          name: p.name,
+          category: p.category?.name || "Makanan Utama",
+          price: `Rp ${Number(p.price || 0).toLocaleString("id-ID")}`,
+          desc: p.description || "Hidangan istimewa pilihan restoran Tepi Sawah Ciperna.",
+          imageUrl: p.image_url || DEFAULT_MENU_ITEMS[idx]?.imageUrl || "/gallery/saung-lesehan.webp",
+          badge: p.is_featured ? "Favorit Santap" : "Pilihan Koki",
+        }));
+
+        while (mappedItems.length < 6) {
+          const fallback = DEFAULT_MENU_ITEMS[mappedItems.length];
+          if (fallback) mappedItems.push(fallback);
+        }
+
+        setContent((prev) => ({
+          ...prev,
+          menu: {
+            ...prev.menu,
+            items: mappedItems,
+          },
+        }));
+        setIsDirty(true);
+        setMessage("Berhasil menarik 6 hidangan aktif dari Katalog Restoran ke Showcase Menu Website!");
+      } else {
+        setMessage("Tidak ditemukan produk aktif di katalog database.");
+      }
+    } catch (err: any) {
+      console.error("Gagal menarik produk katalog:", err);
+      setMessage(`Gagal menarik produk katalog: ${err.message || err}`);
+    } finally {
+      setImportingCatalog(false);
+    }
+  }
+
   function handleFieldChange(section: CmsSectionKey, field: string, value: any) {
+    setIsDirty(true);
     setContent((prev) => ({
       ...prev,
       [section]: {
@@ -652,6 +705,7 @@ export function CmsPage(): ReactNode {
 
   function handleToggleActive(section: CmsSectionKey) {
     if (section === "theme") return;
+    setIsDirty(true);
     setContent((prev) => ({
       ...prev,
       [section]: {
@@ -907,6 +961,7 @@ export function CmsPage(): ReactNode {
         }
       }
 
+      setIsDirty(false);
       setMessage("Perubahan konten, 6 foto galeri & tema berhasil disimpan dan tersinkronkan ke website publik!");
     } catch (err) {
       console.error("Gagal menyimpan ke database:", err);
@@ -926,6 +981,7 @@ export function CmsPage(): ReactNode {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(DEFAULT_CMS_CONTENT),
       }).catch(() => {});
+      setIsDirty(false);
       setMessage("Konten & tema berhasil di-reset ke nilai default.");
     }
   }
@@ -1029,13 +1085,14 @@ export function CmsPage(): ReactNode {
         </div>
       )}
 
-      {/* 9 Sub-Tabs Navigation */}
-      <div
+      {/* 9 Sub-Tabs Navigation (Wrapped, Accessible, No Horizontal Dragging / Jangan Digeser) */}
+      <nav
+        aria-label="Pilihan Seksi Konten Website"
         style={{
           display: "flex",
-          gap: "0.4rem",
-          overflowX: "auto",
-          paddingBottom: "0.5rem",
+          flexWrap: "wrap",
+          gap: "0.5rem",
+          paddingBottom: "0.75rem",
           marginBottom: "1.25rem",
           borderBottom: "1px solid #e2e8f0",
         }}
@@ -1054,19 +1111,19 @@ export function CmsPage(): ReactNode {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "0.5rem",
-                padding: "0.6rem 1rem",
+                padding: "0.55rem 0.95rem",
+                minHeight: "44px",
                 borderRadius: "8px",
-                border: isTabActive ? "1px solid #166534" : "1px solid #e2e8f0",
+                border: isTabActive ? "1px solid #166534" : "1px solid #cbd5e1",
                 background: isTabActive ? "#166534" : "#ffffff",
-                color: isTabActive ? "#ffffff" : "#475569",
-                fontWeight: isTabActive ? 700 : 500,
+                color: isTabActive ? "#ffffff" : "#1e293b",
+                fontWeight: isTabActive ? 700 : 600,
                 fontSize: "0.88rem",
                 cursor: "pointer",
-                whiteSpace: "nowrap",
                 transition: "all 0.15s ease",
               }}
             >
-              <span>{tab.icon}</span>
+              <span aria-hidden="true">{tab.icon}</span>
               <span>{tab.label}</span>
               <span
                 style={{
@@ -1081,19 +1138,78 @@ export function CmsPage(): ReactNode {
             </button>
           );
         })}
+      </nav>
+
+      {/* Responsive View Switcher for Small Screens */}
+      <div className="cms-mobile-toggle-bar">
+        <button
+          type="button"
+          onClick={() => setMobileMode("editor")}
+          className={`cms-mode-btn ${mobileMode === "editor" ? "cms-mode-btn--active" : ""}`}
+        >
+          📝 Formulir Editor
+        </button>
+        <button
+          type="button"
+          onClick={() => setMobileMode("preview")}
+          className={`cms-mode-btn ${mobileMode === "preview" ? "cms-mode-btn--active" : ""}`}
+        >
+          👁️ Pratinjau Website
+        </button>
       </div>
+
+      <style>{`
+        .cms-mobile-toggle-bar {
+          display: none;
+        }
+        @media (max-width: 1023px) {
+          .cms-mobile-toggle-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+          }
+          .cms-mode-btn {
+            flex: 1;
+            min-height: 44px;
+            padding: 0.6rem;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            color: #475569;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+          }
+          .cms-mode-btn--active {
+            border-color: #166534;
+            background: #166534;
+            color: #ffffff;
+          }
+          .cms-main-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .cms-editor-col {
+            display: ${mobileMode === "editor" ? "block" : "none"} !important;
+          }
+          .cms-preview-col {
+            display: ${mobileMode === "preview" ? "block" : "none"} !important;
+          }
+        }
+      `}</style>
 
       {/* Main Grid: Editor on Left, Live Preview on Right */}
       <div
+        className="cms-main-grid"
         style={{
           display: "grid",
-          gridTemplateColumns: "minmax(0, 1.8fr) minmax(360px, 1.2fr)",
+          gridTemplateColumns: "minmax(0, 1.65fr) minmax(360px, 1.15fr)",
           gap: "1.5rem",
           alignItems: "flex-start",
         }}
       >
         {/* Editor Form Column */}
         <div
+          className="cms-editor-col"
           style={{
             background: "#ffffff",
             padding: "1.5rem",
@@ -1306,18 +1422,42 @@ export function CmsPage(): ReactNode {
                       Semua teks dapat diedit dan setiap slot foto dikompresi otomatis ke format WebP (&lt;80 KB).
                     </p>
                   </div>
-                  <span
-                    style={{
-                      background: "#dcfce7",
-                      color: "#166534",
-                      padding: "0.25rem 0.65rem",
-                      borderRadius: "9999px",
-                      fontSize: "0.75rem",
-                      fontWeight: 700,
-                    }}
-                  >
-                    6 Slot Hidangan
-                  </span>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <button
+                      type="button"
+                      onClick={() => void handleSyncFromCatalog()}
+                      disabled={importingCatalog}
+                      style={{
+                        padding: "0.45rem 0.85rem",
+                        borderRadius: "6px",
+                        border: "1px solid #16a34a",
+                        background: "#f0fdf4",
+                        color: "#166534",
+                        fontWeight: 700,
+                        fontSize: "0.82rem",
+                        cursor: importingCatalog ? "not-allowed" : "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "0.4rem",
+                      }}
+                      title="Sinkronkan hidangan unggulan langsung dari database katalog resto"
+                    >
+                      <span aria-hidden="true">📥</span>
+                      <span>{importingCatalog ? "Menarik…" : "Tarik dari Katalog Restoran"}</span>
+                    </button>
+                    <span
+                      style={{
+                        background: "#dcfce7",
+                        color: "#166534",
+                        padding: "0.35rem 0.65rem",
+                        borderRadius: "9999px",
+                        fontSize: "0.75rem",
+                        fontWeight: 700,
+                      }}
+                    >
+                      6 Slot Hidangan
+                    </span>
+                  </div>
                 </div>
 
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))", gap: "1rem" }}>
@@ -2667,6 +2807,7 @@ export function CmsPage(): ReactNode {
 
         {/* Live Preview Column */}
         <div
+          className="cms-preview-col"
           style={{
             background: "#ffffff",
             padding: "1.5rem",
@@ -2959,6 +3100,87 @@ export function CmsPage(): ReactNode {
           )}
         </div>
       </div>
+
+      {/* Sticky Bottom Action Bar with Draft Status & Quick Actions */}
+      <aside
+        style={{
+          position: "sticky",
+          bottom: "1rem",
+          zIndex: 40,
+          marginTop: "1.5rem",
+          padding: "0.75rem 1.25rem",
+          background: "#183a1d",
+          color: "#fefae0",
+          borderRadius: "12px",
+          boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.3)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "0.75rem",
+        }}
+        aria-label="Aksi Simpan Konten CMS"
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          <span
+            style={{
+              width: "10px",
+              height: "10px",
+              borderRadius: "50%",
+              background: isDirty ? "#f59e0b" : "#4ade80",
+              boxShadow: isDirty ? "0 0 8px #f59e0b" : "0 0 8px #4ade80",
+            }}
+          />
+          <span style={{ fontSize: "0.88rem", fontWeight: 600 }}>
+            {isDirty ? "Ada perubahan draft yang belum disimpan" : "Semua konten tersimpan & tersinkronkan"}
+          </span>
+        </div>
+
+        <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+          <a
+            href="https://tepisawah.id"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              padding: "0.5rem 0.95rem",
+              minHeight: "40px",
+              borderRadius: "8px",
+              background: "rgba(255, 255, 255, 0.12)",
+              color: "#fefae0",
+              fontWeight: 600,
+              fontSize: "0.85rem",
+              textDecoration: "none",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.35rem",
+            }}
+          >
+            <span>↗</span>
+            <span>Buka Web Publik</span>
+          </a>
+
+          <button
+            type="button"
+            onClick={() => void handleSave()}
+            disabled={saving}
+            style={{
+              padding: "0.55rem 1.35rem",
+              minHeight: "40px",
+              borderRadius: "8px",
+              border: "none",
+              background: "#4ade80",
+              color: "#052e16",
+              fontWeight: 700,
+              fontSize: "0.88rem",
+              cursor: saving ? "not-allowed" : "pointer",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.15)",
+            }}
+          >
+            {saving ? "Menyimpan…" : "✓ Simpan Semua Perubahan"}
+          </button>
+        </div>
+      </aside>
     </div>
   );
 }
