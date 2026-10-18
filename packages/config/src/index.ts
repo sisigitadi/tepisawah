@@ -7,3 +7,4 @@ export * from "./feature-flags.js";
 export * from "./env.js";
 export * from "./demo.js";
 export * from "./tax.js";
+export * from "./printer.js";

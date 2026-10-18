@@ -212,10 +212,14 @@ export function taxBaseOf(order: QueueOrder): number {
   return subtotalOf(order) - discountOf(order);
 }
 
-/** PB1 resto tax (the server's own value on a live order). */
+/** PB1 resto tax (the server's own value on a live order, respecting active tax settings for unpaid orders). */
 export function taxOf(order: QueueOrder): number {
-  if (order.bill) return order.bill.tax;
   const settings = loadTaxSettings();
+  // If tax is disabled and order is not yet finalized, tax is strictly 0
+  if (!settings.taxEnabled || settings.taxRate === 0) {
+    if (order.status !== "paid") return 0;
+  }
+  if (order.bill) return order.bill.tax;
   const bill = calculateBill(subtotalOf(order), discountOf(order), settings);
   return bill.taxAmount;
 }
@@ -228,10 +232,16 @@ export function serviceOf(order: QueueOrder): number {
   return bill.serviceAmount;
 }
 
-/** Grand total to settle (the server's own value on a live order). */
+/** Grand total to settle (the server's own value on a live order, respecting active tax settings for unpaid orders). */
 export function grandTotalOf(order: QueueOrder): number {
-  if (order.bill) return order.bill.total;
   const settings = loadTaxSettings();
+  if (order.bill) {
+    // If tax was disabled after draft order creation, adjust unpaid total by removing obsolete tax
+    if ((!settings.taxEnabled || settings.taxRate === 0) && order.status !== "paid") {
+      return Math.max(0, order.bill.subtotal - order.bill.discount);
+    }
+    return order.bill.total;
+  }
   const bill = calculateBill(subtotalOf(order), discountOf(order), settings);
   return bill.total;
 }

@@ -923,8 +923,8 @@ input {
 
 .pos-grid {
   display: grid;
-  grid-template-columns: 12fr;
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
   align-items: start;
 }
 
@@ -953,7 +953,6 @@ input {
 }
 
 .pos-empty-bill {
-  grid-column: 2 / -1;
   display: grid;
   place-items: center;
   min-height: 320px;
@@ -963,21 +962,12 @@ input {
   font-size: 0.95rem;
   text-align: center;
   padding: 1.5rem;
+  background: rgba(254, 250, 224, 0.2);
 }
 
-@media (min-width: 64rem) {
+@media (min-width: 56rem) {
   .pos-grid {
-    grid-template-columns: 4fr 8fr;
-  }
-
-  .pos-settlement {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (min-width: 90rem) {
-  .pos-grid {
-    grid-template-columns: 3fr 5fr 4fr;
+    grid-template-columns: minmax(360px, 1.15fr) minmax(340px, 1fr);
   }
 
   .pos-settlement {

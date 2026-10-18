@@ -20,7 +20,7 @@ import { useOrderBoardChannel } from "@tepisawah/database";
 import { RootLayout } from "../../layouts/RootLayout.js";
 import { PortalPage } from "../../pages/PortalPage.js";
 import { PermissionRoute, ProtectedRoute } from "../../routes/index.js";
-import { getAllowedRooms, useStaffNavigation, type StaffRoom } from "../../lib/navigation.js";
+import { getAllowedRooms, getPrimaryRoomForRoles, useStaffNavigation, type StaffRoom } from "../../lib/navigation.js";
 import { getSupabaseClient } from "../../lib/supabase.js";
 
 // Embedded rooms from workspace apps
@@ -113,35 +113,26 @@ function AdminSubnavBar({
 export function AppRouter(): ReactNode {
   const { currentRoom, navigateTo } = useStaffNavigation();
   const { user, roles, isLoading } = useAuth();
-  const allowedRooms = useMemo(() => getAllowedRooms(roles), [roles]);
+  const allowedRooms = useMemo(() => getAllowedRooms(roles, user?.email), [roles, user?.email]);
+  const primaryRoom = useMemo(() => getPrimaryRoomForRoles(roles, user?.email), [roles, user?.email]);
 
-  // Auto-reset room to portal whenever user session changes (switch user/login)
-  const prevUserIdRef = useRef<string | undefined>(undefined);
-  useEffect(() => {
-    if (user?.id && prevUserIdRef.current && prevUserIdRef.current !== user.id) {
-      navigateTo("portal");
+  // Synchronous room resolution:
+  // If authenticated, the user must NEVER see the portal launcher or unpermitted room.
+  // They are immediately and exclusively placed into their authorized duty room.
+  const effectiveRoom: StaffRoom = useMemo(() => {
+    if (!user) return currentRoom;
+    if (currentRoom === "portal" || !allowedRooms.has(currentRoom)) {
+      return primaryRoom;
     }
-    prevUserIdRef.current = user?.id;
-  }, [user?.id, navigateTo]);
+    return currentRoom;
+  }, [user, currentRoom, allowedRooms, primaryRoom]);
 
-  // Smart Route Redirection: if current room is not permitted for the active role,
-  // automatically redirect to their primary operational room (e.g. cashier to pos, kitchen to kitchen).
-  // IMPORTANT: Wait until auth has settled (isLoading === false) so refreshing a subpage (e.g. /admin, /pos)
-  // does not prematurely kick the user back to portal before their roles finish fetching.
+  // Synchronize browser history immediately when effective room differs
   useEffect(() => {
-    if (isLoading || !user) return;
-    if (currentRoom !== "portal" && !allowedRooms.has(currentRoom)) {
-      if (allowedRooms.has("pos")) {
-        navigateTo("pos");
-      } else if (allowedRooms.has("kitchen")) {
-        navigateTo("kitchen");
-      } else if (allowedRooms.has("admin")) {
-        navigateTo("admin");
-      } else {
-        navigateTo("portal");
-      }
+    if (user && effectiveRoom !== currentRoom) {
+      navigateTo(effectiveRoom);
     }
-  }, [isLoading, user, currentRoom, allowedRooms, navigateTo]);
+  }, [user, effectiveRoom, currentRoom, navigateTo]);
 
   // Internal sub-tab state for Front of House (Kasir & Layanan Meja)
   const [fohTab, setFohTab] = useState<FrontOfHouseTab>(() => {
@@ -244,13 +235,9 @@ export function AppRouter(): ReactNode {
   }, [roles]);
 
   return (
-    <RootLayout currentRoom={currentRoom} onNavigate={navigateTo}>
+    <RootLayout currentRoom={effectiveRoom} onNavigate={navigateTo}>
       <ProtectedRoute>
-        {currentRoom === "portal" && (
-          <PortalPage onSelectRoom={(appId) => navigateTo(appId as StaffRoom)} />
-        )}
-
-        {currentRoom === "pos" && (
+        {effectiveRoom === "pos" && (
           <PermissionRoute permission={PERMISSIONS.ORDERS_READ}>
             {/* Top Subnav Bar for Desktop & Tablet */}
             <div className="staff-subnav-container">
@@ -377,7 +364,7 @@ export function AppRouter(): ReactNode {
           </PermissionRoute>
         )}
 
-        {currentRoom === "kitchen" && (
+        {effectiveRoom === "kitchen" && (
           <PermissionRoute permission={PERMISSIONS.ORDERS_READ}>
             <div className="staff-room-kitchen">
               <KitchenHomePage />
@@ -385,7 +372,7 @@ export function AppRouter(): ReactNode {
           </PermissionRoute>
         )}
 
-        {currentRoom === "admin" && (
+        {effectiveRoom === "admin" && (
           allowedRooms.has("admin") ? (
             <PermissionRoute permission={PERMISSIONS.SETTINGS_READ}>
               <div className="staff-admin-room">

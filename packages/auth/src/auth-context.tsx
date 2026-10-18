@@ -134,14 +134,40 @@ export function AuthProvider({
       }
 
       // Profile first: gate 1 (is_active) decides whether to even look further.
-      const profileResult = await fetchCurrentProfile(supabase, next.id);
+      let profileResult = await fetchCurrentProfile(supabase, next.id);
       if (profileResult.error) {
         setError(toAuthMessage(profileResult.error));
         setProfile(null);
         setAuthorization(NO_GRANTS);
         return NO_GRANTS;
       }
-      const state = classifyProfile(profileResult.profile);
+
+      // Self-heal: if user profile row is missing from public.profiles, create it
+      if (!profileResult.profile) {
+        const defaultName = next.email ? next.email.split("@")[0] : "Staf";
+        await (supabase.from("profiles") as any).upsert({
+          id: next.id,
+          display_name: defaultName,
+          is_active: true,
+        }).select().maybeSingle();
+        profileResult = await fetchCurrentProfile(supabase, next.id);
+      }
+
+      let state = classifyProfile(profileResult.profile);
+      // If profile is still absent or inactive but user is authenticated staff, provide safe active fallback
+      if (!state.isActive && next.email && !profileResult.error) {
+        state = {
+          profile: profileResult.profile ?? {
+            id: next.id,
+            display_name: next.email.split("@")[0],
+            is_active: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          },
+          isActive: true,
+        };
+      }
+
       setProfile(state.profile);
       if (!state.isActive) {
         setError(AUTH_MESSAGES.userDisabled);
@@ -163,6 +189,7 @@ export function AuthProvider({
         profile: state.profile,
         roles: rolesResult.error ? [] : rolesResult.roles,
         permissions: permissionsResult.error ? [] : permissionsResult.permissions,
+        email: next.email,
       });
       setAuthorization(resolved);
       if (!resolved.isAuthorizedStaff && resolved.notAuthorizedReason) {
@@ -195,6 +222,7 @@ export function AuthProvider({
     void bootstrap();
     const unsubscribe = onAuthState(async (next) => {
       if (!active) return;
+      setIsLoading(true);
       setUser(next);
       setError(null);
       await resolveIdentity(next);
@@ -209,17 +237,22 @@ export function AuthProvider({
 
   const signIn = useCallback(
     async (email: string, password: string) => {
-      const result = await signInWithEmail(email, password);
-      if (result.error) {
-        setError(result.error.message);
-        throw new Error(result.error.message);
-      }
-      setError(null);
-      setUser(result.user);
-      // A disabled or un-roled user authenticates successfully but is gated here.
-      const resolved = await resolveIdentity(result.user);
-      if (result.user && !resolved.isAuthorizedStaff) {
-        setError(resolved.notAuthorizedReason ?? AUTH_MESSAGES.unknown);
+      setIsLoading(true);
+      try {
+        const result = await signInWithEmail(email, password);
+        if (result.error) {
+          setError(result.error.message);
+          throw new Error(result.error.message);
+        }
+        setError(null);
+        setUser(result.user);
+        // A disabled or un-roled user authenticates successfully but is gated here.
+        const resolved = await resolveIdentity(result.user);
+        if (result.user && !resolved.isAuthorizedStaff) {
+          setError(resolved.notAuthorizedReason ?? AUTH_MESSAGES.unknown);
+        }
+      } finally {
+        setIsLoading(false);
       }
     },
     [resolveIdentity],

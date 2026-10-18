@@ -8,7 +8,7 @@ import { useState, type ReactNode } from "react";
 
 import { useAuth } from "@tepisawah/auth";
 
-import { ROLE_ROOMS, ROOM_METAS, type StaffRoom } from "../lib/navigation.js";
+import { ROLE_ROOMS, ROOM_METAS, getPrimaryRoomForRoles, type StaffRoom } from "../lib/navigation.js";
 import { usePwaInstall } from "../lib/pwa.js";
 
 export interface AppHeaderProps {
@@ -25,13 +25,14 @@ export function AppHeader({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Compute allowed rooms for this staff member
-  const allowedRooms = new Set<StaffRoom>(["portal"]);
+  const allowedRooms = new Set<StaffRoom>();
   for (const role of roles) {
     for (const r of ROLE_ROOMS[role] ?? []) allowedRooms.add(r);
   }
 
+  // Only display operational rooms (pos, kitchen, admin) that this user holds rights to
   const navItems: readonly StaffRoom[] = (
-    ["portal", "pos", "kitchen", "admin"] as const
+    ["pos", "kitchen", "admin"] as const
   ).filter((r) => allowedRooms.has(r));
 
   const handleSignOut = async () => {
@@ -42,23 +43,20 @@ export function AppHeader({
     } catch {
       // ignore
     }
-    if (onNavigate) {
-      onNavigate("portal");
-    } else {
-      window.history.pushState({}, "", "/");
-    }
     await signOut();
   };
+
+  const primaryRoom = getPrimaryRoomForRoles(roles);
 
   return (
     <header className="staff-header">
       <a
         className="staff-brand"
-        href="/"
+        href={primaryRoom === "portal" ? "/" : `/${primaryRoom}`}
         onClick={(e) => {
           if (onNavigate) {
             e.preventDefault();
-            onNavigate("portal");
+            onNavigate(primaryRoom);
           }
         }}
       >

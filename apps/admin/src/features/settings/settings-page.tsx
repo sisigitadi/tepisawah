@@ -47,9 +47,11 @@ import {
   type SettingsForm,
 } from "./use-settings.js";
 
+import { PrinterSettingsForm } from "./printer-settings-form.js";
+
 const SUPPORTED_TIMEZONES = ["Asia/Jakarta", "Asia/Makassar", "Asia/Jayapura"];
 
-type TabId = "profile" | "hours" | "orderFlow" | "taxFinance";
+type TabId = "profile" | "hours" | "orderFlow" | "taxFinance" | "printer";
 
 /**
  * Loading placeholder. Deliberately renders no real heading: the page heading
@@ -289,6 +291,16 @@ export function SettingsPage(): ReactNode {
             label: "Pajak, QRIS & Struk",
             content: (
               <TaxFinanceForm
+                editable={canManage}
+                onSavedToast={(msg) => pushToast("success", "Tersimpan", msg)}
+              />
+            ),
+          },
+          {
+            id: "printer",
+            label: "Printer Thermal & Blueprint",
+            content: (
+              <PrinterSettingsForm
                 editable={canManage}
                 onSavedToast={(msg) => pushToast("success", "Tersimpan", msg)}
               />
