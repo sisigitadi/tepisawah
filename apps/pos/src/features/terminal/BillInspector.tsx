@@ -180,18 +180,37 @@ export function BillInspector({ order, onPrint, onVoid, onReprint }: BillInspect
               🚫 PESANAN INI TELAH DIBATALKAN / VOID
             </div>
           ) : (
-            <>
-              <button type="button" className="pos-btn pos-btn--outline pos-btn--grow" onClick={onPrint}>
-                <PrintIcon aria-hidden="true" /> Cetak Struk Dapur / Bill Tamu
-              </button>
+            <div className="pos-inspector__actions-stack">
               <button
                 type="button"
-                className="pos-btn pos-btn--ghost-danger"
-                onClick={onVoid}
+                className="pos-btn pos-btn--primary pos-btn--grow"
+                onClick={onPrint}
+                style={{ width: "100%", justifyContent: "center", padding: "0.75rem 1rem" }}
               >
-                <XCircleIcon aria-hidden="true" /> Void Menu
+                <PrintIcon aria-hidden="true" /> Cetak Bill Tamu / Pesanan Meja
               </button>
-            </>
+              {onVoid && (
+                <div className="pos-inspector__danger-area">
+                  <button
+                    type="button"
+                    className="pos-inspector__void-trigger"
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          `Yakin ingin membatalkan (VOID) pesanan ${order.table} (${order.ticket})? Tindakan ini tidak dapat dibatalkan.`
+                        )
+                      ) {
+                        onVoid();
+                      }
+                    }}
+                    title="Batalkan pesanan ini (memerlukan konfirmasi)"
+                  >
+                    <XCircleIcon aria-hidden="true" />
+                    <span>Batalkan Pesanan Ini (Void)</span>
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>
