@@ -14,10 +14,9 @@ import { DEMO_ACCOUNTS } from "@tepisawah/config";
 import { env } from "../lib/env.js";
 
 export function ProtectedRoute({ children }: { children: ReactNode }): ReactNode {
-  const { status, isLoading, user } = useAuth();
+  const { status, isLoading } = useAuth();
 
   if (isLoading) return <div aria-busy="true">Memuat…</div>;
-  if (user) return children;
   if (status === "disabled" || status === "unauthorized") return <AccessDenied />;
   if (status === "unauthenticated") {
     return (
