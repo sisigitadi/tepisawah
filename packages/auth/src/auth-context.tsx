@@ -159,12 +159,15 @@ export function AuthProvider({
         state = {
           profile: profileResult.profile ?? {
             id: next.id,
-            display_name: next.email.split("@")[0],
+            display_name: next.email.split("@")[0] || "Staf",
+            phone: null,
+            avatar_url: null,
             is_active: true,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           },
           isActive: true,
+          error: null,
         };
       }
 
