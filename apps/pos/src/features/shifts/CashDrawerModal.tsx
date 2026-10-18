@@ -8,7 +8,7 @@
  * 4. Tutup Kasir: Shift reconciliation, discrepancy calculation, and shift report printing.
  */
 
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect, useMemo, type ReactNode } from "react";
 import { Modal, Button } from "@tepisawah/ui";
 import {
   type CashShift,
@@ -62,6 +62,11 @@ export function CashDrawerModal({
   // Tutup Kasir form state
   const [actualCash, setActualCash] = useState("");
   const [closingNotes, setClosingNotes] = useState("");
+
+  // Pilihan Waktu Rekap & Printer Thermal (Bukan Screenshot)
+  const [rekapPeriod, setRekapPeriod] = useState<"session" | "today" | "morning" | "afternoon">("session");
+  const [rekapPaperWidth, setRekapPaperWidth] = useState<"80mm" | "58mm">("80mm");
+  const [showThermalPreview, setShowThermalPreview] = useState(false);
 
   // Load transactions when shift changes
   useEffect(() => {
@@ -155,6 +160,202 @@ export function CashDrawerModal({
   const expectedNum = currentShift?.expectedCash ?? 0;
   const difference = actualNum - expectedNum;
 
+  const todayFormatted = useMemo(() => {
+    return new Intl.DateTimeFormat("id-ID", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "Asia/Jakarta",
+    }).format(new Date());
+  }, []);
+
+  const openedAtFormatted = useMemo(() => {
+    if (!currentShift) return "";
+    try {
+      return new Intl.DateTimeFormat("id-ID", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "Asia/Jakarta",
+      }).format(new Date(currentShift.openedAt));
+    } catch {
+      return currentShift.openedAt;
+    }
+  }, [currentShift]);
+
+  const rekapPeriodLabel = useMemo(() => {
+    switch (rekapPeriod) {
+      case "session":
+        return `Sesi Shift Ini (${currentShift?.shiftName ?? "Aktif"})`;
+      case "today":
+        return "Hari Ini Penuh (00:00 - 23:59 WIB)";
+      case "morning":
+        return "Shift Pagi (07:00 - 15:30 WIB)";
+      case "afternoon":
+        return "Shift Sore (15:00 - 23:00 WIB)";
+      default:
+        return "Sesi Shift Ini";
+    }
+  }, [rekapPeriod, currentShift]);
+
+  const handlePrintThermalRekap = (isClosing = false) => {
+    document.body.classList.add("printing-thermal-rekap");
+    window.print();
+    window.setTimeout(() => {
+      document.body.classList.remove("printing-thermal-rekap");
+    }, 1500);
+  };
+
+  const renderThermalPaper = (isClosing = false) => {
+    if (!currentShift) return null;
+    const is58 = rekapPaperWidth === "58mm";
+    return (
+      <div
+        className={`pos-thermal__paper ${is58 ? "pos-thermal__paper--58mm" : ""}`}
+        style={{
+          width: is58 ? "220px" : "300px",
+          margin: "0 auto",
+          padding: is58 ? "8px 6px" : "14px 12px",
+          background: "#fff",
+          color: "#000",
+          fontFamily: "'Courier New', Courier, monospace",
+          fontSize: is58 ? "9.5px" : "11px",
+          lineHeight: 1.35,
+          border: "1px dashed #cbd5e1",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+        }}
+      >
+        <div style={{ textAlign: "center", fontWeight: "bold", fontSize: is58 ? "12px" : "14px" }}>
+          TEPI SAWAH RESTO &amp; CAFE
+        </div>
+        <div style={{ textAlign: "center", fontSize: is58 ? "8px" : "9.5px", marginBottom: "6px" }}>
+          Jl. Raya Ciperna No. 88, Cirebon
+          <br />
+          WA / Hotline: 0812-2200-2026
+        </div>
+        <div
+          style={{
+            textAlign: "center",
+            fontWeight: 800,
+            borderTop: "1px dashed #000",
+            borderBottom: "1px dashed #000",
+            padding: "3px 0",
+            margin: "4px 0 6px",
+          }}
+        >
+          {isClosing ? "*** LAPORAN TUTUP SHIFT (Z-REPORT) ***" : "*** REKAP KAS LACI (X-REPORT) ***"}
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <span>Tanggal:</span>
+          <span>{todayFormatted}</span>
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <span>Waktu Cetak:</span>
+          <span>{new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB</span>
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <span>Periode:</span>
+          <span>{rekapPeriodLabel}</span>
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <span>Shift / Kasir:</span>
+          <span>{currentShift.shiftName} ({currentShift.staffName})</span>
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <span>Sesi Buka:</span>
+          <span>{openedAtFormatted} WIB</span>
+        </div>
+
+        <div style={{ borderTop: "1px dashed #000", margin: "6px 0 4px" }} />
+        <div style={{ fontWeight: "bold", marginBottom: "3px" }}>RINGKASAN FISIK LACI KAS:</div>
+        
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <span>Modal Kas Awal:</span>
+          <span>{formatIDR(currentShift.startingCash)}</span>
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <span>Penjualan Tunai (+):</span>
+          <span>{formatIDR(currentShift.cashSales)}</span>
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <span>Kas Masuk Ops (+):</span>
+          <span>{formatIDR(currentShift.cashIn)}</span>
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <span>Kas Keluar Ops (-):</span>
+          <span>{formatIDR(currentShift.cashOut)}</span>
+        </div>
+
+        <div style={{ borderTop: "1px solid #000", margin: "4px 0" }} />
+        <div style={{ display: "flex", justifyContent: "space-between", fontWeight: "bold" }}>
+          <span>KAS SISTEM DI LACI:</span>
+          <span>{formatIDR(currentShift.expectedCash)}</span>
+        </div>
+
+        {isClosing && actualCash && (
+          <>
+            <div style={{ borderTop: "1px dashed #000", margin: "4px 0" }} />
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span>Hitungan Riil Fisik:</span>
+              <span>{formatIDR(actualNum)}</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", fontWeight: "bold" }}>
+              <span>Selisih Kas:</span>
+              <span>
+                {difference === 0
+                  ? "Rp 0 (COCOK/PAS)"
+                  : difference > 0
+                    ? `+${formatIDR(difference)} (LEBIH)`
+                    : `-${formatIDR(Math.abs(difference))} (KURANG)`}
+              </span>
+            </div>
+          </>
+        )}
+
+        {transactions.length > 0 && (
+          <>
+            <div style={{ borderTop: "1px dashed #000", margin: "6px 0 4px" }} />
+            <div style={{ fontWeight: "bold", marginBottom: "3px" }}>
+              RINCIAN KAS OPERASIONAL ({transactions.length}):
+            </div>
+            {transactions.map((t) => (
+              <div key={t.id} style={{ display: "flex", justifyContent: "space-between", fontSize: is58 ? "8.5px" : "9.5px" }}>
+                <span>
+                  {new Date(t.createdAt).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}{" "}
+                  [{t.type === "CASH_IN" ? "+" : "-"}] {t.reason.length > 15 ? `${t.reason.slice(0, 14)}…` : t.reason}
+                </span>
+                <span>{formatIDR(t.amount)}</span>
+              </div>
+            ))}
+          </>
+        )}
+
+        <div style={{ borderTop: "1px dashed #000", margin: "8px 0 6px" }} />
+        <div style={{ display: "flex", justifyContent: "space-between", textAlign: "center", marginTop: "12px", fontSize: is58 ? "8.5px" : "9.5px" }}>
+          <div style={{ flex: 1 }}>
+            <div>Kasir,</div>
+            <div style={{ height: "26px" }} />
+            <div>( {currentShift.staffName} )</div>
+          </div>
+          <div style={{ flex: 1 }}>
+            <div>Supervisor,</div>
+            <div style={{ height: "26px" }} />
+            <div>( ____________ )</div>
+          </div>
+        </div>
+
+        <div style={{ textAlign: "center", fontSize: is58 ? "8px" : "9px", marginTop: "10px", color: "#333", borderTop: "1px dashed #000", paddingTop: "4px" }}>
+          * Dicetak langsung dari Terminal POS Tepi Sawah *
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Modal
       open={open}
@@ -167,8 +368,8 @@ export function CashDrawerModal({
       }
       description={
         currentShift
-          ? `Kasir aktif: ${currentShift.staffName} • Dibuka sejak: ${new Date(currentShift.openedAt).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB`
-          : "Masukkan modal awal kasir untuk mulai menerima pembayaran tunai di terminal."
+          ? `Kasir aktif: ${currentShift.staffName} • Dibuka: ${openedAtFormatted} WIB • Shift: ${currentShift.shiftName}`
+          : `Tanggal: ${todayFormatted} • Masukkan modal awal kasir untuk mulai menerima pembayaran tunai di terminal.`
       }
     >
       <div style={{ padding: "0.5rem 0", color: "#1e293b" }}>
@@ -191,6 +392,29 @@ export function CashDrawerModal({
         {/* Jika belum ada shift yang buka */}
         {!currentShift ? (
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.85rem",
+                padding: "0.75rem 1rem",
+                background: "#f0fdf4",
+                border: "1px solid #bbf7d0",
+                borderRadius: "8px",
+                color: "#166534",
+              }}
+            >
+              <div style={{ fontSize: "1.4rem" }}>📅</div>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: "0.9rem" }}>
+                  Tanggal Operasional: {todayFormatted}
+                </div>
+                <div style={{ fontSize: "0.785rem", color: "#15803d", marginTop: "2px" }}>
+                  Jam Terminal: {new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB • Pastikan uang fisik di laci dihitung sebelum shift dimulai
+                </div>
+              </div>
+            </div>
+
             <div>
               <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, marginBottom: "0.25rem" }}>
                 Pilih Nama Shift
@@ -334,6 +558,39 @@ export function CashDrawerModal({
               <div>
                 <div
                   style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "0.75rem 1rem",
+                    background: "#f8fafc",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: "8px",
+                    marginBottom: "1rem",
+                    fontSize: "0.85rem",
+                    flexWrap: "wrap",
+                    gap: "0.5rem",
+                  }}
+                >
+                  <div>
+                    <div style={{ color: "#64748b", fontSize: "0.75rem", textTransform: "uppercase", fontWeight: 600 }}>
+                      Tanggal &amp; Waktu Buka Shift
+                    </div>
+                    <strong style={{ color: "#1e293b", fontSize: "0.95rem" }}>
+                      📅 {openedAtFormatted} WIB
+                    </strong>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ color: "#64748b", fontSize: "0.75rem", textTransform: "uppercase", fontWeight: 600 }}>
+                      Petugas Kasir
+                    </div>
+                    <strong style={{ color: "#183a1d", fontSize: "0.95rem" }}>
+                      👤 {currentShift.staffName} ({currentShift.shiftName})
+                    </strong>
+                  </div>
+                </div>
+
+                <div
+                  style={{
                     display: "grid",
                     gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
                     gap: "0.75rem",
@@ -359,6 +616,7 @@ export function CashDrawerModal({
                 </div>
 
                 <div
+                  className="rekap-screen-only"
                   style={{
                     padding: "1rem",
                     borderRadius: "8px",
@@ -367,7 +625,7 @@ export function CashDrawerModal({
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    marginBottom: "1.25rem",
+                    marginBottom: "1rem",
                   }}
                 >
                   <div>
@@ -376,9 +634,109 @@ export function CashDrawerModal({
                       {formatIDR(currentShift.expectedCash)}
                     </div>
                   </div>
-                  <Button variant="secondary" onClick={() => window.print()}>
-                    🖨️ Cetak Rekap
+                  <Button
+                    variant="primary"
+                    onClick={() => handlePrintThermalRekap(false)}
+                    style={{ background: "#0284c7", color: "#fff", fontWeight: 700 }}
+                  >
+                    🖨️ Cetak Struk Rekap
                   </Button>
+                </div>
+
+                {/* Panel Pilihan Waktu Rekap & Lebar Kertas Thermal */}
+                <div
+                  className="rekap-screen-only"
+                  style={{
+                    padding: "0.85rem 1rem",
+                    borderRadius: "8px",
+                    background: "#f8fafc",
+                    border: "1px solid #cbd5e1",
+                    marginBottom: "1.25rem",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem", flexWrap: "wrap", gap: "0.5rem" }}>
+                    <strong style={{ fontSize: "0.85rem", color: "#1e293b", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                      ⚙️ Pengaturan Cetak Rekap Thermal
+                    </strong>
+                    <button
+                      type="button"
+                      onClick={() => setShowThermalPreview(!showThermalPreview)}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        color: "#2563eb",
+                        fontSize: "0.8rem",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                      }}
+                    >
+                      {showThermalPreview ? "✕ Tutup Pratinjau Kertas" : "👁️ Pratinjau Kertas Struk"}
+                    </button>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: "0.75rem", alignItems: "flex-end" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.75rem", color: "#64748b", marginBottom: "3px", fontWeight: 600 }}>
+                        Pilihan Waktu Rekap:
+                      </label>
+                      <select
+                        className="admin-form-input"
+                        style={{ width: "100%", padding: "0.4rem 0.5rem", borderRadius: "5px", border: "1px solid #cbd5e1", fontSize: "0.8rem" }}
+                        value={rekapPeriod}
+                        onChange={(e) => setRekapPeriod(e.target.value as any)}
+                      >
+                        <option value="session">Sesi Shift Ini (Aktif)</option>
+                        <option value="today">Hari Ini Penuh (00:00 - 23:59 WIB)</option>
+                        <option value="morning">Shift Pagi (07:00 - 15:30 WIB)</option>
+                        <option value="afternoon">Shift Sore (15:00 - 23:00 WIB)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.75rem", color: "#64748b", marginBottom: "3px", fontWeight: 600 }}>
+                        Ukuran Kertas Thermal:
+                      </label>
+                      <select
+                        className="admin-form-input"
+                        style={{ width: "100%", padding: "0.4rem 0.5rem", borderRadius: "5px", border: "1px solid #cbd5e1", fontSize: "0.8rem" }}
+                        value={rekapPaperWidth}
+                        onChange={(e) => setRekapPaperWidth(e.target.value as any)}
+                      >
+                        <option value="80mm">80mm (Desktop Thermal)</option>
+                        <option value="58mm">58mm (Mini Bluetooth / BP-ECO58)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <Button
+                        variant="secondary"
+                        onClick={() => handlePrintThermalRekap(false)}
+                        style={{ height: "34px", fontSize: "0.8rem", padding: "0 0.85rem", whiteSpace: "nowrap" }}
+                      >
+                        🖨️ Cetak ({rekapPaperWidth})
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Pratinjau Kertas Thermal di Layar */}
+                  {showThermalPreview && (
+                    <div style={{ marginTop: "1rem", padding: "0.75rem", background: "#e2e8f0", borderRadius: "6px" }}>
+                      <div style={{ fontSize: "0.725rem", color: "#475569", textAlign: "center", marginBottom: "0.5rem", fontWeight: 700 }}>
+                        FORMAT STRUK THERMAL ASLI (KOMPATIBEL 58MM/80MM ESC/POS • BUKAN SCREENSHOT):
+                      </div>
+                      {renderThermalPaper(false)}
+                    </div>
+                  )}
+                </div>
+
+                {/* Print area murni untuk thermal driver/browser */}
+                <div
+                  id="thermal-rekap-print-area"
+                  className={`pos-thermal-rekap-print ${rekapPaperWidth === "58mm" ? "pos-thermal-rekap-print--58mm" : ""}`}
+                  style={{ display: showThermalPreview ? "none" : "none" }}
+                >
+                  {renderThermalPaper(false)}
                 </div>
 
                 {/* Riwayat Kas Operasional */}
@@ -405,8 +763,8 @@ export function CashDrawerModal({
                       >
                         <div>
                           <strong>{t.type === "CASH_IN" ? "🟢 [Masuk] " : "🔴 [Keluar] "} {t.reason}</strong>
-                          <div style={{ color: "#94a3b8", fontSize: "0.7rem" }}>
-                            {new Date(t.createdAt).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
+                          <div style={{ color: "#64748b", fontSize: "0.725rem", marginTop: "2px" }}>
+                            📅 {new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" }).format(new Date(t.createdAt))} WIB
                           </div>
                         </div>
                         <span style={{ fontWeight: 700, color: t.type === "CASH_IN" ? "#166534" : "#991b1b" }}>
@@ -574,6 +932,30 @@ export function CashDrawerModal({
                   ⚠️ <strong>Prosedur Tutup Shift:</strong> Hitung seluruh uang kertas & koin fisik yang ada di dalam laci kasir, lalu masukkan nominalnya di bawah ini untuk mencocokkan dengan catatan sistem.
                 </div>
 
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "0.65rem 0.85rem",
+                    background: "#f8fafc",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: "8px",
+                    fontSize: "0.825rem",
+                    flexWrap: "wrap",
+                    gap: "0.5rem",
+                  }}
+                >
+                  <div>
+                    <span style={{ color: "#64748b" }}>Tanggal Tutup: </span>
+                    <strong style={{ color: "#1e293b" }}>📅 {todayFormatted}</strong>
+                  </div>
+                  <div>
+                    <span style={{ color: "#64748b" }}>Shift Dibuka: </span>
+                    <strong style={{ color: "#166534" }}>{openedAtFormatted} WIB</strong>
+                  </div>
+                </div>
+
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.75rem", background: "#f8fafc", borderRadius: "6px" }}>
                   <span style={{ fontSize: "0.85rem", color: "#64748b" }}>Kas Seharusnya di Laci (Sistem):</span>
                   <span style={{ fontSize: "1.1rem", fontWeight: 700, color: "#1e293b" }}>{formatIDR(expectedNum)}</span>
@@ -645,6 +1027,14 @@ export function CashDrawerModal({
                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem", marginTop: "0.5rem" }}>
                   <Button variant="secondary" onClick={() => setActiveTab("summary")}>
                     Kembali
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    type="button"
+                    onClick={() => handlePrintThermalRekap(true)}
+                    title="Cetak struk rekap tutup shift (Z-Report)"
+                  >
+                    🖨️ Cetak Struk Tutup
                   </Button>
                   <Button variant="danger" onClick={handleCloseShift} loading={loading}>
                     Tutup Kasir &amp; Selesaikan Shift

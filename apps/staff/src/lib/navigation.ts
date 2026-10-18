@@ -46,6 +46,8 @@ export const ROLE_ROOMS: Record<Role, readonly StaffRoom[]> = {
   kitchen: ["kitchen"],
 };
 
+import { isKitchenActive } from "@tepisawah/config";
+
 /** Get the primary operational room for the given staff roles and optional email/username */
 export function getPrimaryRoomForRoles(roles: readonly Role[], email?: string | null): StaffRoom {
   const cleanEmail = (email || "").toLowerCase().trim();
@@ -64,12 +66,13 @@ export function getPrimaryRoomForRoles(roles: readonly Role[], email?: string | 
     return "admin";
   }
   if (
-    roles.includes("kitchen") ||
-    cleanEmail.includes("kitchen") ||
-    cleanEmail.includes("dapur") ||
-    cleanEmail.includes("koki") ||
-    cleanEmail.includes("cook") ||
-    cleanEmail.includes("chef")
+    isKitchenActive() &&
+    (roles.includes("kitchen") ||
+      cleanEmail.includes("kitchen") ||
+      cleanEmail.includes("dapur") ||
+      cleanEmail.includes("koki") ||
+      cleanEmail.includes("cook") ||
+      cleanEmail.includes("chef"))
   ) {
     return "kitchen";
   }
@@ -107,6 +110,12 @@ export function getAllowedRooms(roles: readonly Role[], email?: string | null): 
   } else if (cleanEmail) {
     allowed.add("pos");
   }
+
+  // If kitchen is disabled, remove kitchen room from allowed list
+  if (!isKitchenActive()) {
+    allowed.delete("kitchen");
+  }
+
   return allowed;
 }
 

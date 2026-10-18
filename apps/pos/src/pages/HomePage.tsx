@@ -36,6 +36,7 @@ import { executePrint } from "../lib/printer.js";
 import {
   grandTotalOf,
   formatIDR,
+  formatNumber,
   type PaymentMethod,
   type QueueOrder,
 } from "../data/terminal.js";
@@ -69,7 +70,7 @@ export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode
   const [query, setQuery] = useState<string>("");
   const [filter, setFilter] = useState<QueueFilter>("waiting");
   const [method, setMethod] = useState<PaymentMethod["id"]>("cash");
-  const [tendered, setTendered] = useState<string>("300.000");
+  const [tendered, setTendered] = useState<string>("");
   const [now, setNow] = useState<string>("27 Sep 2026, 11:32 WIB");
   const [reprintKey, setReprintKey] = useState<number>(0);
 
@@ -93,6 +94,47 @@ export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode
   useEffect(() => {
     void refreshShift();
   }, [refreshShift]);
+
+  // Indonesian date formatting for terminal & cash drawer.
+  const todayFullDate = useMemo(() => {
+    return new Intl.DateTimeFormat("id-ID", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "Asia/Jakarta",
+    }).format(new Date());
+  }, []);
+
+  const todayShortDate = useMemo(() => {
+    return new Intl.DateTimeFormat("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      timeZone: "Asia/Jakarta",
+    }).format(new Date());
+  }, []);
+
+  const shiftOpenedFormatted = useMemo(() => {
+    if (!currentShift) return "";
+    try {
+      const d = new Date(currentShift.openedAt);
+      const datePart = new Intl.DateTimeFormat("id-ID", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        timeZone: "Asia/Jakarta",
+      }).format(d);
+      const timePart = new Intl.DateTimeFormat("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "Asia/Jakarta",
+      }).format(d);
+      return `${datePart}, ${timePart} WIB`;
+    } catch {
+      return currentShift.openedAt;
+    }
+  }, [currentShift]);
 
   // Live WIB clock for the terminal header.
   useEffect(() => {
@@ -161,12 +203,17 @@ export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode
     [activeOrders, selectedId],
   );
 
-  // Auto-switch to platform payment for online delivery orders
+  // Auto-switch to platform payment for online delivery orders and auto-sync exact tender amount
   useEffect(() => {
     if (selectedOrder?.channel === "delivery") {
       setMethod("platform");
     } else if (method === "platform") {
       setMethod("cash");
+    }
+    if (selectedOrder) {
+      setTendered(formatNumber(grandTotalOf(selectedOrder)));
+    } else {
+      setTendered("");
     }
   }, [selectedOrder?.id, selectedOrder?.channel]);
 
@@ -199,6 +246,11 @@ export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode
   const handleSettle = useCallback((): void => {
     const order = selectedOrder;
     if (order === undefined || settling) return;
+    if (method === "cash" && !currentShift) {
+      setSettleError("Laci kasir belum dibuka. Wajib membuka shift kasir & menginput modal awal sebelum menerima pembayaran tunai.");
+      setShowCashDrawerModal(true);
+      return;
+    }
     if (!can(PERMISSIONS.PAYMENTS_CREATE)) {
       setSettleError("Sesi Anda tidak memiliki izin pembayaran (payments.create).");
       return;
@@ -218,7 +270,7 @@ export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode
         if (res.orders) setHistoryOrders(res.orders);
       });
     });
-  }, [can, refresh, refreshShift, selectedOrder, settling]);
+  }, [can, currentShift, method, refresh, refreshShift, selectedOrder, settling]);
 
   const handleOpenVoid = useCallback((order: QueueOrder) => {
     setVoidTargetOrder(order);
@@ -284,10 +336,31 @@ export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode
               <div className="pos-subbar__title-row">
                 <span className="pos-subbar__title">Kasir Utama #01</span>
                 <span
-                  className="pos-subbar__online"
-                  style={!currentShift ? { background: "#fef2f2", color: "#991b1b", border: "1px solid #fecaca" } : undefined}
+                  style={{
+                    fontSize: "0.8rem",
+                    fontWeight: 600,
+                    color: "#183a1d",
+                    background: "#eef5ef",
+                    border: "1px solid #cce3d0",
+                    padding: "0.2rem 0.6rem",
+                    borderRadius: "6px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.35rem",
+                  }}
+                  title="Tanggal Operasional Terminal"
                 >
-                  {currentShift ? "Kasir Dibuka" : "Kasir Ditutup"}
+                  📅 {todayFullDate}
+                </span>
+                <span
+                  className="pos-subbar__online"
+                  style={
+                    !currentShift
+                      ? { background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca", fontWeight: 700 }
+                      : { background: "#f0fdf4", color: "#166534", border: "1px solid #bbf7d0", fontWeight: 600 }
+                  }
+                >
+                  {currentShift ? `🟢 ${currentShift.shiftName}` : "🔴 Kasir Ditutup"}
                 </span>
                 <span
                   className={`live-chip live-chip--${boardChannel.status}`}
@@ -321,8 +394,8 @@ export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode
               </div>
               <p className="pos-subbar__hint">
                 {currentShift
-                  ? `Lobi Utama Ciperna • ${currentShift.shiftName} (${currentShift.staffName}) • Sinkronisasi EDC & QRIS Siap`
-                  : "Laci kasir belum dibuka. Klik tombol 'Laci Kas' untuk memasukkan modal awal kasir."}
+                  ? `Petugas: ${currentShift.staffName} • Dibuka: ${shiftOpenedFormatted} • ${todayFullDate}`
+                  : `Hari ini: ${todayFullDate} • Laci kasir belum dibuka untuk shift ini.`}
               </p>
             </div>
           </div>
@@ -330,22 +403,23 @@ export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode
           <div className="pos-subbar__metrics">
             <div
               className="pos-metric"
-              onClick={() => setShowCashDrawerModal(true)}
-              style={{ cursor: "pointer" }}
-              title="Klik untuk membuka kelola laci kas"
+              title="Kas fisik yang tercatat di laci saat ini"
             >
               <WalletIcon aria-hidden="true" />
               <div className="pos-metric__text">
-                <span className="pos-metric__label">Kas Laci Sekarang</span>
-                <span className="pos-metric__value">
-                  {currentShift ? formatIDR(currentShift.expectedCash) : "Rp 0 (Tutup)"}
+                <span className="pos-metric__label">Kas di Laci</span>
+                <span
+                  className="pos-metric__value"
+                  style={!currentShift ? { color: "#b45309", fontWeight: 700 } : undefined}
+                >
+                  {currentShift ? formatIDR(currentShift.expectedCash) : "Belum Buka"}
                 </span>
               </div>
             </div>
             <div className="pos-metric">
               <ReceiptIcon aria-hidden="true" />
               <div className="pos-metric__text">
-                <span className="pos-metric__label">Status Antrean Hari Ini</span>
+                <span className="pos-metric__label">Antrean Hari Ini</span>
                 <span className="pos-metric__value pos-metric__value--go">
                   {loaded ? `${orders.length} Antrean • ${historyOrders.length} Selesai` : "Memuat…"}
                 </span>
@@ -355,12 +429,64 @@ export function HomePage({ onNavigateToConfirm }: HomePageProps = {}): ReactNode
               type="button"
               className="pos-drawer"
               onClick={() => setShowCashDrawerModal(true)}
-              style={!currentShift ? { background: "#b91c1c", color: "#fff" } : undefined}
+              style={
+                !currentShift
+                  ? {
+                      background: "#b45309",
+                      color: "#ffffff",
+                      border: "1px solid #92400e",
+                      fontWeight: 700,
+                      boxShadow: "0 2px 4px rgba(180, 83, 9, 0.25)",
+                    }
+                  : undefined
+              }
             >
-              <LockResetIcon aria-hidden="true" /> {currentShift ? "Laci Kas" : "Buka Kasir"}
+              <LockResetIcon aria-hidden="true" />
+              {currentShift ? "Laci Kas" : "⚠️ Buka Kasir"}
             </button>
           </div>
         </div>
+
+        {/* Notifikasi Ringkas: Hanya Tampil Jika Kasir Belum Buka Shift (Mandatory Gate) */}
+        {!currentShift && (
+          <div
+            className="pos-drawer-alert pos-drawer-alert--warning"
+            role="alert"
+            style={{
+              margin: "0.5rem 1.25rem 0",
+              padding: "0.55rem 0.95rem",
+              borderRadius: "6px",
+              background: "#fffbeb",
+              border: "1px solid #f59e0b",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "0.75rem",
+              fontSize: "0.825rem",
+            }}
+          >
+            <span style={{ color: "#92400e", fontWeight: 600 }}>
+              ⚠️ <strong>Laci Kasir Belum Dibuka:</strong> Wajib menginput modal awal kasir sebelum melayani transaksi tunai shift ini.
+            </span>
+            <button
+              type="button"
+              onClick={() => setShowCashDrawerModal(true)}
+              style={{
+                padding: "0.3rem 0.85rem",
+                background: "#b45309",
+                color: "#ffffff",
+                border: "none",
+                borderRadius: "5px",
+                fontWeight: 700,
+                fontSize: "0.8rem",
+                cursor: "pointer",
+                flexShrink: 0,
+              }}
+            >
+              Buka Kasir Sekarang
+            </button>
+          </div>
+        )}
 
         {error !== null ? (
           <p className="pos-alert" role="alert">

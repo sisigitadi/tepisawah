@@ -524,6 +524,24 @@ function ProductsSection(props: ProductsSectionProps): ReactNode {
                   </div>
                 )}
                 <div className="product-card__badges">
+                  {categoryName(row.categoryId).toLowerCase().includes("promo") ||
+                  row.name.toLowerCase().includes("paket") ||
+                  row.name.toLowerCase().includes("promo") ? (
+                    <span
+                      style={{
+                        padding: "0.15rem 0.5rem",
+                        borderRadius: "4px",
+                        fontSize: "0.7rem",
+                        fontWeight: 800,
+                        background: "#fef3c7",
+                        color: "#92400e",
+                        border: "1px solid #fde68a",
+                        letterSpacing: "0.03em",
+                      }}
+                    >
+                      PROMO
+                    </span>
+                  ) : null}
                   <StatusBadge
                     status={row.isActive ? "active" : "inactive"}
                     label={row.isActive ? "Aktif" : "Diarsipkan"}

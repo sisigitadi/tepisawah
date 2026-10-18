@@ -7,20 +7,21 @@
  * - Service requests (Call Waiter, Request Bill)
  * - Serve action & quick manual order trigger
  *
- * The "Siap Saji" board is LIVE: it lists every READY order from the
- * database through the `orders_staff_read` RLS policy, and "Tandai Sudah
- * Disajikan" moves one READY -> SERVED through the guarded
- * `transition_order()` command (`orders.serve`, optimistic version —
- * API_CONTRACT.md §13, §26). The other two tabs are still design samples.
+ * Supports kitchen bypass when kitchen KDS is disabled:
+ * - Direct serve mode: orders can be served directly to guests
+ * - Manual cook/serve mode: waiters can start cooking ("Mulai Masak") and deliver ("Selesai & Antar")
  */
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@tepisawah/auth";
 import { PERMISSIONS } from "@tepisawah/permissions";
 import { orderBoardStatusLabel, useOrderBoardChannel } from "@tepisawah/database";
+import { loadOrderFlowSettings, type OrderFlowSettings } from "@tepisawah/config";
 
 import {
   loadReadyOrders,
   serveOrder,
+  startCookingOrder,
+  markOrderReady,
   type StaffOrder,
 } from "../features/ready-orders/index.js";
 import { getSupabaseClient } from "../lib/supabase.js";
@@ -38,11 +39,12 @@ interface ReadyOrder {
   table: string;
   items: string[];
   readySince: string;
+  status: StaffOrder["status"];
   /** Database order, carried so the serve action has its version handle. */
   raw: StaffOrder;
 }
 
-/** "x mnt lalu" since the kitchen marked the order ready. */
+/** "x mnt lalu" since the order was updated. */
 function readyAgo(iso: string | null, now: number): string {
   if (iso === null) return "baru saja";
   const then = Date.parse(iso);
@@ -58,6 +60,7 @@ function toReadyOrder(order: StaffOrder, now: number): ReadyOrder {
     table: order.tableName,
     items: order.items.map((item) => `${item.quantity}x ${item.name}`),
     readySince: readyAgo(order.updatedAt ?? order.createdAt, now),
+    status: order.status,
     raw: order,
   };
 }
@@ -70,10 +73,9 @@ interface WaiterTable {
   orderSummary?: string;
 }
 
-const SAMPLE_SERVICE_CALLS: ServiceCall[] = [];
-
 export function HomePage(): ReactNode {
-  const { can } = useAuth();
+  const { user, profile, can } = useAuth();
+  const [flowSettings, setFlowSettings] = useState<OrderFlowSettings>(() => loadOrderFlowSettings());
   const [readyOrders, setReadyOrders] = useState<ReadyOrder[]>([]);
   const [boardPhase, setBoardPhase] = useState<"loading" | "ready" | "error">("loading");
   const [boardError, setBoardError] = useState<string | null>(null);
@@ -83,6 +85,19 @@ export function HomePage(): ReactNode {
   const [serviceCalls, setServiceCalls] = useState<ServiceCall[]>([]);
   const [tables, setTables] = useState<WaiterTable[]>([]);
   const [activeTab, setActiveTab] = useState<"ready" | "requests" | "tables">("ready");
+
+  const waiterName = profile?.display_name || profile?.username || user?.email || "Pramusaji";
+
+  // Sync settings when Admin updates them
+  useEffect(() => {
+    const handleFlowChange = () => setFlowSettings(loadOrderFlowSettings());
+    window.addEventListener("tepisawah_order_flow_updated", handleFlowChange);
+    window.addEventListener("storage", handleFlowChange);
+    return () => {
+      window.removeEventListener("tepisawah_order_flow_updated", handleFlowChange);
+      window.removeEventListener("storage", handleFlowChange);
+    };
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -128,22 +143,13 @@ export function HomePage(): ReactNode {
     setReadyOrders((result.data ?? []).map((order) => toReadyOrder(order, Date.now())));
   }, []);
 
-  // Live: the kitchen marking an order ready (UPDATE on `orders`) lands the
-  // card here instantly; a slow poll remains as the safety net
-  // (useOrderBoardChannel).
   const boardChannel = useOrderBoardChannel(getSupabaseClient(), refreshBoard);
 
-  // Keep the "x mnt lalu" badges honest without refetching.
   useEffect(() => {
     const clock = window.setInterval(() => setNow(Date.now()), 30_000);
     return () => window.clearInterval(clock);
   }, []);
 
-  /**
-   * One guarded server-side hop: READY -> SERVED. The command re-checks
-   * `orders.serve` and the version the card rendered (§26); the board
-   * refetches so the tab always matches the database.
-   */
   const handleServeOrder = useCallback(
     async (order: ReadyOrder) => {
       if (busyId !== null) return;
@@ -161,9 +167,46 @@ export function HomePage(): ReactNode {
     [busyId, refreshBoard],
   );
 
+  const handleStartCooking = useCallback(
+    async (order: ReadyOrder) => {
+      if (busyId !== null) return;
+      setBusyId(order.id);
+      setActionError(null);
+      const result = await startCookingOrder(order.raw);
+      setBusyId(null);
+      if (result.error) {
+        setActionError(result.error.message);
+        void refreshBoard();
+        return;
+      }
+      void refreshBoard();
+    },
+    [busyId, refreshBoard],
+  );
+
+  const handleMarkReady = useCallback(
+    async (order: ReadyOrder) => {
+      if (busyId !== null) return;
+      setBusyId(order.id);
+      setActionError(null);
+      const result = await markOrderReady(order.raw);
+      setBusyId(null);
+      if (result.error) {
+        setActionError(result.error.message);
+        void refreshBoard();
+        return;
+      }
+      void refreshBoard();
+    },
+    [busyId, refreshBoard],
+  );
+
   const handleResolveCall = (id: string) => {
     setServiceCalls((prev) => prev.filter((c) => c.id !== id));
   };
+
+  const isKitchenActive = flowSettings.kitchenEnabled;
+  const canServe = can(PERMISSIONS.ORDERS_SERVE);
 
   return (
     <div className="waiter-handheld">
@@ -172,8 +215,23 @@ export function HomePage(): ReactNode {
         <div className="waiter-brand-row">
           <img src="/logo.png" alt="Tepi Sawah" className="waiter-logo" />
           <div className="waiter-staff-info">
-            <span className="waiter-badge">Pramusaji: Dimas</span>
-            <span className="waiter-section">Area: Saung & Gazebo</span>
+            <span className="waiter-badge">Pramusaji: {waiterName}</span>
+            {!isKitchenActive ? (
+              <span
+                style={{
+                  background: "#fef3c7",
+                  color: "#92400e",
+                  padding: "0.15rem 0.5rem",
+                  borderRadius: "4px",
+                  fontSize: "0.75rem",
+                  fontWeight: 600,
+                }}
+              >
+                Dapur: {flowSettings.kitchenBypassMode === "direct_serve" ? "Langsung Antar" : "Masak Mandiri"}
+              </span>
+            ) : (
+              <span className="waiter-section">Area: Saung & Gazebo</span>
+            )}
             <span
               className={`live-chip live-chip--${boardChannel.status}`}
               title="Koneksi realtime papan siap saji"
@@ -194,7 +252,7 @@ export function HomePage(): ReactNode {
           className={`waiter-tab-btn ${activeTab === "ready" ? "active" : ""}`}
           onClick={() => setActiveTab("ready")}
         >
-          🍽 Siap Saji ({readyOrders.length})
+          {isKitchenActive ? "🍽 Siap Saji" : "🍽 Dapur & Saji"} ({readyOrders.length})
         </button>
         <button
           type="button"
@@ -214,10 +272,24 @@ export function HomePage(): ReactNode {
 
       {/* Main Tab Content */}
       <main className="waiter-body">
-        {/* Ready Orders Tab — live from the database */}
+        {/* Ready / Kitchen Board Tab */}
         {activeTab === "ready" && (
           <div className="waiter-section-content">
-            <h2 className="waiter-heading">Pesanan Siap Diantar ke Tamu</h2>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", flexWrap: "wrap", gap: "0.5rem", marginBottom: "0.75rem" }}>
+              <h2 className="waiter-heading" style={{ margin: 0 }}>
+                {isKitchenActive
+                  ? "Pesanan Siap Diantar ke Tamu"
+                  : flowSettings.kitchenBypassMode === "manual_cook_serve"
+                    ? "Alur Memasak & Antar Hidangan"
+                    : "Pesanan Siap Diantar ke Tamu"}
+              </h2>
+              {!isKitchenActive && (
+                <span style={{ fontSize: "0.8rem", color: "#6b7280" }}>
+                  Mode Dapur Nonaktif ({flowSettings.kitchenBypassMode === "direct_serve" ? "Bypass KDS" : "Masak Mandiri"})
+                </span>
+              )}
+            </div>
+
             {boardError !== null ? (
               <div className="waiter-alert" role="alert">
                 <span>Papan tidak dapat dimuat: {boardError}</span>
@@ -236,46 +308,120 @@ export function HomePage(): ReactNode {
               </div>
             ) : null}
             {boardPhase === "loading" ? (
-              <p aria-live="polite">Memuat papan siap saji…</p>
+              <p aria-live="polite">Memuat papan pesanan…</p>
             ) : boardPhase === "ready" && readyOrders.length === 0 ? (
               <div className="waiter-empty-card">
-                <span>✓</span> Semua hidangan dapur telah diantar.
+                <span>✓</span> Semua hidangan telah disajikan ke tamu.
               </div>
             ) : (
               <div className="ready-orders-list">
-                {readyOrders.map((order) => (
-                  <div key={order.id} className="ready-order-card">
-                    <div className="ready-order-top">
-                      <div className="ready-target">
-                        <span className="ready-table-title">{order.table}</span>
-                        <span className="ready-order-code">{order.orderNumber}</span>
+                {readyOrders.map((order) => {
+                  const isBusy = busyId === order.id;
+                  const anyBusy = busyId !== null;
+                  return (
+                    <div key={order.id} className="ready-order-card">
+                      <div className="ready-order-top">
+                        <div className="ready-target">
+                          <span className="ready-table-title">{order.table}</span>
+                          <span className="ready-order-code">{order.orderNumber}</span>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                          {!isKitchenActive && (
+                            <span
+                              className="waiter-status-badge"
+                              style={{
+                                background:
+                                  order.status === "CONFIRMED"
+                                    ? "#fef3c7"
+                                    : order.status === "PREPARING"
+                                      ? "#fed7aa"
+                                      : "#d1fae5",
+                                color:
+                                  order.status === "CONFIRMED"
+                                    ? "#92400e"
+                                    : order.status === "PREPARING"
+                                      ? "#c2410c"
+                                      : "#065f46",
+                              }}
+                            >
+                              {order.status === "CONFIRMED"
+                                ? "🍳 Menunggu Masak"
+                                : order.status === "PREPARING"
+                                  ? "🔥 Sedang Masak"
+                                  : "🍽 Siap Saji"}
+                            </span>
+                          )}
+                          <span className="ready-time">⏱ {order.readySince}</span>
+                        </div>
                       </div>
-                      <span className="ready-time">⏱ Siap {order.readySince}</span>
-                    </div>
 
-                    <div className="ready-items-box">
-                      {order.items.map((item, idx) => (
-                        <div key={idx} className="ready-item-row">• {item}</div>
-                      ))}
-                    </div>
+                      <div className="ready-items-box">
+                        {order.items.map((item, idx) => (
+                          <div key={idx} className="ready-item-row">• {item}</div>
+                        ))}
+                      </div>
 
-                    <button
-                      type="button"
-                      className="btn-waiter-serve"
-                      disabled={busyId !== null || !can(PERMISSIONS.ORDERS_SERVE)}
-                      title={
-                        can(PERMISSIONS.ORDERS_SERVE)
-                          ? undefined
-                          : "Sesi Anda tidak memegang izin orders.serve"
-                      }
-                      onClick={() => void handleServeOrder(order)}
-                    >
-                      {busyId === order.id
-                        ? "Memproses…"
-                        : "✓ Tandai Sudah Disajikan ke Tamu"}
-                    </button>
-                  </div>
-                ))}
+                      {/* Actions according to status */}
+                      {order.status === "CONFIRMED" && (
+                        <div className="waiter-action-row">
+                          <button
+                            type="button"
+                            className="btn-waiter-cook"
+                            disabled={anyBusy}
+                            onClick={() => void handleStartCooking(order)}
+                          >
+                            {isBusy ? "Memproses…" : "🍳 Mulai Masak"}
+                          </button>
+                          <button
+                            type="button"
+                            className="btn-waiter-serve"
+                            disabled={anyBusy || !canServe}
+                            onClick={() => void handleServeOrder(order)}
+                          >
+                            {isBusy ? "Memproses…" : "✓ Langsung Antar"}
+                          </button>
+                        </div>
+                      )}
+
+                      {order.status === "PREPARING" && (
+                        <div className="waiter-action-row">
+                          <button
+                            type="button"
+                            className="btn-waiter-serve"
+                            disabled={anyBusy || !canServe}
+                            onClick={() => void handleServeOrder(order)}
+                          >
+                            {isBusy ? "Memproses…" : "✓ Selesai & Antar ke Tamu"}
+                          </button>
+                          <button
+                            type="button"
+                            className="btn-waiter-outline"
+                            disabled={anyBusy}
+                            onClick={() => void handleMarkReady(order)}
+                          >
+                            🍽 Siap Saji
+                          </button>
+                        </div>
+                      )}
+
+                      {(order.status === "READY" || isKitchenActive) && (
+                        <button
+                          type="button"
+                          className="btn-waiter-serve"
+                          disabled={anyBusy || !canServe}
+                          title={
+                            canServe
+                              ? undefined
+                              : "Sesi Anda tidak memegang izin orders.serve"
+                          }
+                          onClick={() => void handleServeOrder(order)}
+                        >
+                          {isBusy ? "Memproses…" : "✓ Tandai Sudah Disajikan ke Tamu"}
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -298,7 +444,7 @@ export function HomePage(): ReactNode {
                       <span className="call-type">
                         {call.type === "BILL_REQUEST" && "Minta Tagihan Kasir"}
                         {call.type === "CALL_WAITER" && "Panggil Pramusaji"}
-                        {call.type === "ADD_UTENSILS" && "Minta Alat Makan Tambahan"}
+                        {call.type === "ADD_UTENSILS" && "Minta Tambah Alat Makan"}
                       </span>
                       <span className="call-time">{call.timeAgo}</span>
                     </div>
@@ -307,7 +453,7 @@ export function HomePage(): ReactNode {
                       className="btn-resolve-call"
                       onClick={() => handleResolveCall(call.id)}
                     >
-                      Dihadiri ✓
+                      ✓ Selesai
                     </button>
                   </div>
                 ))}
@@ -316,34 +462,21 @@ export function HomePage(): ReactNode {
           </div>
         )}
 
-        {/* Tables Status Tab */}
+        {/* Tables Inspection Tab */}
         {activeTab === "tables" && (
           <div className="waiter-section-content">
-            <h2 className="waiter-heading">Status Meja Pelayanan</h2>
-            {tables.length === 0 ? (
-              <div className="waiter-empty-card">
-                <span>✓</span> Belum ada data meja aktif.
-              </div>
-            ) : (
-              <div className="waiter-tables-grid">
-                {tables.map((t) => (
-                  <div key={t.id} className={`waiter-tbl-card ${t.status}`}>
-                    <div className="tbl-card-top">
-                      <strong>{t.name}</strong>
-                      <span className="tbl-area">{t.area}</span>
-                    </div>
-                    <div className="tbl-card-status">
-                      {t.status === "occupied" && "🟢 Terisi"}
-                      {t.status === "available" && "⚪ Kosong"}
-                      {t.status === "needs_attention" && "🔴 Perlu Perhatian"}
-                    </div>
-                    {t.orderSummary ? (
-                      <div className="tbl-summary">{t.orderSummary}</div>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-            )}
+            <h2 className="waiter-heading">Status Meja Tamu</h2>
+            <div className="waiter-tables-grid">
+              {tables.map((t) => (
+                <div key={t.id} className={`table-status-card status-${t.status}`}>
+                  <span className="table-card-name">{t.name}</span>
+                  <span className="table-card-area">{t.area}</span>
+                  <span className="table-card-status">
+                    {t.status === "occupied" ? "🔴 Terisi" : "🟢 Kosong"}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </main>

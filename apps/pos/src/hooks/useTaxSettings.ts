@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { loadTaxSettings, syncTaxSettingsFromDb, type TaxSettings } from "@tepisawah/config";
+import { loadTaxSettings, syncTaxSettingsFromDb, syncOrderFlowFromDb, type TaxSettings } from "@tepisawah/config";
 import { getSupabaseClient } from "../lib/supabase.js";
 
 export function useTaxSettings(): TaxSettings {
@@ -37,6 +37,7 @@ export function useTaxSettings(): TaxSettings {
           .maybeSingle();
 
         if (data && !error && active) {
+          syncOrderFlowFromDb(data as Record<string, unknown>);
           const synced = syncTaxSettingsFromDb(data as Record<string, unknown>);
           setSettings(synced);
         }
@@ -60,6 +61,7 @@ export function useTaxSettings(): TaxSettings {
           { event: "*", schema: "public", table: "tax_settings" },
           (payload) => {
             if (payload.new && active) {
+              syncOrderFlowFromDb(payload.new as Record<string, unknown>);
               const synced = syncTaxSettingsFromDb(payload.new as Record<string, unknown>);
               setSettings(synced);
             }

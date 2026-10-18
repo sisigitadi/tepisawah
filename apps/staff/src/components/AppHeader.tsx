@@ -8,7 +8,7 @@ import { useState, type ReactNode } from "react";
 
 import { useAuth } from "@tepisawah/auth";
 
-import { ROLE_ROOMS, ROOM_METAS, getPrimaryRoomForRoles, type StaffRoom } from "../lib/navigation.js";
+import { getAllowedRooms, ROOM_METAS, getPrimaryRoomForRoles, type StaffRoom } from "../lib/navigation.js";
 import { usePwaInstall } from "../lib/pwa.js";
 
 export interface AppHeaderProps {
@@ -24,11 +24,8 @@ export function AppHeader({
   const { canInstall, isInstalled, triggerInstall } = usePwaInstall();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Compute allowed rooms for this staff member
-  const allowedRooms = new Set<StaffRoom>();
-  for (const role of roles) {
-    for (const r of ROLE_ROOMS[role] ?? []) allowedRooms.add(r);
-  }
+  // Compute allowed rooms for this staff member (respects kitchenEnabled setting)
+  const allowedRooms = getAllowedRooms(roles, user?.email);
 
   // Only display operational rooms (pos, kitchen, admin) that this user holds rights to
   const navItems: readonly StaffRoom[] = (

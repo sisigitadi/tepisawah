@@ -261,6 +261,19 @@ body {
   border-color: var(--color-forest);
 }
 
+.cat-pill--promo {
+  border-color: #f59e0b;
+  color: #b45309;
+  background: #fffbeb;
+  font-weight: 700;
+}
+
+.cat-pill--promo.active {
+  background: #b45309;
+  color: white;
+  border-color: #b45309;
+}
+
 /* Menu Dishes List */
 .order-menu-list {
   padding: 1rem;
@@ -312,6 +325,12 @@ body {
   font-weight: 800;
   padding: 0.15rem 0.4rem;
   border-radius: 3px;
+}
+
+.dish-tag--promo {
+  background: #b45309;
+  color: white;
+  box-shadow: 0 1px 3px rgba(180, 83, 9, 0.4);
 }
 
 .dish-details {
